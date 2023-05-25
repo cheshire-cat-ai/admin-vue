@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+
+  cheshire-cat-admin:
+    build:
+      context: .
+    container_name: cheshire_cat_admin
+    #env_file:
+    #  - .env
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/app
+    restart: unless-stopped
