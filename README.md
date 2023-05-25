@@ -1,38 +1,10 @@
-# Admin UI 🎨
+# Cheshire Cat Admin UI 🐱
 
-> 🐱: Well, well, well, what do we have here?\
-> It appears that you've stumbled upon my admin repository, my dear.\
-> This codebase is none other than the Cheshire cat admin, crafted with the finest Vue technology. So, come on in and
-> take a peek, but be warned, things might get curiouser and curiouser from here on out!
-
-## Table of contents
-
-<!-- TABLE OF CONTENTS -->
-<details open>
-  <summary>Table of Contents</summary>
-  <ul>
-    <li>😺 <a href="#about-the-project">About The Project</a></li>
-    <li>
-      🎸 <a href="#contributing">Contributing</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-            <li>💾 <a href="#scripts">Scripts</a>
-            <ul>
-                <li><a href="#dev-mode">Dev mode</a></li>
-                <li><a href="#build">Build</a></li>
-                <li><a href="#start-the-app">Start the app</a></li>
-            </ul>
-        </li>
-      </ul>
-    </li>
-  </ul>
-</details>
+This is the source code to build the admin client for the Cheshire Cat AI.
 
 ## About the project
 
-The Cheshire Cat platform is a cutting-edge, open-source solution that enables users to optimize their personal AI
-architecture with ease.
+The Cheshire Cat is a framework to build long tail AIs:
 
 - Language model agnostic, allows compatibility with OpenAI, Cohere, HuggingFace, and custom models
 - Long term memory storage capabilities
@@ -41,15 +13,6 @@ architecture with ease.
 - 100% dockerized for simple and efficient deployment
 - Extensibility via plugins, offering unparalleled flexibility to users.
 
-## Contributing
-
-The Cheshire Cat platform has been fully containerized using Docker, which allows for effortless access to the UI with
-minimal setup requirements.\
-Simply follow the instructions outlined in the
-primary [README.md](https://github.com/zAlweNy26/vue-cheshire-cat/blob/main/README.md) file to get started.
-
-However, if you want to tinker around with the UI application in development mode, we've got you covered.
-Just make sure to follow these instructions closely
 
 ### Pre-requisites
 
