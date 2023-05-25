@@ -28,3 +28,4 @@ dist-ssr
 dist/
 build/
 static/
+tsconfig.tsbuildinfo
