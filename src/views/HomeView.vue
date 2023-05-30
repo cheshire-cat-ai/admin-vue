@@ -70,13 +70,21 @@ watchEffect(() => {
 })
 
 /**
- * When a new message arrives, the chat will be scrolled to bottom.
+ * When a new message arrives, the chat will be scrolled to bottom and the input box will be focussed.
  * If audio is enabled, a pop sound will be played.
  */
 watchDeep(messagesState, () => {
 	scrollToBottom()
+	textArea.value?.focus()
 	if (messagesState.value.messages.length > 0 && isAudioEnabled.value) playPop()
 }, { flush: 'post' })
+
+/**
+ * When switching to the page, the input box is focussed.
+ */
+onActivated(() => {
+	textArea.value?.focus()
+})
 
 /**
  * Dispatches the inserted url to the RabbitHole service and closes the modal.
