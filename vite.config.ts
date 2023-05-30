@@ -51,11 +51,6 @@ export default defineConfig(({ mode }) => {
       }),
       tsconfigPaths()
     ],
-    /*define: {
-      'import.meta.env.CORE_HOST': JSON.stringify(env.CORE_HOST),
-      'import.meta.env.CORE_PORT': JSON.stringify(env.CORE_PORT),
-      'import.meta.env.CORE_USE_SECURE_PROTOCOLS' : JSON.stringify(env.CORE_USE_SECURE_PROTOCOLS)
-    },*/
     server: {
       port: parseInt(env.ADMIN_PORT ?? "3000"),
       open: false,
