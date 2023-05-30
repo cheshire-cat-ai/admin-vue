@@ -1,8 +1,8 @@
 import { AppFeatures } from '@models/AppFeatures'
 
-const CORE_HOST = window.catCoreConfig.CORE_HOST
-const CORE_PORT = window.catCoreConfig.CORE_PORT
-const CORE_USE_SECURE_PROTOCOLS = window.catCoreConfig.CORE_USE_SECURE_PROTOCOLS
+const CORE_HOST = (window as any).catCoreConfig.CORE_HOST
+const CORE_PORT = (window as any).catCoreConfig.CORE_PORT
+const CORE_USE_SECURE_PROTOCOLS = (window as any).catCoreConfig.CORE_USE_SECURE_PROTOCOLS
 const useProtocol = CORE_USE_SECURE_PROTOCOLS ? 's' : ''
 
 /**
