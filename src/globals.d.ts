@@ -1,4 +1,4 @@
-export {}
+/// <reference types="vite/client" />
 
 declare global {
     interface Window {
@@ -10,3 +10,5 @@ declare global {
         }
     }
 }
+
+export {}
