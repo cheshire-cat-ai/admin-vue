@@ -1,8 +1,8 @@
 import { AppFeatures } from '@models/AppFeatures'
 
-const CORE_HOST = import.meta.env.CORE_HOST || 'localhost'
-const CORE_PORT = import.meta.env.CORE_PORT || '1865'
-const CORE_USE_SECURE_PROTOCOLS = import.meta.env.CORE_USE_SECURE_PROTOCOLS || false
+const CORE_HOST = window.catCoreConfig.CORE_HOST
+const CORE_PORT = window.catCoreConfig.CORE_PORT
+const CORE_USE_SECURE_PROTOCOLS = window.catCoreConfig.CORE_USE_SECURE_PROTOCOLS
 const useProtocol = CORE_USE_SECURE_PROTOCOLS ? 's' : ''
 
 /**
