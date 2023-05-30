@@ -30,8 +30,10 @@ defineExpose({
 					<heroicons-chevron-up-down-20-solid class="h-6 w-6" />
 				</span>
 			</ListboxButton>
-			<Transition leave-active-class="transition duration-100 ease-in" leave-from-class="opacity-100"
-				leave-to-class="opacity-0">
+			<Transition enterActiveClass="transition duration-200 ease-out"
+				enterFromClass="transform opacity-0" enterToClass="transform opacity-100"
+				leaveActiveClass="transition duration-200 ease-in" leaveFromClass="transform opacity-100"
+				leaveToClass="transform opacity-0">
 				<ListboxOptions class="absolute mt-2 w-full overflow-auto rounded bg-base-100 text-sm shadow-lg">
 					<ListboxOption v-for="element in list" :key="element.value" v-slot="{ active, selected }" as="template" :value="element">
 						<li :class="[

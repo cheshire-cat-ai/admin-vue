@@ -9,8 +9,8 @@
 		<RouterView v-slot="{ Component }" class="grow p-2 md:p-4">
 			<template v-if="Component">
 				<Transition mode="out-in"
-					enter-active-class="animate__animated animate__fadeIn animate__fastest"
-					leave-active-class="animate__animated animate__fadeOut animate__fastest">
+					enterActiveClass="animate__animated animate__fadeIn animate__fastest"
+					leaveActiveClass="animate__animated animate__fadeOut animate__fastest">
 					<KeepAlive>
 						<component :is="Component" />
 					</KeepAlive>

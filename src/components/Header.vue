@@ -12,10 +12,10 @@
 					<heroicons-x-mark-20-solid v-if="open" class="swap-on h-6 w-6" />
 					<heroicons-bars-3-solid v-else class="swap-off h-6 w-6" />
 				</MenuButton>
-				<Transition enter-active-class="transition duration-200 ease-out"
-					enter-from-class="transform scale-90 opacity-0" enter-to-class="transform scale-100 opacity-100"
-					leave-active-class="transition duration-200 ease-in" leave-from-class="transform scale-100 opacity-100"
-					leave-to-class="transform scale-90 opacity-0">
+				<Transition enterActiveClass="transition duration-200 ease-out"
+					enterFromClass="transform scale-90 opacity-0" enterToClass="transform scale-100 opacity-100"
+					leaveActiveClass="transition duration-200 ease-in" leaveFromClass="transform scale-100 opacity-100"
+					leaveToClass="transform scale-90 opacity-0">
 					<MenuItems as="ul"
 						class="menu menu-compact absolute left-0 z-50 mt-4 w-min origin-top-left gap-2 whitespace-nowrap rounded bg-base-100 p-2 shadow-xl">
 						<MenuItem as="li">
