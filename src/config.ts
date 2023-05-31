@@ -1,9 +1,15 @@
-import { AppFeatures } from '@models/AppFeatures'
-
 const CORE_HOST = window.catCoreConfig.CORE_HOST
 const CORE_PORT = window.catCoreConfig.CORE_PORT
 const CORE_USE_SECURE_PROTOCOLS = window.catCoreConfig.CORE_USE_SECURE_PROTOCOLS
 const protocol = CORE_USE_SECURE_PROTOCOLS ? 's' : ''
+
+enum AppFeatures {
+  FileUpload,
+  AudioRecording,
+  Plugins,
+  Settings,
+  WebsiteScraping
+}
 
 interface Config {
   readonly mode: string
