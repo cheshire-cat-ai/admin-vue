@@ -5,7 +5,7 @@
  */
 
 import LogService from '@services/LogService'
-import config from '@/config'
+import { config } from '@/config'
 
 /**
  * A map of error codes to error messages.
@@ -53,11 +53,6 @@ const MessagesService = Object.freeze({
           LogService.print(ErrorCodes.FailedRetries)
         }
       },
-      /*heartbeat: {
-        message: JSON.stringify({ text: "ping" }),
-        pongTimeout: 1000,
-        interval: 1000
-      },*/
       onConnected() {
         LogService.print('Connected to the WebSocket server')
         if (onConnected) {

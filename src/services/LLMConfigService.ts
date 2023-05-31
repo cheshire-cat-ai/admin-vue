@@ -4,9 +4,10 @@
  * sending or receiving data.
  */
 import { toJSON } from '@utils/commons'
-import config from '@/config'
+import { config, authFetch } from '@/config'
 import type { JSONSettings, JSONResponse } from '@models/JSONSchema'
 import type { LLMConfigDescriptor } from '@models/LLMConfig'
+import LogService from '@services/LogService'
 
 /*
  * Service used to get/set the language models providers settings.
@@ -15,19 +16,22 @@ const LanguageModels = Object.freeze({
   getProviders: async () => {
     const endpoint = config.endpoints.allLLM
 
-    return await fetch(endpoint).then<LLMConfigDescriptor>(toJSON)
+    return await authFetch(endpoint).then<LLMConfigDescriptor>(toJSON)
   },
   setProviderSettings: async (languageModelName: string, settings?: JSONSettings) => {
     const endpoint = config.endpoints.allLLM.concat(`${languageModelName}`)
     try {
-      await fetch(endpoint, {
+      await authFetch(endpoint, {
         method: 'PUT',
         headers: {
-          Accept: 'application/json',
+          'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(settings ?? {})
       })
+
+      LogService.print('Sending the language model settings to the cat')
+
       return {
         status: 'success',
         message: "Language model provider updated successfully"

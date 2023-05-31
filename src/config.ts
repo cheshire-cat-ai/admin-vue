@@ -3,7 +3,7 @@ import { AppFeatures } from '@models/AppFeatures'
 const CORE_HOST = window.catCoreConfig.CORE_HOST
 const CORE_PORT = window.catCoreConfig.CORE_PORT
 const CORE_USE_SECURE_PROTOCOLS = window.catCoreConfig.CORE_USE_SECURE_PROTOCOLS
-const useProtocol = CORE_USE_SECURE_PROTOCOLS ? 's' : ''
+const protocol = CORE_USE_SECURE_PROTOCOLS ? 's' : ''
 
 /**
  * Returns the application configuration.
@@ -20,13 +20,26 @@ const config: Config = {
     AppFeatures.WebsiteScraping
   ],
   endpoints: {
-    chat: `ws${useProtocol}://${CORE_HOST}:${CORE_PORT}/ws`,
-    rabbitHole: `http${useProtocol}://${CORE_HOST}:${CORE_PORT}/rabbithole/`,
-    allLLM: `http${useProtocol}://${CORE_HOST}:${CORE_PORT}/settings/llm/`,
-    allEmbedders: `http${useProtocol}://${CORE_HOST}:${CORE_PORT}/settings/embedder/`,
-    plugins: `http${useProtocol}://${CORE_HOST}:${CORE_PORT}/plugins/`,
-    wipeCollections: `http${useProtocol}://${CORE_HOST}:${CORE_PORT}/memory/wipe_collections/`
+    chat: `ws${protocol}://${CORE_HOST}:${CORE_PORT}/ws`,
+    rabbitHole: `http${protocol}://${CORE_HOST}:${CORE_PORT}/rabbithole/`,
+    allLLM: `http${protocol}://${CORE_HOST}:${CORE_PORT}/settings/llm/`,
+    allEmbedders: `http${protocol}://${CORE_HOST}:${CORE_PORT}/settings/embedder/`,
+    plugins: `http${protocol}://${CORE_HOST}:${CORE_PORT}/plugins/`,
+    wipeCollections: `http${protocol}://${CORE_HOST}:${CORE_PORT}/memory/wipe_collections/`
   }
+}
+
+/**
+ * Makes an authenticated request to the endpoints
+ * by passing the access_token.
+ */
+const authFetch = (url: string, options?: RequestInit) => {
+  const accessToken = window.catCoreConfig.API_KEY
+  const headers = options?.headers as Record<string, string>
+
+  if (headers && accessToken) headers["access_token"] = accessToken
+
+  return fetch(url, options)
 }
 
 export interface Config {
@@ -43,4 +56,7 @@ export interface Config {
   }
 }
 
-export default config
+export {
+  config,
+  authFetch
+}
