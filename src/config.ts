@@ -5,9 +5,22 @@ const CORE_PORT = window.catCoreConfig.CORE_PORT
 const CORE_USE_SECURE_PROTOCOLS = window.catCoreConfig.CORE_USE_SECURE_PROTOCOLS
 const protocol = CORE_USE_SECURE_PROTOCOLS ? 's' : ''
 
+interface Config {
+  readonly mode: string
+  readonly socketTimeout: number
+  readonly features: AppFeatures[]
+  readonly endpoints: {
+    readonly chat: string
+    readonly rabbitHole: string
+    readonly allLLM: string
+    readonly allEmbedders: string
+    readonly plugins: string
+    readonly wipeCollections: string
+  }
+}
+
 /**
- * Returns the application configuration.
- * It is wrapped in a function to ensure the configuration is not mutated.
+ * Returns the readonly application configuration.
  */
 const config: Config = {
   mode: import.meta.env.MODE,
@@ -30,30 +43,15 @@ const config: Config = {
 }
 
 /**
- * Makes an authenticated request to the endpoints
- * by passing the access_token.
+ * Makes an authenticated request to the endpoints by passing the access_token.
  */
 const authFetch = (url: string, options?: RequestInit) => {
   const accessToken = window.catCoreConfig.API_KEY
-  const headers = options?.headers as Record<string, string>
+  const headers = options?.headers as Record<string, string> ?? {}
 
-  if (headers && accessToken) headers["access_token"] = accessToken
+  if (accessToken) headers["access_token"] = accessToken
 
   return fetch(url, options)
-}
-
-export interface Config {
-  readonly mode: string
-  readonly socketTimeout: number
-  readonly features: AppFeatures[]
-  readonly endpoints: {
-    readonly chat: string
-    readonly rabbitHole: string
-    readonly allLLM: string
-    readonly allEmbedders: string
-    readonly plugins: string
-    readonly wipeCollections: string
-  }
 }
 
 export {
