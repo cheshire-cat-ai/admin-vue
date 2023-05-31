@@ -51,11 +51,14 @@ const config: Config = {
 /**
  * Makes an authenticated request to the endpoints by passing the access_token.
  */
-const authFetch = (url: string, options?: RequestInit) => {
+const authFetch = (url: string, options: RequestInit = {}) => {
   const accessToken = window.catCoreConfig.API_KEY
-  const headers = options?.headers as Record<string, string> ?? {}
 
-  if (accessToken) headers["access_token"] = accessToken
+  if (accessToken) {
+    const headers = options.headers as Record<string, string> ?? {}
+    headers["access_token"] = accessToken
+    options.headers = headers
+  }
 
   return fetch(url, options)
 }
