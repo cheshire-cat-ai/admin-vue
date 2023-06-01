@@ -5,7 +5,7 @@
  */
 import LogService from '@services/LogService'
 import { toJSON } from '@utils/commons'
-import config from '@/config'
+import { config, authFetch } from '@/config'
 
 const endpointFile = config.endpoints.rabbitHole
 const endpointWeb = config.endpoints.rabbitHole + 'web/'
@@ -17,13 +17,13 @@ const endpointWeb = config.endpoints.rabbitHole + 'web/'
 const RabbitHoleService = Object.freeze({
   sendFile: async (file: File) => {
     const formData = new FormData()
-    const options = { method: 'POST', body: formData }
-
     formData.append('file', file)
+
+    const options = { method: 'POST', body: formData }
 
     LogService.print('Sending a file to the rabbit hole', { endpointFile, options })
 
-    return await fetch(endpointFile, options).then<RabbitHoleFileResponse>(toJSON)
+    return await authFetch(endpointFile, options).then<RabbitHoleFileResponse>(toJSON)
   },
   sendWeb: async (url: string) => {
     const options = { 
@@ -36,7 +36,7 @@ const RabbitHoleService = Object.freeze({
 
     LogService.print('Sending a website content to the rabbit hole', { endpointWeb, options })
 
-    return await fetch(endpointWeb, options).then<RabbitHoleWebResponse>(toJSON)
+    return await authFetch(endpointWeb, options).then<RabbitHoleWebResponse>(toJSON)
   },
 })
 

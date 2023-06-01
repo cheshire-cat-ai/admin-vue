@@ -4,7 +4,7 @@
  * sending or receiving data.
  */
 import type { Plugin } from '@models/Plugin'
-import config from '@/config'
+import { config, authFetch } from '@/config'
 import { toJSON } from '@utils/commons'
 
 /*
@@ -14,7 +14,11 @@ const PluginService = Object.freeze({
   getPlugins: async () => {
     const endpoint = config.endpoints.plugins
 
-    return await fetch(endpoint).then<{ plugins: Plugin[] }>(toJSON).then(({ plugins }) => plugins)
+    return await authFetch(endpoint).then<{ plugins: Plugin[] }>(toJSON).then(({ plugins }) => plugins)
+  },
+  togglePlugin: async (id: string) => {
+    //TODO: Enable/Disable the plugin
+    console.log("Toggled", id)
   }
 })
 

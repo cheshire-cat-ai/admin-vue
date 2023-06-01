@@ -17,7 +17,11 @@ export const usePlugins = defineStore('plugins', () => {
   })
 
   const togglePlugin = (id: Plugin['id']) => {
-    console.log("Toggled", id)
+    if (currentState.data?.find(p => p.id === id)) {
+      PluginService.togglePlugin(id)
+      return true
+    }
+    return false
   }
   
   return {
