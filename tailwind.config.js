@@ -19,13 +19,6 @@ module.exports = {
 			minWidth: {
 				'1/2': '50%',
 			},
-			aspectRatio: {
-				'4/3': '4 / 3',
-				'phone': '9 / 16',
-			},
-			borderRadius: {
-				'4xl': '2rem',
-			},
 		},
 	},
 	plugins: [
@@ -44,7 +37,7 @@ module.exports = {
 					"neutral": "#383938",
 					"base-100": "#F4F4F5",
 					"info": "#38BDF8",
-					"success": "#1F883D",
+					"success": "#2DC659",
 					"warning": "#EAB308",
 					"error": "#EF4444",
 				},
@@ -57,7 +50,7 @@ module.exports = {
 					"neutral": "#F4F4F5",
 					"base-100": "#383938",
 					"info": "#38BDF8",
-					"success": "#1F883D",
+					"success": "#2DC659",
 					"warning": "#EAB308",
 					"error": "#EF4444",
 				},

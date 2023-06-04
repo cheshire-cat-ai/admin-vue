@@ -22,6 +22,7 @@ interface Config {
     readonly allEmbedders: string
     readonly plugins: string
     readonly wipeCollections: string
+    readonly wipeConversation: string
   }
 }
 
@@ -44,7 +45,8 @@ const config: Config = {
     allLLM: `http${protocol}://${CORE_HOST}:${CORE_PORT}/settings/llm/`,
     allEmbedders: `http${protocol}://${CORE_HOST}:${CORE_PORT}/settings/embedder/`,
     plugins: `http${protocol}://${CORE_HOST}:${CORE_PORT}/plugins/`,
-    wipeCollections: `http${protocol}://${CORE_HOST}:${CORE_PORT}/memory/wipe_collections/`
+    wipeCollections: `http${protocol}://${CORE_HOST}:${CORE_PORT}/memory/wipe-collections/`,
+    wipeConversation: `http${protocol}://${CORE_HOST}:${CORE_PORT}/working-memory/conversation-history/`
   }
 }
 

@@ -1,8 +1,3 @@
-/**
- * This module defines and exports a service that is used to retrieve the list of available embedders from the backend.
- * A service is a singleton object that provides a simple interface for performing backend-related tasks such as
- * sending or receiving data.
- */
 import { toJSON } from '@utils/commons'
 import { config, authFetch } from '@/config'
 import type { JSONSettings, JSONResponse } from '@models/JSONSchema'
@@ -10,7 +5,7 @@ import type { EmbedderConfigDescriptor } from '@models/EmbedderConfig'
 import LogService from '@services/LogService'
 
 /*
- * Service used to get/set the language model embedders settings.
+ * This is a service that is used to get/set the language model embedders settings.
  */
 const Embedders = Object.freeze({
   getEmbedders: async () => {
@@ -19,7 +14,7 @@ const Embedders = Object.freeze({
     return await authFetch(endpoint).then<EmbedderConfigDescriptor>(toJSON)
   },
   setEmbedderSettings: async (languageEmbedderName: string, settings?: JSONSettings) => {
-    const endpoint = config.endpoints.allEmbedders.concat(`${languageEmbedderName}`)
+    const endpoint = config.endpoints.allEmbedders.concat(languageEmbedderName)
     try {
       await authFetch(endpoint, {
         method: 'PUT',

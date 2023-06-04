@@ -20,10 +20,7 @@ const { currentState: pluginsState } = storeToRefs(store)
 			</p>
 		</div>
 		<div v-if="pluginsState.loading" class="flex grow items-center justify-center">
-			<div role="status"
-				class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-primary motion-reduce:animate-[spin_1.5s_linear_infinite]">
-				<span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
-			</div>
+			<span class="loading loading-spinner w-12 text-primary" />
 		</div>
 		<div v-else-if="pluginsState.error" class="flex grow items-center justify-center">
 			<div class="rounded bg-error p-4 font-bold text-base-100 shadow-xl">

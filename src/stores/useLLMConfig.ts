@@ -5,7 +5,7 @@ import { uniqueId } from '@utils/commons'
 import { useNotifications } from '@stores/useNotifications'
 import type { JSONSettings } from '@models/JSONSchema'
 
-export const useLLMConfig = defineStore('llmProviders', () => {
+export const useLLMConfig = defineStore('llm', () => {
   const currentState = reactive<LLMConfigState>({
     loading: false,
     settings: {}

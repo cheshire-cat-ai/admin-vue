@@ -4,8 +4,8 @@
 <template>
 	<div class="navbar sticky top-0 z-40 min-h-fit bg-base-100 font-medium shadow-xl md:px-[5%] lg:px-[10%]">
 		<div class="navbar-start">
-			<RouterLink to="/" class="shrink-0">
-				<img src="@assets/logo.svg" class="hidden h-8 w-8 cursor-pointer md:block">
+			<RouterLink to="/" class="shrink-0 !bg-transparent">
+				<img src="@assets/logo.svg" class="hidden h-12 w-12 cursor-pointer md:block">
 			</RouterLink>
 			<Menu v-slot="{ open }" as="div" class="relative inline-block rounded md:hidden">
 				<MenuButton class="btn-ghost btn-square btn" title="Menu">
@@ -17,7 +17,7 @@
 					leaveActiveClass="transition duration-200 ease-in" leaveFromClass="transform scale-100 opacity-100"
 					leaveToClass="transform scale-90 opacity-0">
 					<MenuItems as="ul"
-						class="menu menu-compact absolute left-0 z-50 mt-4 w-min origin-top-left gap-2 whitespace-nowrap rounded bg-base-100 p-2 shadow-xl">
+						class="menu menu-md absolute left-0 z-50 mt-4 w-min origin-top-left gap-2 whitespace-nowrap rounded-md bg-base-100 p-2 shadow-xl">
 						<MenuItem as="li">
 							<RouterLink to="/">
 								🏠️ Home
@@ -46,10 +46,10 @@
 			</Menu>
 		</div>
 		<div class="navbar-center">
-			<RouterLink to="/" class="shrink-0">
-				<img src="@assets/logo.svg" class="h-10 w-10 cursor-pointer md:hidden">
+			<RouterLink to="/" class="shrink-0 !bg-transparent">
+				<img src="@assets/logo.svg" class="h-12 w-12 cursor-pointer md:hidden">
 			</RouterLink>
-			<ul class="menu menu-compact menu-horizontal hidden gap-2 px-1 md:flex">
+			<ul class="menu menu-horizontal menu-md hidden gap-4 px-1 md:flex">
 				<li>
 					<RouterLink to="/">
 						🏠️ Home

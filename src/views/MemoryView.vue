@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { useMemory } from '@stores/useMemory'
 
+const { wipeCollections, wipeConversation } = useMemory()
 </script>
 
 <template>

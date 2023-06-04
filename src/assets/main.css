@@ -19,14 +19,11 @@
   .btn-outline {
     @apply border-2;
   }
-  .btn {
-    @apply text-base-100;
-  }
   .btn-sm {
     @apply leading-5;
   }
-  .btn-ghost {
-    @apply text-neutral;
+  .focus, .active {
+    @apply bg-primary hover:bg-primary-focus focus:bg-primary-focus text-base-100;
   }
   .btn-outline.btn-error:hover, .btn-outline.btn-success:hover,
   .btn-outline.btn-info:hover, .btn-outline.btn-warning:hover {
@@ -36,7 +33,7 @@
   .btn-info:hover:not(.btn-outline), .btn-info.btn-active:not(.btn-outline),
   .btn-success:hover:not(.btn-outline), .btn-success.btn-active:not(.btn-outline),
   .btn-warning:hover:not(.btn-outline), .btn-warning.btn-active:not(.btn-outline) {
-    @apply brightness-[0.85];
+    @apply brightness-[0.8];
   }
   .checkbox {
     @apply border-2;
