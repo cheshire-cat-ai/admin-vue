@@ -9,7 +9,7 @@ const { currentState: pluginsState } = storeToRefs(store)
 
 <template>
 	<div class="flex flex-col gap-8 self-center md:w-3/4">
-		<div class="col-span-2 flex flex-col items-center justify-center gap-3 rounded p-6">
+		<div class="col-span-2 flex flex-col items-center justify-center gap-3 rounded-md p-6">
 			<p class="text-3xl font-bold text-primary">
 				Plugins
 			</p>
@@ -23,14 +23,14 @@ const { currentState: pluginsState } = storeToRefs(store)
 			<span class="loading loading-spinner w-12 text-primary" />
 		</div>
 		<div v-else-if="pluginsState.error" class="flex grow items-center justify-center">
-			<div class="rounded bg-error p-4 font-bold text-base-100 shadow-xl">
+			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
 				Failed to fetch
 			</div>
 		</div>
 		<template v-else>
-			<div v-for="item in pluginsState.data" :key="item.id" class="flex items-center gap-4 rounded bg-base-200 p-4">
+			<div v-for="item in pluginsState.data" :key="item.id" class="flex items-center gap-4 rounded-md bg-base-200 p-4">
 				<div class="placeholder avatar">
-					<div class="h-20 w-20 rounded bg-gradient-to-b from-blue-500 to-primary text-base-100">
+					<div class="h-20 w-20 rounded-md bg-gradient-to-b from-blue-500 to-primary text-base-100">
 						<span class="text-5xl font-bold leading-3">{{ firstLetter(item.name) }}</span>
 					</div>
 				</div>

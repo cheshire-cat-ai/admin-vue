@@ -24,7 +24,7 @@ defineExpose({
 	<Listbox v-model="selectedElement" @update:modelValue="value => emit('update', value)">
 		<div class="relative">
 			<ListboxButton
-				class="relative w-full cursor-default rounded bg-base-100 p-3 text-left text-sm shadow-md focus:outline-none">
+				class="relative w-full cursor-default rounded-md bg-base-100 p-3 text-left text-sm shadow-md focus:outline-none">
 				<span class="block truncate font-semibold">{{ selectedElement.label }}</span>
 				<span class="pointer-events-none absolute inset-y-0 right-2 flex items-center">
 					<heroicons-chevron-up-down-20-solid class="h-6 w-6" />
@@ -34,7 +34,7 @@ defineExpose({
 				enterFromClass="transform opacity-0" enterToClass="transform opacity-100"
 				leaveActiveClass="transition duration-200 ease-in" leaveFromClass="transform opacity-100"
 				leaveToClass="transform opacity-0">
-				<ListboxOptions class="absolute mt-2 w-full overflow-auto rounded bg-base-100 text-sm shadow-lg">
+				<ListboxOptions class="absolute mt-2 w-full overflow-auto rounded-md bg-base-100 text-sm shadow-lg">
 					<ListboxOption v-for="element in list" :key="element.value" v-slot="{ active, selected }" as="template" :value="element">
 						<li :class="[
 							active ? 'bg-base-300' : '',
