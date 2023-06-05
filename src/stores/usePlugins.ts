@@ -16,9 +16,9 @@ export const usePlugins = defineStore('plugins', () => {
     currentState.error = error.value as string
   })
 
-  const togglePlugin = (id: Plugin['id']) => {
+  const togglePlugin = async (id: Plugin['id']) => {
     if (currentState.data?.find(p => p.id === id)) {
-      PluginService.togglePlugin(id)
+      await PluginService.togglePlugin(id)
       return true
     }
     return false

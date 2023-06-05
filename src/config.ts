@@ -46,7 +46,7 @@ const config: Config = {
     allEmbedders: `http${protocol}://${CORE_HOST}:${CORE_PORT}/settings/embedder/`,
     plugins: `http${protocol}://${CORE_HOST}:${CORE_PORT}/plugins/`,
     wipeCollections: `http${protocol}://${CORE_HOST}:${CORE_PORT}/memory/wipe-collections/`,
-    wipeConversation: `http${protocol}://${CORE_HOST}:${CORE_PORT}/working-memory/conversation-history/`
+    wipeConversation: `http${protocol}://${CORE_HOST}:${CORE_PORT}/memory/working-memory/conversation-history/`
   }
 }
 

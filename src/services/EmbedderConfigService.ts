@@ -16,7 +16,7 @@ const Embedders = Object.freeze({
   setEmbedderSettings: async (languageEmbedderName: string, settings?: JSONSettings) => {
     const endpoint = config.endpoints.allEmbedders.concat(languageEmbedderName)
     try {
-      await authFetch(endpoint, {
+      const result = await authFetch(endpoint, {
         method: 'PUT',
         headers: {
           'Accept': 'application/json',
@@ -26,6 +26,8 @@ const Embedders = Object.freeze({
       })
 
       LogService.print('Sending the embedder settings to the cat')
+
+      if (result.status !== 200) throw new Error()
 
       return {
         status: 'success',

@@ -16,7 +16,7 @@ const LanguageModels = Object.freeze({
   setProviderSettings: async (languageModelName: string, settings?: JSONSettings) => {
     const endpoint = config.endpoints.allLLM.concat(languageModelName)
     try {
-      await authFetch(endpoint, {
+      const result = await authFetch(endpoint, {
         method: 'PUT',
         headers: {
           'Accept': 'application/json',
@@ -26,6 +26,8 @@ const LanguageModels = Object.freeze({
       })
 
       LogService.print('Sending the language model settings to the cat')
+
+      if (result.status !== 200) throw new Error()
 
       return {
         status: 'success',

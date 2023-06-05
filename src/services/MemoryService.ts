@@ -10,9 +10,11 @@ const MemoryService = Object.freeze({
     const endpoint = config.endpoints.wipeCollections
 
     try {
-      await authFetch(endpoint, { method: 'DELETE' })
+      const result = await authFetch(endpoint, { method: 'DELETE' })
 
       LogService.print('Deleting all the in-memory collections')
+
+      if (result.status !== 200) throw new Error()
 
       return {
         status: 'success',
@@ -29,9 +31,11 @@ const MemoryService = Object.freeze({
     const endpoint = config.endpoints.wipeConversation
 
     try {
-      await authFetch(endpoint, { method: 'DELETE' })
+      const result = await authFetch(endpoint, { method: 'DELETE' })
 
       LogService.print('Deleting the in-memory current conversation')
+
+      if (result.status !== 200) throw new Error()
 
       return {
         status: 'success',
