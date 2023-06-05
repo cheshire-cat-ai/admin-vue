@@ -32,7 +32,7 @@ const onNotification = (notification: Notification) => {
 			<akar-icons-sound-on class="swap-on h-6 w-6" />
 			<akar-icons-sound-off class="swap-off h-6 w-6" />
 		</label>
-		<cheshire-cat-chat class="flex-auto"
+		<cheshire-cat-chat class="fix-chat flex-auto"
 			:api="chatConfig.API_KEY" 
 			:secure="chatConfig.CORE_USE_SECURE_PROTOCOLS" 
 			:url="`${chatConfig.CORE_HOST}:${chatConfig.CORE_PORT}`"
@@ -42,3 +42,15 @@ const onNotification = (notification: Notification) => {
 			@notification="(e: CustomEvent) => onNotification(e.detail)" />
 	</div>
 </template>
+
+<style lang="scss" scoped>
+	.fix-chat {
+		height: calc(100vh - 80px);
+	}
+
+	@media (min-width: 768px) {
+		.fix-chat {
+			height: calc(100vh - 100px);
+		}
+	}
+</style>
