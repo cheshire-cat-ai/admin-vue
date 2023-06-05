@@ -25,11 +25,6 @@
   .focus, .active {
     @apply bg-primary hover:bg-primary-focus focus:bg-primary-focus text-base-100;
   }
-  .btn-outline.btn-error:hover, .btn-outline.btn-success:hover,
-  .btn-outline.btn-info:hover, .btn-outline.btn-warning:hover,
-  .btn-error, .btn-info, .btn-success, .btn-warning {
-    @apply text-base-100;
-  }
   .btn-error:hover:not(.btn-outline), .btn-error.btn-active:not(.btn-outline),
   .btn-info:hover:not(.btn-outline), .btn-info.btn-active:not(.btn-outline),
   .btn-success:hover:not(.btn-outline), .btn-success.btn-active:not(.btn-outline),
