@@ -39,7 +39,7 @@
 							</RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
-							<a href="https://cheshire-cat-ai.github.io/core/" target="_blank">📖 Docs</a>
+							<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">📖 Docs</a>
 						</MenuItem>
 					</MenuItems>
 				</Transition>
@@ -70,7 +70,7 @@
 						⚙️ Settings
 					</RouterLink>
 				</li>
-				<li><a href="https://cheshire-cat-ai.github.io/core/" target="_blank">📖 Docs</a></li>
+				<li><a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">📖 Docs</a></li>
 			</ul>
 		</div>
 		<div class="navbar-end">
