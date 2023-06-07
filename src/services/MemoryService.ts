@@ -1,13 +1,15 @@
 import { config, authFetch } from '@/config'
 import LogService from '@services/LogService'
 import type { JSONResponse } from '@models/JSONSchema'
+import type { Memory } from '@models/Memory'
+import { toJSON } from '@utils/commons'
 
 /*
  * This is a service that is used to manage the memory of the Cheshire Cat.
  */
 const MemoryService = Object.freeze({
-  wipeCollections: async () => {
-    const endpoint = config.endpoints.wipeCollections
+  wipeAllCollections: async () => {
+    const endpoint = config.endpoints.wipeAllCollections
 
     try {
       const result = await authFetch(endpoint, { method: 'DELETE' })
@@ -24,6 +26,27 @@ const MemoryService = Object.freeze({
       return {
         status: 'error',
         message: "Unable to wipe the in-memory collections"
+      } as JSONResponse
+    }
+  },
+  wipeCollection: async (collection: string) => {
+    const endpoint = config.endpoints.wipeCollection
+
+    try {
+      const result = await authFetch(endpoint.concat(collection), { method: 'DELETE' })
+
+      LogService.print(`Deleting the entire ${collection} collection`)
+
+      if (result.status !== 200) throw new Error()
+
+      return {
+        status: 'success',
+        message: `The ${collection} collection was wiped`
+      } as JSONResponse
+    } catch (error) {
+      return {
+        status: 'error',
+        message: `Unable to wipe the ${collection} collection`
       } as JSONResponse
     }
   },
@@ -47,6 +70,14 @@ const MemoryService = Object.freeze({
         message: "Unable to wipe the in-memory current conversation"
       } as JSONResponse
     }
+  },
+  callMemory: async (text: string, memories = 10) => {
+    const endpoint = config.endpoints.callMemory
+
+    return await authFetch(endpoint.concat('?') + new URLSearchParams({
+      'text': text,
+      'memories': `${memories}`,
+    }), { method: 'GET' }).then<Memory>(toJSON)
   }
 })
 
