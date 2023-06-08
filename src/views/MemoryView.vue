@@ -5,9 +5,15 @@ import { JsonTreeView } from 'json-tree-view-vue3'
 
 const { isDark } = storeToRefs(useSettings())
 
-const callText = ref(''), callOutput = ref('')
+const callText = ref(''), callOutput = ref(''), kMems = ref(5)
 
 const { wipeAllCollections, wipeConversation, wipeCollection, callMemory } = useMemory()
+
+watch(kMems, () => {
+	if (typeof kMems.value === 'string') {
+		kMems.value = 5
+	}
+})
 
 const recallMemory = async () => {
 	const result = await callMemory(callText.value, 5)
@@ -22,7 +28,7 @@ const recallMemory = async () => {
 				Memory
 			</p>
 		</div>
-		<div class="flex justify-between gap-4">
+		<div class="flex flex-wrap justify-around gap-4">
 			<button class="btn-error btn" @click="wipeAllCollections">
 				Wipe entire memory
 			</button>
@@ -30,13 +36,16 @@ const recallMemory = async () => {
 				Wipe current conversation
 			</button>
 		</div>
-		<div class="relative">
-			<input v-model="callText" type="text" placeholder="Recall text..."
-				class="input-primary input input-sm w-full">
-			<button class="btn-primary btn-square btn-sm btn absolute right-0 top-0"
-				@click="recallMemory()">
-				<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
-			</button>
+		<div class="flex gap-4">
+			<div class="relative w-full">
+				<input v-model.trim="callText" type="text" placeholder="Recall text..."
+					class="input-primary input input-sm w-full" @keyup.enter="recallMemory()">
+				<button class="btn-primary btn-square btn-sm btn absolute right-0 top-0"
+					@click="recallMemory()">
+					<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
+				</button>
+			</div>
+			<input v-model="kMems" type="number" class="input-primary input input-sm w-16 pl-2 pr-0">
 		</div>
 		<JsonTreeView v-if="callOutput" :data="callOutput" rootKey="result" :colorScheme="isDark ? 'dark' : 'light'" />
 	</div>

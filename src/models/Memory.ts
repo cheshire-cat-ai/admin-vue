@@ -1,11 +1,11 @@
-interface Metadata {
+interface MetaData {
   readonly source: string
   readonly when: number
 }
 
-interface Collection {
+interface CollectionData {
   readonly page_content: string
-  readonly metadata: Metadata
+  readonly metadata: MetaData
   readonly score: number
 }
 
@@ -13,6 +13,6 @@ interface Collection {
  * Defines the structure of a memory object.
  */
 export interface Memory {
-  readonly declarative: Collection[]
-  readonly episodic: Collection[]
+  readonly declarative: CollectionData[]
+  readonly episodic: CollectionData[]
 }
