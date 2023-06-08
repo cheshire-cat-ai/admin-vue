@@ -146,10 +146,13 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 			<p v-if="messagesState.error" class="w-fit rounded bg-error p-4 font-semibold text-base-100">
 				{{ messagesState.error }}
 			</p>
-			<p v-else-if="!messagesState.error && messagesState.loading" class="ml-2">
+			<div v-else-if="!messagesState.error && messagesState.loading" class="mb-2 ml-2 flex items-center gap-2">
 				<span class="text-lg">😺</span>
-				<span class="ml-10">Cheshire cat is thinking...</span>
-			</p>
+				<p class="flex items-center gap-2">
+					<span class="loading loading-dots loading-xs" />
+					Cheshire cat is thinking...
+				</p>
+			</div>
 		</div>
 		<div v-else class="flex grow cursor-pointer flex-col items-center justify-center gap-4">
 			<div v-for="(msg, index) in randomDefaultMessages" :key="index" class="btn rounded-lg font-normal normal-case shadow-xl"
