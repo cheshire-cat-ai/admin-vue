@@ -179,7 +179,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 						</button>
 						<div class="dropdown-top dropdown-end dropdown self-center">
 							<button tabindex="0" :disabled="inputDisabled" class="btn-ghost btn-sm btn-circle btn">
-								<heroicons-paper-clip-20-solid class="h-6 w-6" />
+								<heroicons-chevron-up-down class="h-6 w-6" />
 							</button>
 							<ul tabindex="0" class="dropdown-content join-vertical join !-right-1/4 z-10 mb-6 p-0">
 								<li>
