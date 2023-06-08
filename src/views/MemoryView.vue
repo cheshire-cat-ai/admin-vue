@@ -16,7 +16,10 @@ watch(kMems, () => {
 })
 
 const recallMemory = async () => {
-	const result = await callMemory(callText.value, 5)
+	if(callText.value === ''){
+		callText.value = ' '
+	}
+	const result = await callMemory(callText.value, kMems.value)
 	callOutput.value = JSON.stringify(result)
 }
 </script>
