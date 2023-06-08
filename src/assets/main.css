@@ -25,6 +25,9 @@
   .focus, .active {
     @apply bg-primary hover:bg-primary-focus focus:bg-primary-focus text-base-100;
   }
+  .btn-ghost {
+    @apply disabled:bg-transparent;
+  }
   .btn-outline.btn-error:hover, .btn-outline.btn-success:hover,
   .btn-outline.btn-info:hover, .btn-outline.btn-warning:hover,
   .btn-error, .btn-info, .btn-success, .btn-warning {

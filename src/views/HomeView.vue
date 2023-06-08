@@ -11,7 +11,7 @@ const messagesStore = useMessages()
 const { dispatchMessage, selectRandomDefaultMessages } = messagesStore
 const { currentState: messagesState } = storeToRefs(messagesStore)
 
-const textArea = ref<HTMLTextAreaElement>(), chatRoot = ref<HTMLDivElement>()
+const textArea = ref<HTMLTextAreaElement>()
 const userMessage = ref(''), insertedURL = ref(''), isScrollable = ref(false)
 const modalBox = ref<InstanceType<typeof ModalBox>>()
 
@@ -68,9 +68,7 @@ const toggleListening = () => {
  * If audio is enabled, a pop sound will be played.
  */
 watchDeep(messagesState, () => {
-	if (chatRoot.value) {
-		isScrollable.value = chatRoot.value?.scrollHeight > chatRoot.value?.clientHeight
-	}
+	isScrollable.value = document.documentElement.scrollHeight > document.documentElement.clientHeight
 	scrollToBottom()
 	textArea.value?.focus()
 	if (messagesState.value.messages.length > 0 && isAudioEnabled.value) playPop()
@@ -126,7 +124,7 @@ const generatePlaceholder = (isLoading: boolean, isRecording: boolean, error?: s
 	return 'Ask the Cheshire Cat...'
 }
 
-const scrollToBottom = () => chatRoot.value?.scrollTo({ behavior: 'smooth', left: 0, top: document.body.scrollHeight })
+const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top: document.body.scrollHeight })
 </script>
 
 <template>
@@ -139,7 +137,7 @@ const scrollToBottom = () => chatRoot.value?.scrollTo({ behavior: 'smooth', left
 				Getting ready...
 			</p>
 		</div>
-		<div v-else-if="messagesState.messages.length" class="flex grow flex-col overflow-y-auto pt-10">
+		<div v-else-if="messagesState.messages.length" class="flex grow flex-col overflow-y-auto">
 			<MessageBox v-for="msg in messagesState.messages"
 				:key="msg.id"
 				:sender="msg.sender"
@@ -171,17 +169,16 @@ const scrollToBottom = () => chatRoot.value?.scrollTo({ behavior: 'smooth', left
 						class="textarea-bordered textarea block max-h-20 w-full resize-none overflow-hidden border-2 !pr-20 !outline-none !ring-0 transition focus:border-2 focus:border-primary"
 						:placeholder="generatePlaceholder(messagesState.loading, isListening, messagesState.error)" @keydown="preventSend" />
 					<div class="absolute inset-y-0 right-0 flex gap-1 pr-2">
-						<button :disabled="inputDisabled"
-							class="btn-outline btn-sm btn-circle btn self-center border-none text-neutral hover:!bg-transparent hover:text-neutral disabled:bg-transparent"
+						<button :disabled="inputDisabled || userMessage.length === 0"
+							class="btn-ghost btn-sm btn-circle btn self-center"
 							@click="sendMessage(userMessage)">
-							<heroicons-paper-airplane-solid v-if="userMessage.length > 0" class="h-6 w-6" />
-							<heroicons-paper-airplane v-else class="h-6 w-6" />
+							<heroicons-paper-airplane-solid class="h-6 w-6" />
 						</button>
 						<div class="dropdown-top dropdown-end dropdown self-center">
 							<button tabindex="0" :disabled="inputDisabled" class="btn-ghost btn-sm btn-circle btn">
 								<heroicons-paper-clip-20-solid class="h-6 w-6" />
 							</button>
-							<ul tabindex="0" class="dropdown-content join-vertical join !-right-1/4 mb-4 p-0">
+							<ul tabindex="0" class="dropdown-content join-vertical join !-right-1/4 z-10 mb-6 p-0">
 								<li>
 									<button :disabled="rabbitHoleState.loading" 
 										class="join-item btn w-full flex-nowrap justify-end px-2" 
@@ -221,11 +218,11 @@ const scrollToBottom = () => chatRoot.value?.scrollTo({ behavior: 'smooth', left
 					<heroicons-microphone-solid class="h-6 w-6" />
 				</button>
 			</div>
+			<button v-if="isScrollable" class="btn-primary btn-outline btn-sm btn-circle btn absolute bottom-24 right-4 bg-base-100"
+				@click="scrollToBottom">
+				<heroicons-arrow-down-20-solid class="h-5 w-5" />
+			</button>
 		</div>
-		<button v-if="isScrollable" class="btn-primary btn-outline btn-sm btn-circle btn absolute bottom-20 right-4 bg-base-100"
-			@click="scrollToBottom">
-			<heroicons-arrow-down-20-solid class="h-5 w-5" />
-		</button>
 		<ModalBox ref="modalBox">
 			<div class="flex flex-col items-center justify-center gap-2 text-neutral">
 				<h3 class="text-lg font-bold">
