@@ -17,8 +17,18 @@ watch(kMems, () => {
 	}
 })
 
+const wipeMemory = () => {
+	if (selectCollection.value) {
+		const selected = selectCollection.value.selectedElement.value
+		if (selected === 'all') wipeAllCollections()
+		else wipeCollection(selected)
+	}
+}
+
 const recallMemory = async () => {
-	if (callText.value === '') return
+	if (callText.value === '') {
+		callText.value = ' '
+	}
 	const result = await callMemory(callText.value, kMems.value)
 	callOutput.value = JSON.stringify(result)
 }
@@ -31,20 +41,16 @@ const recallMemory = async () => {
 				Memory
 			</p>
 		</div>
-		<div class="flex flex-wrap justify-around gap-4">
-			<button class="btn-error btn" @click="wipeAllCollections">
-				Wipe entire memory
+		<div class="join w-fit self-center shadow-xl">
+			<button class="btn-error join-item btn" @click="wipeMemory()">
+				Wipe
 			</button>
-			<div class="join shadow-xl">
-				<button class="btn-error join-item btn" @click="wipeCollection(selectCollection?.selectedElement.value ?? '')">
-					Wipe
-				</button>
-				<SelectBox ref="selectCollection" class="join-item bg-base-100"
-					:list="[
-						{ label: 'Declarative', value: 'declarative' },
-						{ label: 'Episodic', value: 'episodic' }
-					]" />
-			</div>
+			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100"
+				:list="[
+					{ label: 'All', value: 'all' },
+					{ label: 'Episodic', value: 'episodic' },
+					{ label: 'Declarative', value: 'declarative' }
+				]" />
 		</div>
 		<div class="flex gap-4">
 			<div class="form-control w-full">
