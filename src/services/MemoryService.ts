@@ -71,7 +71,7 @@ const MemoryService = Object.freeze({
       } as JSONResponse
     }
   },
-  callMemory: async (text: string, memories: number = 10) => {
+  callMemory: async (text: string, memories = 10) => {
     const endpoint = config.endpoints.callMemory
 
     return await authFetch(endpoint.concat('?') + new URLSearchParams({
