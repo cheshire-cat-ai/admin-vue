@@ -11,6 +11,7 @@ interface PlotData {
 	x: number[]
 	y: number[]
 	text: string[]
+	customdata?: (string | object)[]
 }
 
 const { isDark } = storeToRefs(useSettings())
@@ -57,19 +58,34 @@ const recallMemory = async () => {
 			name: 'Query',
 			x: druidTSNE.slice(-1).map(v => v[0]),
 			y: druidTSNE.slice(-1).map(v => v[1]),
-			text: [callText.value]
+			text: [callText.value],
+			customdata: [{ source: 'query', when: 'now', score: 1 }]
 		},
 		{
 			name: 'Episodic',
 			x: druidTSNE.slice(0, episodicMat.shape[0]).map(v => v[0]),
 			y: druidTSNE.slice(0, episodicMat.shape[0]).map(v => v[1]),
-			text: result.episodic.map(v => v.page_content)
+			text: result.episodic.map(v => v.page_content),
+			customdata: result.episodic.map((v) => {
+				return {
+					source: v.metadata.source,
+					when: new Date(v.metadata.when * 1000).toLocaleString(),
+					score: v.score
+				}
+			})
 		},
 		{
 			name: 'Declarative',
 			x: druidTSNE.slice(episodicMat.shape[0], druidTSNE.length - 1).map(v => v[0]),
 			y: druidTSNE.slice(episodicMat.shape[0], druidTSNE.length - 1).map(v => v[1]),
-			text: result.declarative.map(v => v.page_content)
+			text: result.declarative.map(v => v.page_content),
+			customdata: result.declarative.map((v) => {
+				return {
+					source: v.metadata.source,
+					when: new Date(v.metadata.when * 1000).toLocaleString(),
+					score: v.score
+				}
+			})
 		}
 	]
 }
@@ -80,6 +96,14 @@ const getPlotData = computed(() => {
 			...plot,
 			type: 'scatter',
 			mode: 'markers',
+			hovertemplate: `
+<i>%{text}</i><br>
+<b>Source</b>: %{customdata.source}<br>
+<b>When</b>: %{customdata.when}<br>
+<b>Score</b>: %{customdata.score}<br>
+(%{x:.3f}, %{y:.3f})
+<extra></extra>
+			`,
 			marker: { size: 10 },
 		}
 	})
