@@ -16,4 +16,5 @@ interface CollectionData {
 export interface Memory {
   readonly declarative: CollectionData[]
   readonly episodic: CollectionData[]
+  readonly query: number[]
 }

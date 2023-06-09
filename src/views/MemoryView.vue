@@ -4,7 +4,7 @@ import { useSettings } from '@stores/useSettings'
 import { JsonTreeView } from 'json-tree-view-vue3'
 import SelectBox from '@components/SelectBox.vue'
 import Plotly from '@aurium/vue-plotly'
-import { Matrix, TSNE, cosine } from "@saehrimnir/druidjs"
+import { Matrix, TSNE } from "@saehrimnir/druidjs"
 
 interface PlotData {
 	name: string
@@ -21,12 +21,6 @@ const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
 const { wipeAllCollections, wipeCollection, callMemory } = useMemory()
 
-watch(kMems, () => {
-	if (typeof kMems.value === 'string') {
-		kMems.value = 1
-	}
-})
-
 const wipeMemory = () => {
 	if (selectCollection.value) {
 		const selected = selectCollection.value.selectedElement?.value
@@ -40,35 +34,44 @@ const recallMemory = async () => {
 		callText.value = ' '
 	}
 
+	if (typeof kMems.value === 'string' || kMems.value === 0) {
+		kMems.value = 10
+	}
+
 	const result = await callMemory(callText.value, kMems.value)
 	callOutput.value = JSON.stringify(result)
 
+	const queryMat = Matrix.from(result.query)
 	const episodicMat = Matrix.from(result.episodic.map(v => v.vector))
-	const episodicTSNE = new TSNE(episodicMat, { metric: cosine }).transform().to2dArray
-
 	const declarativeMat = Matrix.from(result.declarative.map(v => v.vector))
-	const declarativeTSNE = new TSNE(declarativeMat).transform().to2dArray
 
-	plotOutput.value.push(...[
+	const druidTSNE = new TSNE(
+		episodicMat
+		.concat(declarativeMat, "vertical")
+		.concat(queryMat, "vertical"), {
+		perplexity: Math.min(Math.max(kMems.value, 2), result.episodic.length + result.declarative.length)
+	}).transform(1000).asArray
+	
+	plotOutput.value = [
 		{
-			name: 'Recalled',
-			x: [0.001],
-			y: [0.001],
+			name: 'Query',
+			x: druidTSNE.slice(-1).map(v => v[0]),
+			y: druidTSNE.slice(-1).map(v => v[1]),
 			text: [callText.value]
 		},
 		{
 			name: 'Episodic',
-			x: episodicTSNE.map(v => v[0]),
-			y: episodicTSNE.map(v => v[1]),
+			x: druidTSNE.slice(0, episodicMat.shape[0]).map(v => v[0]),
+			y: druidTSNE.slice(0, episodicMat.shape[0]).map(v => v[1]),
 			text: result.episodic.map(v => v.page_content)
 		},
 		{
 			name: 'Declarative',
-			x: declarativeTSNE.map(v => v[0]),
-			y: declarativeTSNE.map(v => v[1]),
+			x: druidTSNE.slice(episodicMat.shape[0], druidTSNE.length - 1).map(v => v[0]),
+			y: druidTSNE.slice(episodicMat.shape[0], druidTSNE.length - 1).map(v => v[1]),
 			text: result.declarative.map(v => v.page_content)
 		}
-	])
+	]
 }
 
 const getPlotData = computed(() => {
@@ -124,7 +127,7 @@ const getPlotData = computed(() => {
 		</div>
 		<div v-if="callOutput != '{}'" class="flex flex-wrap justify-center gap-4">
 			<Plotly :data="getPlotData" :layout="{
-				title: 't-SNE output',
+				title: 'Similar memories',
 				font: {
 					family: 'Ubuntu',
 					size: 12,
