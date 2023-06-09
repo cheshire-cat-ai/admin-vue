@@ -8,6 +8,7 @@
       "es2019",
       "DOM"
     ],
+    "types": ["vitest/globals"],
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": false,

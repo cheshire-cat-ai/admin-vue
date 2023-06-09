@@ -29,3 +29,6 @@ dist/
 build/
 static/
 tsconfig.tsbuildinfo
+/test-results/
+/playwright-report/
+/playwright/.cache/

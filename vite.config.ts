@@ -1,3 +1,5 @@
+/// <reference types="vitest" />
+
 import tsconfigPaths from 'vite-tsconfig-paths'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'

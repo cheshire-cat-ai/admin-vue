@@ -1,5 +1,3 @@
-/// <reference types="vite/client" />
-
 declare global {
     interface Window {
         catCoreConfig: {
@@ -10,5 +8,3 @@ declare global {
         }
     }
 }
-
-export {}
