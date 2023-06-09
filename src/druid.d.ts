@@ -12,7 +12,7 @@ declare module '@saehrimnir/druidjs' {
     }
 
     export class TSNE {
-        constructor(x: Matrix, parameters: {
+        constructor(x: Matrix, parameters?: {
             perplexity?: number,
             epsilon?: number,
             d?: number,
