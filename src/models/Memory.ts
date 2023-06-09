@@ -7,6 +7,7 @@ interface CollectionData {
   readonly page_content: string
   readonly metadata: MetaData
   readonly score: number
+  readonly vector: number[]
 }
 
 /**

@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<{
 	picked: (p) => p.list[0].value
 })
 
-const selectedElement = props.list.find(v => v.value === props.picked)
+const selectedElement = ref(props.list.find(v => v.value === props.picked))
 
 const emit = defineEmits<{
 	(e: 'update', value: typeof props.list[number]): void
