@@ -22,6 +22,9 @@ const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
 const { wipeAllCollections, wipeCollection, callMemory } = useMemory()
 
+/**
+ * If "all", wipes all the collections in memory, otherwise only the selected one
+ */
 const wipeMemory = () => {
 	if (selectCollection.value) {
 		const selected = selectCollection.value.selectedElement?.value
@@ -30,6 +33,9 @@ const wipeMemory = () => {
 	}
 }
 
+/**
+ * Transforms the vectors in a 2D array to plot
+ */
 const recallMemory = async () => {
 	if (callText.value === '') {
 		callText.value = ' '
@@ -90,6 +96,9 @@ const recallMemory = async () => {
 	]
 }
 
+/**
+ * Computed function to create the array of data to insert in the plot
+ */
 const getPlotData = computed(() => {
 	return plotOutput.value.map(plot => {
 		return {
