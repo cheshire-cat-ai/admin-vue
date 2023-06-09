@@ -53,10 +53,10 @@
   }
   .input-number::-webkit-outer-spin-button,
   .input-number::-webkit-inner-spin-button {
-      margin: 0;
+    margin: 0;
   }
   .input-number[type="number"] {
-      -moz-appearance: textfield;
+    -moz-appearance: textfield;
   }
 }
 
