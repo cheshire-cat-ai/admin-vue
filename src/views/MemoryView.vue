@@ -121,7 +121,7 @@ const getPlotData = computed(() => {
 			<button class="btn-error join-item btn" @click="wipeMemory()">
 				Wipe
 			</button>
-			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200"
+			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1"
 				:list="[
 					{ label: 'All', value: 'all' },
 					{ label: 'Episodic', value: 'episodic' },
