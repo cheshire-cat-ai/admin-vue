@@ -1,8 +1,14 @@
+/**
+ * Defines the structure of the metadata of a collection
+ */
 interface MetaData {
   readonly source: string
   readonly when: number
 }
 
+/**
+ * Defines the structure of a collection
+ */
 interface CollectionData {
   readonly page_content: string
   readonly metadata: MetaData
@@ -16,4 +22,5 @@ interface CollectionData {
 export interface Memory {
   readonly declarative: CollectionData[]
   readonly episodic: CollectionData[]
+  readonly query: number[]
 }

@@ -3,20 +3,28 @@ import { useMemory } from '@stores/useMemory'
 import { useSettings } from '@stores/useSettings'
 import { JsonTreeView } from 'json-tree-view-vue3'
 import SelectBox from '@components/SelectBox.vue'
+import Plotly from '@aurium/vue-plotly'
+import { Matrix, TSNE } from "@saehrimnir/druidjs"
+
+interface PlotData {
+	name: string
+	x: number[]
+	y: number[]
+	text: string[]
+	customdata?: (string | object)[]
+}
 
 const { isDark } = storeToRefs(useSettings())
 
 const callText = ref(''), callOutput = ref('{}'), kMems = ref(10)
+const plotOutput = ref<PlotData[]>([])
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
 const { wipeAllCollections, wipeCollection, callMemory } = useMemory()
 
-watch(kMems, () => {
-	if (typeof kMems.value === 'string') {
-		kMems.value = 1
-	}
-})
-
+/**
+ * If "all", wipes all the collections in memory, otherwise only the selected one
+ */
 const wipeMemory = () => {
 	if (selectCollection.value) {
 		const selected = selectCollection.value.selectedElement?.value
@@ -25,13 +33,90 @@ const wipeMemory = () => {
 	}
 }
 
+/**
+ * Transforms the vectors in a 2D array to plot
+ */
 const recallMemory = async () => {
 	if (callText.value === '') {
 		callText.value = ' '
 	}
+
+	if (typeof kMems.value === 'string' || kMems.value === 0) {
+		kMems.value = 10
+	}
+
 	const result = await callMemory(callText.value, kMems.value)
 	callOutput.value = JSON.stringify(result)
+
+	const queryMat = Matrix.from(result.query)
+	const episodicMat = Matrix.from(result.episodic.map(v => v.vector))
+	const declarativeMat = Matrix.from(result.declarative.map(v => v.vector))
+
+	const druidTSNE = new TSNE(
+		episodicMat
+		.concat(declarativeMat, "vertical")
+		.concat(queryMat, "vertical"), {
+		perplexity: Math.min(Math.max(kMems.value, 2), result.episodic.length + result.declarative.length)
+	}).transform(1000).asArray
+	
+	plotOutput.value = [
+		{
+			name: 'Query',
+			x: druidTSNE.slice(-1).map(v => v[0]),
+			y: druidTSNE.slice(-1).map(v => v[1]),
+			text: [callText.value],
+			customdata: [{ source: 'query', when: 'now', score: 1 }]
+		},
+		{
+			name: 'Episodic',
+			x: druidTSNE.slice(0, episodicMat.shape[0]).map(v => v[0]),
+			y: druidTSNE.slice(0, episodicMat.shape[0]).map(v => v[1]),
+			text: result.episodic.map(v => v.page_content),
+			customdata: result.episodic.map((v) => {
+				return {
+					source: v.metadata.source,
+					when: new Date(v.metadata.when * 1000).toLocaleString(),
+					score: v.score
+				}
+			})
+		},
+		{
+			name: 'Declarative',
+			x: druidTSNE.slice(episodicMat.shape[0], druidTSNE.length - 1).map(v => v[0]),
+			y: druidTSNE.slice(episodicMat.shape[0], druidTSNE.length - 1).map(v => v[1]),
+			text: result.declarative.map(v => v.page_content),
+			customdata: result.declarative.map((v) => {
+				return {
+					source: v.metadata.source,
+					when: new Date(v.metadata.when * 1000).toLocaleString(),
+					score: v.score
+				}
+			})
+		}
+	]
 }
+
+/**
+ * Computed function to create the array of data to insert in the plot
+ */
+const getPlotData = computed(() => {
+	return plotOutput.value.map(plot => {
+		return {
+			...plot,
+			type: 'scatter',
+			mode: 'markers',
+			hovertemplate: `
+<i>%{text}</i><br>
+<b>Source</b>: %{customdata.source}<br>
+<b>When</b>: %{customdata.when}<br>
+<b>Score</b>: %{customdata.score}<br>
+(%{x:.3f}, %{y:.3f})
+<extra></extra>
+			`,
+			marker: { size: 10 },
+		}
+	})
+})
 </script>
 
 <template>
@@ -45,7 +130,7 @@ const recallMemory = async () => {
 			<button class="btn-error join-item btn" @click="wipeMemory()">
 				Wipe
 			</button>
-			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200"
+			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1"
 				:list="[
 					{ label: 'All', value: 'all' },
 					{ label: 'Episodic', value: 'episodic' },
@@ -74,6 +159,20 @@ const recallMemory = async () => {
 			</div>
 		</div>
 		<div v-if="callOutput != '{}'" class="flex flex-wrap justify-center gap-4">
+			<Plotly :data="getPlotData" :layout="{
+				title: 'Similar memories',
+				font: {
+					family: 'Ubuntu',
+					size: 12,
+					color: isDark ? '#F4F4F5' : '#383938'
+				},
+				xaxis: { color: isDark ? '#F4F4F5' : '#383938' },
+				yaxis: { color: isDark ? '#F4F4F5' : '#383938' },
+				paper_bgcolor: isDark ? '#383938' : '#F4F4F5',
+				plot_bgcolor: isDark ? '#383938' : '#F4F4F5',
+				showlegend: true,
+				margin: { b: 40, l: 40, t: 40, r: 40 }
+			}" :displayModeBar="false" />
 			<JsonTreeView :data="callOutput" rootKey="result" :colorScheme="isDark ? 'dark' : 'light'" />
 		</div>
 	</div>
