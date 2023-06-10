@@ -77,16 +77,17 @@ const recallMemory = async () => {
 			name: 'Query',
 			x: druidTSNE.slice(-1).map(v => v[0]),
 			y: druidTSNE.slice(-1).map(v => v[1]),
-			text: [callText.value],
-			customdata: [{ source: 'query', when: 'now', score: 1 }]
+			text: [callText.value.substring(0, 50).concat('...')],
+			customdata: [{ text: callText.value, source: 'query', when: 'now', score: 1 }]
 		},
 		{
 			name: 'Episodic',
 			x: druidTSNE.slice(0, episodicMat.shape[0]).map(v => v[0]),
 			y: druidTSNE.slice(0, episodicMat.shape[0]).map(v => v[1]),
-			text: result.episodic.map(v => v.page_content),
+			text: result.episodic.map(v => v.page_content.substring(0, 50).concat('...')),
 			customdata: result.episodic.map((v) => {
 				return {
+					text: v.page_content,
 					source: v.metadata.source,
 					when: new Date(v.metadata.when * 1000).toLocaleString(),
 					score: v.score
@@ -97,9 +98,10 @@ const recallMemory = async () => {
 			name: 'Declarative',
 			x: druidTSNE.slice(episodicMat.shape[0], druidTSNE.length - 1).map(v => v[0]),
 			y: druidTSNE.slice(episodicMat.shape[0], druidTSNE.length - 1).map(v => v[1]),
-			text: result.declarative.map(v => v.page_content),
+			text: result.declarative.map(v => v.page_content.substring(0, 50).concat('...')),
 			customdata: result.declarative.map((v) => {
 				return {
+					text: v.page_content,
 					source: v.metadata.source,
 					when: new Date(v.metadata.when * 1000).toLocaleString(),
 					score: v.score
@@ -108,15 +110,7 @@ const recallMemory = async () => {
 		}
 	]
 
-	//const filteredResult = _.cloneDeep(result)
-
 	_.unset(result, 'query')
-
-	/*Object.entries(filteredResult).forEach(v => {
-		v[1].forEach((__: unknown, i: number) => {
-			_.unset(filteredResult, `${v[0]}[${i}].vector`)	
-		})
-	})*/
 
 	callOutput.value = JSON.stringify(result, undefined, 2)
 
@@ -134,9 +128,7 @@ const getPlotData = computed(() => {
 			mode: 'markers',
 			hovertemplate: `
 <i>%{text}</i><br>
-<b>Source</b>: %{customdata.source}<br>
-<b>When</b>: %{customdata.when}<br>
-<b>Score</b>: %{customdata.score}
+<b><i>*Click to show more*</i></b>
 <extra></extra>
 			`,
 			marker: { size: 10 },
@@ -228,10 +220,6 @@ const onPointClick = (data: any) => {
 			<div class="overflow-x-auto rounded-md border-2 border-neutral">
 				<table class="table-zebra table-sm table">
 					<tbody>
-						<tr>
-							<td>Text</td>
-							<td>{{ clickedPoint.text }}</td>
-						</tr>
 						<tr v-for="data in Object.entries(clickedPoint.customdata)" :key="data[0]">
 							<td>{{ _.capitalize(data[0]) }}</td>
 							<td>{{ data[1] }}</td>
