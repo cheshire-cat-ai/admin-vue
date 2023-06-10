@@ -6,6 +6,7 @@ import { useSettings } from '@stores/useSettings'
 import { JsonTreeView } from 'json-tree-view-vue3'
 import SelectBox from '@components/SelectBox.vue'
 import Plotly from '@aurium/vue-plotly'
+import { now } from '@utils/commons'
 import { Matrix, TSNE } from '@saehrimnir/druidjs'
 import SidePanel from '@components/SidePanel.vue'
 import type { Memory } from '@models/Memory'
@@ -172,6 +173,12 @@ const onPointClick = (data: any) => {
 	clickedPoint.value = data.points[0]
 	sidePanel.value?.togglePanel()
 }
+
+const downloadResult = () => {
+	const output = { export_time: now() }
+	_.assign(output, JSON.parse(callOutput.value))
+	download(callOutput.value, 'result.json', 'text/plain')
+}
 </script>
 
 <template>
@@ -246,7 +253,7 @@ const onPointClick = (data: any) => {
 					scale: 1.5
 				}"
 				:displayModeBar="true" :displaylogo="false" :responsive="true" :scrollZoom="true" @plotly_click="onPointClick" />
-			<button class="btn-info btn" @click="download(callOutput, 'result.json', 'text/plain')">
+			<button class="btn-info btn" @click="downloadResult()">
 				Export the result
 			</button>
 			<JsonTreeView :data="callOutput" rootKey="result" :colorScheme="isDark ? 'dark' : 'light'" />
