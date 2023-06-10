@@ -177,7 +177,7 @@ const onPointClick = (data: any) => {
 const downloadResult = () => {
 	const output = { export_time: now() }
 	_.assign(output, JSON.parse(callOutput.value))
-	download(callOutput.value, 'result.json', 'text/plain')
+	download(JSON.stringify(output, undefined, 2), 'result.json', 'application/json')
 }
 </script>
 
