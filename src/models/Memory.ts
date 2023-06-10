@@ -20,7 +20,14 @@ export interface CollectionData {
  * Defines the structure of a memory object.
  */
 export interface Memory {
-  readonly declarative: CollectionData[]
-  readonly episodic: CollectionData[]
-  readonly query: number[]
+  readonly query: {
+    readonly text: string,
+    readonly vector: number[]
+  }
+  readonly vectors: {
+    readonly embedder: string
+    readonly collections: {
+      readonly [key: string]: CollectionData[]
+    }
+  }
 }

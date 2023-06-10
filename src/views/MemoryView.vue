@@ -60,7 +60,7 @@ const reduceTo2d = (options: ConstructorParameters<typeof TSNE>['1'], iterations
  * @param jsonResult the Memory object to use for the plot
  * @param mats additional matrices to concatenate in the reduction
  */
-const showMemoryPlot = (jsonResult: Omit<Memory, 'query'>, ...mats: number[][]) => {
+const showMemoryPlot = (jsonResult: Memory['vectors']['collections'], ...mats: number[][]) => {
 	const collectionsLengths = _.reduce(jsonResult, (a, v, k) => ({ ...a, [k]: v.length }), {}) as Record<string, number>
 
 	const maxPerplexity = _.reduce(_.values(collectionsLengths), (p, c) => p + (c as number), 0)
@@ -116,7 +116,7 @@ const recallMemory = async () => {
 
 	const filteredResult = _.pickBy(result, (_v, k) => k !== 'query') as Omit<Memory, 'query'>
 
-	const memoryPlot = showMemoryPlot(filteredResult, result.query)
+	const memoryPlot = showMemoryPlot(filteredResult.vectors.collections, result.query.vector)
 
 	plotOutput.value = memoryPlot.data
 
@@ -128,7 +128,7 @@ const recallMemory = async () => {
 		customdata: [{ text: callText.value, source: 'query', when: 'now', score: 1 }]
 	})
 
-	callOutput.value = JSON.stringify(filteredResult, undefined, 2)
+	callOutput.value = JSON.stringify(filteredResult.vectors, undefined, 2)
 
 	toggleSpinner()
 }
@@ -162,7 +162,7 @@ onFileUpload(files => {
 	reader.onload = ({ target }) => {
 		if (!target) return
 		callOutput.value = target.result?.toString() ?? '{}'
-		plotOutput.value = showMemoryPlot(JSON.parse(callOutput.value) as Omit<Memory, 'query'>).data
+		plotOutput.value = showMemoryPlot(JSON.parse(callOutput.value)).data
 		toggleSpinner()
 		resetFile()
 	}
