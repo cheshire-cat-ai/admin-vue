@@ -74,10 +74,21 @@ const MemoryService = Object.freeze({
   callMemory: async (text: string, memories = 10) => {
     const endpoint = config.endpoints.callMemory
 
-    return await authFetch(endpoint.concat('?') + new URLSearchParams({
-      'text': text,
-      'k': `${memories}`,
-    }), { method: 'GET' }).then<Memory>(toJSON)
+    try {
+      const result = await authFetch(endpoint.concat('?') + new URLSearchParams({
+        'text': text,
+        'k': `${memories}`,
+      }), { method: 'GET' })
+
+      if (result.status !== 200) throw new Error()
+
+      return toJSON<Memory>(result)
+    } catch (error) {
+      return {
+        status: 'error',
+        message: `Unable to recall memory`
+      } as JSONResponse
+    }
   }
 })
 

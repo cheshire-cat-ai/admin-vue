@@ -1,4 +1,5 @@
 import { uniqueId } from '@utils/commons'
+import { isJSONResponse } from '@utils/typeGuards'
 import MemoryService from '@services/MemoryService'
 import { useNotifications } from '@stores/useNotifications'
 import type { JSONResponse } from '@models/JSONSchema'
@@ -31,7 +32,9 @@ export const useMemory = defineStore('memory', () => {
   }
 
   const callMemory = async (text: string, memories: number) => {
-    return await MemoryService.callMemory(text, memories)
+    const result = await MemoryService.callMemory(text, memories)
+    if (isJSONResponse(result)) return result.message
+    else return result
   }
   
   return {

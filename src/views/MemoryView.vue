@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import _ from 'lodash'
+import download from 'downloadjs'
 import { useMemory } from '@stores/useMemory'
 import { useSettings } from '@stores/useSettings'
 import { JsonTreeView } from 'json-tree-view-vue3'
 import SelectBox from '@components/SelectBox.vue'
 import Plotly from '@aurium/vue-plotly'
 import { Matrix, TSNE } from "@saehrimnir/druidjs"
+import SidePanel from '@components/SidePanel.vue'
 
 interface PlotData {
 	name: string
@@ -16,9 +19,12 @@ interface PlotData {
 
 const { isDark } = storeToRefs(useSettings())
 
-const callText = ref(''), callOutput = ref('{}'), kMems = ref(10)
-const plotOutput = ref<PlotData[]>([])
+const callText = ref(''), callOutput = ref('{}'), kMems = ref(10), currentError = ref('')
+const plotOutput = ref<PlotData[]>([]), clickedPoint = ref()
+const sidePanel = ref<InstanceType<typeof SidePanel>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
+
+const [showSpinner, toggleSpinner] = useToggle(false)
 
 const { wipeAllCollections, wipeCollection, callMemory } = useMemory()
 
@@ -45,8 +51,15 @@ const recallMemory = async () => {
 		kMems.value = 10
 	}
 
+	toggleSpinner()
+
 	const result = await callMemory(callText.value, kMems.value)
-	callOutput.value = JSON.stringify(result)
+
+	if (typeof result === 'string') {
+		currentError.value = result
+		toggleSpinner()
+		return
+	}
 
 	const queryMat = Matrix.from(result.query)
 	const episodicMat = Matrix.from(result.episodic.map(v => v.vector))
@@ -94,6 +107,20 @@ const recallMemory = async () => {
 			})
 		}
 	]
+
+	//const filteredResult = _.cloneDeep(result)
+
+	_.unset(result, 'query')
+
+	/*Object.entries(filteredResult).forEach(v => {
+		v[1].forEach((__: unknown, i: number) => {
+			_.unset(filteredResult, `${v[0]}[${i}].vector`)	
+		})
+	})*/
+
+	callOutput.value = JSON.stringify(result, undefined, 2)
+
+	toggleSpinner()
 }
 
 /**
@@ -109,14 +136,18 @@ const getPlotData = computed(() => {
 <i>%{text}</i><br>
 <b>Source</b>: %{customdata.source}<br>
 <b>When</b>: %{customdata.when}<br>
-<b>Score</b>: %{customdata.score}<br>
-(%{x:.3f}, %{y:.3f})
+<b>Score</b>: %{customdata.score}
 <extra></extra>
 			`,
 			marker: { size: 10 },
 		}
 	})
 })
+
+const onPointClick = (data: any) => {
+	clickedPoint.value = data.points[0]
+	sidePanel.value?.togglePanel()
+}
 </script>
 
 <template>
@@ -158,29 +189,67 @@ const getPlotData = computed(() => {
 				<input v-model="kMems" type="number" min="1" class="input-primary input input-sm join-item w-24 pl-2 pr-0">
 			</div>
 		</div>
-		<div v-if="callOutput != '{}'" class="flex flex-wrap justify-center gap-4">
+		<div v-if="showSpinner" class="flex grow items-center justify-center">
+			<span class="loading loading-spinner w-12 text-primary" />
+		</div>
+		<div v-else-if="currentError" class="flex grow items-center justify-center">
+			<p class="w-fit rounded bg-error p-4 font-semibold text-base-100">
+				{{ currentError }}
+			</p>
+		</div>
+		<div v-else-if="!showSpinner && currentError === '' && callOutput != '{}'" class="flex flex-col items-center justify-center gap-4">
 			<Plotly :data="getPlotData" :layout="{
-				title: 'Similar memories',
-				font: {
-					family: 'Ubuntu',
-					size: 12,
-					color: isDark ? '#F4F4F5' : '#383938'
-				},
-				xaxis: { color: isDark ? '#F4F4F5' : '#383938' },
-				yaxis: { color: isDark ? '#F4F4F5' : '#383938' },
-				paper_bgcolor: isDark ? '#383938' : '#F4F4F5',
-				plot_bgcolor: isDark ? '#383938' : '#F4F4F5',
-				showlegend: true,
-				margin: { b: 40, l: 40, t: 40, r: 40 }
-			}" :displayModeBar="false" />
+					title: 'Similar memories',
+					font: {
+						family: 'Ubuntu',
+						size: 12,
+						color: isDark ? '#F4F4F5' : '#383938'
+					},
+					xaxis: { color: isDark ? '#F4F4F5' : '#383938', showticklabels: false },
+					yaxis: { color: isDark ? '#F4F4F5' : '#383938', showticklabels: false },
+					paper_bgcolor: isDark ? '#383938' : '#F4F4F5',
+					plot_bgcolor: isDark ? '#383938' : '#F4F4F5',
+					showlegend: true,
+					legend: { x: 0, xanchor: 'right', title: { text: 'Collections' } },
+					margin: { b: 40, l: 40, t: 40, r: 40 }
+				}" :modeBarButtonsToRemove="['zoom2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d']"
+				:toImageButtonOptions="{
+					format: 'jpeg',
+					filename: 'recall_plot',
+					scale: 1.5
+				}"
+				:displayModeBar="true" :displaylogo="false" :responsive="true" :scrollZoom="true" @plotly_click="onPointClick" />
+			<button class="btn-info btn" @click="download(callOutput, 'result.json', 'text/plain')">
+				Export the result
+			</button>
 			<JsonTreeView :data="callOutput" rootKey="result" :colorScheme="isDark ? 'dark' : 'light'" />
 		</div>
+		<SidePanel ref="sidePanel" title="Memory content">
+			<div class="overflow-x-auto rounded-md border-2 border-neutral">
+				<table class="table-zebra table-sm table">
+					<tbody>
+						<tr>
+							<td>Text</td>
+							<td>{{ clickedPoint.text }}</td>
+						</tr>
+						<tr v-for="data in Object.entries(clickedPoint.customdata)" :key="data[0]">
+							<td>{{ _.capitalize(data[0]) }}</td>
+							<td>{{ data[1] }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</SidePanel>
 	</div>
 </template>
 
 <style lang="scss">
 .json-view-item.root-item .value-key {
 	white-space: normal !important;
+}
+
+.table tr td:first-child {
+	@apply font-medium text-primary;
 }
 </style>
 
