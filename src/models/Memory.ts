@@ -1,7 +1,7 @@
 /**
  * Defines the structure of the metadata of a collection
  */
-interface MetaData {
+export interface MetaData {
   readonly source: string
   readonly when: number
 }
@@ -9,7 +9,7 @@ interface MetaData {
 /**
  * Defines the structure of a collection
  */
-interface CollectionData {
+export interface CollectionData {
   readonly page_content: string
   readonly metadata: MetaData
   readonly score: number

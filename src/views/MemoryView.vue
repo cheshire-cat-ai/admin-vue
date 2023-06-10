@@ -6,8 +6,9 @@ import { useSettings } from '@stores/useSettings'
 import { JsonTreeView } from 'json-tree-view-vue3'
 import SelectBox from '@components/SelectBox.vue'
 import Plotly from '@aurium/vue-plotly'
-import { Matrix, TSNE } from "@saehrimnir/druidjs"
+import { Matrix, TSNE } from '@saehrimnir/druidjs'
 import SidePanel from '@components/SidePanel.vue'
+import type { Memory } from '@models/Memory'
 
 interface PlotData {
 	name: string
@@ -26,6 +27,8 @@ const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
 const [showSpinner, toggleSpinner] = useToggle(false)
 
+const { open: importFile, onChange: onFileUpload, reset: resetFile } = useFileDialog()
+
 const { wipeAllCollections, wipeCollection, callMemory } = useMemory()
 
 /**
@@ -40,7 +43,56 @@ const wipeMemory = () => {
 }
 
 /**
- * Transforms the vectors in a 2D array to plot
+ * Merges and reduces the matrices to a new matrix that can be plotted in a 2d graph
+ * @param perplexity the perplexity to pass in the t-SNE algorithm
+ * @param iterations the number of interations to make to increase the precision of the algorithm
+ * @param mats the matrices to pass to the algorithm
+ */
+const reduceTo2d = (options: ConstructorParameters<typeof TSNE>['1'], iterations: number, ...mats: number[][][]) => {
+    const matrix = _.map(_.omitBy(mats, _.isEmpty), v => Matrix.from(v))
+    const tsne = new TSNE(matrix.reduce((p, c) => p.concat(c, "vertical")), options).transform(iterations)
+    return tsne.asArray
+}
+
+/**
+ * Creates the plot data that can be shown in the graph
+ * @param jsonResult the Memory object to use for the plot
+ * @param mats additional matrices to concatenate in the reduction
+ */
+const showMemoryPlot = (jsonResult: Omit<Memory, 'query'>, ...mats: number[][]) => {
+	const collectionsLengths = _.reduce(jsonResult, (a, v, k) => ({ ...a, [k]: v.length }), {}) as Record<string, number>
+
+	const maxPerplexity = _.reduce(_.values(collectionsLengths), (p, c) => p + (c as number), 0)
+
+	const matrix = reduceTo2d({ 
+		perplexity: Math.min(Math.max(kMems.value, 2), maxPerplexity) 
+	}, 1000, ..._.map(jsonResult, (v) => _.map(v, c => c.vector)), mats)
+
+	return {
+		matrix,
+		data: _.map(_.entries(jsonResult), (c, i, k) => {
+			const prev = i > 0 ? k[i - 1][1].length : 0
+			const curr = c[1].length
+			return {
+				name: _.capitalize(c[0]),
+				x: matrix.slice(prev, prev + curr).map(m => m[0]),
+				y: matrix.slice(prev, prev + curr).map(m => m[1]),
+				text: c[1].map(v => v.page_content.substring(0, 30).concat('...')),
+				customdata: c[1].map(v => {
+					return {
+						text: v.page_content,
+						source: v.metadata.source,
+						when: new Date(v.metadata.when * 1000).toLocaleString(),
+						score: v.score
+					}
+				})
+			}
+		}) as PlotData[]
+	}
+}
+
+/**
+ * Recall the k memory vectors related to the query passed
  */
 const recallMemory = async () => {
 	if (callText.value === '') {
@@ -61,58 +113,21 @@ const recallMemory = async () => {
 		return
 	}
 
-	const queryMat = Matrix.from(result.query)
-	const episodicMat = Matrix.from(result.episodic.map(v => v.vector))
-	const declarativeMat = Matrix.from(result.declarative.map(v => v.vector))
+	const filteredResult = _.pickBy(result, (_v, k) => k !== 'query') as Omit<Memory, 'query'>
 
-	const druidTSNE = new TSNE(
-		episodicMat
-		.concat(declarativeMat, "vertical")
-		.concat(queryMat, "vertical"), {
-		perplexity: Math.min(Math.max(kMems.value, 2), result.episodic.length + result.declarative.length)
-	}).transform(1000).asArray
-	
-	plotOutput.value = [
-		{
-			name: 'Query',
-			x: druidTSNE.slice(-1).map(v => v[0]),
-			y: druidTSNE.slice(-1).map(v => v[1]),
-			text: [callText.value.substring(0, 50).concat('...')],
-			customdata: [{ text: callText.value, source: 'query', when: 'now', score: 1 }]
-		},
-		{
-			name: 'Episodic',
-			x: druidTSNE.slice(0, episodicMat.shape[0]).map(v => v[0]),
-			y: druidTSNE.slice(0, episodicMat.shape[0]).map(v => v[1]),
-			text: result.episodic.map(v => v.page_content.substring(0, 50).concat('...')),
-			customdata: result.episodic.map((v) => {
-				return {
-					text: v.page_content,
-					source: v.metadata.source,
-					when: new Date(v.metadata.when * 1000).toLocaleString(),
-					score: v.score
-				}
-			})
-		},
-		{
-			name: 'Declarative',
-			x: druidTSNE.slice(episodicMat.shape[0], druidTSNE.length - 1).map(v => v[0]),
-			y: druidTSNE.slice(episodicMat.shape[0], druidTSNE.length - 1).map(v => v[1]),
-			text: result.declarative.map(v => v.page_content.substring(0, 50).concat('...')),
-			customdata: result.declarative.map((v) => {
-				return {
-					text: v.page_content,
-					source: v.metadata.source,
-					when: new Date(v.metadata.when * 1000).toLocaleString(),
-					score: v.score
-				}
-			})
-		}
-	]
+	const memoryPlot = showMemoryPlot(filteredResult, result.query)
 
-	_.unset(result, 'query')
+	plotOutput.value = memoryPlot.data
 
-	callOutput.value = JSON.stringify(result, undefined, 2)
+	plotOutput.value.push({
+		name: 'Query',
+		x: memoryPlot.matrix.slice(-1).map(v => v[0]),
+		y: memoryPlot.matrix.slice(-1).map(v => v[1]),
+		text: [callText.value.substring(0, 30).concat('...')],
+		customdata: [{ text: callText.value, source: 'query', when: 'now', score: 1 }]
+	})
+
+	callOutput.value = JSON.stringify(filteredResult, undefined, 2)
 
 	toggleSpinner()
 }
@@ -134,6 +149,23 @@ const getPlotData = computed(() => {
 			marker: { size: 10 },
 		}
 	})
+})
+
+/**
+ * Handles the file upload and shows the graph based on content
+ */
+onFileUpload(files => {
+	if (files == null) return
+	toggleSpinner()
+	const reader = new FileReader()
+	reader.onload = ({ target }) => {
+		if (!target) return
+		callOutput.value = target.result?.toString() ?? '{}'
+		plotOutput.value = showMemoryPlot(JSON.parse(callOutput.value) as Omit<Memory, 'query'>).data
+		toggleSpinner()
+		resetFile()
+	}
+	reader.readAsText(files[0])
 })
 
 const onPointClick = (data: any) => {
@@ -160,6 +192,9 @@ const onPointClick = (data: any) => {
 					{ label: 'Declarative', value: 'declarative' }
 				]" />
 		</div>
+		<!--<button class="btn-info btn self-center" @click="importFile({ multiple: false, accept: 'application/json' })">
+			Import memory content
+		</button>-->
 		<div class="flex gap-4">
 			<div class="form-control w-full">
 				<label class="label">
