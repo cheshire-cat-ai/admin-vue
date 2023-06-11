@@ -52,7 +52,7 @@ const wipeMemory = () => {
 const reduceTo2d = (options: ConstructorParameters<typeof TSNE>['1'], iterations: number, ...mats: number[][][]) => {
     const matrix = _.map(_.omitBy(mats, _.isEmpty), v => Matrix.from(v))
     const tsne = new TSNE(matrix.reduce((p, c) => p.concat(c, "vertical")), options).transform(iterations)
-    return tsne.asArray
+	return tsne instanceof Matrix ? tsne.to2dArray : tsne
 }
 
 /**

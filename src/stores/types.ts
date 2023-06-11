@@ -1,4 +1,4 @@
-import type { RabbitHoleFileResponse, RabbitHoleWebResponse } from '@services/RabbitHole'
+import type { RabbitHoleResponse } from '@services/RabbitHole'
 import type { LLMConfigDescriptor, LLMConfigMetaData } from '@models/LLMConfig'
 import type { Message } from '@models/Message'
 import type { Plugin } from '@models/Plugin'
@@ -26,7 +26,7 @@ export interface AsyncState<TData> extends AsyncStateBase {
  * This state contains information about the last file that the user has sent to the bot as well as the response form the server.
  * It extends the AsyncState interface, which defines the structure of the state of an asynchronous operation.
  */
-export type FileUploaderState = AsyncState<RabbitHoleFileResponse | RabbitHoleWebResponse>
+export type FileUploaderState = AsyncState<RabbitHoleResponse>
 
 /**
  * Defines the structure of the 'llmConfig' state.
