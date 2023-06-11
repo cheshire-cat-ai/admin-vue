@@ -16,7 +16,7 @@ interface PlotData {
 	x: number[]
 	y: number[]
 	text: string[]
-	customdata?: (string | object)[]
+	customdata?: object[]
 }
 
 const { isDark } = storeToRefs(useSettings())
@@ -27,8 +27,6 @@ const sidePanel = ref<InstanceType<typeof SidePanel>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
 const [showSpinner, toggleSpinner] = useToggle(false)
-
-const { open: importFile, onChange: onFileUpload, reset: resetFile } = useFileDialog()
 
 const { wipeAllCollections, wipeCollection, callMemory } = useMemory()
 
@@ -152,23 +150,6 @@ const getPlotData = computed(() => {
 	})
 })
 
-/**
- * Handles the file upload and shows the graph based on content
- */
-onFileUpload(files => {
-	if (files == null) return
-	toggleSpinner()
-	const reader = new FileReader()
-	reader.onload = ({ target }) => {
-		if (!target) return
-		callOutput.value = target.result?.toString() ?? '{}'
-		plotOutput.value = showMemoryPlot(JSON.parse(callOutput.value)).data
-		toggleSpinner()
-		resetFile()
-	}
-	reader.readAsText(files[0])
-})
-
 const onPointClick = (data: any) => {
 	clickedPoint.value = data.points[0]
 	sidePanel.value?.togglePanel()
@@ -199,9 +180,6 @@ const downloadResult = () => {
 					{ label: 'Declarative', value: 'declarative' }
 				]" />
 		</div>
-		<!--<button class="btn-info btn self-center" @click="importFile({ multiple: false, accept: 'application/json' })">
-			Import memory content
-		</button>-->
 		<div class="flex gap-4">
 			<div class="form-control w-full">
 				<label class="label">

@@ -14,7 +14,7 @@
   "dependencies": {
     "@aurium/vue-plotly": "^2.0.0-rc5",
     "@headlessui/vue": "^1.7.14",
-    "@saehrimnir/druidjs": "github:zAlweNy26/DruidJS",
+    "@saehrimnir/druidjs": "github:zAlweNy26/DruidJS#02774a6",
     "@tailwindcss/forms": "^0.5.3",
     "@types/json-schema": "^7.0.12",
     "@types/lodash": "^4.14.195",
