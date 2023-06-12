@@ -1,4 +1,4 @@
-import type { RabbitHoleResponse } from '@services/RabbitHole'
+import type { RabbitHoleResponse } from '@models/RabbitHole'
 import type { LLMConfigDescriptor, LLMConfigMetaData } from '@models/LLMConfig'
 import type { Message } from '@models/Message'
 import type { Plugin } from '@models/Plugin'

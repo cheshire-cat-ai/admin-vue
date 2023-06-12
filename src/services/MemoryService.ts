@@ -1,18 +1,14 @@
-import { config, authFetch } from '@/config'
 import LogService from '@services/LogService'
 import type { JSONResponse } from '@models/JSONSchema'
-import type { Memory } from '@models/Memory'
-import { toJSON } from '@utils/commons'
+import { Memories } from '@/api'
 
 /*
  * This is a service that is used to manage the memory of the Cheshire Cat.
  */
 const MemoryService = Object.freeze({
   wipeAllCollections: async () => {
-    const endpoint = config.endpoints.wipeAllCollections
-
     try {
-      const result = await authFetch(endpoint, { method: 'DELETE' })
+      const result = await Memories.wipeCollections()
 
       LogService.print('Deleting all the in-memory collections')
 
@@ -30,10 +26,8 @@ const MemoryService = Object.freeze({
     }
   },
   wipeCollection: async (collection: string) => {
-    const endpoint = config.endpoints.wipeCollection
-
     try {
-      const result = await authFetch(endpoint.concat(collection), { method: 'DELETE' })
+      const result = await Memories.wipeSingleCollection(collection)
 
       LogService.print(`Deleting the entire ${collection} collection`)
 
@@ -51,10 +45,8 @@ const MemoryService = Object.freeze({
     }
   },
   wipeConversation: async () => {
-    const endpoint = config.endpoints.wipeConversation
-
     try {
-      const result = await authFetch(endpoint, { method: 'DELETE' })
+      const result = await Memories.wipeCurrentConversation()
 
       LogService.print('Deleting the in-memory current conversation')
 
@@ -71,18 +63,16 @@ const MemoryService = Object.freeze({
       } as JSONResponse
     }
   },
-  callMemory: async (text: string, memories = 10) => {
-    const endpoint = config.endpoints.callMemory
-
+  callMemory: async (query: string, memories = 10) => {
+    const params = { text: query, k: memories }
     try {
-      const result = await authFetch(endpoint.concat('?') + new URLSearchParams({
-        'text': text,
-        'k': `${memories}`,
-      }), { method: 'GET' })
+      const result = await Memories.recallMemory(params)
+
+      LogService.print("Recalling memories from the cat with", params)
 
       if (result.status !== 200) throw new Error()
 
-      return toJSON<Memory>(result)
+      return result.data
     } catch (error) {
       return {
         status: 'error',

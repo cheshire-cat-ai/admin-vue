@@ -21,6 +21,7 @@
     "@vueuse/core": "^10.1.2",
     "@vueuse/sound": "^2.0.1",
     "animate.css": "^4.1.1",
+    "axios": "^1.4.0",
     "daisyui": "^3.1.0",
     "downloadjs": "^1.4.7",
     "highlight.js": "^11.8.0",

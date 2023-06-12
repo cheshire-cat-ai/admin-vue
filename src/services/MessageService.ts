@@ -5,7 +5,7 @@
  */
 
 import LogService from '@services/LogService'
-import { config } from '@/config'
+import config from '@/config'
 
 /**
  * A map of error codes to error messages.
@@ -43,12 +43,12 @@ const MessagesService = Object.freeze({
    * Initializes the WebSocket connection as well as the message and error handlers
    */
   connect(onConnected: OnConnected | null = null) {
-    socket = useWebSocket(config.endpoints.chat, {
+    socket = useWebSocket(config.chat, {
       immediate: true,
       autoClose: false,
       autoReconnect: {
         retries: 3,
-        delay: config.socketTimeout,
+        delay: config.timeout,
         onFailed() {
           LogService.print(ErrorCodes.FailedRetries)
         }
@@ -61,10 +61,10 @@ const MessagesService = Object.freeze({
       },
       onMessage(_ws, event: MessageEvent<string>) {
         if (messageHandler) {
-          const data = JSON.parse(event.data) as APIMessageServiceError | APIMessageServiceResponse
+          const data = JSON.parse(event.data) as MessageError | MessageResponse
           LogService.print('Received data from the WebSocket server', data)
     
-          if (isAPIMessageServiceResponse(data)) {
+          if (isMessageResponse(data)) {
             messageHandler(data.content, data.type, data.why)
             return
           }
@@ -130,7 +130,7 @@ type OnConnected = () => void
 /**
  * Defines the type for the onMessage event handler
  */
-type OnMessageHandler = (message: string, type: APIMessageServiceResponse['type'], why: any) => void
+type OnMessageHandler = (message: string, type: MessageResponse['type'], why: any) => void
 
 /**
  * Defines the type for the onError event handler
@@ -140,7 +140,7 @@ type OnErrorHandler = (err: Error) => void
 /**
  * APIMessageServiceResponse is the interface for the response from the API message service.
  */
-export interface APIMessageServiceResponse {
+export interface MessageResponse {
   error: false
   type: 'notification' | 'chat'
   content: string
@@ -150,7 +150,7 @@ export interface APIMessageServiceResponse {
 /**
  *  APIMessageServiceError is the interface for the error response from the API message service.
  */
-export interface APIMessageServiceError {
+export interface MessageError {
   error: true
   code: string
 }
@@ -160,7 +160,7 @@ export interface APIMessageServiceError {
  * type APIMessageServiceResponse
  * @param value
  */
-export const isAPIMessageServiceResponse = (value: unknown): value is APIMessageServiceResponse => {
+export const isMessageResponse = (value: unknown): value is MessageResponse => {
   return !!(value && typeof value === 'object' && 'content' in value && 'why' in value && 'error' in value && value.error === false)
 }
 
