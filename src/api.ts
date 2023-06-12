@@ -2,7 +2,7 @@ import axios from "axios"
 import type { EmbedderConfigDescriptor } from "@models/EmbedderConfig"
 import type { LLMConfigDescriptor } from '@models/LLMConfig'
 import type { JSONSettings } from "@models/JSONSchema"
-import type { Memory } from "@models/Memory"
+import type { Collection, Memory } from "@models/Memory"
 import type { Plugin } from '@models/Plugin'
 import type { FileResponse, WebResponse, MemoryResponse } from "@models/RabbitHole"
 import config from "@/config"
@@ -39,10 +39,12 @@ export const LanguageModels = Object.freeze({
 })
 
 export const Memories = Object.freeze({
+  getAll: () => 
+    get<{ collections: Collection[] }>('/memory/collections/'),
   wipeCollections: () => 
     destroy('/memory/wipe-collections/'),
   wipeSingleCollection: (collection: string) => 
-    destroy(`/memory/collection/${collection}`),
+    destroy(`/memory/collections/${collection}`),
   wipeCurrentConversation: () => 
     destroy('/memory/working-memory/conversation-history/'),
   recallMemory: (params: object) => 

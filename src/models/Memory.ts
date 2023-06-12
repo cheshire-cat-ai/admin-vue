@@ -20,6 +20,7 @@ export interface CollectionData {
  * Defines the structure of a collection
  */
 export interface Collection {
+  readonly name: string,
   readonly vectors_count: number
 }
 

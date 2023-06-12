@@ -6,6 +6,11 @@ import { Memories } from '@/api'
  * This is a service that is used to manage the memory of the Cheshire Cat.
  */
 const MemoryService = Object.freeze({
+  getCollections: async () => {
+    const result = await Memories.getAll()
+
+    return result.data.collections
+  },
   wipeAllCollections: async () => {
     try {
       const result = await Memories.wipeCollections()

@@ -3,8 +3,22 @@ import { isJSONResponse } from '@utils/typeGuards'
 import MemoryService from '@services/MemoryService'
 import { useNotifications } from '@stores/useNotifications'
 import type { JSONResponse } from '@models/JSONSchema'
+import type { CollectionsState } from '@stores/types'
 
 export const useMemory = defineStore('memory', () => {
+  const currentState = reactive<CollectionsState>({
+    loading: false,
+    data: []
+  })
+
+  const { state: collections, isLoading, error } = useAsyncState(MemoryService.getCollections(), [])
+
+  watchEffect(() => {
+    currentState.loading = isLoading.value
+    currentState.data = collections.value
+    currentState.error = error.value as string
+  })
+
   const { showNotification } = useNotifications()
 
   const sendNotificationResult = (result: JSONResponse) => {
@@ -33,11 +47,14 @@ export const useMemory = defineStore('memory', () => {
 
   const callMemory = async (text: string, memories: number) => {
     const result = await MemoryService.callMemory(text, memories)
-    if (isJSONResponse(result)) return result.message
-    else return result
+    if (isJSONResponse(result)) {
+      currentState.error = result.message
+      return null
+    } else return result
   }
   
   return {
+    currentState,
     wipeAllCollections,
     wipeConversation,
     wipeCollection,

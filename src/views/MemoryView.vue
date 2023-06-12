@@ -21,14 +21,16 @@ interface PlotData {
 
 const { isDark } = storeToRefs(useSettings())
 
-const callText = ref(''), callOutput = ref('{}'), kMems = ref(10), currentError = ref('')
+const callText = ref(''), callOutput = ref('{}'), kMems = ref(10)
 const plotOutput = ref<PlotData[]>([]), clickedPoint = ref()
 const sidePanel = ref<InstanceType<typeof SidePanel>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
 const [showSpinner, toggleSpinner] = useToggle(false)
 
-const { wipeAllCollections, wipeCollection, callMemory } = useMemory()
+const memoryStore = useMemory()
+const { currentState: memoryState } = storeToRefs(memoryStore)
+const { wipeAllCollections, wipeCollection, callMemory } = memoryStore
 
 /**
  * If "all", wipes all the collections in memory, otherwise only the selected one
@@ -106,11 +108,7 @@ const recallMemory = async () => {
 
 	const result = await callMemory(callText.value, kMems.value)
 
-	if (typeof result === 'string') {
-		currentError.value = result
-		toggleSpinner()
-		return
-	}
+	if (!result) return
 
 	const memoryPlot = showMemoryPlot(result.vectors.collections, result.query.vector)
 
@@ -148,6 +146,14 @@ const getPlotData = computed(() => {
 	})
 })
 
+const getSelectCollections = computed(() => {
+	const data = memoryState.value.data ?? []
+	return [
+		{ label: `All (${data.map(v => v.vectors_count).reduce((p, c) => p + c)})`, value: 'all' },
+		...data.map(v => ({ label: `${_.capitalize(v.name)} (${v.vectors_count})`, value: v.name }))
+	]
+})
+
 const onPointClick = (data: any) => {
 	clickedPoint.value = data.points[0]
 	sidePanel.value?.togglePanel()
@@ -171,12 +177,7 @@ const downloadResult = () => {
 			<button class="btn-error join-item btn" @click="wipeMemory()">
 				Wipe
 			</button>
-			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1"
-				:list="[
-					{ label: 'All', value: 'all' },
-					{ label: 'Episodic', value: 'episodic' },
-					{ label: 'Declarative', value: 'declarative' }
-				]" />
+			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
 		</div>
 		<div class="flex gap-4">
 			<div class="form-control w-full">
@@ -202,12 +203,12 @@ const downloadResult = () => {
 		<div v-if="showSpinner" class="flex grow items-center justify-center">
 			<span class="loading loading-spinner w-12 text-primary" />
 		</div>
-		<div v-else-if="currentError" class="flex grow items-center justify-center">
+		<div v-else-if="memoryState.error" class="flex grow items-center justify-center">
 			<p class="w-fit rounded bg-error p-4 font-semibold text-base-100">
-				{{ currentError }}
+				{{ memoryState.error }}
 			</p>
 		</div>
-		<div v-else-if="!showSpinner && currentError === '' && callOutput != '{}'" class="flex flex-col items-center justify-center gap-4">
+		<div v-else-if="!showSpinner && !memoryState.error && callOutput != '{}'" class="flex flex-col items-center justify-center gap-4">
 			<Plotly :data="getPlotData" :layout="{
 					title: 'Similar memories',
 					font: {
