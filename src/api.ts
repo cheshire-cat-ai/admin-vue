@@ -20,11 +20,6 @@ const apiClient = axios.create({
   }
 })
 
-apiClient.interceptors.request.use(request => {
-  console.log(request.headers)
-  return request
-}, error => error.toJSON())
-
 apiClient.interceptors.response.use(response => response, error => error.toJSON())
 
 const { get, post, put, delete: destroy } = apiClient
