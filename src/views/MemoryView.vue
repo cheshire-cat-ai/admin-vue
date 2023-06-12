@@ -45,8 +45,6 @@ const recallMemory = async () => {
 		kMems.value = 10
 	}
 
-	console.time("Tempo")
-
 	const result = await callMemory(callText.value, kMems.value)
 	callOutput.value = JSON.stringify(result)
 
@@ -60,8 +58,6 @@ const recallMemory = async () => {
 		.concat(queryMat, "vertical"), {
 		perplexity: Math.min(Math.max(kMems.value, 2), result.episodic.length + result.declarative.length)
 	}).transform(1000).asArray
-
-	console.timeEnd("Tempo")
 	
 	plotOutput.value = [
 		{
