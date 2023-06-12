@@ -5,6 +5,7 @@ import type { Plugin } from '@models/Plugin'
 import type { Notification } from '@models/Notification'
 import type { EmbedderConfigDescriptor, EmbedderConfigMetaData } from '@models/EmbedderConfig'
 import type { JSONSettings } from '@models/JSONSchema'
+import type { Collection } from '@models/Memory'
 
 /**
  * Defines a generic interface for defining the state of an asynchronous operation.
@@ -62,6 +63,12 @@ export interface NotificationsState {
  * This state contains information about the installed plugins.
  */
 export type PluginsState = AsyncState<Plugin[]>
+
+/**
+ * Defines the structure of the 'collections' state.
+ * This state contains information about the available collections.
+ */
+export type CollectionsState = AsyncState<Collection[]>
 
 /**
  * Defines the structure of the 'embedderConfig' state.

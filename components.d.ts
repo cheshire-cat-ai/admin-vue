@@ -37,7 +37,6 @@ declare module 'vue' {
     MessageBox: typeof import('./src/components/MessageBox.vue')['default']
     ModalBox: typeof import('./src/components/ModalBox.vue')['default']
     NotificationStack: typeof import('./src/components/NotificationStack.vue')['default']
-    PhBrain: typeof import('~icons/ph/brain')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SelectBox: typeof import('./src/components/SelectBox.vue')['default']

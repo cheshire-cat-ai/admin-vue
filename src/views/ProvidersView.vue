@@ -5,7 +5,7 @@ import { useLLMConfig } from '@stores/useLLMConfig'
 import SelectBox from '@components/SelectBox.vue'
 
 const storeLLM = useLLMConfig()
-const { getAvailableProviders, getProviderSchema, setLLMSettings, getProviderSettings } = storeLLM
+const { getAvailableProviders, getProviderSchema, setProviderSettings, getProviderSettings } = storeLLM
 const { currentState: llmState } = storeToRefs(storeLLM)
 
 const selectProvider = ref<InstanceType<typeof SelectBox>>()
@@ -28,7 +28,7 @@ const updateProperties = (selected = currentSchema.value?.title) => {
 const saveProvider = async () => {
 	const llmName = selectProvider.value?.selectedElement
 	if (!llmName?.value) return
-	const res = await setLLMSettings(llmName.value, currentSettings.value)
+	const res = await setProviderSettings(llmName.value, currentSettings.value)
 	if (res) emit('close')
 }
 

@@ -7,7 +7,7 @@ export interface MetaData {
 }
 
 /**
- * Defines the structure of a collection
+ * Defines the structure of a collection that returns from the recall
  */
 export interface CollectionData {
   readonly page_content: string
@@ -17,15 +17,14 @@ export interface CollectionData {
 }
 
 /**
- * Defines the structure of the query data that returns from the request
+ * Defines the structure of a collection
  */
-export interface QueryData {
-  readonly text: string,
-  readonly vector: number[]
+export interface Collection {
+  readonly vectors_count: number
 }
 
 /**
- * Defines the structure of the vectors data that returns from the request
+ * Defines the structure of the vectors data that returns from the recall
  */
 export interface VectorsData {
   readonly embedder: string
@@ -38,6 +37,9 @@ export interface VectorsData {
  * Defines the structure of a memory object.
  */
 export interface Memory {
-  readonly query: QueryData
+  readonly query: {
+    readonly text: string,
+    readonly vector: number[]
+  }
   readonly vectors: VectorsData
 }

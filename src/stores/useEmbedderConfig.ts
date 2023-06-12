@@ -19,7 +19,15 @@ export const useEmbedderConfig = defineStore('embedder', () => {
     currentState.loading = isLoading.value
     currentState.data = embedders.value
     currentState.error = error.value as string
+    if (currentState.data) {
+      currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].languageEmbedderName
+      currentState.settings = currentState.data.settings.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {})
+    }
   })
+  
+  const getAvailableEmbedders = () => {
+    return embedders.value?.schemas ? Object.values(embedders.value.schemas) : []
+  }
 
   const getEmbedderSchema = (selected = currentState.selected) => {
     if (!selected) return undefined
@@ -29,10 +37,6 @@ export const useEmbedderConfig = defineStore('embedder', () => {
   const getEmbedderSettings = (selected = currentState.selected) => {
     if (!selected) return {} satisfies JSONSettings
     return currentState.settings[selected] ?? {} satisfies JSONSettings
-  }
-
-  const getAvailableEmbedders = () => {
-    return embedders.value?.schemas ? Object.values(embedders.value.schemas) : []
   }
 
   const setEmbedderSettings = async (name: EmbedderConfigMetaData['languageEmbedderName'], settings: JSONSettings) => {

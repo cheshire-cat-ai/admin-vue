@@ -1,11 +1,3 @@
-enum AppFeatures {
-  FileUpload,
-  AudioRecording,
-  Plugins,
-  Settings,
-  WebsiteScraping
-}
-
 /**
  * Returns the readonly application configuration.
  */
@@ -16,13 +8,6 @@ class Config {
   static secure = false
   static timeout = 10000
   static apiKey: string | null = null
-  static readonly features: AppFeatures[] = [
-    AppFeatures.FileUpload,
-    AppFeatures.AudioRecording,
-    AppFeatures.Settings,
-    AppFeatures.Plugins,
-    AppFeatures.WebsiteScraping
-  ]
 
   static init(config: typeof window.catCoreConfig) {
     this.secure = config.CORE_USE_SECURE_PROTOCOLS
