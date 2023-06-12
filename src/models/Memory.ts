@@ -17,17 +17,27 @@ export interface CollectionData {
 }
 
 /**
+ * Defines the structure of the query data that returns from the request
+ */
+export interface QueryData {
+  readonly text: string,
+  readonly vector: number[]
+}
+
+/**
+ * Defines the structure of the vectors data that returns from the request
+ */
+export interface VectorsData {
+  readonly embedder: string
+  readonly collections: {
+    readonly [key: string]: CollectionData[]
+  }
+}
+
+/**
  * Defines the structure of a memory object.
  */
 export interface Memory {
-  readonly query: {
-    readonly text: string,
-    readonly vector: number[]
-  }
-  readonly vectors: {
-    readonly embedder: string
-    readonly collections: {
-      readonly [key: string]: CollectionData[]
-    }
-  }
+  readonly query: QueryData
+  readonly vectors: VectorsData
 }

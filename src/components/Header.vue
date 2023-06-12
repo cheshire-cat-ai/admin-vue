@@ -49,7 +49,7 @@
 			<RouterLink to="/" class="shrink-0 !bg-transparent">
 				<img src="@assets/logo.svg" class="h-12 w-12 cursor-pointer md:hidden">
 			</RouterLink>
-			<ul class="menu menu-horizontal menu-md hidden gap-4 px-1 md:flex">
+			<ul class="menu menu-horizontal menu-md hidden gap-4 md:flex">
 				<li>
 					<RouterLink to="/">
 						🏠️ Home

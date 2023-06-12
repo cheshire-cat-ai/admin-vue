@@ -42,8 +42,8 @@
   .checkbox {
     @apply border-2;
   }
-  .select, .input {
-    @apply outline outline-offset-2 outline-2 border-0 !ring-0 !transition-all;
+  .select, .input, .textarea {
+    @apply overflow-hidden outline outline-offset-2 outline-2 border-0 !ring-0 !transition-all !duration-75 focus:outline-primary;
   }
   .select-sm {
     @apply !leading-[0.999rem];

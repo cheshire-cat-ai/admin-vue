@@ -1,7 +1,7 @@
 import type { FileUploaderState } from '@stores/types'
 import { getErrorMessage } from '@utils/errors'
 import { useNotifications } from '@stores/useNotifications'
-import RabbitHoleService from '@services/RabbitHole'
+import RabbitHoleService from '@services/RabbitHoleService'
 import { uniqueId } from '@utils/commons'
 
 export const useRabbitHole = defineStore('rabbitHole', () => {

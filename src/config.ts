@@ -1,8 +1,3 @@
-const CORE_HOST = window.catCoreConfig.CORE_HOST
-const CORE_PORT = window.catCoreConfig.CORE_PORT
-const CORE_USE_SECURE_PROTOCOLS = window.catCoreConfig.CORE_USE_SECURE_PROTOCOLS
-const protocol = CORE_USE_SECURE_PROTOCOLS ? 's' : ''
-
 enum AppFeatures {
   FileUpload,
   AudioRecording,
@@ -11,65 +6,47 @@ enum AppFeatures {
   WebsiteScraping
 }
 
-interface Config {
-  readonly mode: string
-  readonly socketTimeout: number
-  readonly features: AppFeatures[]
-  readonly endpoints: {
-    readonly chat: string
-    readonly rabbitHole: string
-    readonly allLLM: string
-    readonly allEmbedders: string
-    readonly plugins: string
-    readonly wipeAllCollections: string
-    readonly wipeConversation: string
-    readonly wipeCollection: string
-    readonly callMemory: string
-  }
-}
-
 /**
  * Returns the readonly application configuration.
  */
-const config: Config = {
-  mode: import.meta.env.MODE,
-  socketTimeout: 10000,
-  features: [
+class Config {
+  private static host = ''
+  private static port: string | null = null
+  static readonly mode = import.meta.env.MODE
+  static secure = false
+  static timeout = 10000
+  static apiKey: string | null = null
+  static readonly features: AppFeatures[] = [
     AppFeatures.FileUpload,
     AppFeatures.AudioRecording,
     AppFeatures.Settings,
     AppFeatures.Plugins,
     AppFeatures.WebsiteScraping
-  ],
-  endpoints: {
-    chat: `ws${protocol}://${CORE_HOST}:${CORE_PORT}/ws`,
-    rabbitHole: `http${protocol}://${CORE_HOST}:${CORE_PORT}/rabbithole/`,
-    allLLM: `http${protocol}://${CORE_HOST}:${CORE_PORT}/settings/llm/`,
-    allEmbedders: `http${protocol}://${CORE_HOST}:${CORE_PORT}/settings/embedder/`,
-    plugins: `http${protocol}://${CORE_HOST}:${CORE_PORT}/plugins/`,
-    wipeCollection: `http${protocol}://${CORE_HOST}:${CORE_PORT}/memory/collection/`,
-    wipeAllCollections: `http${protocol}://${CORE_HOST}:${CORE_PORT}/memory/wipe-collections/`,
-    wipeConversation: `http${protocol}://${CORE_HOST}:${CORE_PORT}/memory/working-memory/conversation-history/`,
-    callMemory: `http${protocol}://${CORE_HOST}:${CORE_PORT}/memory/recall/`,
+  ]
+
+  static init(config: typeof window.catCoreConfig) {
+    this.secure = config.CORE_USE_SECURE_PROTOCOLS
+    this.host = config.CORE_HOST
+    this.port = config.CORE_PORT
+    this.apiKey = config.API_KEY
+    return this
+  }
+
+  private static get addPort() {
+    return this.port ? `:${this.port}` : ''
+  }
+
+  private static get addProtocol() {
+    return this.secure ? 's' : ''
+  }
+
+  static get chat() {
+    return `ws${this.addProtocol}://${this.host}${this.addPort}/ws`
+  }
+
+  static get baseUrl() {
+    return `http${this.addProtocol}://${this.host}${this.addPort}/`
   }
 }
 
-/**
- * Makes an authenticated request to the endpoints by passing the access_token.
- */
-const authFetch = (url: string, options: RequestInit = {}) => {
-  const accessToken = window.catCoreConfig.API_KEY
-
-  if (accessToken) {
-    const headers = options.headers as Record<string, string> ?? {}
-    headers["access_token"] = accessToken
-    options.headers = headers
-  }
-
-  return fetch(url, options)
-}
-
-export {
-  config,
-  authFetch
-}
+export default Config.init(window.catCoreConfig)

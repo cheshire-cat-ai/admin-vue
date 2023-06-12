@@ -9,7 +9,7 @@ import Plotly from '@aurium/vue-plotly'
 import { now } from '@utils/commons'
 import { Matrix, TSNE } from '@saehrimnir/druidjs'
 import SidePanel from '@components/SidePanel.vue'
-import type { Memory } from '@models/Memory'
+import type { VectorsData } from '@models/Memory'
 
 interface PlotData {
 	name: string
@@ -58,7 +58,7 @@ const reduceTo2d = (options: ConstructorParameters<typeof TSNE>['1'], iterations
  * @param jsonResult the Memory object to use for the plot
  * @param mats additional matrices to concatenate in the reduction
  */
-const showMemoryPlot = (jsonResult: Memory['vectors']['collections'], ...mats: number[][]) => {
+const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[][]) => {
 	const collectionsLengths = _.reduce(jsonResult, (a, v, k) => ({ ...a, [k]: v.length }), {}) as Record<string, number>
 
 	const maxPerplexity = _.reduce(_.values(collectionsLengths), (p, c) => p + (c as number), 0)
@@ -112,9 +112,7 @@ const recallMemory = async () => {
 		return
 	}
 
-	const filteredResult = _.pickBy(result, (_v, k) => k !== 'query') as Omit<Memory, 'query'>
-
-	const memoryPlot = showMemoryPlot(filteredResult.vectors.collections, result.query.vector)
+	const memoryPlot = showMemoryPlot(result.vectors.collections, result.query.vector)
 
 	plotOutput.value = memoryPlot.data
 
@@ -126,7 +124,7 @@ const recallMemory = async () => {
 		customdata: [{ text: callText.value, source: 'query', when: 'now', score: 1 }]
 	})
 
-	callOutput.value = JSON.stringify(filteredResult.vectors, undefined, 2)
+	callOutput.value = JSON.stringify(result.vectors, undefined, 2)
 
 	toggleSpinner()
 }
@@ -163,7 +161,7 @@ const downloadResult = () => {
 </script>
 
 <template>
-	<div class="flex flex-col gap-8 self-center md:w-3/4">
+	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
 		<div class="flex flex-col items-center justify-center gap-3 rounded-md p-6">
 			<p class="text-3xl font-bold text-primary">
 				Memory
@@ -217,13 +215,14 @@ const downloadResult = () => {
 						size: 12,
 						color: isDark ? '#F4F4F5' : '#383938'
 					},
-					xaxis: { color: isDark ? '#F4F4F5' : '#383938', showticklabels: false },
-					yaxis: { color: isDark ? '#F4F4F5' : '#383938', showticklabels: false },
+					autosize: true,
+					xaxis: { color: isDark ? '#F4F4F5' : '#383938', showticklabels: false, automargin: true },
+					yaxis: { color: isDark ? '#F4F4F5' : '#383938', showticklabels: false, automargin: true },
 					paper_bgcolor: isDark ? '#383938' : '#F4F4F5',
 					plot_bgcolor: isDark ? '#383938' : '#F4F4F5',
 					showlegend: true,
 					legend: { x: 0, xanchor: 'right', title: { text: 'Collections' } },
-					margin: { b: 40, l: 40, t: 40, r: 40 }
+					margin: { b: 30, l: 30, t: 30, r: 30 }
 				}" :modeBarButtonsToRemove="['zoom2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d']"
 				:toImageButtonOptions="{
 					format: 'jpeg',

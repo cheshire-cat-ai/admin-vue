@@ -1,6 +1,5 @@
-import type { Plugin } from '@models/Plugin'
-import { config, authFetch } from '@/config'
-import { toJSON } from '@utils/commons'
+import LogService from '@services/LogService'
+import { Plugins } from '@/api'
 
 /*
  * This is a service that is used to get the list of plugins active on the Cheshire Cat.
@@ -8,13 +7,22 @@ import { toJSON } from '@utils/commons'
  */
 const PluginService = Object.freeze({
   getPlugins: async () => {
-    const endpoint = config.endpoints.plugins
+    const result = await Plugins.getAll()
 
-    return await authFetch(endpoint).then<{ plugins: Plugin[] }>(toJSON).then(({ plugins }) => plugins)
+    return result.data.plugins
   },
   togglePlugin: async (id: string) => {
-    //TODO: Enable/Disable the plugin
-    console.log("Toggled", id)
+    try {
+      const result = await Plugins.toggle(id)
+
+      LogService.print(`Toggle plugin ${id}`)
+
+      if (result.status !== 200) throw new Error()
+
+      return true
+    } catch (error) {
+      return false
+    }
   }
 })
 
