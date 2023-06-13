@@ -15,8 +15,8 @@ export const useMemory = defineStore('memory', () => {
 
   watchEffect(() => {
     currentState.loading = isLoading.value
-    currentState.data = collections.value
-    currentState.error = error.value as string
+    currentState.data = isJSONResponse(collections.value) ? [] : collections.value
+    currentState.error = isJSONResponse(collections.value) ? collections.value.message : error.value as string
   })
 
   const { showNotification } = useNotifications()

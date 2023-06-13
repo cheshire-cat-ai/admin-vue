@@ -108,7 +108,10 @@ const recallMemory = async () => {
 
 	const result = await callMemory(callText.value, kMems.value)
 
-	if (!result) return
+	if (!result) {
+		toggleSpinner()
+		return
+	}
 
 	const memoryPlot = showMemoryPlot(result.vectors.collections, result.query.vector)
 
@@ -148,8 +151,9 @@ const getPlotData = computed(() => {
 
 const getSelectCollections = computed(() => {
 	const data = memoryState.value.data ?? []
+	const totalCollections = data.length > 0 ? data.map(v => v.vectors_count).reduce((p, c) => p + c) : 0
 	return [
-		{ label: `All (${data.map(v => v.vectors_count).reduce((p, c) => p + c)})`, value: 'all' },
+		{ label: `All (${totalCollections})`, value: 'all' },
 		...data.map(v => ({ label: `${_.capitalize(v.name)} (${v.vectors_count})`, value: v.name }))
 	]
 })
@@ -174,7 +178,7 @@ const downloadResult = () => {
 			</p>
 		</div>
 		<div class="join w-fit self-center shadow-xl">
-			<button class="btn-error join-item btn" @click="wipeMemory()">
+			<button :disabled="memoryState.error !== ''" class="btn-error join-item btn" @click="wipeMemory()">
 				Wipe
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />

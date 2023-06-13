@@ -8,7 +8,7 @@ const { currentState: pluginsState } = storeToRefs(store)
 </script>
 
 <template>
-	<div class="flex flex-col gap-8 self-center md:w-3/4">
+	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
 		<div class="col-span-2 flex flex-col items-center justify-center gap-3 rounded-md p-6">
 			<p class="text-3xl font-bold text-primary">
 				Plugins
@@ -24,7 +24,7 @@ const { currentState: pluginsState } = storeToRefs(store)
 		</div>
 		<div v-else-if="pluginsState.error" class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				Failed to fetch
+				Failed to fetch available plugins
 			</div>
 		</div>
 		<template v-else>

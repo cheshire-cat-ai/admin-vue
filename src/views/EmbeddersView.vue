@@ -45,7 +45,7 @@ watchDeep(embedderState, () => {
 		<div v-else-if="embedderState.error || !getAvailableEmbedders().length"
 			class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				Failed to fetch
+				Failed to fetch available embedders
 			</div>
 		</div>
 		<div v-else class="flex grow flex-col gap-4">

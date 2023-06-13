@@ -7,9 +7,18 @@ import { Memories } from '@/api'
  */
 const MemoryService = Object.freeze({
   getCollections: async () => {
-    const result = await Memories.getAll()
+    try {
+      const result = await Memories.getAll()
 
-    return result.data.collections
+      if (result.status !== 200) throw new Error()
+
+      return result.data.collections
+    } catch (error) {
+      return {
+        status: 'error',
+        message: `Unable to fetch available collections`
+      } as JSONResponse
+    }
   },
   wipeAllCollections: async () => {
     try {

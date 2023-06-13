@@ -1,4 +1,20 @@
 @tailwind base;
+
+body {
+  scrollbar-width: 10px;
+  scrollbar-color: hsl(var(--b1)) hsl(var(--n));
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--n));
+  border-radius: 10px;
+}
+
 @tailwind components;
 @tailwind utilities;
 
@@ -58,34 +74,4 @@
   .input-number[type="number"] {
     -moz-appearance: textfield;
   }
-}
-
-body {
-  scrollbar-color: #383938 #F4F4F5;
-}
-
-[data-theme="dark"] body {
-  scrollbar-color: #F4F4F5 #383938;
-}
-
-::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #383938;
-  border-radius: 10px;
-}
-
-[data-theme="dark"] ::-webkit-scrollbar-thumb {
-  background: #F4F4F5;
-}
-
-::-webkit-scrollbar-track {
-  background: #F4F4F5;
-}
-
-[data-theme="dark"] ::-webkit-scrollbar-track {
-  background: #383938;
 }
