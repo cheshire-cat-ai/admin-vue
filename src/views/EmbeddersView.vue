@@ -32,6 +32,12 @@ const saveEmbedder = async () => {
 	if (res) emit('close')
 }
 
+const lastTimeUpdated = computed(() => {
+	const dateString = embedderState.value.data?.settings.find(v => v.name === currentSchema.value?.title)?.updatedAt
+	if (dateString) return new Date(dateString).toLocaleString().concat(' UTC')
+	else return 'never'
+})
+
 watchDeep(embedderState, () => {
 	updateProperties(selectEmbedder.value?.selectedElement?.value)
 }, { flush: 'post', immediate: true })
@@ -45,7 +51,7 @@ watchDeep(embedderState, () => {
 		<div v-else-if="embedderState.error || !getAvailableEmbedders().length"
 			class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				Failed to fetch
+				Failed to fetch available embedders
 			</div>
 		</div>
 		<div v-else class="flex grow flex-col gap-4">
@@ -57,15 +63,22 @@ watchDeep(embedderState, () => {
 					<!--<p class="text-sm text-neutral-focus">
 						{{ currentSchema?.title }}
 					</p>-->
-					<p>{{ currentSchema?.description }}</p>
+					<p class="font-medium">
+						{{ currentSchema?.description }}
+					</p>
+					<p class="text-xs text-neutral-focus/75">
+						Last time updated:
+						{{ lastTimeUpdated }}
+					</p>
 				</div>
 				<div v-for="prop in currentSchema?.properties" :key="prop.title" class="flex flex-col gap-2">
 					<p class="text-sm text-neutral-focus">
 						<span v-if="!prop.default" class="font-bold text-error">*</span>
 						{{ prop.title }}
 					</p>
-					<input v-model="currentSettings[prop.env_names![0]]" type="text" :placeholder="prop.title"
-						class="input-primary input input-sm w-full">
+					<input v-model="currentSettings[prop.env_names[0]]" 
+						:type="prop.type === 'string' ? 'text' : 'number'" :placeholder="prop.title"
+						class="input-primary input input-sm w-full" :class="{ 'pr-0': prop.type !== 'string' }">
 				</div>
 			</div>
 			<button class="btn-success btn-sm btn mt-auto normal-case" @click="saveEmbedder">

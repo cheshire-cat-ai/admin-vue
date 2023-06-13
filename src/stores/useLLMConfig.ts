@@ -39,7 +39,7 @@ export const useLLMConfig = defineStore('llm', () => {
     return currentState.settings[selected] ?? {} satisfies JSONSettings
   }
 
-  const setLLMSettings = async (name: LLMConfigMetaData['languageModelName'], settings: JSONSettings) => {
+  const setProviderSettings = async (name: LLMConfigMetaData['languageModelName'], settings: JSONSettings) => {
     const result = await LLMConfigService.setProviderSettings(name, settings)
     showNotification({
       id: uniqueId(),
@@ -55,7 +55,7 @@ export const useLLMConfig = defineStore('llm', () => {
 
   return {
     currentState,
-    setLLMSettings,
+    setProviderSettings,
     getAvailableProviders,
     getProviderSchema,
     getProviderSettings

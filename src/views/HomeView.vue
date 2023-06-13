@@ -3,7 +3,7 @@ import { useRabbitHole } from '@stores/useRabbitHole'
 import { useMessages } from '@stores/useMessages'
 import { useSound } from '@vueuse/sound'
 import { useMemory } from '@stores/useMemory'
-import { AcceptedContentTypes } from '@services/RabbitHole'
+import { AcceptedContentTypes } from '@models/RabbitHole'
 import { useSettings } from '@stores/useSettings'
 import ModalBox from '@components/ModalBox.vue'
 
@@ -12,21 +12,27 @@ const { dispatchMessage, selectRandomDefaultMessages } = messagesStore
 const { currentState: messagesState } = storeToRefs(messagesStore)
 
 const textArea = ref<HTMLTextAreaElement>()
-const userMessage = ref(''), insertedURL = ref(''), isScrollable = ref(false)
+const userMessage = ref(''), insertedURL = ref(''), isScrollable = ref(false), isTwoLines = ref(false)
 const modalBox = ref<InstanceType<typeof ModalBox>>()
 
 useTextareaAutosize({
 	element: textArea,
-	input: userMessage
+	input: userMessage,
+	onResize: () => {
+		if (textArea.value) {
+			isTwoLines.value = textArea.value.clientHeight >= 80
+		}
+	}
 })
 
 const { isListening, isSupported, toggle: toggleRecording, result: transcript } = useSpeechRecognition()
-const { open: openFile, onChange: onFileChange } = useFileDialog()
+const { open: openFile, onChange: onFileUpload } = useFileDialog()
+const { open: openMemory, onChange: onMemoryUpload } = useFileDialog()
 const { play: playPop } = useSound('pop.mp3')
 const { play: playRec } = useSound('start-rec.mp3')
 
 const filesStore = useRabbitHole()
-const { sendFile, sendWebsite } = filesStore
+const { sendFile, sendWebsite, sendMemory } = filesStore
 const { currentState: rabbitHoleState } = storeToRefs(filesStore)
 
 const { wipeConversation } = useMemory()
@@ -40,15 +46,23 @@ const inputDisabled = computed(() => {
 const randomDefaultMessages = selectRandomDefaultMessages()
 
 /**
- * Handles the file upload change by calling the onUpload callback if it exists.
+ * Handles the file upload by calling the Rabbit Hole endpoint with the file attached.
  */
-onFileChange(files => {
+onFileUpload(files => {
 	if (files == null) return
 	sendFile(files[0])
 })
 
 /**
- * When the user stops recording, the transcript will be sent to the messages service
+ * Handles the memory upload by calling the Rabbit Hole endpoint with the file attached.
+ */
+onMemoryUpload(files => {
+	if (files == null) return
+	sendMemory(files[0])
+})
+
+/**
+ * When the user stops recording, the transcript will be sent to the messages service.
  */
 watchEffect(() => {
 	if (transcript.value === '') return
@@ -164,14 +178,14 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 			<div class="flex w-full max-w-screen-lg items-center gap-2 md:gap-4">
 				<label class="swap btn-circle btn border-none bg-transparent text-primary hover:bg-base-300">
 					<input v-model="isAudioEnabled" type="checkbox" class="modal-toggle">
-					<akar-icons-sound-on class="swap-on h-6 w-6" />
-					<akar-icons-sound-off class="swap-off h-6 w-6" />
+					<heroicons-speaker-wave-solid class="swap-on h-6 w-6" />
+					<heroicons-speaker-x-mark-solid class="swap-off h-6 w-6" />
 				</label>
 				<div class="relative w-full">
 					<textarea ref="textArea" v-model="userMessage" :disabled="inputDisabled"
-						class="textarea-bordered textarea block max-h-20 w-full resize-none overflow-hidden border-2 !pr-20 !outline-none !ring-0 transition focus:border-2 focus:border-primary"
+						class="textarea block max-h-20 w-full resize-none" :class="[ isTwoLines ? 'pr-10' : 'pr-20' ]"
 						:placeholder="generatePlaceholder(messagesState.loading, isListening, messagesState.error)" @keydown="preventSend" />
-					<div class="absolute inset-y-0 right-0 flex gap-1 pr-2">
+					<div :class="[ isTwoLines ? 'flex-col-reverse' : '' ]" class="absolute right-2 top-1/2 flex -translate-y-1/2 gap-1">
 						<button :disabled="inputDisabled || userMessage.length === 0"
 							class="btn-ghost btn-sm btn-circle btn self-center"
 							@click="sendMessage(userMessage)">
@@ -181,7 +195,17 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 							<button tabindex="0" :disabled="inputDisabled" class="btn-ghost btn-sm btn-circle btn">
 								<heroicons-bolt-solid class="h-6 w-6" />
 							</button>
-							<ul tabindex="0" class="dropdown-content join-vertical join !-right-1/4 z-10 mb-6 p-0">
+							<ul tabindex="0" class="dropdown-content join-vertical join !-right-1/4 z-10 mb-5 p-0">
+								<!--<li>
+									<button :disabled="rabbitHoleState.loading" 
+										class="join-item btn w-full flex-nowrap justify-end px-2" 
+										@click="openMemory({ multiple: false, accept: 'application/json' })">
+										<span class="normal-case">Upload memories</span>
+										<span class="rounded-lg bg-success p-1 text-base-100">
+											<ph-brain-fill class="h-6 w-6" />
+										</span>
+									</button>
+								</li>-->
 								<li>
 									<button :disabled="rabbitHoleState.loading" 
 										class="join-item btn w-full flex-nowrap justify-end px-2" 

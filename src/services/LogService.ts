@@ -1,4 +1,4 @@
-import { config } from '@/config'
+import config from '@/config'
 
 /**
  * This is a service that is used to log messages for debugging purposes.

@@ -5,11 +5,11 @@ import type { SettingsDescriptor, SettingMetadata } from '@models/JSONSchema'
  */
 export interface LLMConfigMetaData extends Omit<SettingMetadata, 'properties'> {
   readonly properties?: {
-    [key: string]: {
-      title?: string,
+    readonly [key: string]: {
+      title: string,
       default?: string,
-      env_names?: string[],
-      type?: string,
+      env_names: string[],
+      type: string,
     }
   }
   readonly languageModelName: string

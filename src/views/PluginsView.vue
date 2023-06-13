@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import _ from 'lodash'
 import { usePlugins } from '@stores/usePlugins'
-import { firstLetter } from '@utils/commons'
 
 const store = usePlugins()
 const { togglePlugin } = store
@@ -8,7 +8,7 @@ const { currentState: pluginsState } = storeToRefs(store)
 </script>
 
 <template>
-	<div class="flex flex-col gap-8 self-center md:w-3/4">
+	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
 		<div class="col-span-2 flex flex-col items-center justify-center gap-3 rounded-md p-6">
 			<p class="text-3xl font-bold text-primary">
 				Plugins
@@ -24,14 +24,14 @@ const { currentState: pluginsState } = storeToRefs(store)
 		</div>
 		<div v-else-if="pluginsState.error" class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				Failed to fetch
+				Failed to fetch available plugins
 			</div>
 		</div>
 		<template v-else>
 			<div v-for="item in pluginsState.data" :key="item.id" class="flex items-center gap-4 rounded-md bg-base-200 p-4">
 				<div class="placeholder avatar">
 					<div class="h-20 w-20 rounded-md bg-gradient-to-b from-blue-500 to-primary text-base-100">
-						<span class="text-5xl font-bold leading-3">{{ firstLetter(item.name) }}</span>
+						<span class="text-5xl font-bold leading-3">{{ _.upperFirst(item.name)[0] }}</span>
 					</div>
 				</div>
 				<div class="flex flex-col gap-2">
