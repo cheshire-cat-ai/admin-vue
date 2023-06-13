@@ -34,8 +34,7 @@ export interface SettingsDescriptor {
 /**
  * The structure of the generic JSON that arrives when adding new values
  */
-export interface JSONResponse<T = unknown> {
+export interface JSONResponse {
   readonly status: 'error' | 'success'
   readonly message: string
-  readonly data?: T
 }
