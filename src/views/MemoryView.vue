@@ -151,8 +151,12 @@ const getPlotData = computed(() => {
 
 const getSelectCollections = computed(() => {
 	const data = memoryState.value.data ?? []
+	const totalCollections = data.map(v => v.vectors_count).reduce((p, c) => p + c, 0)
+	if (selectCollection.value?.selectedElement?.value === 'all') {
+		selectCollection.value.selectedElement.label = `All (${totalCollections})`
+	}
 	return [
-		{ label: `All`, value: 'all' },
+		{ label: `All (${totalCollections})`, value: 'all' },
 		...data.map(v => ({ label: `${_.capitalize(v.name)} (${v.vectors_count})`, value: v.name }))
 	]
 })

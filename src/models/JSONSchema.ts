@@ -28,7 +28,11 @@ export interface SettingsDescriptor {
   readonly allowed_configurations: string[]
   readonly schemas: Record<string, SettingMetadata>
   readonly selected_configuration: null | string
-  readonly settings: Array<{ name: string, value: JSONSettings }>
+  readonly settings: { 
+    name: string,
+    updatedAt: string,
+    value: JSONSettings 
+  }[]
 }
 
 /**

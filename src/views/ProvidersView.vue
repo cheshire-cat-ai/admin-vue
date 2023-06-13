@@ -32,6 +32,12 @@ const saveProvider = async () => {
 	if (res) emit('close')
 }
 
+const lastTimeUpdated = computed(() => {
+	const dateString = llmState.value.data?.settings.find(v => v.name === currentSchema.value?.title)?.updatedAt
+	if (dateString) return new Date(dateString).toLocaleString().concat(' UTC')
+	else return 'never'
+})
+
 watchDeep(llmState, () => {
 	updateProperties(selectProvider.value?.selectedElement?.value)
 }, { flush: 'post', immediate: true })
@@ -56,15 +62,22 @@ watchDeep(llmState, () => {
 					<!--<p class="text-sm text-neutral-focus">
 						{{ currentSchema?.title }}
 					</p>-->
-					<p>{{ currentSchema?.description }}</p>
+					<p class="font-medium">
+						{{ currentSchema?.description }}
+					</p>
+					<p class="text-xs text-neutral-focus/75">
+						Last time updated:
+						{{ lastTimeUpdated }}
+					</p>
 				</div>
 				<div v-for="prop in currentSchema?.properties" :key="prop.title" class="flex flex-col gap-2">
 					<p class="text-sm text-neutral-focus">
 						<span v-if="!prop.default" class="font-bold text-error">*</span>
 						{{ prop.title }}
 					</p>
-					<input v-model="currentSettings[prop.env_names![0]]" type="text" :placeholder="prop.title"
-						class="input-primary input input-sm w-full">
+					<input v-model="currentSettings[prop.env_names[0]]" 
+						:type="prop.type === 'string' ? 'text' : 'number'" :placeholder="prop.title"
+						class="input-primary input input-sm w-full" :class="{ 'pr-0': prop.type !== 'string' }">
 				</div>
 			</div>
 			<button class="btn-success btn-sm btn mt-auto normal-case" @click="saveProvider">
