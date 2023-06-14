@@ -59,7 +59,7 @@ export default defineConfig({
     // },
   ],
   webServer: {
-    command: process.env.CI ? 'vite preview --port 3000' : 'vite dev',
+    command: process.env.CI ? 'vite preview --port 4173' : 'vite dev',
     port: 3000,
     reuseExistingServer: !process.env.CI
   }
