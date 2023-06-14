@@ -16,4 +16,4 @@ jobs:
     - name: Install dependencies
       run: npm ci
     - name: Run Vitest tests
-      run: npm run unit
+      run: npx vitest --run --dir unit/components

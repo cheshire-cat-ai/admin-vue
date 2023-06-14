@@ -10,7 +10,9 @@
     "build-only": "vite build --base=/admin/",
     "type-check": "vue-tsc --noEmit",
     "e2e": "playwright test",
+    "e2e:ui": "playwright test show-report",
     "unit": "vitest --run",
+    "unit:ui": "vitest --ui",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
@@ -46,6 +48,7 @@
     "@types/node": "^20.3.1",
     "@types/remarkable": "^2.0.3",
     "@vitejs/plugin-vue": "^4.2.3",
+    "@vitest/ui": "^0.32.0",
     "@vue/eslint-config-typescript": "^11.0.3",
     "@vue/test-utils": "^2.3.2",
     "@vue/tsconfig": "^0.4.0",
