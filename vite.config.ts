@@ -20,7 +20,8 @@ export default defineConfig({
         'vue',
         'vue-router',
         '@vueuse/core',
-        'pinia'
+        'pinia',
+        'vitest'
       ],
       eslintrc: {
         enabled: true
@@ -49,7 +50,9 @@ export default defineConfig({
     tsconfigPaths()
   ],
   test: {
-    exclude: [...configDefaults.exclude, 'e2e']
+    environment: 'jsdom',
+    globals: true,
+    exclude: [...configDefaults.exclude, 'e2e/*']
   },
   server: {
     port: 3000,

@@ -1,6 +1,15 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "components.d.ts", "auto-imports.d.ts"],
+  "include": [
+    "env.d.ts", 
+    "src/**/*", 
+    "src/**/*.vue", 
+    "components.d.ts",
+    "auto-imports.d.ts",
+    "globals.d.ts",
+    "unit/**/*.test.ts",
+    "e2e/**/*.spec.ts" 
+  ],
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
@@ -8,7 +17,12 @@
       "ESNext",
       "DOM"
     ],
-    "types": ["vitest/globals"],
+    "types": [
+      "vitest/globals",
+      "vite/client",
+      "node",
+      "jsdom"
+    ],
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": false,
@@ -34,7 +48,7 @@
 
   "references": [
     {
-      "path": "./tsconfig.config.json"
+      "path": "./tsconfig.node.json"
     }
   ]
 }
