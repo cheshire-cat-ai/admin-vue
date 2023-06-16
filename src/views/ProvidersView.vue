@@ -48,7 +48,8 @@ watchDeep(llmState, () => {
 		<div v-if="llmState.loading" class="flex grow items-center justify-center">
 			<span class="loading loading-spinner w-12 text-primary" />
 		</div>
-		<div v-else-if="llmState.error || !getAvailableProviders().length" class="flex grow items-center justify-center">
+		<div v-else-if="llmState.error || !getAvailableProviders().length" 
+			class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
 				Failed to fetch available LLM providers
 			</div>

@@ -66,7 +66,7 @@
 					</RouterLink>
 				</li>
 				<li>
-					<RouterLink to="/settings">
+					<RouterLink to="/settings" :class="{ 'active': $route.path === '/settings' }">
 						⚙️ Settings
 					</RouterLink>
 				</li>

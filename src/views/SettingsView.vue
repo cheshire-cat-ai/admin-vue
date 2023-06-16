@@ -43,7 +43,7 @@ const openSidePanel = (title: typeof panelTitles[number]) => {
 			</p>
 			<RouterLink :to="{ name: 'embedders' }" class="btn-primary btn-sm btn"
 				@click="openSidePanel('Configure the Embedder')">
-				Configure (coming soon)
+				Configure
 			</RouterLink>
 		</div>
 		<SidePanel ref="sidePanel" :title="panelTitle">

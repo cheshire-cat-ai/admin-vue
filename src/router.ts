@@ -1,13 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
-  linkExactActiveClass: "active",
+  linkActiveClass: "active",
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
       name: 'home',
-      // Lazy-load when the route is visited.
       component: () => import('@views/HomeView.vue')
     },
     {
@@ -18,13 +17,11 @@ const router = createRouter({
         { 
           path: '',
           name: 'providers',
-          // Lazy-load when the route is visited.
           component: () => import('@views/ProvidersView.vue')
         },
         { 
           path: '',
           name: 'embedders',
-          // Lazy-load when the route is visited.
           component: () => import('@views/EmbeddersView.vue')
         },
       ],
