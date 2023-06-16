@@ -11,7 +11,10 @@ const searchText = ref("")
 const pluginsList = ref<Plugin[]>([])
 
 watchDeep(pluginsState, () => {
-	pluginsList.value = _.cloneDeep(pluginsState.value.data ?? [])
+	pluginsList.value = [...new Set([
+		...pluginsState.value.data?.installed ?? [],
+		...pluginsState.value.data?.registry ?? []
+	])]
 })
 
 const searchPlugin = () => {
@@ -21,7 +24,7 @@ const searchPlugin = () => {
 
 <template>
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
-		<div class="col-span-2 flex flex-col items-center justify-center gap-3 rounded-md p-6">
+		<div class="col-span-2 flex flex-col items-center justify-center gap-2 rounded-md p-4">
 			<p class="text-3xl font-bold text-primary">
 				Plugins
 			</p>
@@ -45,7 +48,7 @@ const searchPlugin = () => {
 		</div>
 		<div class="flex flex-wrap items-end justify-between gap-2">
 			<p class="font-medium">
-				Installed plugins: {{ pluginsState.data?.length ?? 0 }}
+				Installed plugins: {{ pluginsState.data?.installed.length ?? 0 }}
 			</p>
 			<button disabled class="btn-primary btn-sm btn">
 				Upload plugin (coming soon)
@@ -56,25 +59,45 @@ const searchPlugin = () => {
 		</div>
 		<div v-else-if="pluginsState.error" class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				Failed to fetch installed plugins
+				Failed to fetch plugins
 			</div>
 		</div>
 		<div v-else class="flex flex-col gap-4">
-			<div v-for="item in pluginsList" :key="item.id" class="flex gap-4 rounded-lg bg-base-200 p-4">
-				<div class="placeholder avatar self-center">
-					<div class="h-16 w-16 rounded-md bg-gradient-to-b from-blue-500 to-primary text-base-100">
-						<span class="text-4xl font-bold leading-3">{{ _.upperFirst(item.name)[0] }}</span>
+			<div v-for="item in pluginsList" :key="item.id" class="flex gap-4 rounded-xl bg-base-200 p-4">
+				<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-cover">
+				<div v-else class="placeholder avatar self-center">
+					<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-blue-500 to-primary text-base-100">
+						<span class="text-5xl font-bold leading-3">{{ _.upperFirst(item.name)[0] }}</span>
 					</div>
 				</div>
 				<div class="flex grow flex-col">
-					<p class="flex flex-wrap justify-between text-xl font-bold">
-						<span>{{ item.name }}</span>
+					<div class="flex justify-between">
+						<p class="text-sm font-medium text-neutral-focus">
+							<span class="text-xl font-bold text-neutral">{{ item.name }}</span>
+							by
+							<a :href="item.author_url" target="_blank" 
+								class="link-primary link no-underline">
+								{{ item.author_name }}
+							</a>
+						</p>
 						<input v-if="item.id !== 'core_plugin'" type="checkbox" disabled
 							class="!toggle-success !toggle" @click="togglePlugin(item.id)">
-					</p>
+					</div>
+					<div class="flex items-center text-sm text-neutral-focus">
+						<p>v{{ item.version }}</p>
+						<a :href="item.plugin_url" target="_blank" 
+							class="btn-ghost btn-square btn-xs btn text-primary">
+							<heroicons-link-20-solid class="h-4 w-4" />
+						</a>
+					</div>
 					<p class="text-sm">
 						{{ item.description }}
 					</p>
+					<div class="mt-2 flex flex-wrap gap-2">
+						<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
+							{{ tag.trim() }}
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

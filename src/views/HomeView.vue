@@ -198,9 +198,9 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 							<ul tabindex="0" class="dropdown-content join-vertical join !-right-1/4 z-10 mb-5 p-0">
 								<!--<li>
 									<button :disabled="rabbitHoleState.loading" 
-										class="join-item btn w-full flex-nowrap justify-end px-2" 
+										class="join-item btn w-full flex-nowrap px-2" 
 										@click="openMemory({ multiple: false, accept: 'application/json' })">
-										<span class="normal-case">Upload memories</span>
+										<span class="grow normal-case">Upload memories</span>
 										<span class="rounded-lg bg-success p-1 text-base-100">
 											<ph-brain-fill class="h-6 w-6" />
 										</span>
@@ -208,9 +208,9 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 								</li>-->
 								<li>
 									<button :disabled="rabbitHoleState.loading" 
-										class="join-item btn w-full flex-nowrap justify-end px-2" 
+										class="join-item btn w-full flex-nowrap px-2" 
 										@click="modalBox?.toggleModal()">
-										<span class="normal-case">Upload url</span>
+										<span class="grow normal-case">Upload url</span>
 										<span class="rounded-lg bg-info p-1 text-base-100">
 											<heroicons-globe-alt class="h-6 w-6" />
 										</span>
@@ -218,9 +218,9 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 								</li>
 								<li>
 									<button :disabled="rabbitHoleState.loading" 
-										class="join-item btn w-full flex-nowrap justify-end px-2" 
+										class="join-item btn w-full flex-nowrap px-2" 
 										@click="openFile({ multiple: false, accept: AcceptedContentTypes.join(', ') })">
-										<span class="normal-case">Upload file</span>
+										<span class="grow normal-case">Upload file</span>
 										<span class="rounded-lg bg-warning p-1 text-base-100">
 											<heroicons-document-text-solid class="h-6 w-6" />
 										</span>
@@ -228,9 +228,9 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 								</li>
 								<li>
 									<button :disabled="messagesState.messages.length === 0" 
-										class="join-item btn w-full flex-nowrap justify-end px-2" 
+										class="join-item btn w-full flex-nowrap px-2" 
 										@click="clearConversation()">
-										<span class="normal-case">Clear conversation</span>
+										<span class="grow normal-case">Clear conversation</span>
 										<span class="rounded-lg bg-error p-1 text-base-100">
 											<heroicons-trash-solid class="h-6 w-6" />
 										</span>

@@ -177,7 +177,7 @@ const downloadResult = () => {
 
 <template>
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
-		<div class="flex flex-col items-center justify-center gap-3 rounded-md p-6">
+		<div class="flex flex-col items-center justify-center gap-2 rounded-md p-4">
 			<p class="text-3xl font-bold text-primary">
 				Memory
 			</p>

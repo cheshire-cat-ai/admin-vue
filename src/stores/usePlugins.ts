@@ -5,10 +5,16 @@ import PluginService from '@services/PluginService'
 export const usePlugins = defineStore('plugins', () => {
   const currentState = reactive<PluginsState>({
     loading: false,
-    data: []
+    data: {
+      installed: [],
+      registry: []
+    }
   })
 
-  const { state: plugins, isLoading, error, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), [])
+  const { state: plugins, isLoading, error, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), {
+    installed: [],
+    registry: []
+  })
 
   watchEffect(() => {
     currentState.loading = isLoading.value
@@ -19,7 +25,7 @@ export const usePlugins = defineStore('plugins', () => {
   onActivated(() => fetchPlugins())
 
   const togglePlugin = async (id: Plugin['id']) => {
-    if (currentState.data?.find(p => p.id === id)) {
+    if (currentState.data?.installed.find(p => p.id === id)) {
       await PluginService.togglePlugin(id)
       return true
     }
