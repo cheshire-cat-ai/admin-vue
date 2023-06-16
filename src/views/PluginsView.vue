@@ -1,10 +1,22 @@
 <script setup lang="ts">
 import _ from 'lodash'
+import type { Plugin } from '@models/Plugin'
 import { usePlugins } from '@stores/usePlugins'
 
 const store = usePlugins()
 const { togglePlugin } = store
 const { currentState: pluginsState } = storeToRefs(store)
+
+const searchText = ref("")
+const pluginsList = ref<Plugin[]>([])
+
+watchDeep(pluginsState, () => {
+	pluginsList.value = _.cloneDeep(pluginsState.value.data ?? [])
+})
+
+const searchPlugin = () => {
+	pluginsList.value = pluginsList.value.filter(p => p.name.includes(searchText.value))
+}
 </script>
 
 <template>
@@ -24,16 +36,16 @@ const { currentState: pluginsState } = storeToRefs(store)
 				<span class="label-text font-medium text-primary">Search for a plugin</span>
 			</label>
 			<div class="relative w-full">
-				<input type="text" disabled placeholder="Enter a plugin name..."
-					class="input-primary input input-sm w-full">
-				<button disabled class="btn-primary btn-square btn-sm btn absolute right-0 top-0">
+				<input v-model.trim="searchText" type="text" placeholder="Enter a plugin name..."
+					class="input-primary input input-sm w-full" @keyup.enter="searchPlugin()">
+				<button class="btn-primary btn-square btn-sm btn absolute right-0 top-0" @click="searchPlugin()">
 					<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
 				</button>
 			</div>
 		</div>
 		<div class="flex flex-wrap items-end justify-between gap-2">
 			<p class="font-medium">
-				Total plugins: {{ pluginsState.data?.length ?? 0 }}
+				Installed plugins: {{ pluginsState.data?.length ?? 0 }}
 			</p>
 			<button disabled class="btn-primary btn-sm btn">
 				Upload plugin (coming soon)
@@ -47,21 +59,24 @@ const { currentState: pluginsState } = storeToRefs(store)
 				Failed to fetch installed plugins
 			</div>
 		</div>
-		<template v-else>
-			<div v-for="item in pluginsState.data" :key="item.id" class="flex items-center gap-4 rounded-lg bg-base-200 p-4">
-				<div class="placeholder avatar">
-					<div class="h-20 w-20 rounded-md bg-gradient-to-b from-blue-500 to-primary text-base-100">
-						<span class="text-5xl font-bold leading-3">{{ _.upperFirst(item.name)[0] }}</span>
+		<div v-else class="flex flex-col gap-4">
+			<div v-for="item in pluginsList" :key="item.id" class="flex gap-4 rounded-lg bg-base-200 p-4">
+				<div class="placeholder avatar self-center">
+					<div class="h-16 w-16 rounded-md bg-gradient-to-b from-blue-500 to-primary text-base-100">
+						<span class="text-4xl font-bold leading-3">{{ _.upperFirst(item.name)[0] }}</span>
 					</div>
 				</div>
-				<div class="flex flex-col">
+				<div class="flex grow flex-col">
 					<p class="flex flex-wrap justify-between text-xl font-bold">
 						<span>{{ item.name }}</span>
-						<!--<input type="checkbox" class="!toggle-success !toggle" @click="togglePlugin(item.id)">-->
+						<input v-if="item.id !== 'core_plugin'" type="checkbox" disabled
+							class="!toggle-success !toggle" @click="togglePlugin(item.id)">
 					</p>
-					<p>{{ item.description }}</p>
+					<p class="text-sm">
+						{{ item.description }}
+					</p>
 				</div>
 			</div>
-		</template>
+		</div>
 	</div>
 </template>
