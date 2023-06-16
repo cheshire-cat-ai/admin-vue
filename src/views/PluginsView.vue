@@ -19,22 +19,42 @@ const { currentState: pluginsState } = storeToRefs(store)
 				allowing for greater customization of the user experience.
 			</p>
 		</div>
+		<div class="form-control w-full">
+			<label class="label">
+				<span class="label-text font-medium text-primary">Search for a plugin</span>
+			</label>
+			<div class="relative w-full">
+				<input type="text" disabled placeholder="Enter a plugin name..."
+					class="input-primary input input-sm w-full">
+				<button disabled class="btn-primary btn-square btn-sm btn absolute right-0 top-0">
+					<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
+				</button>
+			</div>
+		</div>
+		<div class="flex flex-wrap items-end justify-between gap-2">
+			<p class="font-medium">
+				Total plugins: {{ pluginsState.data?.length ?? 0 }}
+			</p>
+			<button disabled class="btn-primary btn-sm btn">
+				Upload plugin (coming soon)
+			</button>
+		</div>
 		<div v-if="pluginsState.loading" class="flex grow items-center justify-center">
 			<span class="loading loading-spinner w-12 text-primary" />
 		</div>
 		<div v-else-if="pluginsState.error" class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				Failed to fetch available plugins
+				Failed to fetch installed plugins
 			</div>
 		</div>
 		<template v-else>
-			<div v-for="item in pluginsState.data" :key="item.id" class="flex items-center gap-4 rounded-md bg-base-200 p-4">
+			<div v-for="item in pluginsState.data" :key="item.id" class="flex items-center gap-4 rounded-lg bg-base-200 p-4">
 				<div class="placeholder avatar">
 					<div class="h-20 w-20 rounded-md bg-gradient-to-b from-blue-500 to-primary text-base-100">
 						<span class="text-5xl font-bold leading-3">{{ _.upperFirst(item.name)[0] }}</span>
 					</div>
 				</div>
-				<div class="flex flex-col gap-2">
+				<div class="flex flex-col">
 					<p class="flex flex-wrap justify-between text-xl font-bold">
 						<span>{{ item.name }}</span>
 						<!--<input type="checkbox" class="!toggle-success !toggle" @click="togglePlugin(item.id)">-->

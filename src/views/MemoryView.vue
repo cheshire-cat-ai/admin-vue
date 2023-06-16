@@ -30,16 +30,18 @@ const [showSpinner, toggleSpinner] = useToggle(false)
 
 const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
-const { wipeAllCollections, wipeCollection, callMemory } = memoryStore
+const { wipeAllCollections, wipeCollection, callMemory, fetchCollections } = memoryStore
 
 /**
  * If "all", wipes all the collections in memory, otherwise only the selected one
  */
-const wipeMemory = () => {
+const wipeMemory = async () => {
 	if (selectCollection.value) {
 		const selected = selectCollection.value.selectedElement?.value
-		if (selected === 'all') wipeAllCollections()
-		else if (selected) wipeCollection(selected)
+		if (!selected) return
+		if (selected === 'all') await wipeAllCollections()
+		else await wipeCollection(selected)
+		await fetchCollections()
 	}
 }
 
@@ -181,7 +183,7 @@ const downloadResult = () => {
 			</p>
 		</div>
 		<div class="join w-fit self-center shadow-xl">
-			<button :disabled="memoryState.error === ''" class="btn-error join-item btn" @click="wipeMemory()">
+			<button :disabled="memoryState.error !== undefined" class="btn-error join-item btn" @click="wipeMemory()">
 				Wipe
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />

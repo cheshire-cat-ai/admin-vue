@@ -1,8 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import SettingsView from '@views/SettingsView.vue'
-import ErrorView from '@views/ErrorView.vue'
-import PluginsView from '@views/PluginsView.vue'
-import MemoryView from '@views/MemoryView.vue'
 
 const router = createRouter({
   linkExactActiveClass: "active",
@@ -17,7 +13,7 @@ const router = createRouter({
     {
       path: '/settings',
       name: 'settings',
-      component: SettingsView,
+      component: () => import('@views/SettingsView.vue'),
       children: [
         { 
           path: '',
@@ -36,17 +32,17 @@ const router = createRouter({
     {
       path: '/memory',
       name: 'memory',
-      component: MemoryView
+      component: () => import('@views/MemoryView.vue')
     },
     {
       path: '/plugins',
       name: 'plugins',
-      component: PluginsView
+      component: () => import('@views/PluginsView.vue')
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'error',
-      component: ErrorView,
+      component: () => import('@views/ErrorView.vue'),
     }
   ]
 })

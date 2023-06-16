@@ -41,7 +41,7 @@ const openSidePanel = (title: typeof panelTitles[number]) => {
 			<p class="text-center">
 				Choose a language embedder to help the Cat remember conversations and documents
 			</p>
-			<RouterLink :to="{ name: 'embedders' }" class="btn-primary btn-sm btn" disabled
+			<RouterLink :to="{ name: 'embedders' }" class="btn-primary btn-sm btn"
 				@click="openSidePanel('Configure the Embedder')">
 				Configure (coming soon)
 			</RouterLink>

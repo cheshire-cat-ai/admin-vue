@@ -8,13 +8,15 @@ export const usePlugins = defineStore('plugins', () => {
     data: []
   })
 
-  const { state: plugins, isLoading, error } = useAsyncState(PluginService.getPlugins(), [])
+  const { state: plugins, isLoading, error, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), [])
 
   watchEffect(() => {
     currentState.loading = isLoading.value
     currentState.data = plugins.value
     currentState.error = error.value as string
   })
+
+  onActivated(() => fetchPlugins())
 
   const togglePlugin = async (id: Plugin['id']) => {
     if (currentState.data?.find(p => p.id === id)) {
@@ -26,7 +28,8 @@ export const usePlugins = defineStore('plugins', () => {
   
   return {
     currentState,
-    togglePlugin
+    togglePlugin,
+    fetchPlugins
   }
 })
 

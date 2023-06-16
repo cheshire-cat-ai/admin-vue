@@ -11,13 +11,15 @@ export const useMemory = defineStore('memory', () => {
     data: []
   })
 
-  const { state: collections, isLoading, error } = useAsyncState(MemoryService.getCollections(), [])
+  const { state: collections, isLoading, error, execute: fetchCollections } = useAsyncState(MemoryService.getCollections(), [])
 
   watchEffect(() => {
     currentState.loading = isLoading.value
     currentState.data = isJSONResponse(collections.value) ? [] : collections.value
     currentState.error = isJSONResponse(collections.value) ? collections.value.message : error.value as string
   })
+
+  onActivated(() => fetchCollections())
 
   const { showNotification } = useNotifications()
 
@@ -55,6 +57,7 @@ export const useMemory = defineStore('memory', () => {
   
   return {
     currentState,
+    fetchCollections,
     wipeAllCollections,
     wipeConversation,
     wipeCollection,
