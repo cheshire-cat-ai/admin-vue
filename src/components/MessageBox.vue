@@ -12,6 +12,7 @@ const { isDark } = storeToRefs(useSettings())
 const whyPanel = ref<InstanceType<typeof SidePanel>>()
 
 const markdown = new Remarkable({
+	html: true,
 	breaks: true,
 	typographer: true,
 	highlight: (str, lang) => {
