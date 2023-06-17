@@ -20,7 +20,7 @@ useTextareaAutosize({
 	input: userMessage,
 	onResize: () => {
 		if (textArea.value) {
-			isTwoLines.value = textArea.value.clientHeight >= 80
+			isTwoLines.value = textArea.value.clientHeight >= 72
 		}
 	}
 })
@@ -142,7 +142,11 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 </script>
 
 <template>
-	<div class="flex w-full max-w-screen-lg flex-col justify-center gap-4 self-center overflow-hidden !pt-0 pb-16 text-sm md:!pb-20">
+	<div class="flex w-full max-w-screen-lg flex-col justify-center gap-4 self-center overflow-hidden !pt-0 text-sm"
+		:class="{
+			'pb-16 md:pb-20': !isTwoLines,
+			'pb-20 md:pb-24': isTwoLines,
+		}">
 		<div v-if="!messagesState.ready" class="flex grow items-center justify-center self-center">
 			<p v-if="messagesState.error" class="w-fit rounded bg-error p-4 font-semibold text-base-100">
 				{{ messagesState.error }}
