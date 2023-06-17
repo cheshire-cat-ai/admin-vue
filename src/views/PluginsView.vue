@@ -85,7 +85,7 @@ const searchPlugin = () => {
 					</div>
 					<div class="flex items-center text-sm text-neutral-focus">
 						<p>v{{ item.version }}</p>
-						<a :href="item.plugin_url" target="_blank" 
+						<a v-if="item.plugin_url" :href="item.plugin_url" target="_blank" 
 							class="btn-ghost btn-square btn-xs btn text-primary">
 							<heroicons-link-20-solid class="h-4 w-4" />
 						</a>
