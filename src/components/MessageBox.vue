@@ -14,6 +14,7 @@ const whyPanel = ref<InstanceType<typeof SidePanel>>()
 const markdown = new Remarkable({
 	html: true,
 	breaks: true,
+	xhtmlOut: true,
 	typographer: true,
 	highlight: (str, lang) => {
 		if (lang && hljs.getLanguage(lang)) {
@@ -25,6 +26,7 @@ const markdown = new Remarkable({
 		return '' // use external default escaping
 	}
 }).use(linkify)
+
 markdown.inline.ruler.enable(['sup', 'sub'])
 markdown.core.ruler.enable(['abbr'])
 markdown.block.ruler.enable(['footnote', 'deflist'])
@@ -65,5 +67,17 @@ const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
 
 .chat-bubble > p a {
 	@apply link link-info;
+}
+
+.chat-bubble > p ul {
+	@apply list-disc list-inside;
+}
+
+.chat-bubble > p ol {
+	@apply list-decimal list-inside;
+}
+
+.chat-bubble > p table {
+	@apply table table-xs;
 }
 </style>

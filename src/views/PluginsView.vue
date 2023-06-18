@@ -27,6 +27,11 @@ watchDeep(pluginsState, () => {
 const searchPlugin = () => {
 	pluginsList.value = pluginsList.value.filter(p => p.name.includes(searchText.value))
 }
+
+const filteredList = computed(() => {
+	const toFilterList = _.cloneDeep(pluginsList.value)
+	return toFilterList
+})
 </script>
 
 <template>
@@ -55,8 +60,9 @@ const searchPlugin = () => {
 				</div>
 			</div>
 			<div class="flex flex-wrap justify-center gap-2">
-				<button v-for="(v, k) in filters" :key="k" class="btn-xs btn rounded-full" disabled
-					:class="[ v ? 'btn-primary' : 'btn-ghost !border-2 !border-primary' ]" @click="filters[k] = !filters[k]">
+				<button v-for="(v, k) in filters" :key="k" class="btn-xs btn rounded-full"
+					:class="[ v ? 'btn-primary text-base-100' : 'btn-ghost !border-2 !border-primary text-neutral-focus/75' ]" 
+					@click="filters[k] = !filters[k]">
 					{{ k }}
 				</button>
 			</div>
@@ -78,7 +84,7 @@ const searchPlugin = () => {
 			</div>
 		</div>
 		<div v-else class="flex flex-col gap-4">
-			<div v-for="item in pluginsList" :key="item.id" class="flex gap-4 rounded-xl bg-base-200 p-4">
+			<div v-for="item in filteredList" :key="item.id" class="flex gap-4 rounded-xl bg-base-200 p-4">
 				<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain">
 				<div v-else class="placeholder avatar self-center">
 					<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-blue-500 to-primary text-base-100">

@@ -65,7 +65,7 @@ const reduceTo2d = (options: ConstructorParameters<typeof TSNE>['1'], iterations
 const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[][]) => {
 	const collectionsLengths = _.reduce(jsonResult, (a, v, k) => ({ ...a, [k]: v.length }), {}) as Record<string, number>
 
-	const maxPerplexity = _.reduce(_.values(collectionsLengths), (p, c) => p + (c as number), 0)
+	const maxPerplexity = _.reduce(_.values(collectionsLengths), (p, c) => p + c, 0)
 
 	const matrix = reduceTo2d({ 
 		perplexity: Math.min(Math.max(kMems.value, 2), maxPerplexity) 
@@ -74,7 +74,7 @@ const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[
 	return {
 		matrix,
 		data: _.map(_.entries(jsonResult), (c, i, k) => {
-			const prev = i > 0 ? k[i - 1][1].length : 0
+			const prev = k.slice(0, i).reduce((p, v) => p + v[1].length, 0)
 			const curr = c[1].length
 			return {
 				name: _.capitalize(c[0]),

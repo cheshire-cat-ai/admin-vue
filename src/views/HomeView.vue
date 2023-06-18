@@ -173,7 +173,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 			</div>
 		</div>
 		<div v-else class="flex grow cursor-pointer flex-col items-center justify-center gap-4">
-			<div v-for="(msg, index) in randomDefaultMessages" :key="index" class="btn rounded-lg font-normal normal-case shadow-xl"
+			<div v-for="(msg, index) in randomDefaultMessages" :key="index" class="btn-neutral btn font-medium normal-case shadow-lg"
 				@click="sendMessage(msg)">
 				{{ msg }}
 			</div>
