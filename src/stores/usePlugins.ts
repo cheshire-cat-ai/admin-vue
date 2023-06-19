@@ -1,4 +1,5 @@
 import type { PluginsState } from '@stores/types'
+import { isJSONResponse } from '@utils/typeGuards'
 import type { Plugin } from '@models/Plugin'
 import PluginService from '@services/PluginService'
 
@@ -18,8 +19,11 @@ export const usePlugins = defineStore('plugins', () => {
 
   watchEffect(() => {
     currentState.loading = isLoading.value
-    currentState.data = plugins.value
-    currentState.error = error.value as string
+    currentState.data = isJSONResponse(plugins.value) ? {
+      installed: [],
+      registry: []
+    } : plugins.value
+    currentState.error = isJSONResponse(plugins.value) ? plugins.value.message : error.value as string
   })
 
   onActivated(() => fetchPlugins())

@@ -8,9 +8,18 @@ import type { JSONResponse } from '@models/JSONSchema'
  */
 const PluginService = Object.freeze({
   getPlugins: async () => {
-    const result = await Plugins.getAll()
+    try {
+      const result = await Plugins.getAll()
 
-    return result.data
+      if (result.status !== 200) throw new Error()
+
+      return result.data
+    } catch (error) {
+      return {
+        status: 'error',
+        message: `Unable to fetch the plugins`
+      } as JSONResponse
+    }
   },
   togglePlugin: async (id: string) => {
     try {

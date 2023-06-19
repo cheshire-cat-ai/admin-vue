@@ -3,7 +3,6 @@
  * A service is a singleton object that provides a simple interface for performing backend-related tasks such as
  * sending or receiving data.
  */
-
 import LogService from '@services/LogService'
 import config from '@/config'
 
@@ -11,11 +10,11 @@ import config from '@/config'
  * A map of error codes to error messages.
  */
 enum ErrorCodes {
-  IndexError = 'Something went wrong while processing your message. Please try again later',
-  SocketClosed = 'The connection to the server was closed. Please try refreshing the page',
-  WebSocketConnectionError = 'Something went wrong while connecting to the server. Please try again later',
-  APIError = 'Something went wrong while sending your message. Please try refreshing the page',
-  FailedRetries = 'Failed to connect WebSocket after 3 retries'
+  IndexError = 'Something went wrong while processing your message. Please try again later.',
+  SocketClosed = 'The connection to the server was closed. Please try refreshing the page.',
+  WebSocketConnectionError = 'Something went wrong while connecting to the server. Please try again later.',
+  APIError = 'Something went wrong while sending your message. Please try refreshing the page.',
+  FailedRetries = 'Failed to connect WebSocket after 3 retries.'
 }
 
 /**

@@ -2,20 +2,16 @@
 import _ from 'lodash'
 import type { Plugin } from '@models/Plugin'
 import { usePlugins } from '@stores/usePlugins'
+import { useSettings } from '@stores/useSettings'
 
 const store = usePlugins()
 const { togglePlugin } = store
 const { currentState: pluginsState } = storeToRefs(store)
 
+const { currentFilters } = storeToRefs(useSettings())
+
 const searchText = ref("")
 const pluginsList = ref<Plugin[]>([])
-
-const filters = ref({
-	installed: true,
-	registry: true,
-	enabled: true,
-	disabled: true
-})
 
 watchDeep(pluginsState, () => {
 	pluginsList.value = [...new Set([
@@ -60,9 +56,9 @@ const filteredList = computed(() => {
 				</div>
 			</div>
 			<div class="flex flex-wrap justify-center gap-2">
-				<button v-for="(v, k) in filters" :key="k" class="btn-xs btn rounded-full"
+				<button v-for="(v, k) in currentFilters" :key="k" class="btn-xs btn rounded-full" disabled
 					:class="[ v ? 'btn-primary text-base-100' : 'btn-ghost !border-2 !border-primary text-neutral-focus/75' ]" 
-					@click="filters[k] = !filters[k]">
+					@click="currentFilters[k] = !currentFilters[k]">
 					{{ k }}
 				</button>
 			</div>
@@ -101,6 +97,7 @@ const filteredList = computed(() => {
 								{{ item.author_name }}
 							</a>
 						</p>
+						<!-- TODO: When server adds the property, show toggle only for installed plugins, otherwise a "INSTALL" button -->
 						<input v-if="item.id !== 'core_plugin'" type="checkbox" disabled
 							class="!toggle-success !toggle" @click="togglePlugin(item.id)">
 					</div>

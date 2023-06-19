@@ -11,8 +11,18 @@ export const useSettings = defineStore('settings', () => {
 
   const toggleDark = useToggle(isDark)
 
+  const currentFilters = useLocalStorage('currentFilters', {
+    installed: true,
+    registry: true,
+    enabled: true,
+    disabled: true
+  })
+
   return {
-    isAudioEnabled, isDark, toggleDark
+    isAudioEnabled,
+    isDark,
+    currentFilters,
+    toggleDark
   }
 })
 
