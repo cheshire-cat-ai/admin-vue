@@ -28,3 +28,8 @@ jobs:
         filename: 'release.zip'
         directory: '.'
         path: './dist'
+    - name: Upload Release
+      uses: ncipollo/release-action@v1.12.0
+      with:
+        artifacts: 'release.zip'
+        token: ${{ secrets.GITHUB_TOKEN }}
