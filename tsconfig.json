@@ -1,13 +1,24 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "components.d.ts", "auto-imports.d.ts"],
+  "include": [
+    "env.d.ts", 
+    "src/**/*", 
+    "src/**/*.vue", 
+    "components.d.ts", 
+    "auto-imports.d.ts", 
+    "globals.d.ts"
+  ],
   "compilerOptions": {
-    "target": "ES2019",
+    "target": "ESNext",
     "module": "ESNext",
     "lib": [
-      "es2019",
+      "ESNext",
       "DOM"
     ],
+    "types": [
+      "vite/client",
+      "node"
+    ],  
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": false,
@@ -17,7 +28,7 @@
     "esModuleInterop": true,
     "strict": true,
     "allowSyntheticDefaultImports": true,
-    "composite": true,
+    "composite": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
@@ -33,7 +44,7 @@
 
   "references": [
     {
-      "path": "./tsconfig.config.json"
+      "path": "./tsconfig.node.json"
     }
   ]
 }

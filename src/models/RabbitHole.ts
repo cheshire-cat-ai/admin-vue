@@ -1,4 +1,8 @@
-export const AcceptedContentTypes = ['text/plain', 'text/markdown', 'application/pdf'] as const
+export const AcceptedContentTypes = [
+  'text/plain', 
+  'text/markdown', 
+  'application/pdf'
+] as const
 
 export interface FileResponse {
   'content-type': typeof AcceptedContentTypes[number]

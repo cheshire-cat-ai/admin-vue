@@ -5,6 +5,8 @@
  */
 import LogService from '@services/LogService'
 import config from '@/config'
+import { isMessageResponse } from '@utils/typeGuards'
+import type { MessageError, MessageResponse } from '@/models/Message'
 
 /**
  * A map of error codes to error messages.
@@ -129,38 +131,15 @@ type OnConnected = () => void
 /**
  * Defines the type for the onMessage event handler
  */
-type OnMessageHandler = (message: string, type: MessageResponse['type'], why: any) => void
+type OnMessageHandler = (
+  message: string, 
+  type: MessageResponse['type'], 
+  why: MessageResponse['why']
+) => void
 
 /**
  * Defines the type for the onError event handler
  */
 type OnErrorHandler = (err: Error) => void
-
-/**
- * APIMessageServiceResponse is the interface for the response from the API message service.
- */
-export interface MessageResponse {
-  error: false
-  type: 'notification' | 'chat'
-  content: string
-  why: any
-}
-
-/**
- *  APIMessageServiceError is the interface for the error response from the API message service.
- */
-export interface MessageError {
-  error: true
-  code: string
-}
-
-/**
- * A type guard that takes a value of unknown type and returns a boolean indicating whether the value is of
- * type APIMessageServiceResponse
- * @param value
- */
-export const isMessageResponse = (value: unknown): value is MessageResponse => {
-  return !!(value && typeof value === 'object' && 'content' in value && 'why' in value && 'error' in value && value.error === false)
-}
 
 export default MessagesService

@@ -13,7 +13,8 @@ const { currentState: messagesState } = storeToRefs(messagesStore)
 
 const textArea = ref<HTMLTextAreaElement>()
 const userMessage = ref(''), insertedURL = ref(''), isScrollable = ref(false), isTwoLines = ref(false)
-const modalBox = ref<InstanceType<typeof ModalBox>>()
+const boxUploadURL = ref<InstanceType<typeof ModalBox>>()
+const boxChatSettings = ref<InstanceType<typeof ModalBox>>()
 
 useTextareaAutosize({
 	element: textArea,
@@ -109,7 +110,7 @@ const clearConversation = async () => {
 const dispatchWebsite = () => {
 	if (!insertedURL.value) return
 	sendWebsite(insertedURL.value)
-	modalBox.value?.toggleModal()
+	boxUploadURL.value?.toggleModal()
 }
 
 /**
@@ -119,6 +120,10 @@ const sendMessage = (message: string) => {
 	if (message === '') return
 	userMessage.value = ''
 	dispatchMessage(message)
+}
+
+const saveChatSettings = () => {
+	console.log("save")
 }
 
 /**
@@ -200,8 +205,20 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 								<heroicons-bolt-solid class="h-6 w-6" />
 							</button>
 							<ul tabindex="0" class="dropdown-content join-vertical join !-right-1/4 z-10 mb-5 p-0">
-								<!--<li>
-									<button :disabled="rabbitHoleState.loading" 
+								<li>
+									<!-- :disabled="rabbitHoleState.loading" -->
+									<button disabled
+										class="join-item btn w-full flex-nowrap px-2" 
+										@click="boxChatSettings?.toggleModal()">
+										<span class="grow normal-case">Chat settings</span>
+										<span class="rounded-lg bg-primary p-1 text-base-100">
+											<heroicons-adjustments-horizontal-solid class="h-6 w-6" />
+										</span>
+									</button>
+								</li>
+								<li>
+									<!-- :disabled="rabbitHoleState.loading" -->
+									<button disabled
 										class="join-item btn w-full flex-nowrap px-2" 
 										@click="openMemory({ multiple: false, accept: 'application/json' })">
 										<span class="grow normal-case">Upload memories</span>
@@ -209,11 +226,11 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 											<ph-brain-fill class="h-6 w-6" />
 										</span>
 									</button>
-								</li>-->
+								</li>
 								<li>
 									<button :disabled="rabbitHoleState.loading" 
 										class="join-item btn w-full flex-nowrap px-2" 
-										@click="modalBox?.toggleModal()">
+										@click="boxUploadURL?.toggleModal()">
 										<span class="grow normal-case">Upload url</span>
 										<span class="rounded-lg bg-info p-1 text-base-100">
 											<heroicons-globe-alt class="h-6 w-6" />
@@ -254,7 +271,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				<heroicons-arrow-down-20-solid class="h-5 w-5" />
 			</button>
 		</div>
-		<ModalBox ref="modalBox">
+		<ModalBox ref="boxUploadURL">
 			<div class="flex flex-col items-center justify-center gap-2 text-neutral">
 				<h3 class="text-lg font-bold">
 					Insert URL
@@ -264,6 +281,17 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 					class="input-bordered input-primary input input-sm my-4 w-full">
 				<button class="btn-primary btn-sm btn" @click="dispatchWebsite">
 					Send
+				</button>
+			</div>
+		</ModalBox>
+		<ModalBox ref="boxChatSettings">
+			<div class="flex flex-col items-center justify-center gap-2 text-neutral">
+				<h3 class="text-lg font-bold">
+					Chat Settings
+				</h3>
+				<p>Hello</p>
+				<button class="btn-primary btn-sm btn" @click="saveChatSettings">
+					Save
 				</button>
 			</div>
 		</ModalBox>
