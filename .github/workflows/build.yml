@@ -28,12 +28,12 @@ jobs:
       uses: TheDoctor0/zip-release@0.7.1
       with:
         type: 'zip'
-        filename: 'build.zip'
+        filename: 'release.zip'
         directory: './dist'
         path: '.'
     - name: Upload Release
       uses: ncipollo/release-action@v1.12.0
       with:
         tag: 'Admin'
-        artifacts: 'build.zip'
+        artifacts: 'release.zip'
         token: ${{ secrets.GITHUB_TOKEN }}
