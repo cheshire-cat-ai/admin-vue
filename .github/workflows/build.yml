@@ -35,5 +35,5 @@ jobs:
       uses: ncipollo/release-action@v1.12.0
       with:
         tag: 'Admin'
-        artifacts: 'release.zip'
+        artifacts: './dist/release.zip'
         token: ${{ secrets.GITHUB_TOKEN }}
