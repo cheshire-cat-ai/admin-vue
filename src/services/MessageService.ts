@@ -112,7 +112,8 @@ const MessagesService = Object.freeze({
       return this
     }
     const jsonMessage = JSON.stringify({ 
-      text: message, 
+      text: message,
+      lang: localStorage.currentLocale,
       prompt_settings: settings 
     })
     socket.send(jsonMessage)
