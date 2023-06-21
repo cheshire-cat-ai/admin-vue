@@ -1,10 +1,5 @@
-/**
- * This module defines and exports a service that is used to send files to the backend.
- * A service is a singleton object that provides a simple interface for performing backend-related tasks such as
- * sending or receiving data.
- */
-import LogService from '@services/LogService'
-import { RabbitHole } from '@/api'
+import { post, tryRequest } from '@/api'
+import type { FileResponse, MemoryResponse, WebResponse } from '@models/RabbitHole'
 
 /*
  * This service is used to send files down to the rabbit hole.
@@ -12,24 +7,42 @@ import { RabbitHole } from '@/api'
  */
 const RabbitHoleService = Object.freeze({
   sendFile: async (file: File) => {
-    const result = await RabbitHole.sendFile(file)
-
-    LogService.print('Sending a file to the rabbit hole')
-
+    const formData = new FormData()
+    formData.append('file', file)
+    const result = await tryRequest(
+      post<FileResponse>('/rabbithole/', formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }), 
+      "Language model embedder updated successfully", 
+      "Language model embedder couldn't be updated",
+      "Sending the embedder settings to the cat"
+    )
     return result.data
   },
   sendWeb: async (url: string) => {
-    const result = await RabbitHole.sendWeb(url)
-
-    LogService.print('Sending a website content to the rabbit hole')
-
+    const result = await tryRequest(
+      post<WebResponse>('/rabbithole/web/', { url }), 
+      "Language model embedder updated successfully", 
+      "Language model embedder couldn't be updated",
+      "Sending the embedder settings to the cat"
+    )
     return result.data
   },
   sendMemory: async (file: File) => {
-    const result = await RabbitHole.sendMemory(file)
-
-    LogService.print('Sending a bunch of memories to the rabbit hole')
-
+    const formData = new FormData()
+    formData.append('file', file)
+    const result = await tryRequest(
+      post<MemoryResponse>('/rabbithole/memory/', formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }), 
+      "Language model embedder updated successfully", 
+      "Language model embedder couldn't be updated",
+      "Sending the embedder settings to the cat"
+    )
     return result.data
   },
 })

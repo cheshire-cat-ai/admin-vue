@@ -1,7 +1,6 @@
 import type { LLMConfigState } from '@stores/types'
 import type { LLMConfigMetaData } from '@models/LLMConfig'
 import LLMConfigService from '@services/LLMConfigService'
-import { uniqueId } from '@utils/commons'
 import { useNotifications } from '@stores/useNotifications'
 import type { JSONSettings } from '@models/JSONSchema'
 
@@ -11,7 +10,7 @@ export const useLLMConfig = defineStore('llm', () => {
     settings: {}
   })
 
-  const { showNotification } = useNotifications()
+  const { sendNotificationFromJSON } = useNotifications()
 
   const { state: providers, isLoading, error } = useAsyncState(LLMConfigService.getProviders(), undefined)
 
@@ -41,11 +40,7 @@ export const useLLMConfig = defineStore('llm', () => {
 
   const setProviderSettings = async (name: LLMConfigMetaData['languageModelName'], settings: JSONSettings) => {
     const result = await LLMConfigService.setProviderSettings(name, settings)
-    showNotification({
-      id: uniqueId(),
-      type: result.status,
-      text: result.message
-    })
+    sendNotificationFromJSON(result)
     if (result.status != 'error') {
       currentState.selected = name
       currentState.settings[name] = settings

@@ -1,8 +1,3 @@
-/**
- * This module defines and exports a service that is used to send and receive messages to and from the backend.
- * A service is a singleton object that provides a simple interface for performing backend-related tasks such as
- * sending or receiving data.
- */
 import LogService from '@services/LogService'
 import config from '@/config'
 import { isMessageResponse } from '@utils/typeGuards'
@@ -35,8 +30,7 @@ let errorHandler: OnErrorHandler
 let messageHandler: OnMessageHandler
 
 /**
- * MessagesService is a singleton-like object that provides a quick and easy interface for sending and receiving
- * messages from the WebSocket.
+ * A singleton-like object that provides an interface for sending and receiving messages from the WebSocket.
  * It wraps the WebSocket API and exposes a simple interface for sending and receiving messages.
  */
 const MessagesService = Object.freeze({

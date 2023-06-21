@@ -37,8 +37,9 @@ const filteredList = computed(() => {
 				Plugins
 			</p>
 			<p class="text-center font-medium">
-				This page displays the list of active plugins on the <strong>Cheshire Cat</strong>.
-				In the next version of the project, users will be able to activate or disable individual plugins according to their needs,
+				This page displays the list of installed plugins together with 
+				those from the official registry of the <strong>Cheshire Cat</strong>.
+				Here you can enable or disable individual plugins according to your needs,
 				allowing for greater customization of the user experience.
 			</p>
 		</div>
@@ -49,8 +50,10 @@ const filteredList = computed(() => {
 				</label>
 				<div class="relative w-full">
 					<input v-model.trim="searchText" type="text" placeholder="Enter a plugin name..."
+						:disabled="pluginsState.loading || Boolean(pluginsState.error)"
 						class="input-primary input input-sm w-full" @keyup.enter="searchPlugin()">
-					<button class="btn-primary btn-square btn-sm btn absolute right-0 top-0" @click="searchPlugin()">
+					<button class="btn-primary btn-square btn-sm btn absolute right-0 top-0" 
+						:disabled="pluginsState.loading || Boolean(pluginsState.error)" @click="searchPlugin()">
 						<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
 					</button>
 				</div>

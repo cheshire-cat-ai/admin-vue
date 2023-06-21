@@ -3,7 +3,6 @@ import type { EmbedderConfigMetaData } from '@models/EmbedderConfig'
 import EmbedderConfigService from '@services/EmbedderConfigService'
 import { useNotifications } from '@stores/useNotifications'
 import type { EmbedderConfigState } from '@stores/types'
-import { uniqueId } from '@utils/commons'
 
 export const useEmbedderConfig = defineStore('embedder', () => {
   const currentState = reactive<EmbedderConfigState>({
@@ -11,7 +10,7 @@ export const useEmbedderConfig = defineStore('embedder', () => {
     settings: {},
   })
 
-  const { showNotification } = useNotifications()
+  const { sendNotificationFromJSON } = useNotifications()
 
   const { state: embedders, isLoading, error } = useAsyncState(EmbedderConfigService.getEmbedders(), undefined)
 
@@ -41,11 +40,7 @@ export const useEmbedderConfig = defineStore('embedder', () => {
 
   const setEmbedderSettings = async (name: EmbedderConfigMetaData['languageEmbedderName'], settings: JSONSettings) => {
     const result = await EmbedderConfigService.setEmbedderSettings(name, settings)
-    showNotification({
-      id: uniqueId(),
-      type: result.status,
-      text: result.message
-    })
+    sendNotificationFromJSON(result)
     if (result.status != 'error') {
       currentState.selected = name
       currentState.settings[name] = settings
