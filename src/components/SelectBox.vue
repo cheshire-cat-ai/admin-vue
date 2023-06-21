@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<{
 	picked: (p) => p.list[0].value
 })
 
-const selectedElement = ref(props.list.find(v => v.value === props.picked))
+const selectedElement = ref(props.list.find(v => v.value === props.picked) ?? props.list[0])
 
 const emit = defineEmits<{
 	(e: 'update', value: typeof props.list[number]): void
@@ -21,18 +21,18 @@ defineExpose({
 </script>
 
 <template>
-	<Listbox v-model="selectedElement" @update:modelValue="value => emit('update', value)">
-		<div class="relative">
+	<Listbox v-model="selectedElement" by="value" @update:modelValue="value => emit('update', value)">
+		<div class="relative rounded-lg">
 			<ListboxButton
-				class="flex w-full cursor-default items-center justify-between gap-1 rounded-md bg-base-200 p-2 text-left text-sm">
-				<span class="block truncate font-semibold">{{ selectedElement?.label }}</span>
+				class="flex w-full cursor-default items-center justify-between gap-1 rounded-md p-2 text-left text-sm">
+				<span class="block truncate font-semibold">{{ selectedElement.label }}</span>
 				<heroicons-chevron-up-down-20-solid class="h-6 w-6" />
 			</ListboxButton>
 			<Transition enterActiveClass="transition duration-200 ease-out"
 				enterFromClass="transform opacity-0" enterToClass="transform opacity-100"
 				leaveActiveClass="transition duration-200 ease-in" leaveFromClass="transform opacity-100"
 				leaveToClass="transform opacity-0">
-				<ListboxOptions class="join-vertical join absolute z-10 mt-2 w-full min-w-fit overflow-auto rounded-md bg-base-200 text-sm shadow-lg">
+				<ListboxOptions class="join-vertical join absolute z-10 mt-4 w-full min-w-fit overflow-auto rounded-md bg-base-200 text-sm shadow-lg">
 					<ListboxOption v-for="element in list" :key="element.value" v-slot="{ active, selected }" as="template" :value="element">
 						<li :class="[
 							active ? 'bg-base-300' : '',

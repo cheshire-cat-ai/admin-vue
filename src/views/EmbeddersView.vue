@@ -55,7 +55,7 @@ watchDeep(embedderState, () => {
 			</div>
 		</div>
 		<div v-else class="flex grow flex-col gap-4">
-			<SelectBox ref="selectEmbedder" :picked="embedderState.selected"
+			<SelectBox ref="selectEmbedder" :picked="embedderState.selected" class="bg-base-200"
 				:list="getAvailableEmbedders().map(p => ({ label: p.name_human_readable, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex flex-col gap-4">
