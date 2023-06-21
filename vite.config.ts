@@ -2,10 +2,13 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import Icons from 'unplugin-icons/vite'
+import VueI18nPlugin from "@intlify/unplugin-vue-i18n/vite"
 import IconsResolver from "unplugin-icons/resolver"
 import { HeadlessUiResolver } from 'unplugin-vue-components/resolvers'
 import Components from "unplugin-vue-components/vite"
 import Unfonts from 'unplugin-fonts/vite'
+import { dirname, resolve } from "node:path"
+import { fileURLToPath } from "node:url"
 import AutoImport from 'unplugin-auto-import/vite'
 
 // https://vitejs.dev/config/
@@ -18,7 +21,8 @@ export default defineConfig({
         'vue',
         'vue-router',
         '@vueuse/core',
-        'pinia'
+        'pinia',
+        'vue-i18n'
       ],
       eslintrc: {
         enabled: true
@@ -43,6 +47,13 @@ export default defineConfig({
         preload: true,
         prefetch: false,
       }
+    }),
+    VueI18nPlugin({
+      include: resolve(
+        dirname(fileURLToPath(import.meta.url)),
+        "./src/locales/**"
+      ),
+      runtimeOnly: false,
     }),
     tsconfigPaths()
   ],

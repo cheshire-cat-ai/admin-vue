@@ -55,7 +55,7 @@ watchDeep(llmState, () => {
 			</div>
 		</div>
 		<div v-else class="flex grow flex-col gap-4">
-			<SelectBox ref="selectProvider" :picked="llmState.selected"
+			<SelectBox ref="selectProvider" :picked="llmState.selected" class="bg-base-200"
 				:list="getAvailableProviders().map(p => ({ label: p.name_human_readable, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex flex-col gap-4">

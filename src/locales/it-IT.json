@@ -1,0 +1,12 @@
+{
+  "headers": {
+    "home": "Home",
+    "memory": "Memoria",
+    "plugins": "Plugin",
+    "settings": "Impostazioni",
+    "docs": "Doc"
+  },
+  "settings": {
+    "title": "Imposta il tuo Gatto"
+  }
+}

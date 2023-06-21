@@ -17,13 +17,16 @@
     ],
     "types": [
       "vite/client",
-      "node"
+      "node",
+      "@intlify/unplugin-vue-i18n/messages"
     ],  
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": false,
     "noEmit": true,
     "allowJs": true,
+    "removeComments": true,
+    "importHelpers": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "strict": true,
@@ -33,6 +36,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@assets/*": ["src/assets/*"],
+      "@locales*": ["src/locales/*"],
       "@components/*": ["src/components/*"],
       "@stores/*": ["src/stores/*"],
       "@views/*": ["src/views/*"],

@@ -1,0 +1,12 @@
+{
+  "headers": {
+    "home": "Home",
+    "memory": "Memory",
+    "plugins": "Plugins",
+    "settings": "Settings",
+    "docs": "Docs"
+  },
+  "settings": {
+    "title": "Set up your Cat"
+  }
+}
