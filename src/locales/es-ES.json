@@ -1,13 +1,13 @@
 {
   "headers": {
     "home": "Home",
-    "memory": "Memoria",
-    "plugins": "Plugin",
-    "settings": "Impostazioni",
-    "docs": "Doc"
+    "memory": "Memory",
+    "plugins": "Plugins",
+    "settings": "Settings",
+    "docs": "Docs"
   },
   "settings": {
-    "title": "Imposta il tuo Gatto",
+    "title": "Set up your Cat",
     "embedder": {
       "panel": "settings.embedder.panel",
       "title": "settings.embedder.title",

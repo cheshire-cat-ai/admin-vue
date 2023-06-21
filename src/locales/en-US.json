@@ -1,4 +1,9 @@
 {
+  "save": "Save",
+  "send": "Send",
+  "cheshire_cat": "Cheshire Cat",
+  "failed_fetch": "Failed to fetch {msg}",
+  "last_update": "Last time updated: {time}",
   "headers": {
     "home": "Home",
     "memory": "Memory",
@@ -6,7 +11,62 @@
     "settings": "Settings",
     "docs": "Docs"
   },
+  "error": {
+    "not_found": "Page not found",
+    "go_back": "Go back to home"
+  },
   "settings": {
-    "title": "Set up your Cat"
+    "title": "Set up your Cat",
+    "desc": "Configure your Cheshire Cat to suit your needs",
+    "lang": "Change language",
+    "configure": "Configure",
+    "llm": {
+      "title": "Language Model",
+      "panel": "Configure the @:settings.llm.title",
+      "desc": "Choose and configure your favourite Large Language Model"
+    },
+    "embedder": {
+      "title": "Embedder",
+      "panel": "Configure the @:settings.embedder.title",
+      "desc": "Choose a language embedder to help the Cat remember conversations and documents"
+    }
+  },
+  "chat": {
+    "loading": "Getting ready...",
+    "settings": {
+      "title": "Chat Settings"
+    },
+    "upload_url": {
+      "title": "Insert URL",
+      "desc": "Write down the URL you want the Cat to digest :"
+    },
+    "dropdown": {
+      "settings": "Chat settings",
+      "memories": "Upload memories",
+      "url": "Upload url",
+      "file": "Upload file",
+      "clear": "Clear conversation"
+    }
+  },
+  "memory": {
+    "wipe": "Wipe",
+    "all": "All",
+    "export": "Export the result",
+    "label": {
+      "input": "Recall text",
+      "k": "K memories"
+    },
+    "plot": {
+      "title": "Similar memories",
+      "collections": "Collections",
+      "more": "Click to show more"
+    }
+  },
+  "plugins": {
+    "desc": "This page displays the list of installed plugins together with those from the official registry of the {0}. Here you can enable or disable individual plugins according to your needs, allowing for greater customization of the user experience.",
+    "item_title": "{0} by {1}",
+    "installed": "Installed plugins: {num}",
+    "upload": "Upload plugin (coming soon)",
+    "search": "Search for a plugin"
   }
 }

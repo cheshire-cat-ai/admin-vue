@@ -24,7 +24,7 @@ const saveChatSettings = () => {
 <template>
 	<div class="flex flex-col items-center justify-center gap-4 text-neutral">
 		<h3 class="text-lg font-bold">
-			Chat Settings
+			{{ $t('chat.settings.title') }}
 		</h3>
 		<div class="flex flex-col gap-2">
 			<template v-for="(v, k) in tempSettings" :key="k">
@@ -35,7 +35,7 @@ const saveChatSettings = () => {
 			</template>
 		</div>
 		<button class="btn-primary btn-sm btn" @click="saveChatSettings">
-			Save
+			{{ $t('save') }}
 		</button>
 	</div>
 </template>

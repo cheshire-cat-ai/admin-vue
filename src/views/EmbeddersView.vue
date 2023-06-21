@@ -51,7 +51,7 @@ watchDeep(embedderState, () => {
 		<div v-else-if="embedderState.error || !getAvailableEmbedders().length"
 			class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				Failed to fetch available embedders
+				{{ $t('failed_fetch', { msg: 'available embedders' }) }}
 			</div>
 		</div>
 		<div v-else class="flex grow flex-col gap-4">
@@ -67,8 +67,7 @@ watchDeep(embedderState, () => {
 						{{ currentSchema?.description }}
 					</p>
 					<p class="text-xs text-neutral-focus/75">
-						Last time updated:
-						{{ lastTimeUpdated }}
+						{{ $t('last_update', { time: lastTimeUpdated }) }}
 					</p>
 				</div>
 				<div v-for="prop in currentSchema?.properties" :key="prop.title" class="flex flex-col gap-2">
@@ -82,7 +81,7 @@ watchDeep(embedderState, () => {
 				</div>
 			</div>
 			<button class="btn-success btn-sm btn mt-auto normal-case" @click="saveEmbedder">
-				Save
+				{{ $t('save') }}
 			</button>
 		</div>
 	</div>

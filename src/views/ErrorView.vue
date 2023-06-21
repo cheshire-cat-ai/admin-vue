@@ -7,11 +7,11 @@
 		<p class="text-5xl font-bold">
 			<span class="text-error">404</span>
 			<br>
-			<span class="text-neutral">Page Not Found</span>
+			<span class="text-neutral">{{ $t('error.not_found') }}</span>
 		</p>
 		<button class="btn-error btn rounded">
 			<RouterLink to="/">
-				Go back to Home!
+				{{ $t('error.go_back') }}
 			</RouterLink>
 		</button>
 	</div>

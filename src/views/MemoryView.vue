@@ -27,6 +27,7 @@ const sidePanel = ref<InstanceType<typeof SidePanel>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
 const [ showSpinner, toggleSpinner ] = useToggle(false)
+const { t } = useI18n()
 
 const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
@@ -143,7 +144,7 @@ const getPlotData = computed(() => {
 			mode: 'markers',
 			hovertemplate: `
 <i>%{text}</i><br>
-<b><i>*Click to show more*</i></b>
+<b><i>*${t('memory.plot.more')}*</i></b>
 <extra></extra>
 			`,
 			marker: { size: 10 },
@@ -155,10 +156,10 @@ const getSelectCollections = computed(() => {
 	const data = memoryState.value.data ?? []
 	const totalCollections = data.map(v => v.vectors_count).reduce((p, c) => p + c, 0)
 	if (selectCollection.value?.selectedElement?.value === 'all') {
-		selectCollection.value.selectedElement.label = `All (${totalCollections})`
+		selectCollection.value.selectedElement.label = `${t('memory.all')} (${totalCollections})`
 	}
 	return [
-		{ label: `All (${totalCollections})`, value: 'all' },
+		{ label: `${t('memory.all')} (${totalCollections})`, value: 'all' },
 		...data.map(v => ({ label: `${_.capitalize(v.name)} (${v.vectors_count})`, value: v.name }))
 	]
 })
@@ -179,20 +180,20 @@ const downloadResult = () => {
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
 		<div class="flex flex-col items-center justify-center gap-2 rounded-md p-4">
 			<p class="text-3xl font-bold text-primary">
-				Memory
+				{{ $t('headers.memory') }}
 			</p>
 		</div>
 		<div class="join w-fit self-center shadow-xl">
 			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
 				class="btn-error join-item btn" @click="wipeMemory()">
-				Wipe
+				{{ $t('memory.wipe') }}
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
 		</div>
 		<div class="flex gap-4">
 			<div class="form-control w-full">
 				<label class="label">
-					<span class="label-text font-medium text-primary">Recall text</span>
+					<span class="label-text font-medium text-primary">{{ $t('memory.label.input') }}</span>
 				</label>
 				<div class="relative w-full">
 					<input v-model.trim="callText" type="text" placeholder="Enter a text..." 
@@ -206,7 +207,7 @@ const downloadResult = () => {
 			</div>
 			<div class="form-control">
 				<label class="label">
-					<span class="label-text font-medium text-primary">K memories</span>
+					<span class="label-text font-medium text-primary">{{ $t('memory.label.k') }}</span>
 				</label>
 				<input v-model="kMems" :disabled="Boolean(memoryState.error) || memoryState.loading" type="number" min="1" 
 					class="input-primary input input-sm join-item w-24 pl-2 pr-0">
@@ -222,7 +223,7 @@ const downloadResult = () => {
 		</div>
 		<div v-else-if="!showSpinner && !memoryState.error && callOutput != '{}'" class="flex flex-col items-center justify-center gap-4">
 			<Plotly :data="getPlotData" :layout="{
-					title: 'Similar memories',
+					title: $t('memory.plot.title'),
 					font: {
 						family: 'Ubuntu',
 						size: 12,
@@ -234,7 +235,7 @@ const downloadResult = () => {
 					paper_bgcolor: isDark ? '#383938' : '#F4F4F5',
 					plot_bgcolor: isDark ? '#383938' : '#F4F4F5',
 					showlegend: true,
-					legend: { x: 0, xanchor: 'right', title: { text: 'Collections' } },
+					legend: { x: 0, xanchor: 'right', title: { text: $t('memory.plot.collections') } },
 					margin: { b: 30, l: 30, t: 30, r: 30 }
 				}" :modeBarButtonsToRemove="['zoom2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d']"
 				:toImageButtonOptions="{
@@ -244,7 +245,7 @@ const downloadResult = () => {
 				}"
 				:displayModeBar="true" :displaylogo="false" :responsive="true" :scrollZoom="true" @plotly_click="onPointClick" />
 			<button class="btn-info btn" @click="downloadResult()">
-				Export the result
+				{{ $t('memory.export') }}
 			</button>
 			<JsonTreeView :data="callOutput" rootKey="result" :colorScheme="isDark ? 'dark' : 'light'" />
 		</div>

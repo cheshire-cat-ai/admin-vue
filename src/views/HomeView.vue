@@ -156,7 +156,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				{{ messagesState.error }}
 			</p>
 			<p v-else class="text-lg font-medium text-neutral">
-				Getting ready...
+				{{ $t('chat.loading') }}
 			</p>
 		</div>
 		<div v-else-if="messagesState.messages.length" class="flex grow flex-col overflow-y-auto">
@@ -205,11 +205,10 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 							</button>
 							<ul tabindex="0" class="dropdown-content join-vertical join !-right-1/4 z-10 mb-5 p-0">
 								<li>
-									<!-- :disabled="rabbitHoleState.loading" -->
-									<button
+									<button :disabled="rabbitHoleState.loading"
 										class="join-item btn w-full flex-nowrap px-2" 
 										@click="openChatSettings">
-										<span class="grow normal-case">Chat settings</span>
+										<span class="grow normal-case">{{ $t('chat.dropdown.settings') }}</span>
 										<span class="rounded-lg bg-primary p-1 text-base-100">
 											<heroicons-adjustments-horizontal-solid class="h-6 w-6" />
 										</span>
@@ -220,7 +219,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									<button disabled
 										class="join-item btn w-full flex-nowrap px-2" 
 										@click="openMemory({ multiple: false, accept: 'application/json' })">
-										<span class="grow normal-case">Upload memories</span>
+										<span class="grow normal-case">{{ $t('chat.dropdown.memories') }}</span>
 										<span class="rounded-lg bg-success p-1 text-base-100">
 											<ph-brain-fill class="h-6 w-6" />
 										</span>
@@ -230,7 +229,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									<button :disabled="rabbitHoleState.loading" 
 										class="join-item btn w-full flex-nowrap px-2" 
 										@click="boxUploadURL?.toggleModal()">
-										<span class="grow normal-case">Upload url</span>
+										<span class="grow normal-case">{{ $t('chat.dropdown.url') }}</span>
 										<span class="rounded-lg bg-info p-1 text-base-100">
 											<heroicons-globe-alt class="h-6 w-6" />
 										</span>
@@ -240,7 +239,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									<button :disabled="rabbitHoleState.loading" 
 										class="join-item btn w-full flex-nowrap px-2" 
 										@click="openFile({ multiple: false, accept: AcceptedContentTypes.join(', ') })">
-										<span class="grow normal-case">Upload file</span>
+										<span class="grow normal-case">{{ $t('chat.dropdown.file') }}</span>
 										<span class="rounded-lg bg-warning p-1 text-base-100">
 											<heroicons-document-text-solid class="h-6 w-6" />
 										</span>
@@ -250,7 +249,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									<button :disabled="messagesState.messages.length === 0" 
 										class="join-item btn w-full flex-nowrap px-2" 
 										@click="clearConversation()">
-										<span class="grow normal-case">Clear conversation</span>
+										<span class="grow normal-case">{{ $t('chat.dropdown.clear') }}</span>
 										<span class="rounded-lg bg-error p-1 text-base-100">
 											<heroicons-trash-solid class="h-6 w-6" />
 										</span>
@@ -273,13 +272,13 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 		<ModalBox ref="boxUploadURL">
 			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
 				<h3 class="text-lg font-bold">
-					Insert URL
+					{{ $t('chat.upload_url.title') }}
 				</h3>
-				<p>Write down the URL you want the Cat to digest :</p>
+				<p>{{ $t('chat.upload_url.desc') }}</p>
 				<input v-model="insertedURL" type="text" placeholder="Enter url..."
 					class="input-bordered input-primary input input-sm w-full">
 				<button class="btn-primary btn-sm btn" @click="dispatchWebsite">
-					Send
+					{{ $t('send') }}
 				</button>
 			</div>
 		</ModalBox>

@@ -5,6 +5,9 @@ import { createI18n, type IntlDateTimeFormat } from "vue-i18n"
 export enum LocaleCode {
     IT_IT = "it-IT",
     EN_US = "en-US",
+    de_DE = "de-DE",
+    es_ES = "es-ES",
+    fr_FR = "fr-FR",
 }
 
 /**
@@ -19,6 +22,9 @@ export enum LocaleCode {
 export const Locales = {
     [LocaleCode.IT_IT]: { dir: "ltr", name: "Italiano" },
     [LocaleCode.EN_US]: { dir: "ltr", name: "English" },
+    [LocaleCode.de_DE]: { dir: "ltr", name: "Deutsch" },
+    [LocaleCode.es_ES]: { dir: "ltr", name: "Español" },
+    [LocaleCode.fr_FR]: { dir: "ltr", name: "Français" },
 } as const;
 
 type MessageSchema = typeof enJSON;

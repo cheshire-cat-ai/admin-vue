@@ -34,19 +34,16 @@ const filteredList = computed(() => {
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
 		<div class="col-span-2 flex flex-col items-center justify-center gap-2 rounded-md p-4">
 			<p class="text-3xl font-bold text-primary">
-				Plugins
+				{{ $t('headers.plugins') }}
 			</p>
-			<p class="text-center font-medium">
-				This page displays the list of installed plugins together with 
-				those from the official registry of the <strong>Cheshire Cat</strong>.
-				Here you can enable or disable individual plugins according to your needs,
-				allowing for greater customization of the user experience.
-			</p>
+			<i18n-t keypath="plugins.desc" tag="p" class="text-center font-medium">
+				<strong>{{ $t('cheshire_cat') }}</strong>
+			</i18n-t>
 		</div>
 		<div class="flex flex-col gap-4">
 			<div class="form-control w-full">
 				<label class="label">
-					<span class="label-text font-medium text-primary">Search for a plugin</span>
+					<span class="label-text font-medium text-primary">{{ $t('plugins.search') }}</span>
 				</label>
 				<div class="relative w-full">
 					<input v-model.trim="searchText" type="text" placeholder="Enter a plugin name..."
@@ -68,10 +65,10 @@ const filteredList = computed(() => {
 		</div>
 		<div class="flex flex-wrap items-end justify-between gap-2">
 			<p class="font-medium">
-				Installed plugins: {{ pluginsState.data?.installed.length ?? 0 }}
+				{{ $t('plugins.installed', { num: pluginsState.data?.installed.length ?? 0 }) }}
 			</p>
 			<button disabled class="btn-primary btn-sm btn">
-				Upload plugin (coming soon)
+				{{ $t('plugins.upload') }}
 			</button>
 		</div>
 		<div v-if="pluginsState.loading" class="flex grow items-center justify-center">
@@ -79,7 +76,7 @@ const filteredList = computed(() => {
 		</div>
 		<div v-else-if="pluginsState.error" class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				Failed to fetch plugins
+				{{ $t('failed_fetch', { msg: 'plugins' }) }}
 			</div>
 		</div>
 		<div v-else class="flex flex-col gap-4">
@@ -92,14 +89,13 @@ const filteredList = computed(() => {
 				</div>
 				<div class="flex grow flex-col">
 					<div class="flex justify-between">
-						<p class="text-sm font-medium text-neutral-focus">
+						<i18n-t keypath="plugins.item_title" tag="p" class="text-sm font-medium text-neutral-focus">
 							<span class="text-xl font-bold text-neutral">{{ item.name }}</span>
-							by
 							<a :href="item.author_url" target="_blank" 
 								class="link-primary link no-underline" :class="{'pointer-events-none': item.author_url === ''}">
 								{{ item.author_name }}
 							</a>
-						</p>
+						</i18n-t>
 						<!-- TODO: When server adds the property, show toggle only for installed plugins, otherwise a "INSTALL" button -->
 						<input v-if="item.id !== 'core_plugin'" type="checkbox" disabled
 							class="!toggle-success !toggle" @click="togglePlugin(item.id)">

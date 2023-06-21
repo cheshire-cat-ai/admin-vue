@@ -4,7 +4,6 @@
  */
 
 import type { MessageResponse } from "@models/Message"
-import type { JSONResponse } from "@models/JSONSchema"
 
 /**
  * A type guard that takes a value of unknown type and returns a boolean indicating whether the value is of

@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import SidePanel from '@components/SidePanel.vue'
 
-const panelTitles = [ 'Configure the Language Model', 'Configure the Embedder' ] as const
+const { t } = useI18n()
+
+const panelTitles = {
+	'embedder': t('settings.embedder.panel'),
+	'llm': t('settings.llm.panel')
+} as const
 
 const sidePanel = ref<InstanceType<typeof SidePanel>>()
 const panelTitle = ref<string>('')
 
-const openSidePanel = (title: typeof panelTitles[number]) => {
-	panelTitle.value = title
+const openSidePanel = (title: keyof typeof panelTitles) => {
+	panelTitle.value = panelTitles[title]
 	sidePanel.value?.togglePanel()
 }
 </script>
@@ -19,37 +24,37 @@ const openSidePanel = (title: typeof panelTitles[number]) => {
 				{{ $t('settings.title') }}
 			</p>
 			<p class="font-medium">
-				Configure your Cheshire Cat to suit your needs
+				{{ $t('settings.desc') }}
 			</p>
 		</div>
 		<div class="col-span-2 flex flex-col items-center gap-4 place-self-center rounded-lg bg-base-200 p-4">
 			<p class="text-base font-medium md:text-lg">
-				Change language
+				{{ $t('settings.lang') }}
 			</p>
 			<LocaleChanger />
 		</div>
 		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-200 p-4 md:col-span-1">
 			<p class="text-2xl font-bold">
-				Language Model
+				{{ $t('settings.llm.title') }}
 			</p>
 			<p class="text-center">
-				Choose and configure your favourite Large Language Model
+				{{ $t('settings.llm.desc') }}
 			</p>
 			<RouterLink :to="{ name: 'providers' }" class="btn-primary btn-sm btn text-base-100"
-				@click="openSidePanel('Configure the Language Model')">
-				Configure
+				@click="openSidePanel('llm')">
+				{{ $t('settings.configure') }}
 			</RouterLink>
 		</div>
 		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-200 p-4 md:col-span-1">
 			<p class="text-2xl font-bold">
-				Embedder
+				{{ $t('settings.embedder.title') }}
 			</p>
 			<p class="text-center">
-				Choose a language embedder to help the Cat remember conversations and documents
+				{{ $t('settings.embedder.desc') }}
 			</p>
 			<RouterLink :to="{ name: 'embedders' }" class="btn-primary btn-sm btn text-base-100"
-				@click="openSidePanel('Configure the Embedder')">
-				Configure
+				@click="openSidePanel('embedder')">
+				{{ $t('settings.configure') }}
 			</RouterLink>
 		</div>
 		<SidePanel ref="sidePanel" :title="panelTitle">
