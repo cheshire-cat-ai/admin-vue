@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<{
 	picked: (p) => p.list[0].value
 })
 
-const selectedElement = ref(props.list.find(v => v.value === props.picked))
+const selectedElement = ref(props.list.find(v => v.value === props.picked) ?? props.list[0])
 
 const emit = defineEmits<{
 	(e: 'update', value: typeof props.list[number]): void
@@ -21,11 +21,11 @@ defineExpose({
 </script>
 
 <template>
-	<Listbox v-model="selectedElement" @update:modelValue="value => emit('update', value)">
+	<Listbox v-model="selectedElement" by="value" @update:modelValue="value => emit('update', value)">
 		<div class="relative rounded-lg">
 			<ListboxButton
 				class="flex w-full cursor-default items-center justify-between gap-1 rounded-md p-2 text-left text-sm">
-				<span class="block truncate font-semibold">{{ selectedElement?.label }}</span>
+				<span class="block truncate font-semibold">{{ selectedElement.label }}</span>
 				<heroicons-chevron-up-down-20-solid class="h-6 w-6" />
 			</ListboxButton>
 			<Transition enterActiveClass="transition duration-200 ease-out"
