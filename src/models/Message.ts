@@ -30,7 +30,7 @@ export interface UserMessage extends MessageBase {
 export type Message = BotMessage | UserMessage
 
 /**
- * An interface for the response from the API message service.
+ * An interface for the response from the message service.
  */
 export interface MessageResponse {
   error: false
@@ -40,9 +40,16 @@ export interface MessageResponse {
 }
 
 /**
- * An interface for the error response from the API message service.
+ * An interface for the error response from the message service.
  */
 export interface MessageError {
   error: true
   code: string
+}
+
+/**
+ * An interface for the prompt settings to pass to the cat via websocket.
+ */
+export interface PromptSettings {
+  [key: string]: boolean
 }

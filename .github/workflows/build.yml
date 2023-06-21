@@ -36,4 +36,8 @@ jobs:
       with:
         tag: 'Admin'
         artifacts: './dist/release.zip'
+        allowUpdates: true
+        replacesArtifacts: true
+        body: |
+          ${{ github.event.head_commit.message }}
         token: ${{ secrets.GITHUB_TOKEN }}

@@ -11,13 +11,11 @@ const messagesStore = useMessages()
 const { dispatchMessage, selectRandomDefaultMessages } = messagesStore
 const { currentState: messagesState } = storeToRefs(messagesStore)
 
-const textArea = ref<HTMLTextAreaElement>()
 const userMessage = ref(''), insertedURL = ref(''), isScrollable = ref(false), isTwoLines = ref(false)
 const boxUploadURL = ref<InstanceType<typeof ModalBox>>()
 const boxChatSettings = ref<InstanceType<typeof ModalBox>>()
 
-useTextareaAutosize({
-	element: textArea,
+const { textarea: textArea } = useTextareaAutosize({
 	input: userMessage,
 	onResize: () => {
 		if (textArea.value) {
@@ -37,7 +35,7 @@ const { sendFile, sendWebsite, sendMemory } = filesStore
 const { currentState: rabbitHoleState } = storeToRefs(filesStore)
 
 const { wipeConversation } = useMemory()
-
+const router = useRouter()
 const { isAudioEnabled } = storeToRefs(useSettings())
 
 const inputDisabled = computed(() => {
@@ -122,10 +120,6 @@ const sendMessage = (message: string) => {
 	dispatchMessage(message)
 }
 
-const saveChatSettings = () => {
-	console.log("save")
-}
-
 /**
  * Prevent sending the message if the shift key is pressed.
  */
@@ -134,6 +128,11 @@ const preventSend = (e: KeyboardEvent) => {
 		e.preventDefault()
 		sendMessage(userMessage.value)
 	}
+}
+
+const openChatSettings = () => {
+	router.push({ name: 'chat_settings' })
+	boxChatSettings.value?.toggleModal()
 }
 
 const generatePlaceholder = (isLoading: boolean, isRecording: boolean, error?: string) => {
@@ -177,7 +176,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				</p>
 			</div>
 		</div>
-		<div v-else class="flex grow cursor-pointer flex-col items-center justify-center gap-4">
+		<div v-else class="flex grow cursor-pointer flex-col items-center justify-center gap-4 p-4">
 			<div v-for="(msg, index) in randomDefaultMessages" :key="index" class="btn-neutral btn font-medium normal-case shadow-lg"
 				@click="sendMessage(msg)">
 				{{ msg }}
@@ -192,7 +191,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				</label>
 				<div class="relative w-full">
 					<textarea ref="textArea" v-model="userMessage" :disabled="inputDisabled"
-						class="textarea block max-h-20 w-full resize-none" :class="[ isTwoLines ? 'pr-10' : 'pr-20' ]"
+						class="textarea block max-h-20 w-full resize-none !outline-offset-0" :class="[ isTwoLines ? 'pr-10' : 'pr-20' ]"
 						:placeholder="generatePlaceholder(messagesState.loading, isListening, messagesState.error)" @keydown="preventSend" />
 					<div :class="[ isTwoLines ? 'flex-col-reverse' : '' ]" class="absolute right-2 top-1/2 flex -translate-y-1/2 gap-1">
 						<button :disabled="inputDisabled || userMessage.length === 0"
@@ -207,9 +206,9 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 							<ul tabindex="0" class="dropdown-content join-vertical join !-right-1/4 z-10 mb-5 p-0">
 								<li>
 									<!-- :disabled="rabbitHoleState.loading" -->
-									<button disabled
+									<button
 										class="join-item btn w-full flex-nowrap px-2" 
-										@click="boxChatSettings?.toggleModal()">
+										@click="openChatSettings">
 										<span class="grow normal-case">Chat settings</span>
 										<span class="rounded-lg bg-primary p-1 text-base-100">
 											<heroicons-adjustments-horizontal-solid class="h-6 w-6" />
@@ -272,28 +271,20 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 			</button>
 		</div>
 		<ModalBox ref="boxUploadURL">
-			<div class="flex flex-col items-center justify-center gap-2 text-neutral">
+			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
 				<h3 class="text-lg font-bold">
 					Insert URL
 				</h3>
 				<p>Write down the URL you want the Cat to digest :</p>
 				<input v-model="insertedURL" type="text" placeholder="Enter url..."
-					class="input-bordered input-primary input input-sm my-4 w-full">
+					class="input-bordered input-primary input input-sm w-full">
 				<button class="btn-primary btn-sm btn" @click="dispatchWebsite">
 					Send
 				</button>
 			</div>
 		</ModalBox>
 		<ModalBox ref="boxChatSettings">
-			<div class="flex flex-col items-center justify-center gap-2 text-neutral">
-				<h3 class="text-lg font-bold">
-					Chat Settings
-				</h3>
-				<p>Hello</p>
-				<button class="btn-primary btn-sm btn" @click="saveChatSettings">
-					Save
-				</button>
-			</div>
+			<RouterView @close="boxChatSettings?.toggleModal()" />
 		</ModalBox>
 	</div>
 </template>

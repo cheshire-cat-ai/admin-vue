@@ -6,7 +6,7 @@
 import LogService from '@services/LogService'
 import config from '@/config'
 import { isMessageResponse } from '@utils/typeGuards'
-import type { MessageError, MessageResponse } from '@/models/Message'
+import type { MessageError, MessageResponse, PromptSettings } from '@models/Message'
 
 /**
  * A map of error codes to error messages.
@@ -106,12 +106,15 @@ const MessagesService = Object.freeze({
    * Send a message to the WebSocket server
    * @param message
    */
-  send(message: string) {
+  send(message: string, settings: PromptSettings) {
     if (socket.status.value !== 'OPEN') {
       errorHandler(new Error(ErrorCodes.SocketClosed))
       return this
     }
-    const jsonMessage = JSON.stringify({ text: message })
+    const jsonMessage = JSON.stringify({ 
+      text: message, 
+      prompt_settings: settings 
+    })
     socket.send(jsonMessage)
     return this
   },
