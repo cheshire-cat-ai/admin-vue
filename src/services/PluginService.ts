@@ -1,6 +1,5 @@
-import LogService from '@services/LogService'
-import { Plugins } from '@/api'
-import type { JSONResponse } from '@models/JSONSchema'
+import { post, put, get, tryRequest } from '@/api'
+import type { PluginsResponse } from '@models/Plugin'
 
 /*
  * This is a service that is used to get the list of plugins active on the Cheshire Cat.
@@ -8,50 +7,35 @@ import type { JSONResponse } from '@models/JSONSchema'
  */
 const PluginService = Object.freeze({
   getPlugins: async () => {
-    try {
-      const result = await Plugins.getAll()
-
-      if (result.status !== 200) throw new Error()
-
-      return result.data
-    } catch (error) {
-      return {
-        status: 'error',
-        message: `Unable to fetch the plugins`
-      } as JSONResponse
-    }
+    const result = await tryRequest(
+      get<PluginsResponse>('/plugins/'), 
+      "Getting all the available embedders", 
+      "Unable to get the list of available embedders"
+    )
+    return result.data
   },
   togglePlugin: async (id: string) => {
-    try {
-      const result = await Plugins.toggle(id)
-
-      LogService.print(`Toggle plugin ${id}`)
-
-      if (result.status !== 200) throw new Error()
-
-      return true
-    } catch (error) {
-      return false
-    }
+    const result = await tryRequest<boolean>(
+      put(`/plugins/toggle/${id}`), 
+      "Language model embedder updated successfully", 
+      "Language model embedder couldn't be updated",
+      "Sending the embedder settings to the cat"
+    )
+    return result.data ?? false
   },
   sendFile: async (file: File) => {
-    try {
-      const result = await Plugins.upload(file)
-
-      LogService.print('Uploading a file to the cat')
-
-      if (result.status !== 200) throw new Error()
-
-      return {
-        status: 'success',
-        message: `Uploaded plugin successfully`
-      } as JSONResponse
-    } catch (error) {
-      return {
-        status: 'error',
-        message: `Unable to upload the plugin`
-      } as JSONResponse
-    }
+    const formData = new FormData()
+    formData.append('file', file)
+    return await tryRequest(
+      post('/plugins/install/', formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      }), 
+      "Language model embedder updated successfully", 
+      "Language model embedder couldn't be updated",
+      "Sending the embedder settings to the cat"
+    )
   },
 })
 

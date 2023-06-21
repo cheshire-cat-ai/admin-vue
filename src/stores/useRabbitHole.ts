@@ -2,7 +2,6 @@ import type { FileUploaderState } from '@stores/types'
 import { getErrorMessage } from '@utils/errors'
 import { useNotifications } from '@stores/useNotifications'
 import RabbitHoleService from '@services/RabbitHoleService'
-import { uniqueId } from '@utils/commons'
 
 export const useRabbitHole = defineStore('rabbitHole', () => {
   const currentState = reactive<FileUploaderState>({
@@ -18,7 +17,6 @@ export const useRabbitHole = defineStore('rabbitHole', () => {
       currentState.loading = false
       currentState.data = data
     }).then(() => showNotification({
-      id: uniqueId(),
       text: `File ${file.name} successfully sent down the rabbit hole!`,
       type: 'success'
     })).catch((error) => {
@@ -32,7 +30,6 @@ export const useRabbitHole = defineStore('rabbitHole', () => {
       currentState.loading = false
       currentState.data = data
     }).then(() => showNotification({
-      id: uniqueId(),
       text: `Memories successfully sent down the rabbit hole!`,
       type: 'success'
     })).catch((error) => {
@@ -46,7 +43,6 @@ export const useRabbitHole = defineStore('rabbitHole', () => {
       currentState.loading = false
       currentState.data = data
     }).then(() => showNotification({
-      id: uniqueId(),
       text: `Website successfully sent down the rabbit hole!`,
       type: 'success'
     })).catch((error) => {

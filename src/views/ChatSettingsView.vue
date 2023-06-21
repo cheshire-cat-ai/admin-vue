@@ -2,7 +2,6 @@
 import _ from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
 import { useMessages } from '@stores/useMessages'
-import { uniqueId } from '@utils/commons'
 
 const { promptSettings } = storeToRefs(useMessages())
 const { showNotification } = useNotifications()
@@ -15,7 +14,6 @@ const emit = defineEmits<{
 const saveChatSettings = () => {
     promptSettings.value = tempSettings.value
     showNotification({
-        id: uniqueId(),
         type: 'success',
         text: "Chat settings saved successfully"
     })

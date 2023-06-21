@@ -4,7 +4,7 @@
  * The purpose of this type is to be extended by other message types.
  */
 export interface MessageBase {
-  readonly id: number
+  readonly id: string | number
   readonly text: string
   readonly timestamp: number
 }

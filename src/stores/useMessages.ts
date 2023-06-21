@@ -1,7 +1,7 @@
 import type { MessagesState } from '@stores/types'
-import type { Message, PromptSettings } from '@models/Message'
+import type { BotMessage, PromptSettings, UserMessage } from '@models/Message'
 import MessagesService from '@services/MessageService'
-import { now, uniqueId } from '@utils/commons'
+import { now, uniqueId } from 'lodash'
 import { getErrorMessage } from '@utils/errors'
 import { useNotifications } from '@stores/useNotifications'
 
@@ -53,7 +53,6 @@ export const useMessages = defineStore('messages', () => {
     }).onMessage((message, type, why) => {
       if (type === 'chat') {
         addMessage({
-          id: uniqueId(),
           text: message,
           sender: 'bot',
           timestamp: now(),
@@ -61,7 +60,6 @@ export const useMessages = defineStore('messages', () => {
         })
       } else if (type === 'notification') {
         showNotification({
-          id: uniqueId(),
           type: 'info',
           text: message
         })
@@ -82,8 +80,12 @@ export const useMessages = defineStore('messages', () => {
   /**
    * Adds a message to the list of messages
    */
-  const addMessage = (msg: Message) => {
+  const addMessage = (message: Omit<BotMessage, 'id'> | Omit<UserMessage, 'id'>) => {
     currentState.error = undefined
+    const msg = {
+      id: uniqueId('m_'),
+      ...message
+    }
     currentState.messages.push(msg)
     currentState.loading = msg.sender === 'user'
   }
@@ -103,7 +105,6 @@ export const useMessages = defineStore('messages', () => {
   const dispatchMessage = (message: string) => {
     MessagesService.send(message, promptSettings.value)
     addMessage({
-      id: uniqueId(),
       text: message.trim(),
       timestamp: now(),
       sender: 'user'

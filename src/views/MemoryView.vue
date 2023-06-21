@@ -6,7 +6,7 @@ import { useSettings } from '@stores/useSettings'
 import { JsonTreeView } from 'json-tree-view-vue3'
 import SelectBox from '@components/SelectBox.vue'
 import Plotly from '@aurium/vue-plotly'
-import { now } from '@utils/commons'
+import { now } from 'lodash'
 import { Matrix, TSNE } from '@saehrimnir/druidjs'
 import SidePanel from '@components/SidePanel.vue'
 import type { VectorsData } from '@models/Memory'
@@ -26,7 +26,7 @@ const plotOutput = ref<PlotData[]>([]), clickedPoint = ref()
 const sidePanel = ref<InstanceType<typeof SidePanel>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
-const [showSpinner, toggleSpinner] = useToggle(false)
+const [ showSpinner, toggleSpinner ] = useToggle(false)
 
 const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
@@ -183,7 +183,8 @@ const downloadResult = () => {
 			</p>
 		</div>
 		<div class="join w-fit self-center shadow-xl">
-			<button :disabled="memoryState.error !== undefined" class="btn-error join-item btn" @click="wipeMemory()">
+			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
+				class="btn-error join-item btn" @click="wipeMemory()">
 				Wipe
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
@@ -194,10 +195,11 @@ const downloadResult = () => {
 					<span class="label-text font-medium text-primary">Recall text</span>
 				</label>
 				<div class="relative w-full">
-					<input v-model.trim="callText" type="text" placeholder="Enter a text..."
+					<input v-model.trim="callText" type="text" placeholder="Enter a text..." 
+						:disabled="Boolean(memoryState.error) || memoryState.loading"
 						class="input-primary input input-sm w-full" @keyup.enter="recallMemory()">
 					<button class="btn-primary btn-square btn-sm btn absolute right-0 top-0"
-						@click="recallMemory()">
+						:disabled="Boolean(memoryState.error) || memoryState.loading" @click="recallMemory()">
 						<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
 					</button>
 				</div>
@@ -206,10 +208,11 @@ const downloadResult = () => {
 				<label class="label">
 					<span class="label-text font-medium text-primary">K memories</span>
 				</label>
-				<input v-model="kMems" type="number" min="1" class="input-primary input input-sm join-item w-24 pl-2 pr-0">
+				<input v-model="kMems" :disabled="Boolean(memoryState.error) || memoryState.loading" type="number" min="1" 
+					class="input-primary input input-sm join-item w-24 pl-2 pr-0">
 			</div>
 		</div>
-		<div v-if="showSpinner" class="flex grow items-center justify-center">
+		<div v-if="showSpinner || memoryState.loading" class="flex grow items-center justify-center">
 			<span class="loading loading-spinner w-12 text-primary" />
 		</div>
 		<div v-else-if="memoryState.error" class="flex grow items-center justify-center">
