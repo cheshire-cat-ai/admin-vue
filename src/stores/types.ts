@@ -1,7 +1,7 @@
 import type { RabbitHoleResponse } from '@models/RabbitHole'
 import type { LLMConfigDescriptor, LLMConfigMetaData } from '@models/LLMConfig'
 import type { Message } from '@models/Message'
-import type { Plugin } from '@models/Plugin'
+import type { PluginsResponse } from '@models/Plugin'
 import type { Notification } from '@models/Notification'
 import type { EmbedderConfigDescriptor, EmbedderConfigMetaData } from '@models/EmbedderConfig'
 import type { JSONSettings } from '@models/JSONSchema'
@@ -62,7 +62,7 @@ export interface NotificationsState {
  * Defines the structure of the 'plugins' state.
  * This state contains information about the installed plugins.
  */
-export type PluginsState = AsyncState<Plugin[]>
+export type PluginsState = AsyncState<PluginsResponse>
 
 /**
  * Defines the structure of the 'collections' state.

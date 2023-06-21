@@ -30,16 +30,18 @@ const [showSpinner, toggleSpinner] = useToggle(false)
 
 const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
-const { wipeAllCollections, wipeCollection, callMemory } = memoryStore
+const { wipeAllCollections, wipeCollection, callMemory, fetchCollections } = memoryStore
 
 /**
  * If "all", wipes all the collections in memory, otherwise only the selected one
  */
-const wipeMemory = () => {
+const wipeMemory = async () => {
 	if (selectCollection.value) {
 		const selected = selectCollection.value.selectedElement?.value
-		if (selected === 'all') wipeAllCollections()
-		else if (selected) wipeCollection(selected)
+		if (!selected) return
+		if (selected === 'all') await wipeAllCollections()
+		else await wipeCollection(selected)
+		await fetchCollections()
 	}
 }
 
@@ -63,7 +65,7 @@ const reduceTo2d = (options: ConstructorParameters<typeof TSNE>['1'], iterations
 const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[][]) => {
 	const collectionsLengths = _.reduce(jsonResult, (a, v, k) => ({ ...a, [k]: v.length }), {}) as Record<string, number>
 
-	const maxPerplexity = _.reduce(_.values(collectionsLengths), (p, c) => p + (c as number), 0)
+	const maxPerplexity = _.reduce(_.values(collectionsLengths), (p, c) => p + c, 0)
 
 	const matrix = reduceTo2d({ 
 		perplexity: Math.min(Math.max(kMems.value, 2), maxPerplexity) 
@@ -72,7 +74,7 @@ const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[
 	return {
 		matrix,
 		data: _.map(_.entries(jsonResult), (c, i, k) => {
-			const prev = i > 0 ? k[i - 1][1].length : 0
+			const prev = k.slice(0, i).reduce((p, v) => p + v[1].length, 0)
 			const curr = c[1].length
 			return {
 				name: _.capitalize(c[0]),
@@ -175,13 +177,13 @@ const downloadResult = () => {
 
 <template>
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
-		<div class="flex flex-col items-center justify-center gap-3 rounded-md p-6">
+		<div class="flex flex-col items-center justify-center gap-2 rounded-md p-4">
 			<p class="text-3xl font-bold text-primary">
 				Memory
 			</p>
 		</div>
 		<div class="join w-fit self-center shadow-xl">
-			<button :disabled="memoryState.error === ''" class="btn-error join-item btn" @click="wipeMemory()">
+			<button :disabled="memoryState.error !== undefined" class="btn-error join-item btn" @click="wipeMemory()">
 				Wipe
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />

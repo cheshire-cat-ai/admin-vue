@@ -1,5 +1,5 @@
 import type { MessagesState } from '@stores/types'
-import type { Message } from '@models/Message'
+import type { Message, PromptSettings } from '@models/Message'
 import MessagesService from '@services/MessageService'
 import { now, uniqueId } from '@utils/commons'
 import { getErrorMessage } from '@utils/errors'
@@ -33,6 +33,11 @@ export const useMessages = defineStore('messages', () => {
       'How do I find my way to Wonderland?',
       'Is Wonderland a real place?'
     ]
+  })
+
+  const promptSettings = useLocalStorage<PromptSettings>("promptSettings", {
+    "use_declarative_memory": true,
+    "use_episodic_memory": true
   })
 
   const { showNotification } = useNotifications()
@@ -96,7 +101,7 @@ export const useMessages = defineStore('messages', () => {
    * Sends a message to the messages service and optimistically dispatches it to the store
    */
   const dispatchMessage = (message: string) => {
-    MessagesService.send(message)
+    MessagesService.send(message, promptSettings.value)
     addMessage({
       id: uniqueId(),
       text: message.trim(),
@@ -107,6 +112,7 @@ export const useMessages = defineStore('messages', () => {
 
   return {
     currentState,
+    promptSettings,
     addMessage,
     selectRandomDefaultMessages,
     dispatchMessage

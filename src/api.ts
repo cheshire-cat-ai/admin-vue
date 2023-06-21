@@ -3,7 +3,7 @@ import type { EmbedderConfigDescriptor } from "@models/EmbedderConfig"
 import type { LLMConfigDescriptor } from '@models/LLMConfig'
 import type { JSONSettings } from "@models/JSONSchema"
 import type { Collection, Memory } from "@models/Memory"
-import type { Plugin } from '@models/Plugin'
+import type { PluginsResponse } from '@models/Plugin'
 import type { FileResponse, WebResponse, MemoryResponse } from "@models/RabbitHole"
 import config from "@/config"
 
@@ -53,9 +53,18 @@ export const Memories = Object.freeze({
 
 export const Plugins = Object.freeze({
   getAll: () => 
-    get<{ plugins: Plugin[] }>('/plugins/'),
+    get<PluginsResponse>('/plugins/'),
   toggle: (id: string) => 
     put(`/plugins/toggle/${id}`),
+  upload: (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return post('/plugins/install/', formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    })
+  },
 })
 
 export const RabbitHole = Object.freeze({

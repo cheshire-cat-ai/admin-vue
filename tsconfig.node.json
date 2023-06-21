@@ -5,7 +5,7 @@
   ],
   "include": [
     "vite.config.*", 
-    "vitest.config.*", 
+    "vitest.config.*",
     "playwright.config.*"
   ],
   "compilerOptions": {

@@ -3,12 +3,12 @@
   "include": [
     "env.d.ts", 
     "src/**/*", 
-    "src/**/*.vue", 
+    "src/**/*.vue",
     "components.d.ts",
     "auto-imports.d.ts",
     "globals.d.ts",
     "unit/**/*.test.ts",
-    "e2e/**/*.spec.ts" 
+    "e2e/**/*.spec.ts"
   ],
   "compilerOptions": {
     "target": "ESNext",
@@ -32,7 +32,7 @@
     "esModuleInterop": true,
     "strict": true,
     "allowSyntheticDefaultImports": true,
-    "composite": true,
+    "composite": false,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],

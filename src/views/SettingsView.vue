@@ -14,7 +14,7 @@ const openSidePanel = (title: typeof panelTitles[number]) => {
 
 <template>
 	<div class="grid auto-rows-min gap-8 self-center md:w-3/4 md:grid-cols-2">
-		<div class="col-span-2 flex flex-col items-center justify-center gap-3 rounded-md p-6">
+		<div class="col-span-2 flex flex-col items-center justify-center gap-2 rounded-md p-4">
 			<p class="text-3xl font-bold text-primary">
 				Set up your Cat
 			</p>
@@ -22,28 +22,28 @@ const openSidePanel = (title: typeof panelTitles[number]) => {
 				Configure your Cheshire Cat to suit your needs
 			</p>
 		</div>
-		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-md bg-base-200 p-4 md:col-span-1">
+		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-200 p-4 md:col-span-1">
 			<p class="text-xl font-bold">
 				Language Model
 			</p>
 			<p class="text-center">
 				Choose and configure your favourite Large Language Model
 			</p>
-			<RouterLink :to="{ name: 'providers' }" class="btn-primary btn-sm btn"
+			<RouterLink :to="{ name: 'providers' }" class="btn-primary btn-sm btn text-base-100"
 				@click="openSidePanel('Configure the Language Model')">
 				Configure
 			</RouterLink>
 		</div>
-		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-md bg-base-200 p-4 md:col-span-1">
+		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-200 p-4 md:col-span-1">
 			<p class="text-xl font-bold">
 				Embedder
 			</p>
 			<p class="text-center">
 				Choose a language embedder to help the Cat remember conversations and documents
 			</p>
-			<RouterLink :to="{ name: 'embedders' }" class="btn-primary btn-sm btn" disabled
+			<RouterLink :to="{ name: 'embedders' }" class="btn-primary btn-sm btn text-base-100"
 				@click="openSidePanel('Configure the Embedder')">
-				Configure (coming soon)
+				Configure
 			</RouterLink>
 		</div>
 		<SidePanel ref="sidePanel" :title="panelTitle">

@@ -3,19 +3,20 @@
  * A service is a singleton object that provides a simple interface for performing backend-related tasks such as
  * sending or receiving data.
  */
-
 import LogService from '@services/LogService'
 import config from '@/config'
+import { isMessageResponse } from '@utils/typeGuards'
+import type { MessageError, MessageResponse, PromptSettings } from '@models/Message'
 
 /**
  * A map of error codes to error messages.
  */
 enum ErrorCodes {
-  IndexError = 'Something went wrong while processing your message. Please try again later',
-  SocketClosed = 'The connection to the server was closed. Please try refreshing the page',
-  WebSocketConnectionError = 'Something went wrong while connecting to the server. Please try again later',
-  APIError = 'Something went wrong while sending your message. Please try refreshing the page',
-  FailedRetries = 'Failed to connect WebSocket after 3 retries'
+  IndexError = 'Something went wrong while processing your message. Please try again later.',
+  SocketClosed = 'The connection to the server was closed. Please try refreshing the page.',
+  WebSocketConnectionError = 'Something went wrong while connecting to the server. Please try again later.',
+  APIError = 'Something went wrong while sending your message. Please try refreshing the page.',
+  FailedRetries = 'Failed to connect WebSocket after 3 retries.'
 }
 
 /**
@@ -105,12 +106,15 @@ const MessagesService = Object.freeze({
    * Send a message to the WebSocket server
    * @param message
    */
-  send(message: string) {
+  send(message: string, settings: PromptSettings) {
     if (socket.status.value !== 'OPEN') {
       errorHandler(new Error(ErrorCodes.SocketClosed))
       return this
     }
-    const jsonMessage = JSON.stringify({ text: message })
+    const jsonMessage = JSON.stringify({ 
+      text: message, 
+      prompt_settings: settings 
+    })
     socket.send(jsonMessage)
     return this
   },
@@ -130,38 +134,15 @@ type OnConnected = () => void
 /**
  * Defines the type for the onMessage event handler
  */
-type OnMessageHandler = (message: string, type: MessageResponse['type'], why: any) => void
+type OnMessageHandler = (
+  message: string, 
+  type: MessageResponse['type'], 
+  why: MessageResponse['why']
+) => void
 
 /**
  * Defines the type for the onError event handler
  */
 type OnErrorHandler = (err: Error) => void
-
-/**
- * APIMessageServiceResponse is the interface for the response from the API message service.
- */
-export interface MessageResponse {
-  error: false
-  type: 'notification' | 'chat'
-  content: string
-  why: any
-}
-
-/**
- *  APIMessageServiceError is the interface for the error response from the API message service.
- */
-export interface MessageError {
-  error: true
-  code: string
-}
-
-/**
- * A type guard that takes a value of unknown type and returns a boolean indicating whether the value is of
- * type APIMessageServiceResponse
- * @param value
- */
-export const isMessageResponse = (value: unknown): value is MessageResponse => {
-  return !!(value && typeof value === 'object' && 'content' in value && 'why' in value && 'error' in value && value.error === false)
-}
 
 export default MessagesService

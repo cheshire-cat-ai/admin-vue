@@ -12,7 +12,9 @@ const { isDark } = storeToRefs(useSettings())
 const whyPanel = ref<InstanceType<typeof SidePanel>>()
 
 const markdown = new Remarkable({
+	html: true,
 	breaks: true,
+	xhtmlOut: true,
 	typographer: true,
 	highlight: (str, lang) => {
 		if (lang && hljs.getLanguage(lang)) {
@@ -24,6 +26,7 @@ const markdown = new Remarkable({
 		return '' // use external default escaping
 	}
 }).use(linkify)
+
 markdown.inline.ruler.enable(['sup', 'sub'])
 markdown.core.ruler.enable(['abbr'])
 markdown.block.ruler.enable(['footnote', 'deflist'])
@@ -42,7 +45,7 @@ const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
 		<div class="chat-image px-2 text-lg">
 			{{ sender === 'bot' ? '😺' : '🙂' }}
 		</div>
-		<div class="chat-bubble m-3 min-h-fit break-words rounded-lg p-4" :class="{ 'pr-10': why }">
+		<div class="chat-bubble m-2 min-h-fit break-words rounded-lg p-2 md:p-4" :class="{ '!pr-10': why }">
 			<p v-html="markdown.render(cleanedText)" />
 			<button v-if="why" class="btn-primary btn-square btn-xs btn absolute right-1 top-1 m-1 !p-0"
 				@click="whyPanel?.togglePanel()">
@@ -64,5 +67,17 @@ const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
 
 .chat-bubble > p a {
 	@apply link link-info;
+}
+
+.chat-bubble > p ul {
+	@apply list-disc list-inside;
+}
+
+.chat-bubble > p ol {
+	@apply list-decimal list-inside;
+}
+
+.chat-bubble > p table {
+	@apply table table-xs;
 }
 </style>
