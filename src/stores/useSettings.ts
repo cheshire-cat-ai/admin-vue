@@ -20,9 +20,10 @@ export const useSettings = defineStore('settings', () => {
     disabled: true
   })
 
-  const currentLocale = useLocalStorage('currentLocale', '')
+  const currentLocale = useLocalStorage<LocaleCode>('currentLocale', LocaleCode.EN_US)
 
-  const setDocumentLanguage = (localeCode: LocaleCode) => {
+  const setLocale = (localeCode = currentLocale.value, fallbackLocale?: LocaleCode) => {
+    currentLocale.value = localeCode || fallbackLocale || LocaleCode.EN_US
     const htmlElement = document.documentElement
     htmlElement.setAttribute("lang", localeCode)
   
@@ -31,10 +32,7 @@ export const useSettings = defineStore('settings', () => {
     } else {
       htmlElement.removeAttribute("dir")
     }
-  }
-
-  const setLocale = (localeCode: LocaleCode, fallbackLocale?: LocaleCode) => {
-    return currentLocale.value = localeCode || fallbackLocale || LocaleCode.EN_US
+    return currentLocale.value
   }
 
   return {
@@ -43,7 +41,6 @@ export const useSettings = defineStore('settings', () => {
     currentFilters,
     currentLocale,
     toggleDark,
-    setDocumentLanguage,
     setLocale
   }
 })

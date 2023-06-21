@@ -3,7 +3,7 @@ import { Locales, type LocaleCode } from '@/i18n'
 import SelectBox from '@components/SelectBox.vue'
 import { useSettings } from '@stores/useSettings'
 
-const { setDocumentLanguage, setLocale } = useSettings()
+const { setLocale } = useSettings()
 const selectLocale = ref<InstanceType<typeof SelectBox>>()
 
 const { availableLocales, locale } = useI18n()
@@ -11,9 +11,7 @@ const { availableLocales, locale } = useI18n()
 const changeLocale = () => {
 	const selectedLocale = selectLocale.value?.selectedElement?.value as LocaleCode
 	if (!selectedLocale) return
-	locale.value = selectedLocale
-	setLocale(selectedLocale)
-	setDocumentLanguage(selectedLocale)
+	locale.value = setLocale(selectedLocale)
 }
 
 const getAvailableLocales = computed(() => {
