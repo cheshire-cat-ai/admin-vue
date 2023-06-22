@@ -55,7 +55,7 @@ const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
 			</button>
 		</div>
 		<SidePanel ref="whyPanel" title="Why this response">
-			<JsonTreeView :data="why" rootKey="why" :colorScheme="isDark ? 'dark' : 'light'" />
+			<JsonTreeView class="overflow-hidden rounded-lg bg-base-200" :data="why" rootKey="why" :colorScheme="isDark ? 'dark' : 'light'" />
 		</SidePanel>
 	</div>
 </template>
