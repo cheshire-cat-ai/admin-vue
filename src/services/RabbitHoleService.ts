@@ -15,18 +15,18 @@ const RabbitHoleService = Object.freeze({
           "Content-Type": "multipart/form-data"
         }
       }), 
-      "Language model embedder updated successfully", 
-      "Language model embedder couldn't be updated",
-      "Sending the embedder settings to the cat"
+      `File ${file.name} successfully sent down the rabbit hole`, 
+      "Unable to send the file to the rabbit hole",
+      "Sending a file to the rabbit hole"
     )
     return result.data
   },
   sendWeb: async (url: string) => {
     const result = await tryRequest(
       post<WebResponse>('/rabbithole/web/', { url }), 
-      "Language model embedder updated successfully", 
-      "Language model embedder couldn't be updated",
-      "Sending the embedder settings to the cat"
+      "Website successfully sent down the rabbit hole", 
+      "Unable to send the website to the rabbit hole",
+      "Sending a website content to the rabbit hole"
     )
     return result.data
   },
@@ -39,9 +39,9 @@ const RabbitHoleService = Object.freeze({
           "Content-Type": "multipart/form-data"
         }
       }), 
-      "Language model embedder updated successfully", 
-      "Language model embedder couldn't be updated",
-      "Sending the embedder settings to the cat"
+      "Memories file successfully sent down the rabbit hole", 
+      "Unable to send the memories to the rabbit hole",
+      "Sending a bunch of memories to the rabbit hole"
     )
     return result.data
   },

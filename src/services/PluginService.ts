@@ -9,17 +9,16 @@ const PluginService = Object.freeze({
   getPlugins: async () => {
     const result = await tryRequest(
       get<PluginsResponse>('/plugins/'), 
-      "Getting all the available embedders", 
-      "Unable to get the list of available embedders"
+      "Getting all the available plugins", 
+      "Unable to fetch the plugins"
     )
     return result.data
   },
   togglePlugin: async (id: string) => {
     const result = await tryRequest<boolean>(
       put(`/plugins/toggle/${id}`), 
-      "Language model embedder updated successfully", 
-      "Language model embedder couldn't be updated",
-      "Sending the embedder settings to the cat"
+      `Toggle plugin ${id}`, 
+      `Unable to toggle plugin ${id}`
     )
     return result.data ?? false
   },
@@ -32,9 +31,8 @@ const PluginService = Object.freeze({
           "Content-Type": "multipart/form-data"
         }
       }), 
-      "Language model embedder updated successfully", 
-      "Language model embedder couldn't be updated",
-      "Sending the embedder settings to the cat"
+      "Uploaded plugin successfully", 
+      "Unable to upload the plugin"
     )
   },
 })

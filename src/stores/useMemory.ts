@@ -13,7 +13,7 @@ export const useMemory = defineStore('memory', () => {
   watchEffect(() => {
     currentState.loading = isLoading.value
     currentState.data = collections.value
-    currentState.error = error.value as string + ' available memories'
+    currentState.error = error.value ? `${error.value} available memories` : undefined
   })
 
   onActivated(() => fetchCollections())

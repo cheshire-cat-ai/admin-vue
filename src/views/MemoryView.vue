@@ -247,7 +247,7 @@ const downloadResult = () => {
 			<button class="btn-info btn" @click="downloadResult()">
 				{{ $t('memory.export') }}
 			</button>
-			<JsonTreeView :data="callOutput" rootKey="result" :colorScheme="isDark ? 'dark' : 'light'" />
+			<JsonTreeView class="overflow-hidden rounded-lg bg-base-200" :data="callOutput" rootKey="result" :colorScheme="isDark ? 'dark' : 'light'" />
 		</div>
 		<SidePanel ref="sidePanel" title="Memory content">
 			<div class="overflow-x-auto rounded-md border-2 border-neutral">
