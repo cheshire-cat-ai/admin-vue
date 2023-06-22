@@ -39,7 +39,7 @@ body {
     @apply leading-5;
   }
   .focus, .active {
-    @apply bg-primary hover:bg-primary-focus focus:bg-primary-focus text-base-100;
+    @apply !bg-primary hover:bg-primary-focus focus:bg-primary-focus text-base-100;
   }
   .btn-ghost {
     @apply disabled:bg-transparent;

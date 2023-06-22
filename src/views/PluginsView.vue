@@ -60,7 +60,7 @@ const filteredList = computed(() => {
 			</div>
 			<div class="flex flex-wrap justify-center gap-2">
 				<button v-for="(v, k) in currentFilters" :key="k" class="btn-xs btn rounded-full" disabled
-					:class="[ v ? 'btn-primary text-base-100' : 'btn-ghost !border-2 !border-primary text-neutral-focus/75' ]" 
+					:class="[ v ? 'btn-primary text-base-100' : 'btn-ghost !border-2 !border-primary' ]" 
 					@click="currentFilters[k] = !currentFilters[k]">
 					{{ k }}
 				</button>

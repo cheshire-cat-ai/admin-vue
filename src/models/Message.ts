@@ -48,8 +48,10 @@ export interface MessageError {
 }
 
 /**
- * An interface for the prompt settings to pass to the cat via websocket.
+ * The type of the prompt settings to pass to the cat via websocket.
  */
-export interface PromptSettings {
+export type PromptSettings = {
+  prefix: string
+} & {
   [key: string]: boolean
 }

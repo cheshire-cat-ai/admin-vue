@@ -1,9 +1,10 @@
 import type { MessagesState } from '@stores/types'
 import type { BotMessage, PromptSettings, UserMessage } from '@models/Message'
 import MessagesService from '@services/MessageService'
-import { now, uniqueId } from 'lodash'
+import { now, uniqueId, defaultsDeep } from 'lodash'
 import { getErrorMessage } from '@utils/errors'
 import { useNotifications } from '@stores/useNotifications'
+import { get, tryRequest } from '@/api'
 
 export const useMessages = defineStore('messages', () => {
   const currentState = reactive<MessagesState>({
@@ -36,13 +37,15 @@ export const useMessages = defineStore('messages', () => {
   })
 
   const promptSettings = useLocalStorage<PromptSettings>("promptSettings", {
-    "use_declarative_memory": true,
-    "use_episodic_memory": true
-  })
+    prefix: ""
+  } as PromptSettings)
 
   const { showNotification } = useNotifications()
 
-  tryOnMounted(() => {
+  tryOnMounted(async () => {
+    const defaultPromptSettings = await getDefaultPromptSettings()
+    defaultsDeep(promptSettings.value, defaultPromptSettings)
+
     /**
      * Subscribes to the messages service on component mount
      * and dispatches the received messages to the store.
@@ -109,6 +112,15 @@ export const useMessages = defineStore('messages', () => {
       timestamp: now(),
       sender: 'user'
     })
+  }
+
+  const getDefaultPromptSettings = async () => {
+    const result = await tryRequest(
+      get('/settings/prompt/'), 
+      "Getting all the default prompt settings", 
+      "Unable to fetch default prompt settings"
+    )
+    return result.data
   }
 
   return {

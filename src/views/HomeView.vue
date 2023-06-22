@@ -5,6 +5,7 @@ import { useSound } from '@vueuse/sound'
 import { useMemory } from '@stores/useMemory'
 import { AcceptedContentTypes } from '@models/RabbitHole'
 import { useSettings } from '@stores/useSettings'
+import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
 
 const messagesStore = useMessages()
@@ -13,7 +14,7 @@ const { currentState: messagesState } = storeToRefs(messagesStore)
 
 const userMessage = ref(''), insertedURL = ref(''), isScrollable = ref(false), isTwoLines = ref(false)
 const boxUploadURL = ref<InstanceType<typeof ModalBox>>()
-const boxChatSettings = ref<InstanceType<typeof ModalBox>>()
+const chatSettingsPanel = ref<InstanceType<typeof SidePanel>>()
 
 const { textarea: textArea } = useTextareaAutosize({
 	input: userMessage,
@@ -132,7 +133,7 @@ const preventSend = (e: KeyboardEvent) => {
 
 const openChatSettings = () => {
 	router.push({ name: 'chat_settings' })
-	boxChatSettings.value?.toggleModal()
+	chatSettingsPanel.value?.togglePanel()
 }
 
 const generatePlaceholder = (isLoading: boolean, isRecording: boolean, error?: string) => {
@@ -164,7 +165,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				:key="msg.id"
 				:sender="msg.sender"
 				:text="msg.text"
-				:why="msg.sender === 'bot' ? JSON.stringify(msg.why) : ''" />
+				:why="msg.sender === 'bot' ? msg.why : ''" />
 			<p v-if="messagesState.error" class="w-fit rounded bg-error p-4 font-semibold text-base-100">
 				{{ messagesState.error }}
 			</p>
@@ -205,11 +206,10 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 							</button>
 							<ul tabindex="0" class="dropdown-content join-vertical join !-right-1/4 z-10 mb-5 p-0">
 								<li>
-									<!-- :disabled="rabbitHoleState.loading" -->
-									<button
+									<button :disabled="rabbitHoleState.loading"
 										class="join-item btn w-full flex-nowrap px-2" 
 										@click="openChatSettings">
-										<span class="grow normal-case">Chat settings</span>
+										<span class="grow normal-case">Prompt settings</span>
 										<span class="rounded-lg bg-primary p-1 text-base-100">
 											<heroicons-adjustments-horizontal-solid class="h-6 w-6" />
 										</span>
@@ -283,8 +283,8 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				</button>
 			</div>
 		</ModalBox>
-		<ModalBox ref="boxChatSettings">
-			<RouterView @close="boxChatSettings?.toggleModal()" />
-		</ModalBox>
+		<SidePanel ref="chatSettingsPanel" title="Prompt Settings">
+			<RouterView @close="chatSettingsPanel?.togglePanel()" />
+		</SidePanel>
 	</div>
 </template>

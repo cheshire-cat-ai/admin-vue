@@ -32,6 +32,7 @@ declare module 'vue' {
     ListboxButton: typeof import('@headlessui/vue')['ListboxButton']
     ListboxOption: typeof import('@headlessui/vue')['ListboxOption']
     ListboxOptions: typeof import('@headlessui/vue')['ListboxOptions']
+    MemorySelect: typeof import('./src/components/MemorySelect.vue')['default']
     Menu: typeof import('@headlessui/vue')['Menu']
     MenuButton: typeof import('@headlessui/vue')['MenuButton']
     MenuItem: typeof import('@headlessui/vue')['MenuItem']
