@@ -18,7 +18,7 @@ const selectedCollection = ref('episodic')
 				{{ col }}
 			</button>
 		</div>
-		<template v-if="result[selectedCollection].length > 0">
+		<template v-if="result[selectedCollection]?.length > 0">
 			<div v-for="(item, value) in result[selectedCollection]" :key="value" 
 				class="indicator flex w-full flex-col gap-2 rounded-md bg-base-100 p-2">
 				<span class="indicator-center badge badge-success indicator-item font-medium text-base-100">

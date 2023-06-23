@@ -59,7 +59,7 @@ const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
 							<th>⌨️ Input</th>
 							<th>💬 Output</th>
 						</thead>
-						<tbody v-if="why.intermediate_steps.length > 0">
+						<tbody v-if="why.intermediate_steps?.length > 0">
 							<tr v-for="data in why.intermediate_steps" :key="data[0]">
 								<td>{{ data[0][0] }}</td>
 								<td>{{ data[0][1] }}</td>
