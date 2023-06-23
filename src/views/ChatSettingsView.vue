@@ -8,10 +8,6 @@ const { showNotification } = useNotifications()
 
 const tempSettings = ref(_.cloneDeep(promptSettings.value))
 
-const { textarea: textArea } = useTextareaAutosize({
-	input: tempSettings.value.prefix
-})
-
 const emit = defineEmits<{
 	(e: 'close'): void
 }>()
@@ -33,8 +29,8 @@ const saveChatSettings = () => {
 				<p class="mb-1 text-sm font-medium text-primary">
 					Prompt prefix
 				</p>
-				<textarea ref="textArea" v-model="tempSettings.prefix" 
-					class="textarea block w-full resize-none !outline-offset-0"
+				<textarea v-model="tempSettings.prefix" 
+					class="textarea block w-full resize-y !outline-offset-0"
 					placeholder="Enter the prompt prefix..." />
 			</div>
 			<template v-for="(v, k) in tempSettings" :key="k">

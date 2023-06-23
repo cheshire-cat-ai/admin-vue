@@ -24,17 +24,17 @@ const selectedCollection = ref('episodic')
 				<span class="indicator-center badge badge-success indicator-item font-medium text-base-100">
 					{{ item.score }}
 				</span> 
-				<p>{{ item.page_content }}</p>
+				<p class="mt-2">
+					{{ item.page_content }}
+				</p>
 				<div class="flex justify-between gap-2 text-xs font-medium text-primary">
 					<p>{{ capitalize(item.metadata.source) }}</p>
 					<p>{{ new Date(item.metadata.when * 1000).toLocaleString() }}</p>
 				</div>
 			</div>
 		</template>
-		<div v-else>
-			<p class="text-center font-medium">
-				No <span class="text-primary">{{ selectedCollection }}</span> memories were used.
-			</p>
-		</div>
+		<p v-else class="text-center font-medium">
+			No <span class="text-primary">{{ selectedCollection }}</span> memories were used.
+		</p>
 	</div>
 </template>
