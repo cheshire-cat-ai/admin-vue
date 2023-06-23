@@ -20,12 +20,13 @@ interface PlotData {
 
 const { isDark } = storeToRefs(useSettings())
 
-const callText = ref(''), callOutput = ref<object>(), kMems = ref(10)
+const callText = ref(''), callOutput = ref<VectorsData>(), kMems = ref(10)
 const plotOutput = ref<PlotData[]>([]), clickedPoint = ref()
 const sidePanel = ref<InstanceType<typeof SidePanel>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
 const [ showSpinner, toggleSpinner ] = useToggle(false)
+const { width: windowWidth } = useWindowSize()
 
 const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
@@ -233,23 +234,25 @@ const downloadResult = () => {
 					paper_bgcolor: isDark ? '#383938' : '#F4F4F5',
 					plot_bgcolor: isDark ? '#383938' : '#F4F4F5',
 					showlegend: true,
-					legend: { x: 0, xanchor: 'right', title: { text: 'Collections' } },
+					legend: windowWidth <= 700 ? { orientation: 'h', title: { text: 'Collections' } } : 
+						{ x: 0, xanchor: 'right', title: { text: 'Collections' } },
 					margin: { b: 30, l: 30, t: 30, r: 30 }
-				}" :modeBarButtonsToRemove="['zoom2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d']"
+				}" :modeBarButtonsToRemove="['select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d']"
 				:toImageButtonOptions="{
 					format: 'jpeg',
 					filename: 'recall_plot',
 					scale: 1.5
 				}"
-				:displayModeBar="true" :displaylogo="false" :responsive="true" :scrollZoom="true" @plotly_click="onPointClick" />
+				:displayModeBar="true" :displaylogo="false" :responsive="true" :scrollZoom="true" 
+				:style="[ windowWidth <= 700 ? `width:${windowWidth - 32}px` : '' ]" @plotly_click="onPointClick" />
 			<button class="btn-info btn" @click="downloadResult()">
 				Export the result
 			</button>
 			<div v-if="callOutput" class="flex w-full flex-col">
 				<p class="self-start rounded-t-md bg-primary px-2 py-1 font-medium text-base-100">
-					{{ (callOutput as any).embedder }}
+					{{ callOutput.embedder }}
 				</p>
-				<MemorySelect class="rounded-tl-none" :result="(callOutput as any).collections" />
+				<MemorySelect class="rounded-tl-none" :result="callOutput.collections" />
 			</div>
 		</div>
 		<SidePanel ref="sidePanel" title="Memory content">
@@ -267,11 +270,7 @@ const downloadResult = () => {
 	</div>
 </template>
 
-<style lang="scss">
-.json-view-item.root-item .value-key {
-	white-space: normal !important;
-}
-
+<style scoped>
 .table tr td:first-child {
 	@apply font-medium text-primary;
 }

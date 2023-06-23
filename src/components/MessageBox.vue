@@ -81,11 +81,7 @@ const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
 	</div>
 </template>
 
-<style lang="scss">
-.json-view-item.root-item .value-key {
-	white-space: normal !important;
-}
-
+<style lang="scss" scoped>
 .chat-bubble > p a {
 	@apply link link-info;
 }
