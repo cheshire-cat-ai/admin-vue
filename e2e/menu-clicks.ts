@@ -5,4 +5,7 @@ test('has title', async ({ page }) => {
   await page.goto('http://localhost:3000/')
   await page.getByText('Memory').click();
   await page.getByText('Plugins').click();
+  await page.getByText('Settings').click();
+  await page.getByText('Docs').click();
+  await page.getByText('Home').click();
 })
