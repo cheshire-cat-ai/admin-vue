@@ -6,6 +6,11 @@ on:
     branches: [ main, master ]
 jobs:
   test:
+    services:
+      core:
+        image: lucagazzola/core-cheshire-cat-core:latest
+        ports:
+          - 1865:1865
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
