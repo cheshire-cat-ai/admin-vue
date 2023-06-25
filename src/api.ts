@@ -36,7 +36,7 @@ export const tryRequest = async <T>(
 ) => {
   try {
     const result = await request
-
+    
     if (result.status !== 200) throw new Error()
     
     if (typeof log === 'string') LogService.print(log)
@@ -50,8 +50,8 @@ export const tryRequest = async <T>(
   } catch (err) {
     if (err instanceof AxiosError) {
       error = _.capitalize(err.message)
-      LogService.print(error)
-      if (err.code !== "ECONNABORTED") throw "Failed to fetch"
+      if (err.code === "ERR_NETWORK") throw "Network Error"
+      else if (err.code !== "ECONNABORTED") throw "Failed to fetch"
     }
     return {
       status: 'error',

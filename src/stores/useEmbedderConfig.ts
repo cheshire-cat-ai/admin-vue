@@ -39,13 +39,21 @@ export const useEmbedderConfig = defineStore('embedder', () => {
   }
 
   const setEmbedderSettings = async (name: EmbedderConfigMetaData['languageEmbedderName'], settings: JSONSettings) => {
-    const result = await EmbedderConfigService.setEmbedderSettings(name, settings)
-    sendNotificationFromJSON(result)
-    if (result.status != 'error') {
-      currentState.selected = name
-      currentState.settings[name] = settings
+    try {
+      const result = await EmbedderConfigService.setEmbedderSettings(name, settings)
+      sendNotificationFromJSON(result)
+      if (result.status != 'error') {
+        currentState.selected = name
+        currentState.settings[name] = settings
+      }
+      return result.status != 'error'
+    } catch (error) {
+      sendNotificationFromJSON({
+        status: 'error',
+        message: error as string
+      })
+      return false
     }
-    return result.status != 'error'
   }
 
   return {
