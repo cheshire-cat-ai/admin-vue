@@ -1,11 +1,10 @@
 import type { JSONSettings } from '@models/JSONSchema'
-import type { EmbedderConfigMetaData } from '@models/EmbedderConfig'
 import EmbedderConfigService from '@services/EmbedderConfigService'
 import { useNotifications } from '@stores/useNotifications'
-import type { EmbedderConfigState } from '@stores/types'
+import type { SettingsConfigState } from '@stores/types'
 
 export const useEmbedderConfig = defineStore('embedder', () => {
-  const currentState = reactive<EmbedderConfigState>({
+  const currentState = reactive<SettingsConfigState>({
     loading: false,
     settings: {},
   })
@@ -19,7 +18,7 @@ export const useEmbedderConfig = defineStore('embedder', () => {
     currentState.data = embedders.value
     currentState.error = error.value as string
     if (currentState.data) {
-      currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].languageEmbedderName
+      currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].title
       currentState.settings = currentState.data.settings.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {})
     }
   })
@@ -30,7 +29,7 @@ export const useEmbedderConfig = defineStore('embedder', () => {
 
   const getEmbedderSchema = (selected = currentState.selected) => {
     if (!selected) return undefined
-    return getAvailableEmbedders().find((schema) => schema.languageEmbedderName === selected)
+    return getAvailableEmbedders().find((schema) => schema.title === selected)
   }
 
   const getEmbedderSettings = (selected = currentState.selected) => {
@@ -38,7 +37,7 @@ export const useEmbedderConfig = defineStore('embedder', () => {
     return currentState.settings[selected] ?? {} satisfies JSONSettings
   }
 
-  const setEmbedderSettings = async (name: EmbedderConfigMetaData['languageEmbedderName'], settings: JSONSettings) => {
+  const setEmbedderSettings = async (name: string, settings: JSONSettings) => {
     try {
       const result = await EmbedderConfigService.setEmbedderSettings(name, settings)
       sendNotificationFromJSON(result)

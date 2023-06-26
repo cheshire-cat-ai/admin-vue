@@ -1,5 +1,4 @@
-import { get, destroy, tryRequest } from '@/api'
-import type { Collection, Memory } from '@models/Memory'
+import { apiClient, tryRequest } from '@/api'
 
 /*
  * This is a service that is used to manage the memory of the Cheshire Cat.
@@ -7,7 +6,7 @@ import type { Collection, Memory } from '@models/Memory'
 const MemoryService = Object.freeze({
   getCollections: async () => {
     const result = await tryRequest(
-      get<{ collections: Collection[] }>('/memory/collections/'), 
+      apiClient.api.memory.getCollections(), 
       "Getting all the available collections", 
       "Unable to fetch available collections"
     )
@@ -15,21 +14,21 @@ const MemoryService = Object.freeze({
   },
   wipeAllCollections: async () => {
     return await tryRequest(
-      destroy('/memory/wipe-collections/'), 
+      apiClient.api.memory.wipeCollections(), 
       "All in-memory collections were wiped", 
       "Unable to wipe the in-memory collections"
     )
   },
-  wipeCollection: async (collection: string) => {
+  wipeCollection: async (collectionId: string) => {
     return await tryRequest(
-      destroy(`/memory/collections/${collection}`), 
-      `The ${collection} collection was wiped`, 
-      `Unable to wipe the ${collection} collection`
+      apiClient.api.memory.wipeSingleCollection({ collectionId }), 
+      `The ${collectionId} collection was wiped`, 
+      `Unable to wipe the ${collectionId} collection`
     )
   },
   wipeConversation: async () => {
     return await tryRequest(
-      destroy('/memory/working-memory/conversation-history/'), 
+      apiClient.api.memory.wipeConversationHistory(), 
       "The current conversation was wiped", 
       "Unable to wipe the in-memory current conversation"
     )
@@ -40,7 +39,7 @@ const MemoryService = Object.freeze({
       k: memories 
     }
     const result = await tryRequest(
-      get<Memory>('/memory/recall/', { params }), 
+      apiClient.api.memory.recallMemoriesFromText(params), 
       `Recalling ${memories} memories with ${query} as query`, 
       "Unable to recall memory",
       ["Recalling memories from the cat with", params]

@@ -28,7 +28,7 @@ export const useNotifications = defineStore('notifications', () => {
     }
   }
 
-  const sendNotificationFromJSON = (result: JSONResponse) => {
+  const sendNotificationFromJSON = <T>(result: JSONResponse<T>) => {
     showNotification({
       type: result.status,
       text: result.message

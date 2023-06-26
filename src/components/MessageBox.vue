@@ -2,7 +2,6 @@
 import hljs from 'highlight.js'
 import { Remarkable } from 'remarkable'
 import { linkify } from 'remarkable/linkify'
-import 'highlight.js/styles/github.css'
 import SidePanel from '@components/SidePanel.vue'
 
 const whyPanel = ref<InstanceType<typeof SidePanel>>()
@@ -80,25 +79,3 @@ const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
 		</SidePanel>
 	</div>
 </template>
-
-<style lang="scss" scoped>
-.chat-bubble > p a {
-	@apply link link-info;
-}
-
-.chat-bubble > p pre {
-	@apply my-4 whitespace-pre-wrap;
-}
-
-.chat-bubble > p ul {
-	@apply list-disc list-inside;
-}
-
-.chat-bubble > p ol {
-	@apply list-decimal list-inside;
-}
-
-.chat-bubble > p table {
-	@apply table table-xs;
-}
-</style>

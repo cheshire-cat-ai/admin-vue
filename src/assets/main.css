@@ -39,7 +39,7 @@ body {
     @apply !bg-primary hover:bg-primary-focus focus:bg-primary-focus text-base-100;
   }
   .menu li > *:active {
-    @apply !bg-base-content
+    @apply !bg-primary-focus
   }
   .btn-ghost {
     @apply disabled:bg-transparent;
@@ -66,6 +66,24 @@ body {
   }
   .plotly .modebar-btn.active {
     @apply !bg-base-100;
+  }
+  .chat-bubble a {
+    @apply !link !link-info;
+  }
+  .chat-bubble table {
+    @apply !table !table-xs;
+  }
+  .chat-bubble table :where(thead, tfoot) {
+    @apply !text-base-100;
+  }
+  .chat-bubble pre {
+    @apply !my-4 !whitespace-pre-wrap;
+  }
+  .chat-bubble ul {
+    @apply !list-disc !list-inside;
+  }
+  .chat-bubble ol {
+    @apply !list-decimal !list-inside;
   }
 }
 

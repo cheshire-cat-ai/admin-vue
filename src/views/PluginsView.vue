@@ -1,33 +1,43 @@
 <script setup lang="ts">
 import _ from 'lodash'
-import type { Plugin } from '@models/Plugin'
+import type { Plugin } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
 
 const store = usePlugins()
-const { togglePlugin } = store
+const { togglePlugin, removePlugin, installPlugin } = store
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { currentFilters } = storeToRefs(useSettings())
 
+const { open: uploadPlugin, onChange: onPluginUpload } = useFileDialog()
+
 const searchText = ref("")
 const pluginsList = ref<Plugin[]>([])
+const filteredList = ref<Plugin[]>([])
 
 watchDeep(pluginsState, () => {
 	pluginsList.value = [...new Set([
 		...pluginsState.value.data?.installed ?? [],
 		...pluginsState.value.data?.registry ?? []
 	])]
+	filteredList.value = pluginsList.value
+})
+
+/**
+ * Handles the plugin upload by calling the installPlugin endpoint with the file attached.
+ */
+onPluginUpload(files => {
+	if (files == null) return
+	installPlugin(files[0])
 })
 
 const searchPlugin = () => {
-	pluginsList.value = pluginsList.value.filter(p => p.name.includes(searchText.value))
+	filteredList.value = pluginsList.value.filter(p => {
+		return p.name.toLowerCase().includes(searchText.value) ||
+		p.id.toLowerCase().includes(searchText.value)
+	})
 }
-
-const filteredList = computed(() => {
-	const toFilterList = _.cloneDeep(pluginsList.value)
-	return toFilterList
-})
 </script>
 
 <template>
@@ -70,8 +80,8 @@ const filteredList = computed(() => {
 			<p class="font-medium">
 				Installed plugins: {{ pluginsState.data?.installed.length ?? 0 }}
 			</p>
-			<button disabled class="btn-primary btn-sm btn">
-				Upload plugin (coming soon)
+			<button class="btn-primary btn-sm btn" @click="uploadPlugin({ multiple: false, accept: 'application/zip' })">
+				Upload plugin
 			</button>
 		</div>
 		<div v-if="pluginsState.loading" class="flex grow items-center justify-center">
@@ -82,7 +92,7 @@ const filteredList = computed(() => {
 				Failed to fetch plugins
 			</div>
 		</div>
-		<div v-else class="flex flex-col gap-4">
+		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<div v-for="item in filteredList" :key="item.id" class="flex gap-4 rounded-xl bg-base-200 p-4">
 				<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain">
 				<div v-else class="placeholder avatar self-center">
@@ -100,9 +110,15 @@ const filteredList = computed(() => {
 								{{ item.author_name }}
 							</a>
 						</p>
-						<!-- TODO: When server adds the property, show toggle only for installed plugins, otherwise a "INSTALL" button -->
-						<input v-if="item.id !== 'core_plugin'" type="checkbox" disabled
-							class="!toggle-success !toggle" @click="togglePlugin(item.id)">
+						<template v-if="item.id !== 'core_plugin'">
+							<!-- TODO: When server adds the property, show only for installed plugins, otherwise a "INSTALL" button -->
+							<button class="btn-error btn-xs btn" @click="removePlugin(item.id)">
+								Delete
+							</button>
+							<!--<button class="btn-success btn-xs btn">
+								Install
+							</button>-->
+						</template>
 					</div>
 					<div class="flex items-center gap-1 text-sm font-medium text-neutral-focus">
 						<p>v{{ item.version }}</p>
@@ -114,13 +130,23 @@ const filteredList = computed(() => {
 					<p class="text-sm">
 						{{ item.description }}
 					</p>
-					<div class="mt-2 flex flex-wrap gap-2">
-						<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
-							{{ tag.trim() }}
+					<div class="flex items-center justify-between gap-4">
+						<div class="mt-2 flex flex-wrap gap-2">
+							<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
+								{{ tag.trim() }}
+							</div>
 						</div>
+						<!-- TODO: When server adds the property, show toggle only for installed plugins -->
+						<input v-if="item.id !== 'core_plugin'" type="checkbox" disabled 
+							class="!toggle-success !toggle" @click="togglePlugin(item.id)">
 					</div>
 				</div>
 			</div>
+		</div>
+		<div v-else class="flex grow items-center justify-center">
+			<p class="rounded-lg bg-base-200 p-4 text-lg font-medium md:text-xl">
+				No plugins found with this name.
+			</p>
 		</div>
 	</div>
 </template>

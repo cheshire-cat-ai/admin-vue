@@ -1,11 +1,8 @@
 import type { RabbitHoleResponse } from '@models/RabbitHole'
-import type { LLMConfigDescriptor, LLMConfigMetaData } from '@models/LLMConfig'
 import type { Message } from '@models/Message'
-import type { PluginsResponse } from '@models/Plugin'
 import type { Notification } from '@models/Notification'
-import type { EmbedderConfigDescriptor, EmbedderConfigMetaData } from '@models/EmbedderConfig'
 import type { JSONSettings } from '@models/JSONSchema'
-import type { Collection } from '@models/Memory'
+import type { CollectionsList, ConfigurationsResponse, PluginsList } from 'ccat-api'
 
 /**
  * Defines a generic interface for defining the state of an asynchronous operation.
@@ -30,11 +27,10 @@ export interface AsyncState<TData> extends AsyncStateBase {
 export type FileUploaderState = AsyncState<RabbitHoleResponse>
 
 /**
- * Defines the structure of the 'llmConfig' state.
- * This state contains information about the available language models.
+ * Defines the structure of the settings config state.
  */
-export interface LLMConfigState extends AsyncState<LLMConfigDescriptor> {
-  selected?: LLMConfigMetaData['languageModelName']
+export interface SettingsConfigState extends AsyncState<ConfigurationsResponse> {
+  selected?: string
   settings: Record<string, JSONSettings>
 }
 
@@ -62,19 +58,10 @@ export interface NotificationsState {
  * Defines the structure of the 'plugins' state.
  * This state contains information about the installed plugins.
  */
-export type PluginsState = AsyncState<PluginsResponse>
+export type PluginsState = AsyncState<Omit<PluginsList, 'status'>>
 
 /**
  * Defines the structure of the 'collections' state.
  * This state contains information about the available collections.
  */
-export type CollectionsState = AsyncState<Collection[]>
-
-/**
- * Defines the structure of the 'embedderConfig' state.
- * This state contains information about the available embedders.
- */
-export interface EmbedderConfigState extends AsyncState<EmbedderConfigDescriptor> {
-  selected?: EmbedderConfigMetaData['languageEmbedderName']
-  settings: Record<string, JSONSettings>
-}
+export type CollectionsState = AsyncState<CollectionsList['collections']>

@@ -8,7 +8,7 @@ import Plotly from '@aurium/vue-plotly'
 import { now } from 'lodash'
 import { Matrix, TSNE } from '@saehrimnir/druidjs'
 import SidePanel from '@components/SidePanel.vue'
-import type { VectorsData } from '@models/Memory'
+import type { VectorsData } from 'ccat-api'
 
 interface PlotData {
 	name: string

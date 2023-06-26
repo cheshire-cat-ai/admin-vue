@@ -1,23 +1,27 @@
-import axios, { AxiosError, type AxiosResponse } from "axios"
+import { AxiosError } from "axios"
 import type { JSONResponse } from "@models/JSONSchema"
-import config from "@/config"
 import LogService from "@services/LogService"
-import _ from "lodash"
+import { capitalize } from "lodash"
+import { CatClient, type CancelablePromise, ApiError } from 'ccat-api'
 
 /**
- * API client to make requests to the endpoints and passing the access_token for authentication.
+ * API client to make requests to the endpoints and passing the API_KEY for authentication.
  */
-const apiClient = axios.create({
-  baseURL: config.baseUrl,
-  timeout: config.timeout,
-  headers: { 
-    'access_token': config.apiKey,
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
+export const apiClient = new CatClient({
+  baseUrl: window.catCoreConfig.CORE_HOST,
+  authKey: window.catCoreConfig.API_KEY ?? '',
+  port: window.catCoreConfig.CORE_PORT ?? '',
+  secure: window.catCoreConfig.CORE_USE_SECURE_PROTOCOLS,
+  timeout: 10000,
+  ws: {
+    path: 'ws',
+    retries: 3,
+    delay: 2500,
+    onFailed: () => {
+      console.error('Failed to connect WebSocket after 3 retries.')
+    }
   }
 })
-
-export const { get, post, put, delete: destroy } = apiClient
 
 /**
  * A function that wraps the promise request into a try/catch block
@@ -29,15 +33,13 @@ export const { get, post, put, delete: destroy } = apiClient
  * @returns A JSONResponse object containing status, message and optionally a data property
  */
 export const tryRequest = async <T>(
-  request: Promise<AxiosResponse<T, unknown>>,
+  request: CancelablePromise<T>,
   success: string,
   error: string,
   log: unknown[] | string = success,
 ) => {
   try {
-    const result = await request
-    
-    if (result.status !== 200) throw new Error()
+    const result = (await request) as T
     
     if (typeof log === 'string') LogService.print(log)
     else LogService.print(...log)
@@ -45,13 +47,18 @@ export const tryRequest = async <T>(
     return {
       status: 'success',
       message: success,
-      data: result.data
+      data: result
     } as JSONResponse<T>
   } catch (err) {
     if (err instanceof AxiosError) {
-      error = _.capitalize(err.message)
-      if (err.code === "ERR_NETWORK") throw "Network Error"
+      error = capitalize(err.message)
+      LogService.print(error)
+      if (err.code === "ERR_NETWORK") throw "Network error for"
       else if (err.code !== "ECONNABORTED") throw "Failed to fetch"
+    }
+    if (err instanceof ApiError) {
+      LogService.print(err.body.detail)
+      throw "Failed to fetch"
     }
     return {
       status: 'error',
