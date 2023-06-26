@@ -52,8 +52,7 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
-    exclude: [...configDefaults.exclude, 'e2e/*'],
-    setupFiles: 'setupWindow.js'
+    exclude: [...configDefaults.exclude, 'e2e/*']
   },
   server: {
     port: 3000,
