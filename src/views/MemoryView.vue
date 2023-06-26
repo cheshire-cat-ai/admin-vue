@@ -3,13 +3,12 @@ import _ from 'lodash'
 import download from 'downloadjs'
 import { useMemory } from '@stores/useMemory'
 import { useSettings } from '@stores/useSettings'
-import { JsonTreeView } from 'json-tree-view-vue3'
 import SelectBox from '@components/SelectBox.vue'
 import Plotly from '@aurium/vue-plotly'
-import { now } from '@utils/commons'
+import { now } from 'lodash'
 import { Matrix, TSNE } from '@saehrimnir/druidjs'
 import SidePanel from '@components/SidePanel.vue'
-import type { VectorsData } from '@models/Memory'
+import type { VectorsData } from 'ccat-api'
 
 interface PlotData {
 	name: string
@@ -21,12 +20,13 @@ interface PlotData {
 
 const { isDark } = storeToRefs(useSettings())
 
-const callText = ref(''), callOutput = ref('{}'), kMems = ref(10)
+const callText = ref(''), callOutput = ref<VectorsData>(), kMems = ref(10)
 const plotOutput = ref<PlotData[]>([]), clickedPoint = ref()
 const sidePanel = ref<InstanceType<typeof SidePanel>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
-const [showSpinner, toggleSpinner] = useToggle(false)
+const [ showSpinner, toggleSpinner ] = useToggle(false)
+const { width: windowWidth } = useWindowSize()
 
 const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
@@ -127,7 +127,7 @@ const recallMemory = async () => {
 		customdata: [{ text: callText.value, source: 'query', when: 'now', score: 1 }]
 	})
 
-	callOutput.value = JSON.stringify(result.vectors, undefined, 2)
+	callOutput.value = result.vectors
 
 	toggleSpinner()
 }
@@ -170,7 +170,7 @@ const onPointClick = (data: any) => {
 
 const downloadResult = () => {
 	const output = { export_time: now() }
-	_.assign(output, JSON.parse(callOutput.value))
+	_.assign(output, callOutput.value)
 	download(JSON.stringify(output, undefined, 2), 'result.json', 'application/json')
 }
 </script>
@@ -183,7 +183,8 @@ const downloadResult = () => {
 			</p>
 		</div>
 		<div class="join w-fit self-center shadow-xl">
-			<button :disabled="memoryState.error !== undefined" class="btn-error join-item btn" @click="wipeMemory()">
+			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
+				class="btn-error join-item btn" @click="wipeMemory()">
 				Wipe
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
@@ -194,10 +195,11 @@ const downloadResult = () => {
 					<span class="label-text font-medium text-primary">Recall text</span>
 				</label>
 				<div class="relative w-full">
-					<input v-model.trim="callText" type="text" placeholder="Enter a text..."
+					<input v-model.trim="callText" type="text" placeholder="Enter a text..." 
+						:disabled="Boolean(memoryState.error) || memoryState.loading"
 						class="input-primary input input-sm w-full" @keyup.enter="recallMemory()">
 					<button class="btn-primary btn-square btn-sm btn absolute right-0 top-0"
-						@click="recallMemory()">
+						:disabled="Boolean(memoryState.error) || memoryState.loading" @click="recallMemory()">
 						<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
 					</button>
 				</div>
@@ -206,10 +208,11 @@ const downloadResult = () => {
 				<label class="label">
 					<span class="label-text font-medium text-primary">K memories</span>
 				</label>
-				<input v-model="kMems" type="number" min="1" class="input-primary input input-sm join-item w-24 pl-2 pr-0">
+				<input v-model="kMems" :disabled="Boolean(memoryState.error) || memoryState.loading" type="number" min="1" 
+					class="input-primary input input-sm join-item w-24 pl-2 pr-0">
 			</div>
 		</div>
-		<div v-if="showSpinner" class="flex grow items-center justify-center">
+		<div v-if="showSpinner || memoryState.loading" class="flex grow items-center justify-center">
 			<span class="loading loading-spinner w-12 text-primary" />
 		</div>
 		<div v-else-if="memoryState.error" class="flex grow items-center justify-center">
@@ -217,7 +220,7 @@ const downloadResult = () => {
 				{{ memoryState.error }}
 			</p>
 		</div>
-		<div v-else-if="!showSpinner && !memoryState.error && callOutput != '{}'" class="flex flex-col items-center justify-center gap-4">
+		<div v-else-if="!showSpinner && !memoryState.error && callOutput" class="flex flex-col items-center justify-center gap-4">
 			<Plotly :data="getPlotData" :layout="{
 					title: 'Similar memories',
 					font: {
@@ -231,19 +234,26 @@ const downloadResult = () => {
 					paper_bgcolor: isDark ? '#383938' : '#F4F4F5',
 					plot_bgcolor: isDark ? '#383938' : '#F4F4F5',
 					showlegend: true,
-					legend: { x: 0, xanchor: 'right', title: { text: 'Collections' } },
+					legend: windowWidth <= 700 ? { orientation: 'h', title: { text: 'Collections' } } : 
+						{ x: 0, xanchor: 'right', title: { text: 'Collections' } },
 					margin: { b: 30, l: 30, t: 30, r: 30 }
-				}" :modeBarButtonsToRemove="['zoom2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d']"
+				}" :modeBarButtonsToRemove="['select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d']"
 				:toImageButtonOptions="{
 					format: 'jpeg',
 					filename: 'recall_plot',
 					scale: 1.5
 				}"
-				:displayModeBar="true" :displaylogo="false" :responsive="true" :scrollZoom="true" @plotly_click="onPointClick" />
+				:displayModeBar="true" :displaylogo="false" :responsive="true" :scrollZoom="true" 
+				:style="[ windowWidth <= 700 ? `width:${windowWidth - 32}px` : '' ]" @plotly_click="onPointClick" />
 			<button class="btn-info btn" @click="downloadResult()">
 				Export the result
 			</button>
-			<JsonTreeView :data="callOutput" rootKey="result" :colorScheme="isDark ? 'dark' : 'light'" />
+			<div v-if="callOutput" class="flex w-full flex-col">
+				<p class="self-start rounded-t-md bg-primary px-2 py-1 font-medium text-base-100">
+					{{ callOutput.embedder }}
+				</p>
+				<MemorySelect class="rounded-tl-none" :result="callOutput.collections" />
+			</div>
 		</div>
 		<SidePanel ref="sidePanel" title="Memory content">
 			<div class="overflow-x-auto rounded-md border-2 border-neutral">
@@ -260,11 +270,7 @@ const downloadResult = () => {
 	</div>
 </template>
 
-<style lang="scss">
-.json-view-item.root-item .value-key {
-	white-space: normal !important;
-}
-
+<style scoped>
 .table tr td:first-child {
 	@apply font-medium text-primary;
 }

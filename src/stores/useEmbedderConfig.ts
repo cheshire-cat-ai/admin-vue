@@ -1,17 +1,15 @@
 import type { JSONSettings } from '@models/JSONSchema'
-import type { EmbedderConfigMetaData } from '@models/EmbedderConfig'
 import EmbedderConfigService from '@services/EmbedderConfigService'
 import { useNotifications } from '@stores/useNotifications'
-import type { EmbedderConfigState } from '@stores/types'
-import { uniqueId } from '@utils/commons'
+import type { SettingsConfigState } from '@stores/types'
 
 export const useEmbedderConfig = defineStore('embedder', () => {
-  const currentState = reactive<EmbedderConfigState>({
+  const currentState = reactive<SettingsConfigState>({
     loading: false,
     settings: {},
   })
 
-  const { showNotification } = useNotifications()
+  const { sendNotificationFromJSON } = useNotifications()
 
   const { state: embedders, isLoading, error } = useAsyncState(EmbedderConfigService.getEmbedders(), undefined)
 
@@ -20,7 +18,7 @@ export const useEmbedderConfig = defineStore('embedder', () => {
     currentState.data = embedders.value
     currentState.error = error.value as string
     if (currentState.data) {
-      currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].languageEmbedderName
+      currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].title
       currentState.settings = currentState.data.settings.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {})
     }
   })
@@ -31,7 +29,7 @@ export const useEmbedderConfig = defineStore('embedder', () => {
 
   const getEmbedderSchema = (selected = currentState.selected) => {
     if (!selected) return undefined
-    return getAvailableEmbedders().find((schema) => schema.languageEmbedderName === selected)
+    return getAvailableEmbedders().find((schema) => schema.title === selected)
   }
 
   const getEmbedderSettings = (selected = currentState.selected) => {
@@ -39,18 +37,22 @@ export const useEmbedderConfig = defineStore('embedder', () => {
     return currentState.settings[selected] ?? {} satisfies JSONSettings
   }
 
-  const setEmbedderSettings = async (name: EmbedderConfigMetaData['languageEmbedderName'], settings: JSONSettings) => {
-    const result = await EmbedderConfigService.setEmbedderSettings(name, settings)
-    showNotification({
-      id: uniqueId(),
-      type: result.status,
-      text: result.message
-    })
-    if (result.status != 'error') {
-      currentState.selected = name
-      currentState.settings[name] = settings
+  const setEmbedderSettings = async (name: string, settings: JSONSettings) => {
+    try {
+      const result = await EmbedderConfigService.setEmbedderSettings(name, settings)
+      sendNotificationFromJSON(result)
+      if (result.status != 'error') {
+        currentState.selected = name
+        currentState.settings[name] = settings
+      }
+      return result.status != 'error'
+    } catch (error) {
+      sendNotificationFromJSON({
+        status: 'error',
+        message: error as string
+      })
+      return false
     }
-    return result.status != 'error'
   }
 
   return {

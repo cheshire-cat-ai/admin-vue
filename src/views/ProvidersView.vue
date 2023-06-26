@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { JSONSettings } from '@models/JSONSchema'
-import type { LLMConfigMetaData } from '@models/LLMConfig'
 import { useLLMConfig } from '@stores/useLLMConfig'
+import type { Schema } from 'ccat-api'
 import SelectBox from '@components/SelectBox.vue'
 
 const storeLLM = useLLMConfig()
@@ -9,7 +9,7 @@ const { getAvailableProviders, getProviderSchema, setProviderSettings, getProvid
 const { currentState: llmState } = storeToRefs(storeLLM)
 
 const selectProvider = ref<InstanceType<typeof SelectBox>>()
-const currentSchema = ref<LLMConfigMetaData>()
+const currentSchema = ref<Schema>()
 const currentSettings = ref<JSONSettings>({})
 
 const emit = defineEmits<{
@@ -55,7 +55,7 @@ watchDeep(llmState, () => {
 			</div>
 		</div>
 		<div v-else class="flex grow flex-col gap-4">
-			<SelectBox ref="selectProvider" :picked="llmState.selected"
+			<SelectBox ref="selectProvider" :picked="llmState.selected" class="bg-base-200"
 				:list="getAvailableProviders().map(p => ({ label: p.name_human_readable, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex flex-col gap-4">

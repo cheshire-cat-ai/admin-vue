@@ -1,98 +1,50 @@
-import LogService from '@services/LogService'
-import type { JSONResponse } from '@models/JSONSchema'
-import { Memories } from '@/api'
+import { apiClient, tryRequest } from '@/api'
 
 /*
  * This is a service that is used to manage the memory of the Cheshire Cat.
  */
 const MemoryService = Object.freeze({
   getCollections: async () => {
-    try {
-      const result = await Memories.getAll()
-
-      if (result.status !== 200) throw new Error()
-
-      return result.data.collections
-    } catch (error) {
-      return {
-        status: 'error',
-        message: `Unable to fetch available collections`
-      } as JSONResponse
-    }
+    const result = await tryRequest(
+      apiClient.api.memory.getCollections(), 
+      "Getting all the available collections", 
+      "Unable to fetch available collections"
+    )
+    return result.data?.collections
   },
   wipeAllCollections: async () => {
-    try {
-      const result = await Memories.wipeCollections()
-
-      LogService.print('Deleting all the in-memory collections')
-
-      if (result.status !== 200) throw new Error()
-
-      return {
-        status: 'success',
-        message: "All in-memory collections were wiped"
-      } as JSONResponse
-    } catch (error) {
-      return {
-        status: 'error',
-        message: "Unable to wipe the in-memory collections"
-      } as JSONResponse
-    }
+    return await tryRequest(
+      apiClient.api.memory.wipeCollections(), 
+      "All in-memory collections were wiped", 
+      "Unable to wipe the in-memory collections"
+    )
   },
-  wipeCollection: async (collection: string) => {
-    try {
-      const result = await Memories.wipeSingleCollection(collection)
-
-      LogService.print(`Deleting the entire ${collection} collection`)
-
-      if (result.status !== 200) throw new Error()
-
-      return {
-        status: 'success',
-        message: `The ${collection} collection was wiped`
-      } as JSONResponse
-    } catch (error) {
-      return {
-        status: 'error',
-        message: `Unable to wipe the ${collection} collection`
-      } as JSONResponse
-    }
+  wipeCollection: async (collectionId: string) => {
+    return await tryRequest(
+      apiClient.api.memory.wipeSingleCollection({ collectionId }), 
+      `The ${collectionId} collection was wiped`, 
+      `Unable to wipe the ${collectionId} collection`
+    )
   },
   wipeConversation: async () => {
-    try {
-      const result = await Memories.wipeCurrentConversation()
-
-      LogService.print('Deleting the in-memory current conversation')
-
-      if (result.status !== 200) throw new Error()
-
-      return {
-        status: 'success',
-        message: "The current conversation was wiped"
-      } as JSONResponse
-    } catch (error) {
-      return {
-        status: 'error',
-        message: "Unable to wipe the in-memory current conversation"
-      } as JSONResponse
-    }
+    return await tryRequest(
+      apiClient.api.memory.wipeConversationHistory(), 
+      "The current conversation was wiped", 
+      "Unable to wipe the in-memory current conversation"
+    )
   },
   callMemory: async (query: string, memories = 10) => {
-    const params = { text: query, k: memories }
-    try {
-      const result = await Memories.recallMemory(params)
-
-      LogService.print("Recalling memories from the cat with", params)
-
-      if (result.status !== 200) throw new Error()
-
-      return result.data
-    } catch (error) {
-      return {
-        status: 'error',
-        message: `Unable to recall memory`
-      } as JSONResponse
+    const params = { 
+      text: query, 
+      k: memories 
     }
+    const result = await tryRequest(
+      apiClient.api.memory.recallMemoriesFromText(params), 
+      `Recalling ${memories} memories with ${query} as query`, 
+      "Unable to recall memory",
+      ["Recalling memories from the cat with", params]
+    )
+    return result.data
   }
 })
 

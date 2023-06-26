@@ -1,5 +1,7 @@
+import type { JSONResponse } from '@models/JSONSchema'
 import type { Notification } from '@models/Notification'
 import type { NotificationsState } from '@stores/types'
+import { uniqueId } from 'lodash'
 
 export const useNotifications = defineStore('notifications', () => {
   const currentState = reactive<NotificationsState>({
@@ -10,8 +12,13 @@ export const useNotifications = defineStore('notifications', () => {
     return currentState.history.filter(notification => !notification.hidden)
   }
 
-  const sendNotification = (notification: Notification) => {
-    currentState.history.push(notification)
+  const sendNotification = (notification: Omit<Notification, 'id'>) => {
+    const notif = {
+      id: uniqueId('n_'),
+      ...notification
+    }
+    currentState.history.push(notif)
+    return notif.id
   }
 
   const hideNotification = (id: Notification['id']) => {
@@ -21,10 +28,18 @@ export const useNotifications = defineStore('notifications', () => {
     }
   }
 
-  const showNotification = (notification: Notification, timeout = 3000) => {
-    sendNotification(notification)
+  const sendNotificationFromJSON = <T>(result: JSONResponse<T>) => {
+    showNotification({
+      type: result.status,
+      text: result.message
+    })
+    return result.status != 'error'
+  }
+
+  const showNotification = (notification: Omit<Notification, 'id'>, timeout = 3000) => {
+    const id = sendNotification(notification)
     const to = setTimeout(() => {
-      hideNotification(notification.id)
+      hideNotification(id)
       clearTimeout(to)
     }, timeout)
   }
@@ -34,7 +49,8 @@ export const useNotifications = defineStore('notifications', () => {
     sendNotification,
     hideNotification,
     getNotifications,
-    showNotification
+    showNotification,
+    sendNotificationFromJSON
   }
 })
 

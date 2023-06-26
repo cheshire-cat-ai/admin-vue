@@ -35,11 +35,11 @@ body {
   .btn-outline {
     @apply border-2;
   }
-  .btn-sm {
-    @apply leading-5;
-  }
   .focus, .active {
-    @apply bg-primary hover:bg-primary-focus focus:bg-primary-focus text-base-100;
+    @apply !bg-primary hover:bg-primary-focus focus:bg-primary-focus text-base-100;
+  }
+  .menu li > *:active {
+    @apply !bg-primary-focus
   }
   .btn-ghost {
     @apply disabled:bg-transparent;
@@ -61,17 +61,33 @@ body {
   .select, .input, .textarea {
     @apply overflow-hidden outline outline-offset-2 outline-2 border-0 !ring-0 !transition-all !duration-75 focus:outline-primary;
   }
-  .select-sm {
-    @apply !leading-[0.999rem];
-  }
   .toggle {
     @apply !bg-none !border-2;
   }
-  .input-number::-webkit-outer-spin-button,
-  .input-number::-webkit-inner-spin-button {
-    margin: 0;
+  .plotly .modebar-btn.active {
+    @apply !bg-base-100;
   }
-  .input-number[type="number"] {
-    -moz-appearance: textfield;
+  .chat-bubble a {
+    @apply !link !link-info;
   }
+  .chat-bubble table {
+    @apply !table !table-xs;
+  }
+  .chat-bubble table :where(thead, tfoot) {
+    @apply !text-base-100;
+  }
+  .chat-bubble pre {
+    @apply !my-4 !whitespace-pre-wrap;
+  }
+  .chat-bubble ul {
+    @apply !list-disc !list-inside;
+  }
+  .chat-bubble ol {
+    @apply !list-decimal !list-inside;
+  }
+}
+
+.plotly .modebar-group {
+  display: flex !important;
+  padding: 0px !important;
 }

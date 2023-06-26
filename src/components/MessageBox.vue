@@ -2,12 +2,7 @@
 import hljs from 'highlight.js'
 import { Remarkable } from 'remarkable'
 import { linkify } from 'remarkable/linkify'
-import 'highlight.js/styles/github.css'
-import { useSettings } from '@stores/useSettings'
 import SidePanel from '@components/SidePanel.vue'
-import { JsonTreeView } from 'json-tree-view-vue3'
-
-const { isDark } = storeToRefs(useSettings())
 
 const whyPanel = ref<InstanceType<typeof SidePanel>>()
 
@@ -34,7 +29,7 @@ markdown.block.ruler.enable(['footnote', 'deflist'])
 const props = defineProps<{
 	sender: 'bot' | 'user',
 	text: string,
-	why: string
+	why: any
 }>()
 
 const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
@@ -55,29 +50,32 @@ const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
 			</button>
 		</div>
 		<SidePanel ref="whyPanel" title="Why this response">
-			<JsonTreeView :data="why" rootKey="why" :colorScheme="isDark ? 'dark' : 'light'" />
+			<div v-if="why" class="flex flex-col gap-4">
+				<div class="overflow-x-auto rounded-md border-2 border-neutral">
+					<table class="table-zebra table-sm table text-center">
+						<thead class="bg-base-200 text-neutral">
+							<th>🧰 Tool</th>
+							<th>⌨️ Input</th>
+							<th>💬 Output</th>
+						</thead>
+						<tbody v-if="why.intermediate_steps?.length > 0">
+							<tr v-for="data in why.intermediate_steps" :key="data[0]">
+								<td>{{ data[0][0] }}</td>
+								<td>{{ data[0][1] }}</td>
+								<td>{{ data[1] }}</td>
+							</tr>
+						</tbody>
+						<tbody v-else>
+							<tr class="font-medium">
+								<td />
+								<td>No tools were used.</td>
+								<td />
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<MemorySelect :result="why.memory" />
+			</div>
 		</SidePanel>
 	</div>
 </template>
-
-<style lang="scss">
-.json-view-item.root-item .value-key {
-	white-space: normal !important;
-}
-
-.chat-bubble > p a {
-	@apply link link-info;
-}
-
-.chat-bubble > p ul {
-	@apply list-disc list-inside;
-}
-
-.chat-bubble > p ol {
-	@apply list-decimal list-inside;
-}
-
-.chat-bubble > p table {
-	@apply table table-xs;
-}
-</style>

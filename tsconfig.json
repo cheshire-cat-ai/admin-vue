@@ -28,6 +28,8 @@
     "isolatedModules": false,
     "noEmit": true,
     "allowJs": true,
+    "removeComments": true,
+    "importHelpers": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "strict": true,

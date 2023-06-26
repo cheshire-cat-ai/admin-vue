@@ -4,7 +4,7 @@
  * The purpose of this type is to be extended by other message types.
  */
 export interface MessageBase {
-  readonly id: number
+  readonly id: string | number
   readonly text: string
   readonly timestamp: number
 }
@@ -48,8 +48,10 @@ export interface MessageError {
 }
 
 /**
- * An interface for the prompt settings to pass to the cat via websocket.
+ * The type of the prompt settings to pass to the cat via websocket.
  */
-export interface PromptSettings {
+export type PromptSettings = {
+  prefix: string
+} & {
   [key: string]: boolean
 }

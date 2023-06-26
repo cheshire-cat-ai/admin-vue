@@ -1,10 +1,4 @@
-/**
- * This module defines and exports a service that is used to send files to the backend.
- * A service is a singleton object that provides a simple interface for performing backend-related tasks such as
- * sending or receiving data.
- */
-import LogService from '@services/LogService'
-import { RabbitHole } from '@/api'
+import { apiClient, tryRequest } from '@/api'
 
 /*
  * This service is used to send files down to the rabbit hole.
@@ -12,24 +6,30 @@ import { RabbitHole } from '@/api'
  */
 const RabbitHoleService = Object.freeze({
   sendFile: async (file: File) => {
-    const result = await RabbitHole.sendFile(file)
-
-    LogService.print('Sending a file to the rabbit hole')
-
+    const result = await tryRequest(
+      apiClient.api.rabbitHole.uploadFile({ formData: { file } }), 
+      `File ${file.name} successfully sent down the rabbit hole`, 
+      "Unable to send the file to the rabbit hole",
+      "Sending a file to the rabbit hole"
+    )
     return result.data
   },
   sendWeb: async (url: string) => {
-    const result = await RabbitHole.sendWeb(url)
-
-    LogService.print('Sending a website content to the rabbit hole')
-
+    const result = await tryRequest(
+      apiClient.api.rabbitHole.uploadUrl({ requestBody: { url } }), 
+      "Website successfully sent down the rabbit hole", 
+      "Unable to send the website to the rabbit hole",
+      "Sending a website content to the rabbit hole"
+    )
     return result.data
   },
   sendMemory: async (file: File) => {
-    const result = await RabbitHole.sendMemory(file)
-
-    LogService.print('Sending a bunch of memories to the rabbit hole')
-
+    const result = await tryRequest(
+      apiClient.api.rabbitHole.uploadMemory({ formData: { file } }), 
+      "Memories file successfully sent down the rabbit hole", 
+      "Unable to send the memories to the rabbit hole",
+      "Sending a bunch of memories to the rabbit hole"
+    )
     return result.data
   },
 })
