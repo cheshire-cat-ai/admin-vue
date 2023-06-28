@@ -3,10 +3,12 @@
   "include": [
     "env.d.ts", 
     "src/**/*", 
-    "src/**/*.vue", 
-    "components.d.ts", 
-    "auto-imports.d.ts", 
-    "globals.d.ts"
+    "src/**/*.vue",
+    "components.d.ts",
+    "auto-imports.d.ts",
+    "globals.d.ts",
+    "unit/**/*.test.ts",
+    "e2e/**/*.spec.ts"
   ],
   "compilerOptions": {
     "target": "ESNext",
@@ -16,9 +18,11 @@
       "DOM"
     ],
     "types": [
+      "vitest/globals",
       "vite/client",
-      "node"
-    ],  
+      "node",
+      "jsdom"
+    ],
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": false,

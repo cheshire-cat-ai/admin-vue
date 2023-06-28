@@ -49,8 +49,8 @@ const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
 				</p>
 			</button>
 		</div>
-		<SidePanel ref="whyPanel" title="Why this response">
-			<div v-if="why" class="flex flex-col gap-4">
+		<SidePanel v-if="why" ref="whyPanel" title="Why this response">
+			<div class="flex flex-col gap-4">
 				<div class="overflow-x-auto rounded-md border-2 border-neutral">
 					<table class="table-zebra table-sm table text-center">
 						<thead class="bg-base-200 text-neutral">

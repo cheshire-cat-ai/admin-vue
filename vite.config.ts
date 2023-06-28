@@ -1,5 +1,7 @@
+/// <reference types="vitest" />
+
 import tsconfigPaths from 'vite-tsconfig-paths'
-import { defineConfig } from 'vite'
+import { configDefaults, defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from "unplugin-icons/resolver"
@@ -18,7 +20,8 @@ export default defineConfig({
         'vue',
         'vue-router',
         '@vueuse/core',
-        'pinia'
+        'pinia',
+        'vitest'
       ],
       eslintrc: {
         enabled: true
@@ -46,6 +49,11 @@ export default defineConfig({
     }),
     tsconfigPaths()
   ],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    exclude: [...configDefaults.exclude, 'e2e/*']
+  },
   server: {
     port: 3000,
     open: false,

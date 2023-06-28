@@ -293,6 +293,19 @@
     "watchTriggerable": true,
     "watchWithFilter": true,
     "whenever": true,
-    "toValue": true
+    "toValue": true,
+    "afterAll": true,
+    "afterEach": true,
+    "assert": true,
+    "beforeAll": true,
+    "beforeEach": true,
+    "chai": true,
+    "describe": true,
+    "expect": true,
+    "it": true,
+    "suite": true,
+    "test": true,
+    "vi": true,
+    "vitest": true
   }
 }
