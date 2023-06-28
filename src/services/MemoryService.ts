@@ -21,7 +21,7 @@ const MemoryService = Object.freeze({
   },
   wipeCollection: async (collectionId: string) => {
     return await tryRequest(
-      apiClient.api.memory.wipeSingleCollection({ collectionId }), 
+      apiClient.api.memory.wipeSingleCollection(collectionId), 
       `The ${collectionId} collection was wiped`, 
       `Unable to wipe the ${collectionId} collection`
     )
@@ -34,15 +34,11 @@ const MemoryService = Object.freeze({
     )
   },
   callMemory: async (query: string, memories = 10) => {
-    const params = { 
-      text: query, 
-      k: memories 
-    }
     const result = await tryRequest(
-      apiClient.api.memory.recallMemoriesFromText(params), 
+      apiClient.api.memory.recallMemoriesFromText(query, memories), 
       `Recalling ${memories} memories with ${query} as query`, 
       "Unable to recall memory",
-      ["Recalling memories from the cat with", params]
+      `Recalling ${memories} memories from the cat with "${query}"`
     )
     return result.data
   }

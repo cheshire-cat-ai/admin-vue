@@ -15,10 +15,7 @@ const LLMService = Object.freeze({
   },
   setProviderSettings: async (languageModelName: string, settings: JSONSettings) => {
     return await tryRequest(
-      apiClient.api.settingsLargeLanguageModel.upsertLlmSetting({
-        languageModelName,
-        requestBody: settings
-      }), 
+      apiClient.api.settingsLargeLanguageModel.upsertLlmSetting(languageModelName, settings), 
       "Language model provider updated successfully", 
       "Language model provider couldn't be updated",
       "Sending the language model settings to the cat"
