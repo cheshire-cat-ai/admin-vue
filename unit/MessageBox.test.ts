@@ -1,15 +1,16 @@
 import { describe, it, expect } from 'vitest'
-
 import { mount } from '@vue/test-utils'
 import MessageBox from '@components/MessageBox.vue'
 
 describe('MessageBox', () => {
     it('renders properly for user', () => {
-        const wrapper = mount(MessageBox, { props: {
-            sender: 'user',
-            text: 'Hello dear cat!',
-            why: null
-        } })
+        const wrapper = mount(MessageBox, {
+            props: {
+                sender: 'user',
+                text: 'Hello dear cat!',
+                why: null
+            } 
+        })
 
         expect(wrapper.find('.chat-image').text()).toContain('🙂')
 

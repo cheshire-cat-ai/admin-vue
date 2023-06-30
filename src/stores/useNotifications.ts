@@ -12,15 +12,6 @@ export const useNotifications = defineStore('notifications', () => {
     return currentState.history.filter(notification => !notification.hidden)
   }
 
-  const sendNotification = (notification: Omit<Notification, 'id'>) => {
-    const notif = {
-      id: uniqueId('n_'),
-      ...notification
-    }
-    currentState.history.push(notif)
-    return notif.id
-  }
-
   const hideNotification = (id: Notification['id']) => {
     const notificationIndex = currentState.history.findIndex(notification => notification.id === id)
     if (notificationIndex >= 0 && notificationIndex < currentState.history.length) {
@@ -37,16 +28,19 @@ export const useNotifications = defineStore('notifications', () => {
   }
 
   const showNotification = (notification: Omit<Notification, 'id'>, timeout = 3000) => {
-    const id = sendNotification(notification)
+    const newNotification = {
+      id: uniqueId('n_'),
+      ...notification
+    }
+    currentState.history.push(newNotification)
     const to = setTimeout(() => {
-      hideNotification(id)
+      hideNotification(newNotification.id)
       clearTimeout(to)
     }, timeout)
   }
 
   return {
     currentState,
-    sendNotification,
     hideNotification,
     getNotifications,
     showNotification,
