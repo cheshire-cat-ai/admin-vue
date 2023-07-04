@@ -3,8 +3,6 @@
  * application.
  */
 
-import type { MessageResponse } from "@models/Message"
-
 /**
  * A type guard that takes a value of unknown type and returns a boolean indicating whether the value is of
  * type string
@@ -26,13 +24,4 @@ export const isError = (value: unknown): value is Error => value instanceof Erro
  */
 export const isErrorLikeObject = (value: unknown): value is { message: string } => {
   return !!(value && typeof value === 'object' && 'message' in value)
-}
-
-/**
- * A type guard that takes a value of unknown type and returns a boolean indicating whether the value is of
- * type MessageResponse
- * @param value
- */
-export const isMessageResponse = (value: unknown): value is MessageResponse => {
-  return !!(value && typeof value === 'object' && 'content' in value && 'why' in value && 'error' in value && value.error === false)
 }

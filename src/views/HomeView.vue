@@ -96,14 +96,6 @@ onActivated(() => {
 })
 
 /**
- * Clear messages history and send request to wipe current conversation
- */
-const clearConversation = async () => {
-	const res = await wipeConversation()
-	if (res) messagesState.value.messages = []
-}
-
-/**
  * Dispatches the inserted url to the RabbitHole service and closes the modal.
  */
 const dispatchWebsite = () => {
@@ -153,11 +145,12 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 			'pb-20 md:pb-24': isTwoLines,
 		}">
 		<div v-if="!messagesState.ready" class="flex grow items-center justify-center self-center">
-			<p v-if="messagesState.error" class="w-fit rounded bg-error p-4 font-semibold text-base-100">
+			<p v-if="messagesState.error" class="w-fit rounded-md bg-error p-4 font-semibold text-base-100">
 				{{ messagesState.error }}
 			</p>
-			<p v-else class="text-lg font-medium text-neutral">
-				Getting ready...
+			<p v-else class="flex flex-col items-center justify-center gap-2">
+				<span class="loading loading-spinner loading-lg text-primary" />
+				<span class="text-lg font-medium text-neutral">Getting ready...</span>
 			</p>
 		</div>
 		<div v-else-if="messagesState.messages.length" class="flex grow flex-col overflow-y-auto">
@@ -166,7 +159,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				:sender="msg.sender"
 				:text="msg.text"
 				:why="msg.sender === 'bot' ? msg.why : ''" />
-			<p v-if="messagesState.error" class="w-fit rounded bg-error p-4 font-semibold text-base-100">
+			<p v-if="messagesState.error" class="w-fit rounded-md bg-error p-4 font-semibold text-base-100">
 				{{ messagesState.error }}
 			</p>
 			<div v-else-if="!messagesState.error && messagesState.loading" class="mb-2 ml-2 flex items-center gap-2">
@@ -178,7 +171,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 			</div>
 		</div>
 		<div v-else class="flex grow cursor-pointer flex-col items-center justify-center gap-4 p-4">
-			<div v-for="(msg, index) in randomDefaultMessages" :key="index" class="btn-neutral btn font-medium normal-case shadow-lg"
+			<div v-for="(msg, index) in randomDefaultMessages" :key="index" class="btn-neutral btn font-medium normal-case text-base-100 shadow-lg"
 				@click="sendMessage(msg)">
 				{{ msg }}
 			</div>
@@ -249,7 +242,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 								<li>
 									<button :disabled="messagesState.messages.length === 0" 
 										class="join-item btn w-full flex-nowrap px-2" 
-										@click="clearConversation()">
+										@click="wipeConversation()">
 										<span class="grow normal-case">Clear conversation</span>
 										<span class="rounded-lg bg-error p-1 text-base-100">
 											<heroicons-trash-solid class="h-6 w-6" />
