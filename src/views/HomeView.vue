@@ -45,6 +45,50 @@ const inputDisabled = computed(() => {
 
 const randomDefaultMessages = selectRandomDefaultMessages()
 
+const dropContentZone = ref<HTMLDivElement>()
+
+/**
+ * Calls the specific endpoints based on the mime type of the file
+ */
+const pasteOrDrop = (content: string | File[] | null) => {
+	if (!content) return
+	if (typeof content === 'string') {
+		try { 
+			new URL(content)
+			sendWebsite(content)
+		} catch (_) { 
+			dispatchMessage(content)
+		}
+	} else {
+		content.forEach(f => {
+			if (AcceptedContentTypes.includes(f.type as typeof AcceptedContentTypes[number])) sendFile(f)
+			if (f.type == 'application/json') sendMemory(f)
+		})
+	}
+}
+
+/**
+ * Handles the drag & drop feature
+ */
+const { isOverDropZone } = useDropZone(dropContentZone, {
+	onLeave: () => {
+		isOverDropZone.value = false
+	},
+	onDrop: (files, evt) => {
+		const text = evt.dataTransfer?.getData("text")
+		pasteOrDrop(text || files)
+	}
+})
+
+/**
+ * Handles the paste content feature
+ */
+useEventListener(document, 'paste', (evt) => {
+	const text = evt.clipboardData?.getData('text')
+	const files = evt.clipboardData?.getData('file') || Array.from(evt.clipboardData?.files ?? [])
+	pasteOrDrop(text || files)
+})
+
 /**
  * Handles the file upload by calling the Rabbit Hole endpoint with the file attached.
  */
@@ -139,12 +183,27 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 </script>
 
 <template>
-	<div class="flex w-full max-w-screen-lg flex-col justify-center gap-4 self-center overflow-hidden !pt-0 text-sm"
+	<div ref="dropContentZone"
+		class="relative flex w-full max-w-screen-lg flex-col justify-center gap-4 self-center overflow-hidden !pt-0 text-sm"
 		:class="{
 			'pb-16 md:pb-20': !isTwoLines,
 			'pb-20 md:pb-24': isTwoLines,
 		}">
-		<div v-if="!messagesState.ready" class="flex grow items-center justify-center self-center">
+		<div v-if="isOverDropZone" class="flex h-full w-full grow flex-col items-center justify-center py-4 md:pb-0">
+			<div class="relative flex w-full grow items-center justify-center rounded-md border-2 border-dashed border-primary p-2 md:p-4">
+				<p class="text-lg md:text-xl">
+					Drop 
+					<span class="font-medium text-primary">
+						files
+					</span>
+					to send to the Cheshire Cat, meow!
+				</p>
+				<button class="btn-error btn-square btn-sm btn absolute right-2 top-2" @click="isOverDropZone = false">
+					<heroicons-x-mark-20-solid class="h-6 w-6" />
+				</button>
+			</div>
+		</div>
+		<div v-else-if="!messagesState.ready" class="flex grow items-center justify-center self-center">
 			<p v-if="messagesState.error" class="w-fit rounded-md bg-error p-4 font-semibold text-base-100">
 				{{ messagesState.error }}
 			</p>
