@@ -50,9 +50,10 @@ const dropContentZone = ref<HTMLDivElement>()
 /**
  * Calls the specific endpoints based on the mime type of the file
  */
-const pasteOrDrop = (content: string | File[] | null) => {
+const contentHandler = (content: string | File[] | null) => {
 	if (!content) return
 	if (typeof content === 'string') {
+		if (content.trim().length == 0) return
 		try { 
 			new URL(content)
 			sendWebsite(content)
@@ -76,17 +77,18 @@ const { isOverDropZone } = useDropZone(dropContentZone, {
 	},
 	onDrop: (files, evt) => {
 		const text = evt.dataTransfer?.getData("text")
-		pasteOrDrop(text || files)
+		contentHandler(text || files)
 	}
 })
 
 /**
- * Handles the paste content feature
+ * Handles the copy-paste feature
  */
-useEventListener(document, 'paste', (evt) => {
+useEventListener<ClipboardEvent>(dropContentZone, 'paste', evt => {
+	if ((evt.target as HTMLElement).isEqualNode(textArea.value)) return
 	const text = evt.clipboardData?.getData('text')
 	const files = evt.clipboardData?.getData('file') || Array.from(evt.clipboardData?.files ?? [])
-	pasteOrDrop(text || files)
+	contentHandler(text || files)
 })
 
 /**
@@ -243,7 +245,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 					<heroicons-speaker-x-mark-solid class="swap-off h-6 w-6" />
 				</label>
 				<div class="relative w-full">
-					<textarea ref="textArea" v-model="userMessage" :disabled="inputDisabled"
+					<textarea ref="textArea" v-model.trim="userMessage" :disabled="inputDisabled"
 						class="textarea block max-h-20 w-full resize-none !outline-offset-0" :class="[ isTwoLines ? 'pr-10' : 'pr-20' ]"
 						:placeholder="generatePlaceholder(messagesState.loading, isListening, messagesState.error)" @keydown="preventSend" />
 					<div :class="[ isTwoLines ? 'flex-col-reverse' : '' ]" class="absolute right-2 top-1/2 flex -translate-y-1/2 gap-1">
