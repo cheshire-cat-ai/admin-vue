@@ -80,7 +80,8 @@ const searchPlugin = () => {
 			<p class="font-medium">
 				Installed plugins: {{ pluginsState.data?.installed.length ?? 0 }}
 			</p>
-			<button class="btn-primary btn-sm btn" @click="uploadPlugin({ multiple: false, accept: 'application/zip' })">
+			<button :disabled="pluginsState.loading || Boolean(pluginsState.error)"
+				class="btn-primary btn-sm btn" @click="uploadPlugin({ multiple: false, accept: 'application/zip' })">
 				Upload plugin
 			</button>
 		</div>
