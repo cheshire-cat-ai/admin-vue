@@ -1,8 +1,8 @@
-import type { RabbitHoleResponse } from '@models/RabbitHole'
 import type { Message } from '@models/Message'
 import type { Notification } from '@models/Notification'
 import type { JSONSettings } from '@models/JSONSchema'
 import type { CollectionsList, ConfigurationsResponse, PluginsList } from 'ccat-api'
+import type { FileResponse, WebResponse } from 'ccat-api'
 
 /**
  * Defines a generic interface for defining the state of an asynchronous operation.
@@ -18,6 +18,8 @@ export interface AsyncStateBase {
 export interface AsyncState<TData> extends AsyncStateBase {
   data?: TData
 }
+
+export type RabbitHoleResponse = FileResponse | WebResponse | Record<string, unknown>
 
 /**
  * Defines the structure of the 'fileUploader' state.
