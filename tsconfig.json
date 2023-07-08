@@ -4,6 +4,7 @@
     "env.d.ts", 
     "src/**/*", 
     "src/**/*.vue",
+    ".eslintrc.json",
     "components.d.ts",
     "auto-imports.d.ts",
     "globals.d.ts",
