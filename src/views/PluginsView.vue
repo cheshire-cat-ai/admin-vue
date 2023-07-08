@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import _ from 'lodash'
-import type { Plugin } from 'ccat-api'
+import { type Plugin, AcceptedPluginTypes } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
 
@@ -81,7 +81,7 @@ const searchPlugin = () => {
 				Installed plugins: {{ pluginsState.data?.installed.length ?? 0 }}
 			</p>
 			<button :disabled="pluginsState.loading || Boolean(pluginsState.error)"
-				class="btn-primary btn-sm btn" @click="uploadPlugin({ multiple: false, accept: 'application/zip' })">
+				class="btn-primary btn-sm btn" @click="uploadPlugin({ multiple: false, accept: AcceptedPluginTypes.join(',') })">
 				Upload plugin
 			</button>
 		</div>

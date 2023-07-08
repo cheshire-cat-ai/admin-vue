@@ -3,7 +3,7 @@ import { useRabbitHole } from '@stores/useRabbitHole'
 import { useMessages } from '@stores/useMessages'
 import { useSound } from '@vueuse/sound'
 import { useMemory } from '@stores/useMemory'
-import { AcceptedFileContentTypes } from 'ccat-api'
+import { AcceptedFileTypes, type AcceptedFileType, AcceptedMemoryTypes, type AcceptedMemoryType } from 'ccat-api'
 import { useSettings } from '@stores/useSettings'
 import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
@@ -62,8 +62,8 @@ const contentHandler = (content: string | File[] | null) => {
 		}
 	} else {
 		content.forEach(f => {
-			if (AcceptedFileContentTypes.includes(f.type as typeof AcceptedFileContentTypes[number])) sendFile(f)
-			if (f.type == 'application/json') sendMemory(f)
+			if (AcceptedFileTypes.includes(f.type as AcceptedFileType)) sendFile(f)
+			else if (AcceptedMemoryTypes.includes(f.type as AcceptedMemoryType)) sendMemory(f)
 		})
 	}
 }
@@ -273,7 +273,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									<!-- :disabled="rabbitHoleState.loading" -->
 									<button disabled
 										class="join-item btn w-full flex-nowrap px-2" 
-										@click="openMemory({ multiple: false, accept: 'application/json' })">
+										@click="openMemory({ multiple: false, accept: AcceptedMemoryTypes.join(',') })">
 										<span class="grow normal-case">Upload memories</span>
 										<span class="rounded-lg bg-success p-1 text-base-100">
 											<ph-brain-fill class="h-6 w-6" />
@@ -293,7 +293,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 								<li>
 									<button :disabled="rabbitHoleState.loading" 
 										class="join-item btn w-full flex-nowrap px-2" 
-										@click="openFile({ multiple: false, accept: AcceptedFileContentTypes.join(', ') })">
+										@click="openFile({ multiple: false, accept: AcceptedFileTypes.join(',') })">
 										<span class="grow normal-case">Upload file</span>
 										<span class="rounded-lg bg-warning p-1 text-base-100">
 											<heroicons-document-text-solid class="h-6 w-6" />
