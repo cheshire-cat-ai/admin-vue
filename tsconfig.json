@@ -9,8 +9,7 @@
     "auto-imports.d.ts",
     "globals.d.ts",
     "unit/**/*.test.ts",
-    "e2e/**/*.spec.ts"
-, "e2e/menu-navigation.ts"  ],
+    "e2e/**/*.spec.ts" ],
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
