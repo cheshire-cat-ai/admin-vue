@@ -6,11 +6,13 @@ describe('ModalBox', () => {
     it('renders properly', () => {
         const wrapper = mount(ModalBox, {
             slots: {
-                default: '<div>My slot content</div>'
+                default: 'My slot content'
             }
         })
 
-        // TODO: is null (wtf?)
+        expect(wrapper.exists()).toBe(true)
+
+        // TODO: is empty (wtf?)
         console.log("Slot:", wrapper.html())
 
         //expect(wrapper.getComponent({ name: 'DialogPanel' }).text()).toContain('All')

@@ -198,7 +198,7 @@ const downloadResult = () => {
 					<input v-model.trim="callText" type="text" placeholder="Enter a text..." 
 						:disabled="Boolean(memoryState.error) || memoryState.loading"
 						class="input-primary input input-sm w-full" @keyup.enter="recallMemory()">
-					<button class="btn-primary btn-square btn-sm btn absolute right-0 top-0"
+					<button class="btn-primary btn-sm btn-square btn absolute right-0 top-0"
 						:disabled="Boolean(memoryState.error) || memoryState.loading" @click="recallMemory()">
 						<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
 					</button>
