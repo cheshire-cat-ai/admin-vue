@@ -33,7 +33,8 @@ const { isDark } = storeToRefs(useSettings())
 
 const callText = ref(''), callOutput = ref<VectorsData>(), kMems = ref(10)
 const plotOutput = ref<PlotData[]>([]), clickedPoint = ref<MarkerData>()
-const sidePanel = ref<InstanceType<typeof SidePanel>>()
+const pointInfoPanel = ref<InstanceType<typeof SidePanel>>()
+const memoryDetailsPanel = ref<InstanceType<typeof SidePanel>>()
 const boxWipe = ref<InstanceType<typeof ModalBox>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
@@ -171,14 +172,14 @@ const deleteMemoryMarker = async (collection: string, memory: string) => {
 	const index = pointData?.meta?.findIndex(v => v.id == memory)
 	if (index == undefined || pointData == undefined) return
 	await deleteMemoryPoint(collection, memory)
-	sidePanel.value?.togglePanel()
+	pointInfoPanel.value?.togglePanel()
 	_.remove(pointData.meta ?? [], v => v.id == memory)
 	_.pull(pointData.data, pointData.data[index])
 }
 
 const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex, w }: any) => {
 	clickedPoint.value = w.config.series[seriesIndex].meta[dataPointIndex]
-	sidePanel.value?.togglePanel()
+	pointInfoPanel.value?.togglePanel()
 }
 
 const downloadResult = () => {
@@ -190,22 +191,10 @@ const downloadResult = () => {
 
 <template>
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
-		<div class="flex flex-col items-center justify-center gap-2 rounded-md p-4">
-			<p class="text-3xl font-bold text-primary">
-				Memory
-			</p>
-		</div>
-		<div class="join w-fit self-center shadow-xl">
-			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
-				class="btn-error join-item btn" @click="boxWipe?.toggleModal()">
-				Wipe
-			</button>
-			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
-		</div>
 		<div class="flex gap-4">
 			<div class="form-control w-full">
 				<label class="label">
-					<span class="label-text font-medium text-primary">Recall text</span>
+					<span class="label-text font-medium text-primary">Search similar memories</span>
 				</label>
 				<div class="relative w-full">
 					<input v-model.trim="callText" type="text" placeholder="Enter a text..." 
@@ -233,78 +222,85 @@ const downloadResult = () => {
 				{{ memoryState.error }}
 			</p>
 		</div>
-		<div v-else-if="!showSpinner && !memoryState.error && callOutput" class="flex flex-col items-center justify-center gap-4">
-			<ApexChart type="scatter" width="100%" height="500" class="min-w-full max-w-full" 
-				:options="{
-					chart: {
-						defaultLocale: 'en',
-						fontFamily: 'Ubuntu',
-						background: 'transparent',
-						animations: { speed: 300, },
-						toolbar: {
-							tools: {
-								zoomin: false,
-								pan: false,
-							},
-							export: {
-								csv: { filename: 'recallPlot', },
-								svg: { filename: 'recallPlot', },
-								png: { filename: 'recallPlot', }
-							},
+		<ApexChart v-else-if="!showSpinner && !memoryState.error && callOutput" 
+			type="scatter" width="100%" height="500" class="min-w-full max-w-full" 
+			:options="{
+				chart: {
+					offsetY: 8,
+					defaultLocale: 'en',
+					fontFamily: 'Ubuntu',
+					background: 'transparent',
+					animations: { speed: 300, },
+					toolbar: {
+						tools: {
+							zoomin: false,
+							pan: false,
+							customIcons: [
+								{
+									icon: '<button class=\'btn-info btn btn-xs whitespace-nowrap\'>Export memories</button>',
+									index: 3,
+									title: 'Export the recalled memories',
+									class: 'custom-icon',
+									click: downloadResult
+								},
+								{
+									icon: '<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>Details</button>',
+									index: 3,
+									title: 'Show the recalled memories details',
+									class: 'custom-icon',
+									click: () => memoryDetailsPanel?.togglePanel()
+								}
+							]
 						},
-						zoom: {
-							type: 'xy',
-							autoScaleYaxis: true
-						}
+						export: {
+							csv: { filename: 'recallPlot', },
+							svg: { filename: 'recallPlot', },
+							png: { filename: 'recallPlot', }
+						},
 					},
-					grid: {
-						xaxis: { lines: { show: true, }, },   
-						yaxis: { lines: { show: true, }, },
-					},
-					legend: { showForSingleSeries: true, },
-					theme: { mode: isDark ? 'dark' : 'light', },
-					title: {
-						text: 'Similar memories',
-						style: {
-							fontSize: '20px',
-							fontFamily: 'Ubuntu',
-							color: isDark ? '#F4F4F5' : '#383938'
-						}
-					},
-					tooltip: {
-						theme: isDark ? 'dark' : 'light',
-						intersect: true,
-						style: { fontFamily: 'Ubuntu', },
-						custom: ({ seriesIndex, dataPointIndex, w }: any) => {
-							const text = w.config.series[seriesIndex].meta[dataPointIndex].text
-							return `<div class=\'marker-tooltip flex flex-col p-1\'>
-								<i>${text.substring(0, 30).concat('...')}</i>
-								<b><i>*Click to show more*</i></b>
-							</div>`
-						}
-					},
-					markers: { strokeWidth: 0, },
-					yaxis: {
-						type: 'numeric',
-						labels: { show: false, },
-						tooltip: { enabled: false, }
-					},
-					xaxis: {
-						type: 'numeric',
-						labels: { show: false, },
-						tooltip: { enabled: false, }
+					zoom: {
+						type: 'xy',
+						autoScaleYaxis: true
 					}
-				}"
-				:series="plotOutput" @markerClick="onMarkerClick" />
-			<button class="btn-info btn" @click="downloadResult()">
-				Export the result
+				},
+				grid: {
+					xaxis: { lines: { show: true, }, },   
+					yaxis: { lines: { show: true, }, },
+				},
+				legend: { showForSingleSeries: true, },
+				theme: { mode: isDark ? 'dark' : 'light', },
+				tooltip: {
+					theme: isDark ? 'dark' : 'light',
+					intersect: true,
+					style: { fontFamily: 'Ubuntu', },
+					custom: ({ seriesIndex, dataPointIndex, w }: any) => {
+						const text = w.config.series[seriesIndex].meta[dataPointIndex].text
+						return `<div class=\'marker-tooltip flex flex-col p-1\'>
+							<i>${text.substring(0, 30).concat('...')}</i>
+							<b><i>*Click to show more*</i></b>
+						</div>`
+					}
+				},
+				markers: { strokeWidth: 0, },
+				yaxis: {
+					type: 'numeric',
+					labels: { show: false, },
+					tooltip: { enabled: false, }
+				},
+				xaxis: {
+					type: 'numeric',
+					labels: { show: false, },
+					tooltip: { enabled: false, }
+				}
+			}"
+			:series="plotOutput" @markerClick="onMarkerClick" />
+		<div class="divider !my-0" />
+		<div class="join w-fit self-center shadow-xl">
+			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
+				class="btn-error join-item btn" @click="boxWipe?.toggleModal()">
+				Wipe
 			</button>
-			<div v-if="callOutput" class="flex w-full flex-col">
-				<p class="self-start rounded-t-md bg-primary px-2 py-1 font-medium text-base-100">
-					{{ callOutput.embedder }}
-				</p>
-				<MemorySelect class="rounded-tl-none" :result="callOutput.collections" />
-			</div>
+			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
 		</div>
 		<ModalBox ref="boxWipe">
 			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
@@ -336,7 +332,15 @@ const downloadResult = () => {
 				</div>
 			</div>
 		</ModalBox>
-		<SidePanel v-if="clickedPoint" ref="sidePanel" title="Memory content">
+		<SidePanel v-if="callOutput" ref="memoryDetailsPanel" title="Memory details">
+			<div class="flex w-full flex-col">
+				<p class="self-start rounded-t-md bg-primary px-2 py-1 font-medium text-base-100">
+					{{ callOutput.embedder }}
+				</p>
+				<MemorySelect class="rounded-tl-none" :result="callOutput.collections" />
+			</div>
+		</SidePanel>
+		<SidePanel v-if="clickedPoint" ref="pointInfoPanel" title="Memory content">
 			<div class="overflow-x-auto rounded-md border-2 border-neutral">
 				<table class="table-zebra table-sm table">
 					<tbody>

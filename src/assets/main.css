@@ -87,3 +87,23 @@ body {
 .apexcharts-tooltip {
   @apply !rounded-lg !text-xs;
 }
+
+.apexcharts-toolbar {
+  @apply !max-w-none !right-1/2 translate-x-1/2 gap-2;
+}
+
+.apexcharts-toolbar > * {
+  @apply !m-0;
+}
+
+.apexcharts-toolbar-custom-icon {
+  @apply !w-fit !h-fit;
+}
+
+.apexcharts-menu {
+  @apply !rounded-lg !min-w-0 !bg-base-200 !border-neutral !border-2 !p-0 !mt-1 !right-1 font-['Ubuntu'] overflow-hidden;
+}
+
+.apexcharts-menu > * {
+  @apply !py-1 !px-2 hover:bg-base-300 font-medium transition-colors;
+}
