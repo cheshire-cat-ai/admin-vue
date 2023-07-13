@@ -4,33 +4,42 @@ import download from 'downloadjs'
 import { useMemory } from '@stores/useMemory'
 import { useSettings } from '@stores/useSettings'
 import SelectBox from '@components/SelectBox.vue'
-import Plotly from '@aurium/vue-plotly'
 import { now } from 'lodash'
+import ApexChart from "vue3-apexcharts"
 import { Matrix, TSNE } from '@saehrimnir/druidjs'
 import SidePanel from '@components/SidePanel.vue'
 import type { VectorsData } from 'ccat-api'
 
+interface MarkerData {
+	id: string,
+	collection: string,
+	text: string,
+	when: string,
+	source: string,
+	score: number
+}
+
 interface PlotData {
 	name: string
-	x: number[]
-	y: number[]
-	text: string[]
-	customdata?: object[]
+	data: {
+		x: number,
+		y: number
+	}[]
+	meta?: MarkerData[]
 }
 
 const { isDark } = storeToRefs(useSettings())
 
 const callText = ref(''), callOutput = ref<VectorsData>(), kMems = ref(10)
-const plotOutput = ref<PlotData[]>([]), clickedPoint = ref()
+const plotOutput = ref<PlotData[]>([]), clickedPoint = ref<MarkerData>()
 const sidePanel = ref<InstanceType<typeof SidePanel>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
 const [ showSpinner, toggleSpinner ] = useToggle(false)
-const { width: windowWidth } = useWindowSize()
 
 const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
-const { wipeAllCollections, wipeCollection, callMemory, fetchCollections } = memoryStore
+const { wipeAllCollections, wipeCollection, callMemory, deleteMemoryPoint } = memoryStore
 
 /**
  * If "all", wipes all the collections in memory, otherwise only the selected one
@@ -41,7 +50,6 @@ const wipeMemory = async () => {
 		if (!selected) return
 		if (selected === 'all') await wipeAllCollections()
 		else await wipeCollection(selected)
-		await fetchCollections()
 	}
 }
 
@@ -68,7 +76,7 @@ const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[
 	const maxPerplexity = _.reduce(_.values(collectionsLengths), (p, c) => p + c, 0)
 
 	const matrix = reduceTo2d({ 
-		perplexity: Math.min(Math.max(kMems.value, 2), maxPerplexity) 
+		perplexity: Math.min(Math.max(kMems.value, 2), maxPerplexity)
 	}, 1000, ..._.map(jsonResult, (v) => _.map(v, c => c.vector)), mats)
 
 	return {
@@ -78,11 +86,14 @@ const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[
 			const curr = c[1].length
 			return {
 				name: _.capitalize(c[0]),
-				x: matrix.slice(prev, prev + curr).map(m => m[0]),
-				y: matrix.slice(prev, prev + curr).map(m => m[1]),
-				text: c[1].map(v => v.page_content.substring(0, 30).concat('...')),
-				customdata: c[1].map(v => {
+				data: matrix.slice(prev, prev + curr).map(m => ({
+					x: m[0],
+					y: m[1]
+				})),
+				meta: c[1].map(v => {
 					return {
+						id: v.id,
+						collection: c[0],
 						text: v.page_content,
 						source: v.metadata.source,
 						when: new Date(v.metadata.when * 1000).toLocaleString(),
@@ -121,35 +132,24 @@ const recallMemory = async () => {
 
 	plotOutput.value.push({
 		name: 'Query',
-		x: memoryPlot.matrix.slice(-1).map(v => v[0]),
-		y: memoryPlot.matrix.slice(-1).map(v => v[1]),
-		text: [callText.value.substring(0, 30).concat('...')],
-		customdata: [{ text: callText.value, source: 'query', when: 'now', score: 1 }]
+		data: memoryPlot.matrix.slice(-1).map(v => ({
+			x: v[0],
+			y: v[1]
+		})),
+		meta: [{
+			id: 'none',
+			collection: 'query',
+			text: callText.value,
+			source: 'query',
+			when: 'now',
+			score: 1,
+		}]
 	})
 
 	callOutput.value = result.vectors
 
 	toggleSpinner()
 }
-
-/**
- * Computed function to create the array of data to insert in the plot
- */
-const getPlotData = computed(() => {
-	return plotOutput.value.map(plot => {
-		return {
-			...plot,
-			type: 'scatter',
-			mode: 'markers',
-			hovertemplate: `
-<i>%{text}</i><br>
-<b><i>*Click to show more*</i></b>
-<extra></extra>
-			`,
-			marker: { size: 10 },
-		}
-	})
-})
 
 const getSelectCollections = computed(() => {
 	const data = memoryState.value.data ?? []
@@ -163,15 +163,25 @@ const getSelectCollections = computed(() => {
 	]
 })
 
-const onPointClick = (data: any) => {
-	clickedPoint.value = data.points[0]
+const deleteMemoryMarker = async (collection: string, memory: string) => {
+	const pointData = plotOutput.value.find(c => c.name.toLowerCase() == collection)
+	const index = pointData?.meta?.findIndex(v => v.id == memory)
+	if (index == undefined || pointData == undefined) return
+	await deleteMemoryPoint(collection, memory)
+	sidePanel.value?.togglePanel()
+	_.remove(pointData.meta ?? [], v => v.id == memory)
+	_.pull(pointData.data, pointData.data[index])
+}
+
+const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex, w }: any) => {
+	clickedPoint.value = w.config.series[seriesIndex].meta[dataPointIndex]
 	sidePanel.value?.togglePanel()
 }
 
 const downloadResult = () => {
 	const output = { export_time: now() }
 	_.assign(output, callOutput.value)
-	download(JSON.stringify(output, undefined, 2), 'result.json', 'application/json')
+	download(JSON.stringify(output, undefined, 2), 'recalledMemories.json', 'application/json')
 }
 </script>
 
@@ -198,7 +208,7 @@ const downloadResult = () => {
 					<input v-model.trim="callText" type="text" placeholder="Enter a text..." 
 						:disabled="Boolean(memoryState.error) || memoryState.loading"
 						class="input-primary input input-sm w-full" @keyup.enter="recallMemory()">
-					<button class="btn-primary btn-sm btn-square btn absolute right-0 top-0"
+					<button class="btn-primary btn-square btn-sm btn absolute right-0 top-0"
 						:disabled="Boolean(memoryState.error) || memoryState.loading" @click="recallMemory()">
 						<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
 					</button>
@@ -221,30 +231,68 @@ const downloadResult = () => {
 			</p>
 		</div>
 		<div v-else-if="!showSpinner && !memoryState.error && callOutput" class="flex flex-col items-center justify-center gap-4">
-			<Plotly :data="getPlotData" :layout="{
-					title: 'Similar memories',
-					font: {
-						family: 'Ubuntu',
-						size: 12,
-						color: isDark ? '#F4F4F5' : '#383938'
+			<ApexChart type="scatter" width="100%" height="500" class="min-w-full max-w-full" 
+				:options="{
+					chart: {
+						defaultLocale: 'en',
+						fontFamily: 'Ubuntu',
+						background: 'transparent',
+						animations: { speed: 300, },
+						toolbar: {
+							tools: {
+								zoomin: false,
+								pan: false,
+							},
+							export: {
+								csv: { filename: 'recallPlot', },
+								svg: { filename: 'recallPlot', },
+								png: { filename: 'recallPlot', }
+							},
+						},
+						zoom: {
+							type: 'xy',
+							autoScaleYaxis: true
+						}
 					},
-					autosize: true,
-					xaxis: { color: isDark ? '#F4F4F5' : '#383938', showticklabels: false, automargin: true },
-					yaxis: { color: isDark ? '#F4F4F5' : '#383938', showticklabels: false, automargin: true },
-					paper_bgcolor: isDark ? '#383938' : '#F4F4F5',
-					plot_bgcolor: isDark ? '#383938' : '#F4F4F5',
-					showlegend: true,
-					legend: windowWidth <= 700 ? { orientation: 'h', title: { text: 'Collections' } } : 
-						{ x: 0, xanchor: 'right', title: { text: 'Collections' } },
-					margin: { b: 30, l: 30, t: 30, r: 30 }
-				}" :modeBarButtonsToRemove="['select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d']"
-				:toImageButtonOptions="{
-					format: 'jpeg',
-					filename: 'recall_plot',
-					scale: 1.5
+					grid: {
+						xaxis: { lines: { show: true, }, },   
+						yaxis: { lines: { show: true, }, },
+					},
+					legend: { showForSingleSeries: true, },
+					theme: { mode: isDark ? 'dark' : 'light', },
+					title: {
+						text: 'Similar memories',
+						style: {
+							fontSize: '20px',
+							fontFamily: 'Ubuntu',
+							color: isDark ? '#F4F4F5' : '#383938'
+						}
+					},
+					tooltip: {
+						theme: isDark ? 'dark' : 'light',
+						intersect: true,
+						style: { fontFamily: 'Ubuntu', },
+						custom: ({ seriesIndex, dataPointIndex, w }: any) => {
+							const text = w.config.series[seriesIndex].meta[dataPointIndex].text
+							return `<div class=\'marker-tooltip flex flex-col p-1\'>
+								<i>${text.substring(0, 30).concat('...')}</i>
+								<b><i>*Click to show more*</i></b>
+							</div>`
+						}
+					},
+					markers: { strokeWidth: 0, },
+					yaxis: {
+						type: 'numeric',
+						labels: { show: false, },
+						tooltip: { enabled: false, }
+					},
+					xaxis: {
+						type: 'numeric',
+						labels: { show: false, },
+						tooltip: { enabled: false, }
+					}
 				}"
-				:displayModeBar="true" :displaylogo="false" :responsive="true" :scrollZoom="true" 
-				:style="[ windowWidth <= 700 ? `width:${windowWidth - 32}px` : '' ]" @plotly_click="onPointClick" />
+				:series="plotOutput" @markerClick="onMarkerClick" />
 			<button class="btn-info btn" @click="downloadResult()">
 				Export the result
 			</button>
@@ -255,17 +303,21 @@ const downloadResult = () => {
 				<MemorySelect class="rounded-tl-none" :result="callOutput.collections" />
 			</div>
 		</div>
-		<SidePanel ref="sidePanel" title="Memory content">
+		<SidePanel v-if="clickedPoint" ref="sidePanel" title="Memory content">
 			<div class="overflow-x-auto rounded-md border-2 border-neutral">
 				<table class="table-zebra table-sm table">
 					<tbody>
-						<tr v-for="data in Object.entries(clickedPoint.customdata)" :key="data[0]">
+						<tr v-for="data in Object.entries(clickedPoint)" :key="data[0]">
 							<td>{{ _.capitalize(data[0]) }}</td>
 							<td>{{ data[1] }}</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
+			<button v-if="!['procedural', 'query'].includes(clickedPoint.collection)" class="btn-error btn-sm btn mt-auto" 
+				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
+				Delete memory point
+			</button>
 		</SidePanel>
 	</div>
 </template>

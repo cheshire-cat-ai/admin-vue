@@ -64,9 +64,6 @@ body {
   .toggle {
     @apply !bg-none !border-2;
   }
-  .plotly .modebar-btn.active {
-    @apply !bg-base-100;
-  }
   .chat-bubble a {
     @apply !link !link-info;
   }
@@ -87,7 +84,6 @@ body {
   }
 }
 
-.plotly .modebar-group {
-  display: flex !important;
-  padding: 0px !important;
+.apexcharts-tooltip {
+  @apply !rounded-lg !text-xs;
 }

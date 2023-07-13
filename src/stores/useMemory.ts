@@ -2,6 +2,7 @@ import MemoryService from '@services/MemoryService'
 import { useMessages } from '@stores/useMessages'
 import { useNotifications } from '@stores/useNotifications'
 import type { CollectionsState } from '@stores/types'
+import _ from 'lodash'
 
 export const useMemory = defineStore('memory', () => {
   const currentState = reactive<CollectionsState>({
@@ -24,6 +25,7 @@ export const useMemory = defineStore('memory', () => {
 
   const wipeAllCollections = async () => {
     const result = await MemoryService.wipeAllCollections()
+    if (result.status == 'success') await fetchCollections()
     return sendNotificationFromJSON(result)
   }
 
@@ -35,12 +37,18 @@ export const useMemory = defineStore('memory', () => {
 
   const wipeCollection = async (collection: string) => {
     const result = await MemoryService.wipeCollection(collection)
+    if (result.status == 'success') _.remove(currentState.data ?? [], v => v.name == collection)
     return sendNotificationFromJSON(result)
   }
 
   const callMemory = async (text: string, memories: number) => {
     const result = await MemoryService.callMemory(text, memories)
     return result
+  }
+
+  const deleteMemoryPoint = async (collection: string, memory: string) => {
+    const result = await MemoryService.deleteMemoryPoint(collection, memory)
+    return sendNotificationFromJSON(result)
   }
   
   return {
@@ -49,7 +57,8 @@ export const useMemory = defineStore('memory', () => {
     wipeAllCollections,
     wipeConversation,
     wipeCollection,
-    callMemory
+    callMemory,
+    deleteMemoryPoint
   }
 })
 

@@ -12,6 +12,13 @@ const MemoryService = Object.freeze({
     )
     return result.data?.collections
   },
+  deleteMemoryPoint: async (collection: string, memory: string) => {
+    return await tryRequest(
+      apiClient.api.memory.deleteElementInMemory(collection, memory), 
+      "The selected memory point was wiped successfully", 
+      "Unable to wipe the memory point"
+    )
+  },
   wipeAllCollections: async () => {
     return await tryRequest(
       apiClient.api.memory.wipeCollections(), 
@@ -33,9 +40,9 @@ const MemoryService = Object.freeze({
       "Unable to wipe the in-memory current conversation"
     )
   },
-  callMemory: async (query: string, memories = 10) => {
+  callMemory: async (query: string, memories = 10, user = 'user') => {
     const result = await tryRequest(
-      apiClient.api.memory.recallMemoriesFromText(query, memories), 
+      apiClient.api.memory.recallMemoriesFromText(query, memories, user), 
       `Recalling ${memories} memories with ${query} as query`, 
       "Unable to recall memory",
       `Recalling ${memories} memories from the cat with "${query}"`
