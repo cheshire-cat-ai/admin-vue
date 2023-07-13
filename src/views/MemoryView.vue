@@ -8,6 +8,7 @@ import { now } from 'lodash'
 import ApexChart from "vue3-apexcharts"
 import { Matrix, TSNE } from '@saehrimnir/druidjs'
 import SidePanel from '@components/SidePanel.vue'
+import ModalBox from '@components/ModalBox.vue'
 import type { VectorsData } from 'ccat-api'
 
 interface MarkerData {
@@ -33,6 +34,7 @@ const { isDark } = storeToRefs(useSettings())
 const callText = ref(''), callOutput = ref<VectorsData>(), kMems = ref(10)
 const plotOutput = ref<PlotData[]>([]), clickedPoint = ref<MarkerData>()
 const sidePanel = ref<InstanceType<typeof SidePanel>>()
+const boxWipe = ref<InstanceType<typeof ModalBox>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
 const [ showSpinner, toggleSpinner ] = useToggle(false)
@@ -50,6 +52,7 @@ const wipeMemory = async () => {
 		if (!selected) return
 		if (selected === 'all') await wipeAllCollections()
 		else await wipeCollection(selected)
+		boxWipe.value?.toggleModal()
 	}
 }
 
@@ -194,7 +197,7 @@ const downloadResult = () => {
 		</div>
 		<div class="join w-fit self-center shadow-xl">
 			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
-				class="btn-error join-item btn" @click="wipeMemory()">
+				class="btn-error join-item btn" @click="boxWipe?.toggleModal()">
 				Wipe
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
@@ -303,6 +306,36 @@ const downloadResult = () => {
 				<MemorySelect class="rounded-tl-none" :result="callOutput.collections" />
 			</div>
 		</div>
+		<ModalBox ref="boxWipe">
+			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
+				<h3 class="text-lg font-bold text-primary">
+					Wipe collection
+				</h3>
+				<!-- Do the check with i18n -->
+				<p v-if="selectCollection?.selectedElement.label.startsWith('All')">
+					Are you sure you want to wipe 
+					<span class="font-bold">
+						{{ selectCollection?.selectedElement.label.toLowerCase() }}
+					</span> 
+					the collections?
+				</p>
+				<p v-else>
+					Are you sure you want to wipe the 
+					<span class="font-bold">
+						{{ selectCollection?.selectedElement.label.toLowerCase() }}
+					</span>
+					collection?
+				</p>
+				<div class="flex items-center justify-center gap-2">
+					<button class="btn-outline btn-sm btn" @click="boxWipe?.toggleModal()">
+						No
+					</button>
+					<button class="btn-error btn-sm btn" @click="wipeMemory()">
+						Yes
+					</button>
+				</div>
+			</div>
+		</ModalBox>
 		<SidePanel v-if="clickedPoint" ref="sidePanel" title="Memory content">
 			<div class="overflow-x-auto rounded-md border-2 border-neutral">
 				<table class="table-zebra table-sm table">

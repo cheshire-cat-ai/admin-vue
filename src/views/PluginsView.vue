@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { type Plugin, AcceptedPluginTypes } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
+import ModalBox from '@components/ModalBox.vue'
 
 const store = usePlugins()
 const { togglePlugin, removePlugin, installPlugin } = store
@@ -12,9 +13,11 @@ const { currentFilters } = storeToRefs(useSettings())
 
 const { open: uploadPlugin, onChange: onPluginUpload } = useFileDialog()
 
+const boxRemove = ref<InstanceType<typeof ModalBox>>()
 const searchText = ref("")
 const pluginsList = ref<Plugin[]>([])
 const filteredList = ref<Plugin[]>([])
+const selectedPlugin = ref<Plugin>()
 
 watchDeep(pluginsState, () => {
 	pluginsList.value = [...new Set([
@@ -23,6 +26,17 @@ watchDeep(pluginsState, () => {
 	])]
 	filteredList.value = pluginsList.value
 })
+
+const openRemoveModal = (plugin: Plugin) => {
+	selectedPlugin.value = plugin
+	boxRemove.value?.toggleModal()
+}
+
+const deletePlugin = async () => {
+	if (!selectedPlugin.value) return
+	await removePlugin(selectedPlugin.value.id)
+	boxRemove.value?.toggleModal()
+}
 
 /**
  * Handles the plugin upload by calling the installPlugin endpoint with the file attached.
@@ -113,7 +127,7 @@ const searchPlugin = () => {
 						</p>
 						<template v-if="item.id !== 'core_plugin'">
 							<!-- TODO: When server adds the property, show only for installed plugins, otherwise a "INSTALL" button -->
-							<button class="btn-error btn-xs btn" @click="removePlugin(item.id)">
+							<button class="btn-error btn-xs btn" @click="openRemoveModal(item)">
 								Delete
 							</button>
 							<!--<button class="btn-success btn-xs btn">
@@ -149,5 +163,27 @@ const searchPlugin = () => {
 				No plugins found with this name.
 			</p>
 		</div>
+		<ModalBox ref="boxRemove">
+			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
+				<h3 class="text-lg font-bold text-primary">
+					Remove plugin
+				</h3>
+				<p>
+					Are you sure you want to remove the
+					<span class="font-bold">
+						{{ selectedPlugin?.name }}
+					</span> 
+					plugin?
+				</p>
+				<div class="flex items-center justify-center gap-2">
+					<button class="btn-outline btn-sm btn" @click="boxRemove?.toggleModal()">
+						No
+					</button>
+					<button class="btn-error btn-sm btn" @click="deletePlugin()">
+						Yes
+					</button>
+				</div>
+			</div>
+		</ModalBox>
 	</div>
 </template>
