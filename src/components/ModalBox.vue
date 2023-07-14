@@ -1,5 +1,17 @@
 <script setup lang="ts">
-const [isOpen, toggleModal] = useToggle(false)
+const props = withDefaults(defineProps<{
+    shown?: boolean
+	closable?: boolean
+}>(), {
+	shown: false,
+	closable: true
+})
+
+const [isOpen, toggleModal] = useToggle(props.shown)
+
+const closeModal = () => {
+	if (props.closable) toggleModal()
+}
 
 defineExpose({
     toggleModal, isOpen
@@ -8,7 +20,7 @@ defineExpose({
 
 <template>
 	<TransitionRoot appear :show="isOpen" as="template">
-		<Dialog as="div" class="relative z-10" @close="toggleModal">
+		<Dialog as="div" class="relative z-10" @close="closeModal">
 			<TransitionChild as="template" enter="duration-300 ease-out" enter-from="opacity-0" enter-to="opacity-100"
 				leave="duration-200 ease-in" leave-from="opacity-100" leave-to="opacity-0">
 				<div class="fixed inset-0 bg-black/25" />

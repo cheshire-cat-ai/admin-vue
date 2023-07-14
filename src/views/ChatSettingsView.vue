@@ -36,11 +36,11 @@ const saveChatSettings = () => {
 			<template v-for="(v, k) in tempSettings" :key="k">
 				<div v-if="typeof v === 'boolean'" class="flex gap-2">
 					<p>{{ _.join(_.map(_.split(k.toString(), "_"), (s) => _.capitalize(s)), " ") }}</p>
-					<input v-model="tempSettings[k]" type="checkbox" class="!toggle-success !toggle">
+					<input v-model="tempSettings[k]" type="checkbox" class="!toggle !toggle-success">
 				</div>
 			</template>
 		</div>
-		<button class="btn-success btn-sm btn mt-auto normal-case" @click="saveChatSettings">
+		<button class="btn btn-success btn-sm mt-auto normal-case" @click="saveChatSettings">
 			Save
 		</button>
 	</div>

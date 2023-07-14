@@ -29,7 +29,7 @@ const openSidePanel = (title: typeof panelTitles[number]) => {
 			<p class="text-center">
 				Choose and configure your favourite Large Language Model
 			</p>
-			<RouterLink :to="{ name: 'providers' }" class="btn-primary btn-sm btn text-base-100"
+			<RouterLink :to="{ name: 'providers' }" class="btn btn-primary btn-sm text-base-100"
 				@click="openSidePanel('Configure the Language Model')">
 				Configure
 			</RouterLink>
@@ -41,7 +41,7 @@ const openSidePanel = (title: typeof panelTitles[number]) => {
 			<p class="text-center">
 				Choose a language embedder to help the Cat remember conversations and documents
 			</p>
-			<RouterLink :to="{ name: 'embedders' }" class="btn-primary btn-sm btn text-base-100"
+			<RouterLink :to="{ name: 'embedders' }" class="btn btn-primary btn-sm text-base-100"
 				@click="openSidePanel('Configure the Embedder')">
 				Configure
 			</RouterLink>

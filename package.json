@@ -18,7 +18,7 @@
   "dependencies": {
     "@headlessui/vue": "^1.7.14",
     "@saehrimnir/druidjs": "github:zAlweNy26/DruidJS#02774a6",
-    "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/forms": "^0.5.4",
     "@types/json-schema": "^7.0.12",
     "@types/lodash": "^4.14.195",
     "@vueuse/core": "^10.2.1",
@@ -26,7 +26,7 @@
     "animate.css": "^4.1.1",
     "apexcharts": "^3.41.0",
     "axios": "^1.4.0",
-    "ccat-api": "^0.4.5",
+    "ccat-api": "^0.5.0",
     "daisyui": "^3.2.1",
     "downloadjs": "^1.4.7",
     "highlight.js": "^11.8.0",
@@ -36,7 +36,7 @@
     "vite-tsconfig-paths": "^4.2.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
-    "vue3-apexcharts": "^1.4.1"
+    "vue3-apexcharts": "^1.4.4"
   },
   "devDependencies": {
     "@iconify-json/heroicons": "^1.1.11",
@@ -60,15 +60,15 @@
     "eslint-plugin-vue": "^9.15.1",
     "jsdom": "^22.1.0",
     "npm-run-all": "^4.1.5",
-    "postcss": "^8.4.25",
+    "postcss": "^8.4.26",
     "sass": "^1.63.6",
-    "tailwindcss": "^3.3.2",
+    "tailwindcss": "^3.3.3",
     "typescript": "~5.1.6",
     "unplugin-auto-import": "^0.16.6",
     "unplugin-fonts": "^1.0.3",
     "unplugin-icons": "^0.16.5",
     "unplugin-vue-components": "^0.25.1",
-    "vite": "^4.4.3",
+    "vite": "^4.4.4",
     "vitest": "^0.33.0",
     "vue-tsc": "^1.8.4"
   }

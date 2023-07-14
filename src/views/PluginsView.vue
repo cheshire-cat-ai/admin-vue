@@ -75,15 +75,15 @@ const searchPlugin = () => {
 				<div class="relative w-full">
 					<input v-model.trim="searchText" type="text" placeholder="Enter a plugin name..."
 						:disabled="pluginsState.loading || Boolean(pluginsState.error)"
-						class="input-primary input input-sm w-full" @keyup.enter="searchPlugin()">
-					<button class="btn-primary btn-square btn-sm btn absolute right-0 top-0" 
+						class="input input-primary input-sm w-full" @keyup.enter="searchPlugin()">
+					<button class="btn btn-square btn-primary btn-sm absolute right-0 top-0" 
 						:disabled="pluginsState.loading || Boolean(pluginsState.error)" @click="searchPlugin()">
 						<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
 					</button>
 				</div>
 			</div>
 			<div class="flex flex-wrap justify-center gap-2">
-				<button v-for="(v, k) in currentFilters" :key="k" class="btn-xs btn rounded-full" disabled
+				<button v-for="(v, k) in currentFilters" :key="k" class="btn btn-xs rounded-full" disabled
 					:class="[ v ? 'btn-primary text-base-100' : 'btn-ghost !border-2 !border-primary' ]" 
 					@click="currentFilters[k] = !currentFilters[k]">
 					{{ k }}
@@ -95,7 +95,7 @@ const searchPlugin = () => {
 				Installed plugins: {{ pluginsState.data?.installed.length ?? 0 }}
 			</p>
 			<button :disabled="pluginsState.loading || Boolean(pluginsState.error)"
-				class="btn-primary btn-sm btn" @click="uploadPlugin({ multiple: false, accept: AcceptedPluginTypes.join(',') })">
+				class="btn btn-primary btn-sm" @click="uploadPlugin({ multiple: false, accept: AcceptedPluginTypes.join(',') })">
 				Upload plugin
 			</button>
 		</div>
@@ -110,7 +110,7 @@ const searchPlugin = () => {
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<div v-for="item in filteredList" :key="item.id" class="flex gap-4 rounded-xl bg-base-200 p-4">
 				<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain">
-				<div v-else class="placeholder avatar self-center">
+				<div v-else class="avatar placeholder self-center">
 					<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-blue-500 to-primary text-base-100">
 						<span class="text-5xl font-bold leading-3">{{ _.upperFirst(item.name)[0] }}</span>
 					</div>
@@ -127,7 +127,7 @@ const searchPlugin = () => {
 						</p>
 						<template v-if="item.id !== 'core_plugin'">
 							<!-- TODO: When server adds the property, show only for installed plugins, otherwise a "INSTALL" button -->
-							<button class="btn-error btn-xs btn" @click="openRemoveModal(item)">
+							<button class="btn btn-error btn-xs" @click="openRemoveModal(item)">
 								Delete
 							</button>
 							<!--<button class="btn-success btn-xs btn">
@@ -138,7 +138,7 @@ const searchPlugin = () => {
 					<div class="flex items-center gap-1 text-sm font-medium text-neutral-focus">
 						<p>v{{ item.version }}</p>
 						<a v-if="item.plugin_url" :href="item.plugin_url" target="_blank" 
-							class="btn-ghost btn-square btn-xs btn text-primary">
+							class="btn btn-square btn-ghost btn-xs text-primary">
 							<heroicons-link-20-solid class="h-4 w-4" />
 						</a>
 					</div>
@@ -153,7 +153,7 @@ const searchPlugin = () => {
 						</div>
 						<!-- TODO: When server adds the property, show toggle only for installed plugins -->
 						<input v-if="item.id !== 'core_plugin'" type="checkbox" disabled 
-							class="!toggle-success !toggle" @click="togglePlugin(item.id)">
+							class="!toggle !toggle-success" @click="togglePlugin(item.id)">
 					</div>
 				</div>
 			</div>
@@ -176,10 +176,10 @@ const searchPlugin = () => {
 					plugin?
 				</p>
 				<div class="flex items-center justify-center gap-2">
-					<button class="btn-outline btn-sm btn" @click="boxRemove?.toggleModal()">
+					<button class="btn btn-outline btn-sm" @click="boxRemove?.toggleModal()">
 						No
 					</button>
-					<button class="btn-error btn-sm btn" @click="deletePlugin()">
+					<button class="btn btn-error btn-sm" @click="deletePlugin()">
 						Yes
 					</button>
 				</div>

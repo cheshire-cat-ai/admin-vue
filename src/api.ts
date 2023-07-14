@@ -33,12 +33,14 @@ export const apiClient = new CatClient({
  * @returns A JSONResponse object containing status, message and optionally a data property
  */
 export const tryRequest = async <T>(
-  request: CancelablePromise<T>,
+  request: CancelablePromise<T> | undefined,
   success: string,
   error: string,
   log: unknown[] | string = success,
 ) => {
   try {
+    if (request == undefined) throw new Error("Failed to reach the endpoint")
+
     const result = (await request) as T
     
     if (typeof log === 'string') LogService.print(log)

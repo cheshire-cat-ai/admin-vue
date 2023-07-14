@@ -39,7 +39,7 @@ defineExpose({
 										<DialogTitle class="text-lg font-semibold">
 											{{ title }}
 										</DialogTitle>
-										<button class="btn-error btn-square btn-sm btn" @click="isOpen = false">
+										<button class="btn btn-square btn-error btn-sm" @click="isOpen = false">
 											<span class="sr-only">Close panel</span>
 											<heroicons-x-mark-20-solid class="h-6 w-6" />
 										</button>

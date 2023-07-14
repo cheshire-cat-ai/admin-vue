@@ -8,7 +8,7 @@
 				<img src="@assets/logo.svg" class="hidden h-12 w-12 cursor-pointer md:block">
 			</RouterLink>
 			<Menu v-slot="{ open }" as="div" class="relative inline-block rounded-md md:hidden">
-				<MenuButton class="btn-ghost btn-square btn" title="Menu">
+				<MenuButton class="btn btn-square btn-ghost" title="Menu">
 					<heroicons-x-mark-20-solid v-if="open" class="swap-on h-6 w-6" />
 					<heroicons-bars-3-solid v-else class="swap-off h-6 w-6" />
 				</MenuButton>

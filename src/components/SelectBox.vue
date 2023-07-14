@@ -32,7 +32,7 @@ defineExpose({
 				enterFromClass="transform opacity-0" enterToClass="transform opacity-100"
 				leaveActiveClass="transition duration-200 ease-in" leaveFromClass="transform opacity-100"
 				leaveToClass="transform opacity-0">
-				<ListboxOptions class="join-vertical join absolute z-10 mt-4 w-full min-w-fit overflow-auto rounded-md bg-base-200 text-sm shadow-lg">
+				<ListboxOptions class="join join-vertical absolute z-10 mt-4 w-full min-w-fit overflow-auto rounded-md bg-base-200 text-sm shadow-lg">
 					<ListboxOption v-for="element in list" :key="element.value" v-slot="{ active, selected }" as="template" :value="element">
 						<li :class="[
 							active ? 'bg-base-300' : '',

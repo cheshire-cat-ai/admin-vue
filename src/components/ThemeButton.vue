@@ -13,7 +13,7 @@ watchEffect(() => {
 </script>
 
 <template>
-	<button class="swap btn-ghost btn-square btn" @click="toggleDark()">
+	<button class="btn btn-square btn-ghost swap" @click="toggleDark()">
 		<input v-model="isDark" type="checkbox" class="modal-toggle">
 		<heroicons-sun-solid class="swap-on h-6 w-6" />
 		<heroicons-moon-solid class="swap-off h-6 w-6" />
