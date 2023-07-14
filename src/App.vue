@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import { useSettings } from '@stores/useSettings'
 
+const { setLocale } = useSettings()
+
+setLocale()
 </script>
 
 <template>

@@ -20,26 +20,26 @@
 						class="menu menu-md absolute left-0 z-50 mt-4 w-min origin-top-left gap-2 whitespace-nowrap rounded-md bg-base-100 p-2 shadow-xl">
 						<MenuItem as="li">
 							<RouterLink to="/">
-								🏠️ Home
+								🏠️ {{ $t('headers.home') }}
 							</RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
 							<RouterLink to="/memory">
-								🧠 Memory
+								🧠 {{ $t('headers.memory') }}
 							</RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
 							<RouterLink to="/plugins">
-								🔌 Plugins
+								🔌 {{ $t('headers.plugins') }}
 							</RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
 							<RouterLink to="/settings">
-								⚙️ Settings
+								⚙️ {{ $t('headers.settings') }}
 							</RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
-							<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">📖 Docs</a>
+							<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">📖 {{ $t('headers.docs') }}</a>
 						</MenuItem>
 					</MenuItems>
 				</Transition>
@@ -52,25 +52,25 @@
 			<ul class="menu menu-horizontal menu-md hidden gap-4 md:flex">
 				<li>
 					<RouterLink to="/">
-						🏠️ Home
+						🏠️ {{ $t('headers.home') }}
 					</RouterLink>
 				</li>
 				<li>
 					<RouterLink to="/memory">
-						🧠 Memory
+						🧠 {{ $t('headers.memory') }}
 					</RouterLink>
 				</li>
 				<li>
 					<RouterLink to="/plugins">
-						🔌 Plugins
+						🔌 {{ $t('headers.plugins') }}
 					</RouterLink>
 				</li>
 				<li>
 					<RouterLink to="/settings" :class="{ 'active': $route.path === '/settings' }">
-						⚙️ Settings
+						⚙️ {{ $t('headers.settings') }}
 					</RouterLink>
 				</li>
-				<li><a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">📖 Docs</a></li>
+				<li><a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">📖 {{ $t('headers.docs') }}</a></li>
 			</ul>
 		</div>
 		<div class="navbar-end">

@@ -294,6 +294,7 @@
     "watchWithFilter": true,
     "whenever": true,
     "toValue": true,
+    "useI18n": true,
     "afterAll": true,
     "afterEach": true,
     "assert": true,

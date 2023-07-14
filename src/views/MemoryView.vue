@@ -39,6 +39,7 @@ const boxWipe = ref<InstanceType<typeof ModalBox>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
 const [ showSpinner, toggleSpinner ] = useToggle(false)
+const { t } = useI18n()
 
 const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
@@ -159,10 +160,10 @@ const getSelectCollections = computed(() => {
 	const data = memoryState.value.data ?? []
 	const totalCollections = data.map(v => v.vectors_count).reduce((p, c) => p + c, 0)
 	if (selectCollection.value?.selectedElement?.value === 'all') {
-		selectCollection.value.selectedElement.label = `All (${totalCollections})`
+		selectCollection.value.selectedElement.label = `${t('memory.all')} (${totalCollections})`
 	}
 	return [
-		{ label: `All (${totalCollections})`, value: 'all' },
+		{ label: `${t('memory.all')} (${totalCollections})`, value: 'all' },
 		...data.map(v => ({ label: `${_.capitalize(v.name)} (${v.vectors_count})`, value: v.name }))
 	]
 })
@@ -194,7 +195,7 @@ const downloadResult = () => {
 		<div class="flex gap-4">
 			<div class="form-control w-full">
 				<label class="label">
-					<span class="label-text font-medium text-primary">Search similar memories</span>
+					<span class="label-text font-medium text-primary">{{ $t('memory.label.input') }}</span>
 				</label>
 				<div class="relative w-full">
 					<input v-model.trim="callText" type="text" placeholder="Enter a text..." 
@@ -208,7 +209,7 @@ const downloadResult = () => {
 			</div>
 			<div class="form-control">
 				<label class="label">
-					<span class="label-text font-medium text-primary">K memories</span>
+					<span class="label-text font-medium text-primary">{{ $t('memory.label.k') }}</span>
 				</label>
 				<input v-model="kMems" :disabled="Boolean(memoryState.error) || memoryState.loading" type="number" min="1" 
 					class="input-primary input input-sm join-item w-24 pl-2 pr-0">
@@ -237,14 +238,14 @@ const downloadResult = () => {
 							pan: false,
 							customIcons: [
 								{
-									icon: '<button class=\'btn-info btn btn-xs whitespace-nowrap\'>Export memories</button>',
+									icon: `<button class=\'btn-info btn btn-xs whitespace-nowrap\'>${$t('memory.plot.export')}</button>`,
 									index: 3,
 									title: 'Export the recalled memories',
 									class: 'custom-icon',
 									click: downloadResult
 								},
 								{
-									icon: '<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>Details</button>',
+									icon: `<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>${$t('memory.plot.details')}</button>`,
 									index: 3,
 									title: 'Show the recalled memories details',
 									class: 'custom-icon',
@@ -277,7 +278,7 @@ const downloadResult = () => {
 						const text = w.config.series[seriesIndex].meta[dataPointIndex].text
 						return `<div class=\'marker-tooltip flex flex-col p-1\'>
 							<i>${text.substring(0, 30).concat('...')}</i>
-							<b><i>*Click to show more*</i></b>
+							<b><i>*${$t('memory.plot.more')}*</i></b>
 						</div>`
 					}
 				},
@@ -298,7 +299,7 @@ const downloadResult = () => {
 		<div class="join w-fit self-center shadow-xl">
 			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
 				class="btn-error join-item btn" @click="boxWipe?.toggleModal()">
-				Wipe
+				{{ $t('memory.wipe') }}
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
 		</div>
@@ -307,27 +308,19 @@ const downloadResult = () => {
 				<h3 class="text-lg font-bold text-primary">
 					Wipe collection
 				</h3>
-				<!-- Do the check with i18n -->
-				<p v-if="selectCollection?.selectedElement.label.startsWith('All')">
-					Are you sure you want to wipe 
-					<span class="font-bold">
-						{{ selectCollection?.selectedElement.label.toLowerCase() }}
-					</span> 
-					the collections?
-				</p>
-				<p v-else>
-					Are you sure you want to wipe the 
-					<span class="font-bold">
-						{{ selectCollection?.selectedElement.label.toLowerCase() }}
-					</span>
-					collection?
-				</p>
+				<i18n-t keypath="memory.wipe_modal" tag="p" :plural="Number(selectCollection?.selectedElement.label.startsWith('All'))">
+					<template #c>
+						<span class="font-bold">
+							{{ selectCollection?.selectedElement.label.toLowerCase() }}
+						</span> 
+					</template>
+				</i18n-t>
 				<div class="flex items-center justify-center gap-2">
 					<button class="btn-outline btn-sm btn" @click="boxWipe?.toggleModal()">
-						No
+						{{ $t('no') }}
 					</button>
 					<button class="btn-error btn-sm btn" @click="wipeMemory()">
-						Yes
+						{{ $t('yes') }}
 					</button>
 				</div>
 			</div>
@@ -345,7 +338,7 @@ const downloadResult = () => {
 				<table class="table-zebra table-sm table">
 					<tbody>
 						<tr v-for="data in Object.entries(clickedPoint)" :key="data[0]">
-							<td>{{ _.capitalize(data[0]) }}</td>
+							<td v-t="`memory.metadata.${data[0]}`" />
 							<td>{{ data[1] }}</td>
 						</tr>
 					</tbody>
@@ -353,7 +346,7 @@ const downloadResult = () => {
 			</div>
 			<button v-if="!['procedural', 'query'].includes(clickedPoint.collection)" class="btn-error btn-sm btn mt-auto" 
 				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
-				Delete memory point
+				{{ $t('memory.delete') }}
 			</button>
 		</SidePanel>
 	</div>
