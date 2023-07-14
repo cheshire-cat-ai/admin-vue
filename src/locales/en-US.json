@@ -1,4 +1,6 @@
 {
+  "yes": "Yes",
+  "no": "No",
   "save": "Save",
   "send": "Send",
   "cheshire_cat": "Cheshire Cat",
@@ -51,16 +53,24 @@
   "memory": {
     "wipe": "Wipe",
     "all": "All",
-    "export": "Export memories",
-    "details": "Details",
+    "delete": "Delete memory point",
     "label": {
       "input": "Search similar memories",
       "k": "K memories"
     },
+    "wipe_modal": "Are you sure you want to wipe {c} the collections? | Are you sure you want to wipe the {c} collection?",
     "plot": {
-      "title": "Similar memories",
-      "collections": "Collections",
+      "export": "Export memories",
+      "details": "Details",
       "more": "Click to show more"
+    },
+    "metadata": {
+      "id": "ID",
+      "collection": "Collection",
+      "text": "Text",
+      "source": "Source",
+      "when": "When",
+      "score": "Score"
     }
   },
   "plugins": {

@@ -1,26 +1,10 @@
 {
   "headers": {
-    "home": "Home",
-    "memory": "Memoria",
-    "plugins": "Plugin",
-    "settings": "Impostazioni",
-    "docs": "Doc"
-  },
-  "settings": {
-    "title": "Imposta il tuo Gatto",
-    "embedder": {
-      "panel": "settings.embedder.panel",
-      "title": "settings.embedder.title",
-      "desc": "settings.embedder.desc"
-    },
-    "llm": {
-      "panel": "settings.llm.panel",
-      "title": "settings.llm.title",
-      "desc": "settings.llm.desc"
-    },
-    "desc": "settings.desc",
-    "lang": "settings.lang",
-    "configure": "settings.configure"
+    "home": "headers.home",
+    "memory": "headers.memory",
+    "plugins": "headers.plugins",
+    "settings": "headers.settings",
+    "docs": "headers.docs"
   },
   "chat": {
     "settings": {
@@ -48,26 +32,52 @@
   },
   "send": "send",
   "memory": {
-    "plot": {
-      "more": "memory.plot.more",
-      "title": "memory.plot.title",
-      "collections": "memory.plot.collections"
-    },
     "all": "memory.all",
-    "wipe": "memory.wipe",
     "label": {
       "input": "memory.label.input",
       "k": "memory.label.k"
     },
-    "export": "memory.export",
-    "details": "memory.details"
+    "plot": {
+      "export": "memory.plot.export",
+      "details": "memory.plot.details",
+      "more": "memory.plot.more"
+    },
+    "metadata": {
+      "id": "ID",
+      "collection": "Collection",
+      "text": "Text",
+      "source": "Source",
+      "when": "When",
+      "score": "Score"
+    },
+    "wipe": "memory.wipe",
+    "delete": "memory.delete",
+    "wipe_modal": "memory.wipe_modal"
   },
+  "no": "no",
+  "yes": "yes",
   "cheshire_cat": "cheshire_cat",
   "plugins": {
     "search": "plugins.search",
     "installed": "plugins.installed",
-    "desc": "plugins.desc",
     "upload": "plugins.upload",
+    "desc": "plugins.desc",
     "item_title": "plugins.item_title"
+  },
+  "settings": {
+    "embedder": {
+      "panel": "settings.embedder.panel",
+      "title": "settings.embedder.title",
+      "desc": "settings.embedder.desc"
+    },
+    "llm": {
+      "panel": "settings.llm.panel",
+      "title": "settings.llm.title",
+      "desc": "settings.llm.desc"
+    },
+    "title": "settings.title",
+    "desc": "settings.desc",
+    "lang": "settings.lang",
+    "configure": "settings.configure"
   }
 }

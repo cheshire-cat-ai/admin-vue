@@ -238,14 +238,14 @@ const downloadResult = () => {
 							pan: false,
 							customIcons: [
 								{
-									icon: `<button class=\'btn-info btn btn-xs whitespace-nowrap\'>${$t('memory.export')}</button>`,
+									icon: `<button class=\'btn-info btn btn-xs whitespace-nowrap\'>${$t('memory.plot.export')}</button>`,
 									index: 3,
 									title: 'Export the recalled memories',
 									class: 'custom-icon',
 									click: downloadResult
 								},
 								{
-									icon: `<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>${$t('memory.details')}</button>`,
+									icon: `<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>${$t('memory.plot.details')}</button>`,
 									index: 3,
 									title: 'Show the recalled memories details',
 									class: 'custom-icon',
@@ -278,7 +278,7 @@ const downloadResult = () => {
 						const text = w.config.series[seriesIndex].meta[dataPointIndex].text
 						return `<div class=\'marker-tooltip flex flex-col p-1\'>
 							<i>${text.substring(0, 30).concat('...')}</i>
-							<b><i>*Click to show more*</i></b>
+							<b><i>*${$t('memory.plot.more')}*</i></b>
 						</div>`
 					}
 				},
@@ -299,7 +299,7 @@ const downloadResult = () => {
 		<div class="join w-fit self-center shadow-xl">
 			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
 				class="btn-error join-item btn" @click="boxWipe?.toggleModal()">
-				Wipe
+				{{ $t('memory.wipe') }}
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
 		</div>
@@ -308,27 +308,19 @@ const downloadResult = () => {
 				<h3 class="text-lg font-bold text-primary">
 					Wipe collection
 				</h3>
-				<!-- Do the check with i18n -->
-				<p v-if="selectCollection?.selectedElement.label.startsWith('All')">
-					Are you sure you want to wipe 
-					<span class="font-bold">
-						{{ selectCollection?.selectedElement.label.toLowerCase() }}
-					</span> 
-					the collections?
-				</p>
-				<p v-else>
-					Are you sure you want to wipe the 
-					<span class="font-bold">
-						{{ selectCollection?.selectedElement.label.toLowerCase() }}
-					</span>
-					collection?
-				</p>
+				<i18n-t keypath="memory.wipe_modal" tag="p" :plural="Number(selectCollection?.selectedElement.label.startsWith('All'))">
+					<template #c>
+						<span class="font-bold">
+							{{ selectCollection?.selectedElement.label.toLowerCase() }}
+						</span> 
+					</template>
+				</i18n-t>
 				<div class="flex items-center justify-center gap-2">
 					<button class="btn-outline btn-sm btn" @click="boxWipe?.toggleModal()">
-						No
+						{{ $t('no') }}
 					</button>
 					<button class="btn-error btn-sm btn" @click="wipeMemory()">
-						Yes
+						{{ $t('yes') }}
 					</button>
 				</div>
 			</div>
@@ -346,7 +338,7 @@ const downloadResult = () => {
 				<table class="table-zebra table-sm table">
 					<tbody>
 						<tr v-for="data in Object.entries(clickedPoint)" :key="data[0]">
-							<td>{{ _.capitalize(data[0]) }}</td>
+							<td v-t="`memory.metadata.${data[0]}`" />
 							<td>{{ data[1] }}</td>
 						</tr>
 					</tbody>
@@ -354,7 +346,7 @@ const downloadResult = () => {
 			</div>
 			<button v-if="!['procedural', 'query'].includes(clickedPoint.collection)" class="btn-error btn-sm btn mt-auto" 
 				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
-				Delete memory point
+				{{ $t('memory.delete') }}
 			</button>
 		</SidePanel>
 	</div>
