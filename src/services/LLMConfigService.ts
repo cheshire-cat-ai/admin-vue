@@ -7,7 +7,7 @@ import type { JSONSettings } from '@models/JSONSchema'
 const LLMService = Object.freeze({
   getProviders: async () => {
     const result = await tryRequest(
-      apiClient.api.settingsLargeLanguageModel.getLlmSettings(), 
+      apiClient.api?.settingsLargeLanguageModel.getLlmSettings(), 
       "Getting all the available providers", 
       "Unable to get the list of available providers"
     )
@@ -15,7 +15,7 @@ const LLMService = Object.freeze({
   },
   setProviderSettings: async (languageModelName: string, settings: JSONSettings) => {
     return await tryRequest(
-      apiClient.api.settingsLargeLanguageModel.upsertLlmSetting(languageModelName, settings), 
+      apiClient.api?.settingsLargeLanguageModel.upsertLlmSetting(languageModelName, settings), 
       "Language model provider updated successfully", 
       "Language model provider couldn't be updated",
       "Sending the language model settings to the cat"

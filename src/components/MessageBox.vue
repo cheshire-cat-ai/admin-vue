@@ -55,7 +55,7 @@ watch(elementContent, () => {
 			<p ref="elementContent" class="text-ellipsis" 
 				v-html="showReadMore ? markdown.render(cleanedText.slice(0, maxLength)) : markdown.render(cleanedText)" />
 			<a v-if="showReadMore" @click="showReadMore = false">Read more...</a>
-			<button v-if="why" class="btn-primary btn-square btn-xs btn absolute right-1 top-1 m-1 !p-0"
+			<button v-if="why" class="btn btn-square btn-primary btn-xs absolute right-1 top-1 m-1 !p-0"
 				@click="whyPanel?.togglePanel()">
 				<p class="text-base text-neutral">
 					?
@@ -65,7 +65,7 @@ watch(elementContent, () => {
 		<SidePanel v-if="why" ref="whyPanel" title="Why this response">
 			<div class="flex flex-col gap-4">
 				<div class="overflow-x-auto rounded-md border-2 border-neutral">
-					<table class="table-zebra table-sm table text-center">
+					<table class="table table-zebra table-sm text-center">
 						<thead class="bg-base-200 text-neutral">
 							<th>🧰 Tool</th>
 							<th>⌨️ Input</th>

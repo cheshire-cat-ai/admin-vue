@@ -78,10 +78,10 @@ watchDeep(llmState, () => {
 					</p>
 					<input v-model="currentSettings[prop.env_names[0]]" 
 						:type="prop.type === 'string' ? 'text' : 'number'" :placeholder="prop.title"
-						class="input-primary input input-sm w-full" :class="{ 'pr-0': prop.type !== 'string' }">
+						class="input input-primary input-sm w-full" :class="{ 'pr-0': prop.type !== 'string' }">
 				</div>
 			</div>
-			<button class="btn-success btn-sm btn mt-auto normal-case" @click="saveProvider">
+			<button class="btn btn-success btn-sm mt-auto normal-case" @click="saveProvider">
 				Save
 			</button>
 		</div>

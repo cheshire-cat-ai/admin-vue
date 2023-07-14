@@ -199,8 +199,8 @@ const downloadResult = () => {
 				<div class="relative w-full">
 					<input v-model.trim="callText" type="text" placeholder="Enter a text..." 
 						:disabled="Boolean(memoryState.error) || memoryState.loading"
-						class="input-primary input input-sm w-full" @keyup.enter="recallMemory()">
-					<button class="btn-primary btn-square btn-sm btn absolute right-0 top-0"
+						class="input input-primary input-sm w-full" @keyup.enter="recallMemory()">
+					<button class="btn btn-square btn-primary btn-sm absolute right-0 top-0"
 						:disabled="Boolean(memoryState.error) || memoryState.loading" @click="recallMemory()">
 						<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
 					</button>
@@ -211,7 +211,7 @@ const downloadResult = () => {
 					<span class="label-text font-medium text-primary">K memories</span>
 				</label>
 				<input v-model="kMems" :disabled="Boolean(memoryState.error) || memoryState.loading" type="number" min="1" 
-					class="input-primary input input-sm w-24 pl-2 pr-0">
+					class="input input-primary input-sm w-24 pl-2 pr-0">
 			</div>
 		</div>
 		<div v-if="showSpinner || memoryState.loading" class="flex grow items-center justify-center">
@@ -297,7 +297,7 @@ const downloadResult = () => {
 		<div class="divider !my-0" />
 		<div class="join w-fit self-center shadow-xl">
 			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
-				class="btn-error join-item btn" @click="boxWipe?.toggleModal()">
+				class="btn btn-error join-item" @click="boxWipe?.toggleModal()">
 				Wipe
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
@@ -323,10 +323,10 @@ const downloadResult = () => {
 					collection?
 				</p>
 				<div class="flex items-center justify-center gap-2">
-					<button class="btn-outline btn-sm btn" @click="boxWipe?.toggleModal()">
+					<button class="btn btn-outline btn-sm" @click="boxWipe?.toggleModal()">
 						No
 					</button>
-					<button class="btn-error btn-sm btn" @click="wipeMemory()">
+					<button class="btn btn-error btn-sm" @click="wipeMemory()">
 						Yes
 					</button>
 				</div>
@@ -342,7 +342,7 @@ const downloadResult = () => {
 		</SidePanel>
 		<SidePanel v-if="clickedPoint" ref="pointInfoPanel" title="Memory content">
 			<div class="overflow-x-auto rounded-md border-2 border-neutral">
-				<table class="table-zebra table-sm table">
+				<table class="table table-zebra table-sm">
 					<tbody>
 						<tr v-for="data in Object.entries(clickedPoint)" :key="data[0]">
 							<td>{{ _.capitalize(data[0]) }}</td>
@@ -351,7 +351,7 @@ const downloadResult = () => {
 					</tbody>
 				</table>
 			</div>
-			<button v-if="!['procedural', 'query'].includes(clickedPoint.collection)" class="btn-error btn-sm btn mt-auto" 
+			<button v-if="!['procedural', 'query'].includes(clickedPoint.collection)" class="btn btn-error btn-sm mt-auto" 
 				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
 				Delete memory point
 			</button>
