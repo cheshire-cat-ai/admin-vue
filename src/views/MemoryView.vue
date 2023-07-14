@@ -211,7 +211,7 @@ const downloadResult = () => {
 					<span class="label-text font-medium text-primary">K memories</span>
 				</label>
 				<input v-model="kMems" :disabled="Boolean(memoryState.error) || memoryState.loading" type="number" min="1" 
-					class="input-primary input input-sm join-item w-24 pl-2 pr-0">
+					class="input-primary input input-sm w-24 pl-2 pr-0">
 			</div>
 		</div>
 		<div v-if="showSpinner || memoryState.loading" class="flex grow items-center justify-center">
