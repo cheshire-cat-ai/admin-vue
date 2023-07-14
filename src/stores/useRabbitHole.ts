@@ -2,6 +2,7 @@ import type { FileUploaderState } from '@stores/types'
 import { getErrorMessage } from '@utils/errors'
 import { useNotifications } from '@stores/useNotifications'
 import RabbitHoleService from '@services/RabbitHoleService'
+import { useSettings } from '@stores/useSettings'
 
 export const useRabbitHole = defineStore('rabbitHole', () => {
   const currentState = reactive<FileUploaderState>({
@@ -9,14 +10,29 @@ export const useRabbitHole = defineStore('rabbitHole', () => {
   })
 
   const { showNotification } = useNotifications()
+  const { mustSummarize } = storeToRefs(useSettings())
 
   const sendFile = (file: File) => {
     currentState.loading = true
-    RabbitHoleService.sendFile(file).then(data => {
+    RabbitHoleService.sendFile(file, mustSummarize.value).then(data => {
       currentState.loading = false
       currentState.data = data
       showNotification({
         text: `File ${file.name} successfully sent down the rabbit hole!`,
+        type: 'success'
+      })
+    }).catch(error => {
+      currentState.error = getErrorMessage(error)
+    })
+  }
+
+  const sendWebsite = (url: string) => {
+    currentState.loading = true
+    RabbitHoleService.sendWeb(url, mustSummarize.value).then(data => {
+      currentState.loading = false
+      currentState.data = data
+      showNotification({
+        text: `Website successfully sent down the rabbit hole!`,
         type: 'success'
       })
     }).catch(error => {
@@ -31,20 +47,6 @@ export const useRabbitHole = defineStore('rabbitHole', () => {
       currentState.data = data
       showNotification({
         text: `Memories successfully sent down the rabbit hole!`,
-        type: 'success'
-      })
-    }).catch(error => {
-      currentState.error = getErrorMessage(error)
-    })
-  }
-
-  const sendWebsite = (url: string) => {
-    currentState.loading = true
-    RabbitHoleService.sendWeb(url).then(data => {
-      currentState.loading = false
-      currentState.data = data
-      showNotification({
-        text: `Website successfully sent down the rabbit hole!`,
         type: 'success'
       })
     }).catch(error => {

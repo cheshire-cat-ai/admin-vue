@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import SidePanel from '@components/SidePanel.vue'
+import { useSettings } from '@stores/useSettings'
+
+const store = useSettings()
+const { mustSummarize } = storeToRefs(store)
 
 const panelTitles = [ 'Configure the Language Model', 'Configure the Embedder' ] as const
 
@@ -45,6 +49,15 @@ const openSidePanel = (title: typeof panelTitles[number]) => {
 				@click="openSidePanel('Configure the Embedder')">
 				Configure
 			</RouterLink>
+		</div>
+		<div class="col-span-2 flex flex-col items-center justify-between gap-4 rounded-lg bg-base-200 p-4">
+			<p class="text-xl font-bold">
+				General Settings
+			</p>
+			<div class="flex w-full justify-between gap-2 rounded-lg bg-base-300 p-4">
+				<p>Toggle the summarization when uploading documents or urls</p>
+				<input v-model="mustSummarize" type="checkbox" class="!toggle !toggle-success">
+			</div>
 		</div>
 		<SidePanel ref="sidePanel" :title="panelTitle">
 			<RouterView @close="sidePanel?.togglePanel()" />
