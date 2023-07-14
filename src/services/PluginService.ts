@@ -1,5 +1,5 @@
-import { post, put, get, tryRequest } from '@/api'
-import type { PluginsResponse } from '@models/Plugin'
+import { apiClient, tryRequest } from '@/api'
+import type { PluginsList } from 'ccat-api'
 
 /*
  * This is a service that is used to get the list of plugins active on the Cheshire Cat.
@@ -8,32 +8,39 @@ import type { PluginsResponse } from '@models/Plugin'
 const PluginService = Object.freeze({
   getPlugins: async () => {
     const result = await tryRequest(
-      get<PluginsResponse>('/plugins/'), 
+      apiClient.api.plugins.listAvailablePlugins(), 
       "Getting all the available plugins", 
       "Unable to fetch the plugins"
     )
-    return result.data
+    return {
+      results: result.data?.results,
+      installed: result.data?.installed,
+      registry: result.data?.registry
+    } as Omit<PluginsList, 'status'>
   },
   togglePlugin: async (id: string) => {
-    const result = await tryRequest<boolean>(
-      put(`/plugins/toggle/${id}`), 
+    const result = await tryRequest(
+      apiClient.api.plugins.togglePlugin(id), 
       `Toggle plugin ${id}`, 
       `Unable to toggle plugin ${id}`
     )
-    return result.data ?? false
+    return result.data
+  },
+  deletePlugin: async (id: string) => {
+    const result = await tryRequest(
+      apiClient.api.plugins.deletePlugin(id), 
+      `Deleted plugin ${id}`, 
+      `Unable to delete plugin ${id}`
+    )
+    return result.data
   },
   sendFile: async (file: File) => {
-    const formData = new FormData()
-    formData.append('file', file)
-    return await tryRequest(
-      post('/plugins/install/', formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      }), 
+    const result = await tryRequest(
+      apiClient.api.plugins.uploadPlugin({ file }), 
       "Uploaded plugin successfully", 
       "Unable to upload the plugin"
     )
+    return result.data
   },
 })
 

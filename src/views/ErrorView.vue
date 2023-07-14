@@ -8,6 +8,8 @@
 			<span class="text-error">404</span>
 			<br>
 			<span class="text-neutral">{{ $t('error.not_found') }}</span>
+			<br>
+			<span class="text-2xl text-primary">Meow!</span>
 		</p>
 		<button class="btn-error btn rounded">
 			<RouterLink to="/">

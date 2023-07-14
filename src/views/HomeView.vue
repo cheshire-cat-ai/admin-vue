@@ -3,8 +3,9 @@ import { useRabbitHole } from '@stores/useRabbitHole'
 import { useMessages } from '@stores/useMessages'
 import { useSound } from '@vueuse/sound'
 import { useMemory } from '@stores/useMemory'
-import { AcceptedContentTypes } from '@models/RabbitHole'
+import { AcceptedFileTypes, type AcceptedFileType, AcceptedMemoryTypes, type AcceptedMemoryType } from 'ccat-api'
 import { useSettings } from '@stores/useSettings'
+import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
 
 const messagesStore = useMessages()
@@ -13,7 +14,7 @@ const { currentState: messagesState } = storeToRefs(messagesStore)
 
 const userMessage = ref(''), insertedURL = ref(''), isScrollable = ref(false), isTwoLines = ref(false)
 const boxUploadURL = ref<InstanceType<typeof ModalBox>>()
-const boxChatSettings = ref<InstanceType<typeof ModalBox>>()
+const chatSettingsPanel = ref<InstanceType<typeof SidePanel>>()
 
 const { textarea: textArea } = useTextareaAutosize({
 	input: userMessage,
@@ -43,6 +44,52 @@ const inputDisabled = computed(() => {
 })
 
 const randomDefaultMessages = selectRandomDefaultMessages()
+
+const dropContentZone = ref<HTMLDivElement>()
+
+/**
+ * Calls the specific endpoints based on the mime type of the file
+ */
+const contentHandler = (content: string | File[] | null) => {
+	if (!content) return
+	if (typeof content === 'string') {
+		if (content.trim().length == 0) return
+		try { 
+			new URL(content)
+			sendWebsite(content)
+		} catch (_) { 
+			dispatchMessage(content)
+		}
+	} else {
+		content.forEach(f => {
+			if (AcceptedFileTypes.includes(f.type as AcceptedFileType)) sendFile(f)
+			else if (AcceptedMemoryTypes.includes(f.type as AcceptedMemoryType)) sendMemory(f)
+		})
+	}
+}
+
+/**
+ * Handles the drag & drop feature
+ */
+const { isOverDropZone } = useDropZone(dropContentZone, {
+	onLeave: () => {
+		isOverDropZone.value = false
+	},
+	onDrop: (files, evt) => {
+		const text = evt.dataTransfer?.getData("text")
+		contentHandler(text || files)
+	}
+})
+
+/**
+ * Handles the copy-paste feature
+ */
+useEventListener<ClipboardEvent>(dropContentZone, 'paste', evt => {
+	if ((evt.target as HTMLElement).isEqualNode(textArea.value)) return
+	const text = evt.clipboardData?.getData('text')
+	const files = evt.clipboardData?.getData('file') || Array.from(evt.clipboardData?.files ?? [])
+	contentHandler(text || files)
+})
 
 /**
  * Handles the file upload by calling the Rabbit Hole endpoint with the file attached.
@@ -95,14 +142,6 @@ onActivated(() => {
 })
 
 /**
- * Clear messages history and send request to wipe current conversation
- */
-const clearConversation = async () => {
-	const res = await wipeConversation()
-	if (res) messagesState.value.messages = []
-}
-
-/**
  * Dispatches the inserted url to the RabbitHole service and closes the modal.
  */
 const dispatchWebsite = () => {
@@ -132,7 +171,7 @@ const preventSend = (e: KeyboardEvent) => {
 
 const openChatSettings = () => {
 	router.push({ name: 'chat_settings' })
-	boxChatSettings.value?.toggleModal()
+	chatSettingsPanel.value?.togglePanel()
 }
 
 const generatePlaceholder = (isLoading: boolean, isRecording: boolean, error?: string) => {
@@ -146,17 +185,33 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 </script>
 
 <template>
-	<div class="flex w-full max-w-screen-lg flex-col justify-center gap-4 self-center overflow-hidden !pt-0 text-sm"
+	<div ref="dropContentZone"
+		class="relative flex w-full max-w-screen-lg flex-col justify-center gap-4 self-center overflow-hidden !pt-0 text-sm"
 		:class="{
 			'pb-16 md:pb-20': !isTwoLines,
 			'pb-20 md:pb-24': isTwoLines,
 		}">
-		<div v-if="!messagesState.ready" class="flex grow items-center justify-center self-center">
-			<p v-if="messagesState.error" class="w-fit rounded bg-error p-4 font-semibold text-base-100">
+		<div v-if="isOverDropZone" class="flex h-full w-full grow flex-col items-center justify-center py-4 md:pb-0">
+			<div class="relative flex w-full grow items-center justify-center rounded-md border-2 border-dashed border-primary p-2 md:p-4">
+				<p class="text-lg md:text-xl">
+					Drop 
+					<span class="font-medium text-primary">
+						files
+					</span>
+					to send to the Cheshire Cat, meow!
+				</p>
+				<button class="btn-error btn-square btn-sm btn absolute right-2 top-2" @click="isOverDropZone = false">
+					<heroicons-x-mark-20-solid class="h-6 w-6" />
+				</button>
+			</div>
+		</div>
+		<div v-else-if="!messagesState.ready" class="flex grow items-center justify-center self-center">
+			<p v-if="messagesState.error" class="w-fit rounded-md bg-error p-4 font-semibold text-base-100">
 				{{ messagesState.error }}
 			</p>
-			<p v-else class="text-lg font-medium text-neutral">
-				{{ $t('chat.loading') }}
+			<p v-else class="flex flex-col items-center justify-center gap-2">
+				<span class="loading loading-spinner loading-lg text-primary" />
+				<span class="text-lg font-medium text-neutral">{{ $t('chat.loading') }}</span>
 			</p>
 		</div>
 		<div v-else-if="messagesState.messages.length" class="flex grow flex-col overflow-y-auto">
@@ -164,8 +219,8 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				:key="msg.id"
 				:sender="msg.sender"
 				:text="msg.text"
-				:why="msg.sender === 'bot' ? JSON.stringify(msg.why) : ''" />
-			<p v-if="messagesState.error" class="w-fit rounded bg-error p-4 font-semibold text-base-100">
+				:why="msg.sender === 'bot' ? msg.why : ''" />
+			<p v-if="messagesState.error" class="w-fit rounded-md bg-error p-4 font-semibold text-base-100">
 				{{ messagesState.error }}
 			</p>
 			<div v-else-if="!messagesState.error && messagesState.loading" class="mb-2 ml-2 flex items-center gap-2">
@@ -177,7 +232,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 			</div>
 		</div>
 		<div v-else class="flex grow cursor-pointer flex-col items-center justify-center gap-4 p-4">
-			<div v-for="(msg, index) in randomDefaultMessages" :key="index" class="btn-neutral btn font-medium normal-case shadow-lg"
+			<div v-for="(msg, index) in randomDefaultMessages" :key="index" class="btn-neutral btn font-medium normal-case text-base-100 shadow-lg"
 				@click="sendMessage(msg)">
 				{{ msg }}
 			</div>
@@ -190,7 +245,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 					<heroicons-speaker-x-mark-solid class="swap-off h-6 w-6" />
 				</label>
 				<div class="relative w-full">
-					<textarea ref="textArea" v-model="userMessage" :disabled="inputDisabled"
+					<textarea ref="textArea" v-model.trim="userMessage" :disabled="inputDisabled"
 						class="textarea block max-h-20 w-full resize-none !outline-offset-0" :class="[ isTwoLines ? 'pr-10' : 'pr-20' ]"
 						:placeholder="generatePlaceholder(messagesState.loading, isListening, messagesState.error)" @keydown="preventSend" />
 					<div :class="[ isTwoLines ? 'flex-col-reverse' : '' ]" class="absolute right-2 top-1/2 flex -translate-y-1/2 gap-1">
@@ -218,7 +273,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									<!-- :disabled="rabbitHoleState.loading" -->
 									<button disabled
 										class="join-item btn w-full flex-nowrap px-2" 
-										@click="openMemory({ multiple: false, accept: 'application/json' })">
+										@click="openMemory({ multiple: false, accept: AcceptedMemoryTypes.join(',') })">
 										<span class="grow normal-case">{{ $t('chat.dropdown.memories') }}</span>
 										<span class="rounded-lg bg-success p-1 text-base-100">
 											<ph-brain-fill class="h-6 w-6" />
@@ -238,7 +293,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 								<li>
 									<button :disabled="rabbitHoleState.loading" 
 										class="join-item btn w-full flex-nowrap px-2" 
-										@click="openFile({ multiple: false, accept: AcceptedContentTypes.join(', ') })">
+										@click="openFile({ multiple: false, accept: AcceptedFileTypes.join(',') })">
 										<span class="grow normal-case">{{ $t('chat.dropdown.file') }}</span>
 										<span class="rounded-lg bg-warning p-1 text-base-100">
 											<heroicons-document-text-solid class="h-6 w-6" />
@@ -248,7 +303,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 								<li>
 									<button :disabled="messagesState.messages.length === 0" 
 										class="join-item btn w-full flex-nowrap px-2" 
-										@click="clearConversation()">
+										@click="wipeConversation()">
 										<span class="grow normal-case">{{ $t('chat.dropdown.clear') }}</span>
 										<span class="rounded-lg bg-error p-1 text-base-100">
 											<heroicons-trash-solid class="h-6 w-6" />
@@ -282,8 +337,8 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				</button>
 			</div>
 		</ModalBox>
-		<ModalBox ref="boxChatSettings">
-			<RouterView @close="boxChatSettings?.toggleModal()" />
-		</ModalBox>
+		<SidePanel ref="chatSettingsPanel" title="Prompt Settings">
+			<RouterView @close="chatSettingsPanel?.togglePanel()" />
+		</SidePanel>
 	</div>
 </template>

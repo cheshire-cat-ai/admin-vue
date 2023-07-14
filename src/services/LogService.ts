@@ -1,12 +1,10 @@
-import config from '@/config'
-
 /**
  * This is a service that is used to log messages for debugging purposes.
  * It doesn't do anything in production mode.
  */
 const LogService = Object.freeze({
   print: (...args: unknown[]) => {
-    if (config.mode === 'development') {
+    if (import.meta.env.MODE === 'development') {
       console.log('🐱 Log:', ...args)
     }
   }

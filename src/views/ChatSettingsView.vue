@@ -5,6 +5,7 @@ import { useMessages } from '@stores/useMessages'
 
 const { promptSettings } = storeToRefs(useMessages())
 const { showNotification } = useNotifications()
+
 const tempSettings = ref(_.cloneDeep(promptSettings.value))
 
 const emit = defineEmits<{
@@ -22,19 +23,24 @@ const saveChatSettings = () => {
 </script>
 
 <template>
-	<div class="flex flex-col items-center justify-center gap-4 text-neutral">
-		<h3 class="text-lg font-bold">
-			{{ $t('chat.settings.title') }}
-		</h3>
-		<div class="flex flex-col gap-2">
+	<div class="flex grow flex-col gap-4">
+		<div class="flex flex-col items-end gap-4">
+			<div class="form-control mb-4 w-full">
+				<p class="mb-1 text-sm font-medium text-primary">
+					{{ $t('chat.settings.title') }}
+				</p>
+				<textarea v-model="tempSettings.prefix" 
+					class="textarea block w-full resize-y !outline-offset-0"
+					placeholder="Enter the prompt prefix..." />
+			</div>
 			<template v-for="(v, k) in tempSettings" :key="k">
 				<div v-if="typeof v === 'boolean'" class="flex gap-2">
-					<input v-model="tempSettings[k]" type="checkbox" class="!toggle-success !toggle">
 					<p>{{ _.join(_.map(_.split(k.toString(), "_"), (s) => _.capitalize(s)), " ") }}</p>
+					<input v-model="tempSettings[k]" type="checkbox" class="!toggle-success !toggle">
 				</div>
 			</template>
 		</div>
-		<button class="btn-primary btn-sm btn" @click="saveChatSettings">
+		<button class="btn-success btn-sm btn mt-auto normal-case" @click="saveChatSettings">
 			{{ $t('save') }}
 		</button>
 	</div>

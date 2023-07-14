@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { JSONSettings } from '@models/JSONSchema'
-import type { LLMConfigMetaData } from '@models/LLMConfig'
 import { useLLMConfig } from '@stores/useLLMConfig'
+import type { Schema } from 'ccat-api'
 import SelectBox from '@components/SelectBox.vue'
 
 const storeLLM = useLLMConfig()
@@ -9,7 +9,7 @@ const { getAvailableProviders, getProviderSchema, setProviderSettings, getProvid
 const { currentState: llmState } = storeToRefs(storeLLM)
 
 const selectProvider = ref<InstanceType<typeof SelectBox>>()
-const currentSchema = ref<LLMConfigMetaData>()
+const currentSchema = ref<Schema>()
 const currentSettings = ref<JSONSettings>({})
 
 const emit = defineEmits<{

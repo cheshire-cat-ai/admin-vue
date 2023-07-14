@@ -1,33 +1,57 @@
 <script setup lang="ts">
 import _ from 'lodash'
-import type { Plugin } from '@models/Plugin'
+import { type Plugin, AcceptedPluginTypes } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
+import ModalBox from '@components/ModalBox.vue'
 
 const store = usePlugins()
-const { togglePlugin } = store
+const { togglePlugin, removePlugin, installPlugin } = store
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { currentFilters } = storeToRefs(useSettings())
 
+const { open: uploadPlugin, onChange: onPluginUpload } = useFileDialog()
+
+const boxRemove = ref<InstanceType<typeof ModalBox>>()
 const searchText = ref("")
 const pluginsList = ref<Plugin[]>([])
+const filteredList = ref<Plugin[]>([])
+const selectedPlugin = ref<Plugin>()
 
 watchDeep(pluginsState, () => {
 	pluginsList.value = [...new Set([
 		...pluginsState.value.data?.installed ?? [],
 		...pluginsState.value.data?.registry ?? []
 	])]
+	filteredList.value = pluginsList.value
+})
+
+const openRemoveModal = (plugin: Plugin) => {
+	selectedPlugin.value = plugin
+	boxRemove.value?.toggleModal()
+}
+
+const deletePlugin = async () => {
+	if (!selectedPlugin.value) return
+	await removePlugin(selectedPlugin.value.id)
+	boxRemove.value?.toggleModal()
+}
+
+/**
+ * Handles the plugin upload by calling the installPlugin endpoint with the file attached.
+ */
+onPluginUpload(files => {
+	if (files == null) return
+	installPlugin(files[0])
 })
 
 const searchPlugin = () => {
-	pluginsList.value = pluginsList.value.filter(p => p.name.includes(searchText.value))
+	filteredList.value = pluginsList.value.filter(p => {
+		return p.name.toLowerCase().includes(searchText.value) ||
+		p.id.toLowerCase().includes(searchText.value)
+	})
 }
-
-const filteredList = computed(() => {
-	const toFilterList = _.cloneDeep(pluginsList.value)
-	return toFilterList
-})
 </script>
 
 <template>
@@ -57,7 +81,7 @@ const filteredList = computed(() => {
 			</div>
 			<div class="flex flex-wrap justify-center gap-2">
 				<button v-for="(v, k) in currentFilters" :key="k" class="btn-xs btn rounded-full" disabled
-					:class="[ v ? 'btn-primary text-base-100' : 'btn-ghost !border-2 !border-primary text-neutral-focus/75' ]" 
+					:class="[ v ? 'btn-primary text-base-100' : 'btn-ghost !border-2 !border-primary' ]" 
 					@click="currentFilters[k] = !currentFilters[k]">
 					{{ k }}
 				</button>
@@ -67,7 +91,8 @@ const filteredList = computed(() => {
 			<p class="font-medium">
 				{{ $t('plugins.installed', { num: pluginsState.data?.installed.length ?? 0 }) }}
 			</p>
-			<button disabled class="btn-primary btn-sm btn">
+			<button :disabled="pluginsState.loading || Boolean(pluginsState.error)"
+				class="btn-primary btn-sm btn" @click="uploadPlugin({ multiple: false, accept: AcceptedPluginTypes.join(',') })">
 				{{ $t('plugins.upload') }}
 			</button>
 		</div>
@@ -79,7 +104,7 @@ const filteredList = computed(() => {
 				{{ $t('failed_fetch', { msg: 'plugins' }) }}
 			</div>
 		</div>
-		<div v-else class="flex flex-col gap-4">
+		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<div v-for="item in filteredList" :key="item.id" class="flex gap-4 rounded-xl bg-base-200 p-4">
 				<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain">
 				<div v-else class="placeholder avatar self-center">
@@ -96,9 +121,15 @@ const filteredList = computed(() => {
 								{{ item.author_name }}
 							</a>
 						</i18n-t>
-						<!-- TODO: When server adds the property, show toggle only for installed plugins, otherwise a "INSTALL" button -->
-						<input v-if="item.id !== 'core_plugin'" type="checkbox" disabled
-							class="!toggle-success !toggle" @click="togglePlugin(item.id)">
+						<template v-if="item.id !== 'core_plugin'">
+							<!-- TODO: When server adds the property, show only for installed plugins, otherwise a "INSTALL" button -->
+							<button class="btn-error btn-xs btn" @click="openRemoveModal(item)">
+								Delete
+							</button>
+							<!--<button class="btn-success btn-xs btn">
+								Install
+							</button>-->
+						</template>
 					</div>
 					<div class="flex items-center gap-1 text-sm font-medium text-neutral-focus">
 						<p>v{{ item.version }}</p>
@@ -110,13 +141,45 @@ const filteredList = computed(() => {
 					<p class="text-sm">
 						{{ item.description }}
 					</p>
-					<div class="mt-2 flex flex-wrap gap-2">
-						<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
-							{{ tag.trim() }}
+					<div class="flex items-center justify-between gap-4">
+						<div class="mt-2 flex flex-wrap gap-2">
+							<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
+								{{ tag.trim() }}
+							</div>
 						</div>
+						<!-- TODO: When server adds the property, show toggle only for installed plugins -->
+						<input v-if="item.id !== 'core_plugin'" type="checkbox" disabled 
+							class="!toggle-success !toggle" @click="togglePlugin(item.id)">
 					</div>
 				</div>
 			</div>
 		</div>
+		<div v-else class="flex grow items-center justify-center">
+			<p class="rounded-lg bg-base-200 p-4 text-lg font-medium md:text-xl">
+				No plugins found with this name.
+			</p>
+		</div>
+		<ModalBox ref="boxRemove">
+			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
+				<h3 class="text-lg font-bold text-primary">
+					Remove plugin
+				</h3>
+				<p>
+					Are you sure you want to remove the
+					<span class="font-bold">
+						{{ selectedPlugin?.name }}
+					</span> 
+					plugin?
+				</p>
+				<div class="flex items-center justify-center gap-2">
+					<button class="btn-outline btn-sm btn" @click="boxRemove?.toggleModal()">
+						No
+					</button>
+					<button class="btn-error btn-sm btn" @click="deletePlugin()">
+						Yes
+					</button>
+				</div>
+			</div>
+		</ModalBox>
 	</div>
 </template>

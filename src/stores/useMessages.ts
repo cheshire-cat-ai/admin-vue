@@ -1,9 +1,10 @@
 import type { MessagesState } from '@stores/types'
-import type { BotMessage, PromptSettings, UserMessage } from '@models/Message'
-import MessagesService from '@services/MessageService'
-import { now, uniqueId } from 'lodash'
-import { getErrorMessage } from '@utils/errors'
+import type { BotMessage, UserMessage } from '@models/Message'
+import { now, uniqueId, defaultsDeep } from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
+import { apiClient, tryRequest } from '@/api'
+import { ErrorCode } from '@utils/errors'
+import type { PromptSettings } from 'ccat-api'
 
 export const useMessages = defineStore('messages', () => {
   const currentState = reactive<MessagesState>({
@@ -36,24 +37,39 @@ export const useMessages = defineStore('messages', () => {
   })
 
   const promptSettings = useLocalStorage<PromptSettings>("promptSettings", {
-    "use_declarative_memory": true,
-    "use_episodic_memory": true
-  })
+    prefix: ""
+  } as PromptSettings)
 
   const { showNotification } = useNotifications()
 
-  tryOnMounted(() => {
+  const getDefaultPromptSettings = async () => {
+    const result = await tryRequest(
+      apiClient.api.settingsPrompt.getDefaultPromptSettings(), 
+      "Getting all the default prompt settings", 
+      "Unable to fetch default prompt settings"
+    )
+    return result.data
+  }
+
+  const { state: defaultPromptSettings, isLoading } = useAsyncState(getDefaultPromptSettings(), undefined)
+
+  watchEffect(() => {
+    currentState.loading = isLoading.value
+    defaultsDeep(promptSettings.value, defaultPromptSettings.value)
+  })
+
+  tryOnMounted(async () => {
     /**
      * Subscribes to the messages service on component mount
      * and dispatches the received messages to the store.
      * It also dispatches the error to the store if an error occurs.
      */
-    MessagesService.connect(() => {
+    apiClient.onConnected(() => {
       currentState.ready = true
-    }).onMessage((message, type, why) => {
+    }).onMessage(({ content, type, why }) => {
       if (type === 'chat') {
         addMessage({
-          text: message,
+          text: content,
           sender: 'bot',
           timestamp: now(),
           why
@@ -61,12 +77,14 @@ export const useMessages = defineStore('messages', () => {
       } else if (type === 'notification') {
         showNotification({
           type: 'info',
-          text: message
+          text: content
         })
       }
-    }).onError((error: Error) => {
+    }).onError(error => {
       currentState.loading = currentState.ready = false
-      currentState.error = getErrorMessage(error)
+      currentState.error = Object.values(ErrorCode)[error]
+    }).onDisconnected(() => {
+      currentState.ready = false
     })
   })
 
@@ -74,7 +92,7 @@ export const useMessages = defineStore('messages', () => {
     /**
      * Unsubscribes to the messages service on component unmount
      */
-    MessagesService.disconnect()
+    apiClient.close()
   })
 
   /**
@@ -100,10 +118,10 @@ export const useMessages = defineStore('messages', () => {
   }
 
   /**
-   * Sends a message to the messages service and optimistically dispatches it to the store
+   * Sends a message to the messages service and dispatches it to the store
    */
   const dispatchMessage = (message: string) => {
-    MessagesService.send(message, promptSettings.value)
+    apiClient.send(message, promptSettings.value)
     addMessage({
       text: message.trim(),
       timestamp: now(),

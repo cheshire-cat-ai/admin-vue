@@ -1,5 +1,4 @@
-import { get, destroy, tryRequest } from '@/api'
-import type { Collection, Memory } from '@models/Memory'
+import { apiClient, tryRequest } from '@/api'
 
 /*
  * This is a service that is used to manage the memory of the Cheshire Cat.
@@ -7,43 +6,46 @@ import type { Collection, Memory } from '@models/Memory'
 const MemoryService = Object.freeze({
   getCollections: async () => {
     const result = await tryRequest(
-      get<{ collections: Collection[] }>('/memory/collections/'), 
+      apiClient.api.memory.getCollections(), 
       "Getting all the available collections", 
       "Unable to fetch available collections"
     )
     return result.data?.collections
   },
+  deleteMemoryPoint: async (collection: string, memory: string) => {
+    return await tryRequest(
+      apiClient.api.memory.deleteElementInMemory(collection, memory), 
+      "The selected memory point was wiped successfully", 
+      "Unable to wipe the memory point"
+    )
+  },
   wipeAllCollections: async () => {
     return await tryRequest(
-      destroy('/memory/wipe-collections/'), 
+      apiClient.api.memory.wipeCollections(), 
       "All in-memory collections were wiped", 
       "Unable to wipe the in-memory collections"
     )
   },
-  wipeCollection: async (collection: string) => {
+  wipeCollection: async (collectionId: string) => {
     return await tryRequest(
-      destroy(`/memory/collections/${collection}`), 
-      `The ${collection} collection was wiped`, 
-      `Unable to wipe the ${collection} collection`
+      apiClient.api.memory.wipeSingleCollection(collectionId), 
+      `The ${collectionId} collection was wiped`, 
+      `Unable to wipe the ${collectionId} collection`
     )
   },
   wipeConversation: async () => {
     return await tryRequest(
-      destroy('/memory/working-memory/conversation-history/'), 
+      apiClient.api.memory.wipeConversationHistory(), 
       "The current conversation was wiped", 
       "Unable to wipe the in-memory current conversation"
     )
   },
-  callMemory: async (query: string, memories = 10) => {
-    const params = { 
-      text: query, 
-      k: memories 
-    }
+  callMemory: async (query: string, memories = 10, user = 'user') => {
     const result = await tryRequest(
-      get<Memory>('/memory/recall/', { params }), 
+      apiClient.api.memory.recallMemoriesFromText(query, memories, user), 
       `Recalling ${memories} memories with ${query} as query`, 
       "Unable to recall memory",
-      ["Recalling memories from the cat with", params]
+      `Recalling ${memories} memories from the cat with "${query}"`
     )
     return result.data
   }

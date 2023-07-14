@@ -5,6 +5,17 @@
 import { isError, isErrorLikeObject, isString } from '@utils/typeGuards'
 
 /**
+ * An enumerator of error codes to error messages.
+ */
+export enum ErrorCode {
+  IndexError = 'Something went wrong while processing your message. Please try again later.',
+  SocketClosed = 'The connection to the server was closed. Please try refreshing the page.',
+  WebSocketConnectionError = 'Something went wrong while connecting to the server. Please try again later.',
+  APIError = 'Something went wrong while sending your message. Please try refreshing the page.',
+  FailedRetries = 'Failed to connect WebSocket after 3 retries.'
+}
+
+/**
  * Returns the error message from an error or error-like object.
  * If the value is not an error or error-like object, the unknownError argument is returned.
  */

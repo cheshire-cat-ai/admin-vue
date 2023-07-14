@@ -4,6 +4,12 @@ import { useSettings } from '@stores/useSettings'
 const store = useSettings()
 const { toggleDark } = store
 const { isDark } = storeToRefs(store)
+
+watchEffect(() => {
+	// TODO: Doesn't work, it just imports them and use the latest imported
+	if (isDark.value) import("highlight.js/scss/github.scss")
+	else import("highlight.js/scss/github-dark.scss")
+})
 </script>
 
 <template>

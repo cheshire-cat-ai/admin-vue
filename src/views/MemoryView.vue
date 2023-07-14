@@ -3,27 +3,39 @@ import _ from 'lodash'
 import download from 'downloadjs'
 import { useMemory } from '@stores/useMemory'
 import { useSettings } from '@stores/useSettings'
-import { JsonTreeView } from 'json-tree-view-vue3'
 import SelectBox from '@components/SelectBox.vue'
-import Plotly from '@aurium/vue-plotly'
 import { now } from 'lodash'
+import ApexChart from "vue3-apexcharts"
 import { Matrix, TSNE } from '@saehrimnir/druidjs'
 import SidePanel from '@components/SidePanel.vue'
-import type { VectorsData } from '@models/Memory'
+import ModalBox from '@components/ModalBox.vue'
+import type { VectorsData } from 'ccat-api'
+
+interface MarkerData {
+	id: string,
+	collection: string,
+	text: string,
+	when: string,
+	source: string,
+	score: number
+}
 
 interface PlotData {
 	name: string
-	x: number[]
-	y: number[]
-	text: string[]
-	customdata?: object[]
+	data: {
+		x: number,
+		y: number
+	}[]
+	meta?: MarkerData[]
 }
 
 const { isDark } = storeToRefs(useSettings())
 
-const callText = ref(''), callOutput = ref('{}'), kMems = ref(10)
-const plotOutput = ref<PlotData[]>([]), clickedPoint = ref()
-const sidePanel = ref<InstanceType<typeof SidePanel>>()
+const callText = ref(''), callOutput = ref<VectorsData>(), kMems = ref(10)
+const plotOutput = ref<PlotData[]>([]), clickedPoint = ref<MarkerData>()
+const pointInfoPanel = ref<InstanceType<typeof SidePanel>>()
+const memoryDetailsPanel = ref<InstanceType<typeof SidePanel>>()
+const boxWipe = ref<InstanceType<typeof ModalBox>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
 const [ showSpinner, toggleSpinner ] = useToggle(false)
@@ -31,7 +43,7 @@ const { t } = useI18n()
 
 const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
-const { wipeAllCollections, wipeCollection, callMemory, fetchCollections } = memoryStore
+const { wipeAllCollections, wipeCollection, callMemory, deleteMemoryPoint } = memoryStore
 
 /**
  * If "all", wipes all the collections in memory, otherwise only the selected one
@@ -42,7 +54,7 @@ const wipeMemory = async () => {
 		if (!selected) return
 		if (selected === 'all') await wipeAllCollections()
 		else await wipeCollection(selected)
-		await fetchCollections()
+		boxWipe.value?.toggleModal()
 	}
 }
 
@@ -69,7 +81,7 @@ const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[
 	const maxPerplexity = _.reduce(_.values(collectionsLengths), (p, c) => p + c, 0)
 
 	const matrix = reduceTo2d({ 
-		perplexity: Math.min(Math.max(kMems.value, 2), maxPerplexity) 
+		perplexity: Math.min(Math.max(kMems.value, 2), maxPerplexity)
 	}, 1000, ..._.map(jsonResult, (v) => _.map(v, c => c.vector)), mats)
 
 	return {
@@ -79,11 +91,14 @@ const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[
 			const curr = c[1].length
 			return {
 				name: _.capitalize(c[0]),
-				x: matrix.slice(prev, prev + curr).map(m => m[0]),
-				y: matrix.slice(prev, prev + curr).map(m => m[1]),
-				text: c[1].map(v => v.page_content.substring(0, 30).concat('...')),
-				customdata: c[1].map(v => {
+				data: matrix.slice(prev, prev + curr).map(m => ({
+					x: m[0],
+					y: m[1]
+				})),
+				meta: c[1].map(v => {
 					return {
+						id: v.id,
+						collection: c[0],
 						text: v.page_content,
 						source: v.metadata.source,
 						when: new Date(v.metadata.when * 1000).toLocaleString(),
@@ -122,35 +137,24 @@ const recallMemory = async () => {
 
 	plotOutput.value.push({
 		name: 'Query',
-		x: memoryPlot.matrix.slice(-1).map(v => v[0]),
-		y: memoryPlot.matrix.slice(-1).map(v => v[1]),
-		text: [callText.value.substring(0, 30).concat('...')],
-		customdata: [{ text: callText.value, source: 'query', when: 'now', score: 1 }]
+		data: memoryPlot.matrix.slice(-1).map(v => ({
+			x: v[0],
+			y: v[1]
+		})),
+		meta: [{
+			id: 'none',
+			collection: 'query',
+			text: callText.value,
+			source: 'query',
+			when: 'now',
+			score: 1,
+		}]
 	})
 
-	callOutput.value = JSON.stringify(result.vectors, undefined, 2)
+	callOutput.value = result.vectors
 
 	toggleSpinner()
 }
-
-/**
- * Computed function to create the array of data to insert in the plot
- */
-const getPlotData = computed(() => {
-	return plotOutput.value.map(plot => {
-		return {
-			...plot,
-			type: 'scatter',
-			mode: 'markers',
-			hovertemplate: `
-<i>%{text}</i><br>
-<b><i>*${t('memory.plot.more')}*</i></b>
-<extra></extra>
-			`,
-			marker: { size: 10 },
-		}
-	})
-})
 
 const getSelectCollections = computed(() => {
 	const data = memoryState.value.data ?? []
@@ -164,36 +168,34 @@ const getSelectCollections = computed(() => {
 	]
 })
 
-const onPointClick = (data: any) => {
-	clickedPoint.value = data.points[0]
-	sidePanel.value?.togglePanel()
+const deleteMemoryMarker = async (collection: string, memory: string) => {
+	const pointData = plotOutput.value.find(c => c.name.toLowerCase() == collection)
+	const index = pointData?.meta?.findIndex(v => v.id == memory)
+	if (index == undefined || pointData == undefined) return
+	await deleteMemoryPoint(collection, memory)
+	pointInfoPanel.value?.togglePanel()
+	_.remove(pointData.meta ?? [], v => v.id == memory)
+	_.pull(pointData.data, pointData.data[index])
+}
+
+const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex, w }: any) => {
+	clickedPoint.value = w.config.series[seriesIndex].meta[dataPointIndex]
+	pointInfoPanel.value?.togglePanel()
 }
 
 const downloadResult = () => {
 	const output = { export_time: now() }
-	_.assign(output, JSON.parse(callOutput.value))
-	download(JSON.stringify(output, undefined, 2), 'result.json', 'application/json')
+	_.assign(output, callOutput.value)
+	download(JSON.stringify(output, undefined, 2), 'recalledMemories.json', 'application/json')
 }
 </script>
 
 <template>
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
-		<div class="flex flex-col items-center justify-center gap-2 rounded-md p-4">
-			<p class="text-3xl font-bold text-primary">
-				{{ $t('headers.memory') }}
-			</p>
-		</div>
-		<div class="join w-fit self-center shadow-xl">
-			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
-				class="btn-error join-item btn" @click="wipeMemory()">
-				{{ $t('memory.wipe') }}
-			</button>
-			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
-		</div>
 		<div class="flex gap-4">
 			<div class="form-control w-full">
 				<label class="label">
-					<span class="label-text font-medium text-primary">{{ $t('memory.label.input') }}</span>
+					<span class="label-text font-medium text-primary">Search similar memories</span>
 				</label>
 				<div class="relative w-full">
 					<input v-model.trim="callText" type="text" placeholder="Enter a text..." 
@@ -221,54 +223,144 @@ const downloadResult = () => {
 				{{ memoryState.error }}
 			</p>
 		</div>
-		<div v-else-if="!showSpinner && !memoryState.error && callOutput != '{}'" class="flex flex-col items-center justify-center gap-4">
-			<Plotly :data="getPlotData" :layout="{
-					title: $t('memory.plot.title'),
-					font: {
-						family: 'Ubuntu',
-						size: 12,
-						color: isDark ? '#F4F4F5' : '#383938'
+		<ApexChart v-else-if="!showSpinner && !memoryState.error && callOutput" 
+			type="scatter" width="100%" height="500" class="min-w-full max-w-full" 
+			:options="{
+				chart: {
+					offsetY: 8,
+					defaultLocale: 'en',
+					fontFamily: 'Ubuntu',
+					background: 'transparent',
+					animations: { speed: 300, },
+					toolbar: {
+						tools: {
+							zoomin: false,
+							pan: false,
+							customIcons: [
+								{
+									icon: '<button class=\'btn-info btn btn-xs whitespace-nowrap\'>Export memories</button>',
+									index: 3,
+									title: 'Export the recalled memories',
+									class: 'custom-icon',
+									click: downloadResult
+								},
+								{
+									icon: '<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>Details</button>',
+									index: 3,
+									title: 'Show the recalled memories details',
+									class: 'custom-icon',
+									click: () => memoryDetailsPanel?.togglePanel()
+								}
+							]
+						},
+						export: {
+							csv: { filename: 'recallPlot', },
+							svg: { filename: 'recallPlot', },
+							png: { filename: 'recallPlot', }
+						},
 					},
-					autosize: true,
-					xaxis: { color: isDark ? '#F4F4F5' : '#383938', showticklabels: false, automargin: true },
-					yaxis: { color: isDark ? '#F4F4F5' : '#383938', showticklabels: false, automargin: true },
-					paper_bgcolor: isDark ? '#383938' : '#F4F4F5',
-					plot_bgcolor: isDark ? '#383938' : '#F4F4F5',
-					showlegend: true,
-					legend: { x: 0, xanchor: 'right', title: { text: $t('memory.plot.collections') } },
-					margin: { b: 30, l: 30, t: 30, r: 30 }
-				}" :modeBarButtonsToRemove="['zoom2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d']"
-				:toImageButtonOptions="{
-					format: 'jpeg',
-					filename: 'recall_plot',
-					scale: 1.5
-				}"
-				:displayModeBar="true" :displaylogo="false" :responsive="true" :scrollZoom="true" @plotly_click="onPointClick" />
-			<button class="btn-info btn" @click="downloadResult()">
-				{{ $t('memory.export') }}
+					zoom: {
+						type: 'xy',
+						autoScaleYaxis: true
+					}
+				},
+				grid: {
+					xaxis: { lines: { show: true, }, },   
+					yaxis: { lines: { show: true, }, },
+				},
+				legend: { showForSingleSeries: true, },
+				theme: { mode: isDark ? 'dark' : 'light', },
+				tooltip: {
+					theme: isDark ? 'dark' : 'light',
+					intersect: true,
+					style: { fontFamily: 'Ubuntu', },
+					custom: ({ seriesIndex, dataPointIndex, w }: any) => {
+						const text = w.config.series[seriesIndex].meta[dataPointIndex].text
+						return `<div class=\'marker-tooltip flex flex-col p-1\'>
+							<i>${text.substring(0, 30).concat('...')}</i>
+							<b><i>*Click to show more*</i></b>
+						</div>`
+					}
+				},
+				markers: { strokeWidth: 0, },
+				yaxis: {
+					type: 'numeric',
+					labels: { show: false, },
+					tooltip: { enabled: false, }
+				},
+				xaxis: {
+					type: 'numeric',
+					labels: { show: false, },
+					tooltip: { enabled: false, }
+				}
+			}"
+			:series="plotOutput" @markerClick="onMarkerClick" />
+		<div class="divider !my-0" />
+		<div class="join w-fit self-center shadow-xl">
+			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
+				class="btn-error join-item btn" @click="boxWipe?.toggleModal()">
+				Wipe
 			</button>
-			<JsonTreeView class="overflow-hidden rounded-lg bg-base-200" :data="callOutput" rootKey="result" :colorScheme="isDark ? 'dark' : 'light'" />
+			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
 		</div>
-		<SidePanel ref="sidePanel" title="Memory content">
+		<ModalBox ref="boxWipe">
+			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
+				<h3 class="text-lg font-bold text-primary">
+					Wipe collection
+				</h3>
+				<!-- Do the check with i18n -->
+				<p v-if="selectCollection?.selectedElement.label.startsWith('All')">
+					Are you sure you want to wipe 
+					<span class="font-bold">
+						{{ selectCollection?.selectedElement.label.toLowerCase() }}
+					</span> 
+					the collections?
+				</p>
+				<p v-else>
+					Are you sure you want to wipe the 
+					<span class="font-bold">
+						{{ selectCollection?.selectedElement.label.toLowerCase() }}
+					</span>
+					collection?
+				</p>
+				<div class="flex items-center justify-center gap-2">
+					<button class="btn-outline btn-sm btn" @click="boxWipe?.toggleModal()">
+						No
+					</button>
+					<button class="btn-error btn-sm btn" @click="wipeMemory()">
+						Yes
+					</button>
+				</div>
+			</div>
+		</ModalBox>
+		<SidePanel v-if="callOutput" ref="memoryDetailsPanel" title="Memory details">
+			<div class="flex w-full flex-col">
+				<p class="self-start rounded-t-md bg-primary px-2 py-1 font-medium text-base-100">
+					{{ callOutput.embedder }}
+				</p>
+				<MemorySelect class="rounded-tl-none" :result="callOutput.collections" />
+			</div>
+		</SidePanel>
+		<SidePanel v-if="clickedPoint" ref="pointInfoPanel" title="Memory content">
 			<div class="overflow-x-auto rounded-md border-2 border-neutral">
 				<table class="table-zebra table-sm table">
 					<tbody>
-						<tr v-for="data in Object.entries(clickedPoint.customdata)" :key="data[0]">
+						<tr v-for="data in Object.entries(clickedPoint)" :key="data[0]">
 							<td>{{ _.capitalize(data[0]) }}</td>
 							<td>{{ data[1] }}</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
+			<button v-if="!['procedural', 'query'].includes(clickedPoint.collection)" class="btn-error btn-sm btn mt-auto" 
+				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
+				Delete memory point
+			</button>
 		</SidePanel>
 	</div>
 </template>
 
-<style lang="scss">
-.json-view-item.root-item .value-key {
-	white-space: normal !important;
-}
-
+<style scoped>
 .table tr td:first-child {
 	@apply font-medium text-primary;
 }

@@ -35,11 +35,11 @@ body {
   .btn-outline {
     @apply border-2;
   }
-  .btn-sm {
-    @apply leading-5;
-  }
   .focus, .active {
-    @apply bg-primary hover:bg-primary-focus focus:bg-primary-focus text-base-100;
+    @apply !bg-primary hover:bg-primary-focus focus:bg-primary-focus text-base-100;
+  }
+  .menu li > *:active {
+    @apply !bg-primary-focus
   }
   .btn-ghost {
     @apply disabled:bg-transparent;
@@ -61,17 +61,49 @@ body {
   .select, .input, .textarea {
     @apply overflow-hidden outline outline-offset-2 outline-2 border-0 !ring-0 !transition-all !duration-75 focus:outline-primary;
   }
-  .select-sm {
-    @apply !leading-[0.999rem];
-  }
   .toggle {
     @apply !bg-none !border-2;
   }
-  .input-number::-webkit-outer-spin-button,
-  .input-number::-webkit-inner-spin-button {
-    margin: 0;
+  .chat-bubble a {
+    @apply !link !link-info;
   }
-  .input-number[type="number"] {
-    -moz-appearance: textfield;
+  .chat-bubble table {
+    @apply !table !table-xs;
   }
+  .chat-bubble table :where(thead, tfoot) {
+    @apply !text-base-100;
+  }
+  .chat-bubble pre {
+    @apply !my-4 !whitespace-pre-wrap;
+  }
+  .chat-bubble ul {
+    @apply !list-disc !list-inside;
+  }
+  .chat-bubble ol {
+    @apply !list-decimal !list-inside;
+  }
+}
+
+.apexcharts-tooltip {
+  @apply !rounded-lg !text-xs;
+}
+
+.apexcharts-toolbar {
+  @apply !max-w-none !right-1/2 translate-x-1/2 gap-2;
+}
+
+.apexcharts-toolbar > * {
+  @apply !m-0;
+}
+
+.apexcharts-toolbar-custom-icon {
+  @apply !w-fit !h-fit;
+}
+
+.apexcharts-menu {
+  @apply !rounded-lg !min-w-0 !bg-base-200 !border-neutral !border-2 !p-0 !mt-1 !right-1 font-['Ubuntu'] overflow-hidden;
+}
+
+.apexcharts-menu > * {
+  @apply !py-1 !px-2 hover:bg-base-300 font-medium transition-colors;
 }

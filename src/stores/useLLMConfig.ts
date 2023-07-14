@@ -1,11 +1,10 @@
-import type { LLMConfigState } from '@stores/types'
-import type { LLMConfigMetaData } from '@models/LLMConfig'
+import type { SettingsConfigState } from '@stores/types'
 import LLMConfigService from '@services/LLMConfigService'
 import { useNotifications } from '@stores/useNotifications'
 import type { JSONSettings } from '@models/JSONSchema'
 
 export const useLLMConfig = defineStore('llm', () => {
-  const currentState = reactive<LLMConfigState>({
+  const currentState = reactive<SettingsConfigState>({
     loading: false,
     settings: {}
   })
@@ -19,7 +18,7 @@ export const useLLMConfig = defineStore('llm', () => {
     currentState.data = providers.value
     currentState.error = error.value as string
     if (currentState.data) {
-      currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].languageModelName
+      currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].title
       currentState.settings = currentState.data.settings.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {})
     }
   })
@@ -30,7 +29,7 @@ export const useLLMConfig = defineStore('llm', () => {
 
   const getProviderSchema = (selected = currentState.selected) => {
     if (!selected) return undefined
-    return getAvailableProviders().find((schema) => schema.languageModelName === selected)
+    return getAvailableProviders().find((schema) => schema.title === selected)
   }
 
   const getProviderSettings = (selected = currentState.selected) => {
@@ -38,14 +37,22 @@ export const useLLMConfig = defineStore('llm', () => {
     return currentState.settings[selected] ?? {} satisfies JSONSettings
   }
 
-  const setProviderSettings = async (name: LLMConfigMetaData['languageModelName'], settings: JSONSettings) => {
-    const result = await LLMConfigService.setProviderSettings(name, settings)
-    sendNotificationFromJSON(result)
-    if (result.status != 'error') {
-      currentState.selected = name
-      currentState.settings[name] = settings
+  const setProviderSettings = async (name: string, settings: JSONSettings) => {
+    try {
+      const result = await LLMConfigService.setProviderSettings(name, settings)
+      sendNotificationFromJSON(result)
+      if (result.status != 'error') {
+        currentState.selected = name
+        currentState.settings[name] = settings
+      }
+      return result.status != 'error'
+    } catch (error) {
+      sendNotificationFromJSON({
+        status: 'error',
+        message: error as string
+      })
+      return false
     }
-    return result.status != 'error'
   }
 
   return {

@@ -1,5 +1,4 @@
-import { post, tryRequest } from '@/api'
-import type { FileResponse, MemoryResponse, WebResponse } from '@models/RabbitHole'
+import { apiClient, tryRequest } from '@/api'
 
 /*
  * This service is used to send files down to the rabbit hole.
@@ -7,14 +6,8 @@ import type { FileResponse, MemoryResponse, WebResponse } from '@models/RabbitHo
  */
 const RabbitHoleService = Object.freeze({
   sendFile: async (file: File) => {
-    const formData = new FormData()
-    formData.append('file', file)
     const result = await tryRequest(
-      post<FileResponse>('/rabbithole/', formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      }), 
+      apiClient.api.rabbitHole.uploadFile({ file }), 
       `File ${file.name} successfully sent down the rabbit hole`, 
       "Unable to send the file to the rabbit hole",
       "Sending a file to the rabbit hole"
@@ -23,7 +16,7 @@ const RabbitHoleService = Object.freeze({
   },
   sendWeb: async (url: string) => {
     const result = await tryRequest(
-      post<WebResponse>('/rabbithole/web/', { url }), 
+      apiClient.api.rabbitHole.uploadUrl({ url }), 
       "Website successfully sent down the rabbit hole", 
       "Unable to send the website to the rabbit hole",
       "Sending a website content to the rabbit hole"
@@ -31,14 +24,8 @@ const RabbitHoleService = Object.freeze({
     return result.data
   },
   sendMemory: async (file: File) => {
-    const formData = new FormData()
-    formData.append('file', file)
     const result = await tryRequest(
-      post<MemoryResponse>('/rabbithole/memory/', formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        }
-      }), 
+      apiClient.api.rabbitHole.uploadMemory({ file }), 
       "Memories file successfully sent down the rabbit hole", 
       "Unable to send the memories to the rabbit hole",
       "Sending a bunch of memories to the rabbit hole"
