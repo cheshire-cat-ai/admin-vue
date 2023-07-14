@@ -195,7 +195,7 @@ const downloadResult = () => {
 		<div class="flex gap-4">
 			<div class="form-control w-full">
 				<label class="label">
-					<span class="label-text font-medium text-primary">Search similar memories</span>
+					<span class="label-text font-medium text-primary">{{ $t('memory.label.input') }}</span>
 				</label>
 				<div class="relative w-full">
 					<input v-model.trim="callText" type="text" placeholder="Enter a text..." 
@@ -238,14 +238,14 @@ const downloadResult = () => {
 							pan: false,
 							customIcons: [
 								{
-									icon: '<button class=\'btn-info btn btn-xs whitespace-nowrap\'>Export memories</button>',
+									icon: `<button class=\'btn-info btn btn-xs whitespace-nowrap\'>${$t('memory.export')}</button>`,
 									index: 3,
 									title: 'Export the recalled memories',
 									class: 'custom-icon',
 									click: downloadResult
 								},
 								{
-									icon: '<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>Details</button>',
+									icon: `<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>${$t('memory.details')}</button>`,
 									index: 3,
 									title: 'Show the recalled memories details',
 									class: 'custom-icon',

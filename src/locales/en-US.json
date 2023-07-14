@@ -51,9 +51,10 @@
   "memory": {
     "wipe": "Wipe",
     "all": "All",
-    "export": "Export the result",
+    "export": "Export memories",
+    "details": "Details",
     "label": {
-      "input": "Recall text",
+      "input": "Search similar memories",
       "k": "K memories"
     },
     "plot": {

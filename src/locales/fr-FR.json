@@ -59,7 +59,8 @@
       "input": "memory.label.input",
       "k": "memory.label.k"
     },
-    "export": "memory.export"
+    "export": "memory.export",
+    "details": "memory.details"
   },
   "cheshire_cat": "cheshire_cat",
   "plugins": {
