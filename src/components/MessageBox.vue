@@ -35,15 +35,24 @@ const props = defineProps<{
 const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
 
 const elementContent = ref<HTMLParagraphElement>()
-const showReadMore = ref(false)
+const isLengthy = ref(false)
+const showReadMore = ref(true)  // used only if isLengthy is true
 
 const maxLength = 4000
+
+const renderedText = computed(() => {
+  if (isLengthy.value) {
+    return showReadMore.value ? markdown.render(cleanedText.slice(0, maxLength)) : markdown.render(cleanedText)
+  }
+  return markdown.render(cleanedText)
+})
 
 watch(elementContent, () => {
 	if (!elementContent.value) return
 	const content = (elementContent.value.textContent || elementContent.value.innerText).replaceAll('\n', '')
-	showReadMore.value = content.length >= maxLength
+	isLengthy.value = content.length >= maxLength
 })
+
 </script>
 
 <template>
@@ -52,9 +61,9 @@ watch(elementContent, () => {
 			{{ sender === 'bot' ? '😺' : '🙂' }}
 		</div>
 		<div class="chat-bubble m-2 min-h-fit break-words rounded-lg p-2 md:p-4" :class="{ '!pr-10': why }">
-			<p ref="elementContent" class="text-ellipsis" 
-				v-html="showReadMore ? markdown.render(cleanedText.slice(0, maxLength)) : markdown.render(cleanedText)" />
-			<a v-if="showReadMore" @click="showReadMore = false">Read more...</a>
+			<p ref="elementContent" class="text-ellipsis" v-html="renderedText" />
+			<a v-if="isLengthy && showReadMore" @click="showReadMore = false">Read more...</a>
+			<a v-if="isLengthy && !showReadMore" @click="showReadMore = true">Hide content...</a>
 			<button v-if="why" class="btn-primary btn-square btn-xs btn absolute right-1 top-1 m-1 !p-0"
 				@click="whyPanel?.togglePanel()">
 				<p class="text-base text-neutral">
