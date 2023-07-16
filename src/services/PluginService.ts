@@ -8,7 +8,7 @@ import type { PluginsList } from 'ccat-api'
 const PluginService = Object.freeze({
   getPlugins: async () => {
     const result = await tryRequest(
-      apiClient.api?.plugins.listAvailablePlugins(), 
+      apiClient.value?.api?.plugins.listAvailablePlugins(), 
       "Getting all the available plugins", 
       "Unable to fetch the plugins"
     )
@@ -20,7 +20,7 @@ const PluginService = Object.freeze({
   },
   togglePlugin: async (id: string) => {
     const result = await tryRequest(
-      apiClient.api?.plugins.togglePlugin(id), 
+      apiClient.value?.api?.plugins.togglePlugin(id), 
       `Toggle plugin ${id}`, 
       `Unable to toggle plugin ${id}`
     )
@@ -28,7 +28,7 @@ const PluginService = Object.freeze({
   },
   deletePlugin: async (id: string) => {
     const result = await tryRequest(
-      apiClient.api?.plugins.deletePlugin(id), 
+      apiClient.value?.api?.plugins.deletePlugin(id), 
       `Deleted plugin ${id}`, 
       `Unable to delete plugin ${id}`
     )
@@ -36,7 +36,7 @@ const PluginService = Object.freeze({
   },
   sendFile: async (file: File) => {
     const result = await tryRequest(
-      apiClient.api?.plugins.uploadPlugin({ file }), 
+      apiClient.value?.api?.plugins.uploadPlugin({ file }), 
       "Uploaded plugin successfully", 
       "Unable to upload the plugin"
     )

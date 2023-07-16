@@ -7,21 +7,33 @@ import { CatClient, type CancelablePromise, ApiError } from 'ccat-api'
 /**
  * API client to make requests to the endpoints and passing the API_KEY for authentication.
  */
-export const apiClient = new CatClient({
-  baseUrl: window.catCoreConfig.CORE_HOST,
-  authKey: window.catCoreConfig.API_KEY ?? '',
-  port: window.catCoreConfig.CORE_PORT ?? '',
-  secure: window.catCoreConfig.CORE_USE_SECURE_PROTOCOLS,
-  timeout: 10000,
-  ws: {
-    path: 'ws',
-    retries: 3,
-    delay: 2500,
-    onFailed: () => {
-      console.error('Failed to connect WebSocket after 3 retries.')
+export const apiClient = ref<CatClient>()
+
+export interface AuthForm {
+  baseUrl: string
+  authKey: string
+  port: string
+  secure: boolean
+}
+
+export const updateClient = ({ baseUrl, authKey, port, secure }: AuthForm) => {
+  apiClient.value?.reset()
+  apiClient.value = new CatClient({
+    baseUrl: baseUrl,
+    authKey: authKey,
+    port: port,
+    secure: secure,
+    timeout: 10000,
+    ws: {
+      path: 'ws',
+      retries: 3,
+      delay: 2500,
+      onFailed: () => {
+        console.error('Failed to connect WebSocket after 3 retries.')
+      }
     }
-  }
-})
+  })
+}
 
 /**
  * A function that wraps the promise request into a try/catch block

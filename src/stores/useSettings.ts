@@ -9,6 +9,7 @@ export const useSettings = defineStore('settings', () => {
     valueLight: 'light'
   })
   const mustSummarize = useLocalStorage('mustSummarize', false)
+  const isAuth = useLocalStorage('isAuth', false)
 
   const toggleDark = useToggle(isDark)
 
@@ -22,6 +23,7 @@ export const useSettings = defineStore('settings', () => {
   return {
     isAudioEnabled,
     isDark,
+    isAuth,
     currentFilters,
     toggleDark,
     mustSummarize
