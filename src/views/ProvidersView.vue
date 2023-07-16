@@ -33,9 +33,9 @@ const saveProvider = async () => {
 }
 
 const lastTimeUpdated = computed(() => {
-	const dateString = llmState.value.data?.settings.find(v => v.name === currentSchema.value?.title)?.updatedAt
-	if (dateString) return new Date(dateString).toLocaleString().concat(' UTC')
-	else return 'never'
+	const dateString = llmState.value.data?.settings.find(v => v.name === currentSchema.value?.title)?.updated_at
+	if (dateString) return new Date(dateString * 1000).toLocaleString()
+	else return 'Never'
 })
 
 watchDeep(llmState, () => {
@@ -60,9 +60,6 @@ watchDeep(llmState, () => {
 				@update="e => updateProperties(e.value)" />
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col">
-					<!--<p class="text-sm text-neutral-focus">
-						{{ currentSchema?.title }}
-					</p>-->
 					<p class="font-medium">
 						{{ currentSchema?.description }}
 					</p>
