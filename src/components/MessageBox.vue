@@ -32,14 +32,12 @@ const props = defineProps<{
 	why: any
 }>()
 
-const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
-
 const elementContent = ref<HTMLParagraphElement>()
 const isLengthy = ref(false), showReadMore = ref(true)
 
-const maxLength = 4000
+const maxLength = 3000
 
-const renderedText = computed(() => showReadMore.value ? markdown.render(cleanedText.slice(0, maxLength)) : markdown.render(cleanedText))
+const renderedText = computed(() => showReadMore.value ? markdown.render(props.text.slice(0, maxLength)) : markdown.render(props.text))
 
 watch(elementContent, () => {
 	if (!elementContent.value) return

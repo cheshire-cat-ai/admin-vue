@@ -25,10 +25,10 @@ const selectedCollection = ref('episodic')
 					{{ item.score }}
 				</span> 
 				<p class="mt-2">
-					{{ item.page_content }}
+					{{ item.metadata.docstring ? `${item.metadata.docstring}` : item.page_content }}
 				</p>
 				<div class="flex justify-between gap-2 text-xs font-medium text-primary">
-					<p>{{ capitalize(item.metadata.source) }}</p>
+					<p>{{ capitalize(item.metadata.source) }} {{ item.metadata.name ? `(${item.metadata.name})` : '' }}</p>
 					<p>{{ new Date(item.metadata.when * 1000).toLocaleString() }}</p>
 				</div>
 			</div>
