@@ -30,7 +30,7 @@ const saveChatSettings = () => {
 					Prompt prefix
 				</p>
 				<textarea v-model="tempSettings.prefix" 
-					class="textarea block w-full resize-y !outline-offset-0"
+					class="textarea block w-full resize-y !outline-offset-0 overflow-auto"
 					placeholder="Enter the prompt prefix..." />
 			</div>
 			<template v-for="(v, k) in tempSettings" :key="k">
