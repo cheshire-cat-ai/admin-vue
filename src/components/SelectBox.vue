@@ -35,7 +35,7 @@ defineExpose({
 				<ListboxOptions class="join join-vertical absolute z-10 mt-4 w-full min-w-fit overflow-auto rounded-md bg-base-200 text-sm shadow-lg">
 					<ListboxOption v-for="element in list" :key="element.value" v-slot="{ active, selected }" as="template" :value="element">
 						<li :class="[
-							active ? 'bg-base-300' : '',
+							active ? 'bg-base-100' : '',
 							selected ? 'bg-primary font-semibold text-base-100' : 'text-neutral',
 							'join-item relative cursor-default select-none px-3 py-2',
 						]">

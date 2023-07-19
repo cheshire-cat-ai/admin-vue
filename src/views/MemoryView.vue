@@ -295,7 +295,7 @@ const downloadResult = () => {
 				class="btn btn-error join-item" @click="boxWipe?.toggleModal()">
 				Wipe
 			</button>
-			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
+			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100 p-1" :list="getSelectCollections" />
 		</div>
 		<ModalBox ref="boxWipe">
 			<div class="flex flex-col items-center justify-center gap-4 text-neutral">

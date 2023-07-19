@@ -246,7 +246,8 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 			<div class="flex w-full max-w-screen-lg items-center gap-2 md:gap-4">
 				<div class="relative w-full">
 					<textarea ref="textArea" v-model.trim="userMessage" :disabled="inputDisabled"
-						class="textarea block max-h-20 w-full resize-none overflow-auto !outline-offset-0" :class="[ isTwoLines ? 'pr-10' : 'pr-20' ]"
+						class="textarea block max-h-20 w-full resize-none overflow-auto bg-base-200 !outline-offset-0" 
+						:class="[ isTwoLines ? 'pr-10' : 'pr-20' ]"
 						:placeholder="generatePlaceholder(messagesState.loading, isListening, messagesState.error)" @keydown="preventSend" />
 					<div :class="[ isTwoLines ? 'flex-col-reverse' : '' ]" class="absolute right-2 top-1/2 flex -translate-y-1/2 gap-1">
 						<button :disabled="inputDisabled || userMessage.length === 0"

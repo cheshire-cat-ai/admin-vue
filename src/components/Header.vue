@@ -40,7 +40,7 @@
 						</MenuItem>
 						<MenuItem as="li">
 							<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">
-								<ph-file-text-fill class="h-5 w-5" /> Docs
+								<heroicons-document-text-solid class="h-5 w-5" /> Docs
 							</a>
 						</MenuItem>
 					</MenuItems>
@@ -74,7 +74,7 @@
 				</li>
 				<li>
 					<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">
-						<ph-file-text-fill class="h-5 w-5" /> Docs
+						<heroicons-document-text-solid class="h-5 w-5" /> Docs
 					</a>
 				</li>
 			</ul>
