@@ -38,6 +38,12 @@ const lastTimeUpdated = computed(() => {
 	else return 'Never'
 })
 
+const requiredFilled = computed(() => {
+	const requiredFields = currentSchema.value?.required
+	if (!requiredFields || requiredFields.length === 0) return true
+	else return requiredFields.every(v => currentSettings.value[v])
+})
+
 watchDeep(llmState, () => {
 	updateProperties(selectProvider.value?.selectedElement?.value)
 }, { flush: 'post', immediate: true })
@@ -51,11 +57,11 @@ watchDeep(llmState, () => {
 		<div v-else-if="llmState.error || !getAvailableProviders().length" 
 			class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				Failed to fetch available LLM providers
+				{{ llmState.error }}
 			</div>
 		</div>
 		<div v-else class="flex grow flex-col gap-4">
-			<SelectBox ref="selectProvider" :picked="llmState.selected" class="bg-base-200"
+			<SelectBox ref="selectProvider" :picked="llmState.selected"
 				:list="getAvailableProviders().map(p => ({ label: p.name_human_readable, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex flex-col gap-4">
@@ -78,7 +84,8 @@ watchDeep(llmState, () => {
 						class="input input-primary input-sm w-full" :class="{ 'pr-0': prop.type !== 'string' }">
 				</div>
 			</div>
-			<button class="btn btn-success btn-sm mt-auto normal-case" @click="saveProvider">
+			<button class="btn btn-success btn-sm mt-auto normal-case" 
+				:disabled="!requiredFilled" @click="saveProvider">
 				Save
 			</button>
 		</div>

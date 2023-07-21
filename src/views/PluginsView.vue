@@ -80,7 +80,7 @@ const searchPlugin = () => {
 		</div>
 		<div class="flex flex-wrap items-end justify-between gap-2">
 			<p class="font-medium">
-				Installed plugins: {{ pluginsState.data?.installed.length ?? 0 }}
+				Installed plugins: {{ pluginsState.data?.installed?.length ?? 0 }}
 			</p>
 			<button :disabled="pluginsState.loading || Boolean(pluginsState.error)"
 				class="btn btn-primary btn-sm" @click="uploadPlugin({ multiple: false, accept: AcceptedPluginTypes.join(',') })">
@@ -92,7 +92,7 @@ const searchPlugin = () => {
 		</div>
 		<div v-else-if="pluginsState.error" class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				Failed to fetch plugins
+				{{ pluginsState.error }}
 			</div>
 		</div>
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">

@@ -11,12 +11,12 @@ export const useLLMConfig = defineStore('llm', () => {
 
   const { sendNotificationFromJSON } = useNotifications()
 
-  const { state: providers, isLoading, error } = useAsyncState(LLMConfigService.getProviders(), undefined)
+  const { state: providers, isLoading } = useAsyncState(LLMConfigService.getProviders(), undefined)
 
   watchEffect(() => {
     currentState.loading = isLoading.value
-    currentState.data = providers.value
-    currentState.error = error.value as string
+    currentState.data = providers.value?.data
+    currentState.error = providers.value?.status === 'error' ? providers.value.message : undefined
     if (currentState.data) {
       currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].title
       currentState.settings = currentState.data.settings.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {})
@@ -24,7 +24,7 @@ export const useLLMConfig = defineStore('llm', () => {
   })
 
   const getAvailableProviders = () => {
-    return providers.value?.schemas ? Object.values(providers.value.schemas) : []
+    return providers.value?.data?.schemas ? Object.values(providers.value.data.schemas) : []
   }
 
   const getProviderSchema = (selected = currentState.selected) => {
@@ -38,21 +38,13 @@ export const useLLMConfig = defineStore('llm', () => {
   }
 
   const setProviderSettings = async (name: string, settings: JSONSettings) => {
-    try {
-      const result = await LLMConfigService.setProviderSettings(name, settings)
-      sendNotificationFromJSON(result)
-      if (result.status != 'error') {
-        currentState.selected = name
-        currentState.settings[name] = settings
-      }
-      return result.status != 'error'
-    } catch (error) {
-      sendNotificationFromJSON({
-        status: 'error',
-        message: error as string
-      })
-      return false
+    const result = await LLMConfigService.setProviderSettings(name, settings)
+    sendNotificationFromJSON(result)
+    if (result.status != 'error') {
+      currentState.selected = name
+      currentState.settings[name] = settings
     }
+    return result.status != 'error'
   }
 
   return {

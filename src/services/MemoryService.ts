@@ -5,12 +5,11 @@ import { apiClient, tryRequest } from '@/api'
  */
 const MemoryService = Object.freeze({
   getCollections: async () => {
-    const result = await tryRequest(
+    return await tryRequest(
       apiClient.api?.memory.getCollections(), 
       "Getting all the available collections", 
       "Unable to fetch available collections"
     )
-    return result.data?.collections
   },
   deleteMemoryPoint: async (collection: string, memory: string) => {
     return await tryRequest(

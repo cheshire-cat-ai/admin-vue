@@ -10,12 +10,12 @@ export const useMemory = defineStore('memory', () => {
     data: []
   })
 
-  const { state: collections, isLoading, error, execute: fetchCollections } = useAsyncState(MemoryService.getCollections(), [])
+  const { state: collections, isLoading, execute: fetchCollections } = useAsyncState(MemoryService.getCollections(), undefined)
 
   watchEffect(() => {
     currentState.loading = isLoading.value
-    currentState.data = collections.value
-    currentState.error = error.value ? `${error.value} available memories` : undefined
+    currentState.data = collections.value?.data?.collections
+    currentState.error = collections.value?.status === 'error' ? collections.value.message : undefined
   })
 
   onActivated(() => fetchCollections())
