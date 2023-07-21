@@ -5,13 +5,16 @@ import { useSettings } from '@stores/useSettings'
 const store = useSettings()
 const { mustSummarize, isAudioEnabled } = storeToRefs(store)
 
-const panelTitles = [ 'Configure the Language Model', 'Configure the Embedder' ] as const
+const panelTitles = {
+	'embedder': 'Configure the Embedder',
+	'llm': 'Configure the Language Model'
+} as const
 
 const sidePanel = ref<InstanceType<typeof SidePanel>>()
 const panelTitle = ref<string>('')
 
-const openSidePanel = (title: typeof panelTitles[number]) => {
-	panelTitle.value = title
+const openSidePanel = (title: keyof typeof panelTitles) => {
+	panelTitle.value = panelTitles[title]
 	sidePanel.value?.togglePanel()
 }
 </script>
@@ -28,13 +31,13 @@ const openSidePanel = (title: typeof panelTitles[number]) => {
 		</div>
 		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 md:col-span-1">
 			<p class="text-xl font-bold">
-				Language Model
+				Large Language Model
 			</p>
 			<p class="text-center">
-				Choose and configure your favourite Large Language Model
+				Choose and configure your favourite LLM from a list of supported providers
 			</p>
 			<RouterLink :to="{ name: 'providers' }" class="btn btn-primary btn-sm"
-				@click="openSidePanel('Configure the Language Model')">
+				@click="openSidePanel('llm')">
 				Configure
 			</RouterLink>
 		</div>
@@ -46,7 +49,7 @@ const openSidePanel = (title: typeof panelTitles[number]) => {
 				Choose a language embedder to help the Cat remember conversations and documents
 			</p>
 			<RouterLink :to="{ name: 'embedders' }" class="btn btn-primary btn-sm"
-				@click="openSidePanel('Configure the Embedder')">
+				@click="openSidePanel('embedder')">
 				Configure
 			</RouterLink>
 		</div>
