@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useEmbedderConfig } from '@stores/useEmbedderConfig'
 import type { JSONSettings } from '@models/JSONSchema'
-import type { Schema } from 'ccat-api'
+import type { JsonSchema } from 'ccat-api'
 import SelectBox from '@components/SelectBox.vue'
 
 const storeEmbedder = useEmbedderConfig()
@@ -9,7 +9,7 @@ const { getAvailableEmbedders, getEmbedderSchema, getEmbedderSettings, setEmbedd
 const { currentState: embedderState } = storeToRefs(storeEmbedder)
 
 const selectEmbedder = ref<InstanceType<typeof SelectBox>>()
-const currentSchema = ref<Schema>()
+const currentSchema = ref<JsonSchema>()
 const currentSettings = ref<JSONSettings>({})
 
 const emit = defineEmits<{
@@ -62,7 +62,7 @@ watchDeep(embedderState, () => {
 		</div>
 		<div v-else class="flex grow flex-col gap-4">
 			<SelectBox ref="selectEmbedder" :picked="embedderState.selected"
-				:list="getAvailableEmbedders().map(p => ({ label: p.name_human_readable, value: p.title }))"
+				:list="getAvailableEmbedders().map(p => ({ label: p.name_human_readable ?? p.title, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col">

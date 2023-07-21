@@ -8,7 +8,7 @@ const props = withDefaults(defineProps<{
 	color?: string,
 	padding?: string
 }>(), {
-	picked: (p) => p.list[0].value,
+	picked: p => p.list[0].value,
 	color: 'bg-base-100',
 	padding: 'p-2'
 })

@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import _ from 'lodash'
-import { type Plugin, AcceptedPluginTypes } from 'ccat-api'
+import { type Plugin, AcceptedPluginTypes, type JsonSchema } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
+import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
+import type { JSONSettings } from '@models/JSONSchema'
 
 const store = usePlugins()
-const { togglePlugin, removePlugin, installPlugin } = store
+const { togglePlugin, removePlugin, installPlugin, getSettings, updateSettings, isInstalled } = store
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { currentFilters } = storeToRefs(useSettings())
@@ -14,10 +16,13 @@ const { currentFilters } = storeToRefs(useSettings())
 const { open: uploadPlugin, onChange: onPluginUpload } = useFileDialog()
 
 const boxRemove = ref<InstanceType<typeof ModalBox>>()
+const settingsPanel = ref<InstanceType<typeof SidePanel>>()
 const searchText = ref("")
 const pluginsList = ref<Plugin[]>([])
 const filteredList = ref<Plugin[]>([])
 const selectedPlugin = ref<Plugin>()
+const currentSettings = ref<JSONSettings>()
+const currentSchema = ref<JsonSchema>()
 
 watchDeep(pluginsState, () => {
 	pluginsList.value = [...new Set([
@@ -45,6 +50,13 @@ onPluginUpload(files => {
 	if (files == null) return
 	installPlugin(files[0])
 })
+
+const openSettings = async (id: string) => {
+	const pluginSettings = await getSettings(id)
+	currentSettings.value = pluginSettings?.settings
+	currentSchema.value = pluginSettings?.schema
+	settingsPanel.value?.togglePanel()
+}
 
 const searchPlugin = () => {
 	filteredList.value = pluginsList.value.filter(p => {
@@ -112,15 +124,18 @@ const searchPlugin = () => {
 								class="link-primary link no-underline" :class="{'pointer-events-none': item.author_url === ''}">
 								{{ item.author_name }}
 							</a>
+							<button v-if="isInstalled(item.id)" class="btn btn-circle btn-ghost btn-xs ml-2" disabled
+								@click="openSettings(item.id)">
+								<heroicons-cog-6-tooth-20-solid class="h-4 w-4" />
+							</button>
 						</p>
 						<template v-if="item.id !== 'core_plugin'">
-							<!-- TODO: When server adds the property, show only for installed plugins, otherwise a "INSTALL" button -->
-							<button class="btn btn-error btn-xs" @click="openRemoveModal(item)">
+							<button v-if="isInstalled(item.id)" class="btn btn-error btn-xs" @click="openRemoveModal(item)">
 								Delete
 							</button>
-							<!--<button class="btn-success btn-xs btn">
+							<button v-else class="btn btn-success btn-xs">
 								Install
-							</button>-->
+							</button>
 						</template>
 					</div>
 					<div class="flex items-center gap-1 text-sm font-medium text-neutral-focus">
@@ -139,8 +154,7 @@ const searchPlugin = () => {
 								{{ tag.trim() }}
 							</div>
 						</div>
-						<!-- TODO: When server adds the property, show toggle only for installed plugins -->
-						<input v-if="item.id !== 'core_plugin'" type="checkbox" disabled 
+						<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" type="checkbox" disabled 
 							class="!toggle !toggle-success" @click="togglePlugin(item.id)">
 					</div>
 				</div>
@@ -151,6 +165,14 @@ const searchPlugin = () => {
 				No plugins found with this name.
 			</p>
 		</div>
+		<SidePanel ref="settingsPanel" title="Plugin Settings">
+			<p>
+				{{ currentSettings }}
+			</p>
+			<button class="btn btn-success btn-sm mt-auto">
+				Save
+			</button>
+		</SidePanel>
 		<ModalBox ref="boxRemove">
 			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
 				<h3 class="text-lg font-bold text-primary">
