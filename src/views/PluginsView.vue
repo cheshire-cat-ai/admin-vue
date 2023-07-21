@@ -69,8 +69,7 @@ const searchPlugin = () => {
 		</div>
 		<div class="flex flex-col gap-4">
 			<InputBox v-model.trim="searchText" placeholder="Enter a plugin name..." label="Search for a plugin" 
-				search :disabled="pluginsState.loading || Boolean(pluginsState.error)"
-				@send="searchPlugin()" />
+				search :disabled="pluginsState.loading || Boolean(pluginsState.error)" @send="searchPlugin()" />
 			<div class="flex flex-wrap justify-center gap-2">
 				<button v-for="(v, k) in currentFilters" :key="k" class="btn btn-xs rounded-full" disabled
 					:class="[ v ? 'btn-primary text-base-100' : 'btn-ghost !border-2 !border-primary' ]" 

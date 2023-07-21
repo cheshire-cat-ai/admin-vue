@@ -193,8 +193,7 @@ const downloadResult = () => {
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
 		<div class="flex gap-4">
 			<InputBox v-model.trim="callText" placeholder="Enter a text..." label="Search similar memories" 
-				search :disabled="Boolean(memoryState.error) || memoryState.loading"
-				@send="recallMemory()" />
+				search :disabled="Boolean(memoryState.error) || memoryState.loading" @send="recallMemory()" />
 			<div class="form-control">
 				<label class="label">
 					<span class="label-text font-medium text-primary">K memories</span>

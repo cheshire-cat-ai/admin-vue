@@ -29,9 +29,8 @@ const saveChatSettings = () => {
 				<p class="mb-1 text-sm font-medium text-primary">
 					Prompt prefix
 				</p>
-				<textarea v-model="tempSettings.prefix" 
-					class="textarea block w-full resize-y overflow-auto !outline-offset-0"
-					placeholder="Enter the prompt prefix..." />
+				<textarea v-model="tempSettings.prefix" placeholder="Enter the prompt prefix..."
+					class="textarea block w-full resize-y overflow-auto !outline-offset-0" />
 			</div>
 			<template v-for="(v, k) in tempSettings" :key="k">
 				<div v-if="typeof v === 'boolean'" class="flex gap-2">
