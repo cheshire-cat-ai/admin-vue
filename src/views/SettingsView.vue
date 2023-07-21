@@ -57,19 +57,26 @@ const openSidePanel = (title: keyof typeof panelTitles) => {
 		</div>
 		<div class="col-span-2 flex flex-col items-center justify-between gap-4 rounded-lg bg-base-100 p-4">
 			<p class="text-xl font-bold">
-				General Settings
+				{{ $t('settings.general.title') }}
 			</p>
 			<div class="flex w-full justify-between gap-2 rounded-lg bg-base-200 p-4">
 				<p class="flex items-center justify-center gap-2">
+					<heroicons-language-20-solid class="h-5 w-5 text-primary" />
+					<span>{{ $t('settings.general.language') }}</span>
+				</p>
+				<LocaleChanger />
+			</div>
+			<div class="flex w-full justify-between gap-2 rounded-lg bg-base-200 p-4">
+				<p class="flex items-center justify-center gap-2">
 					<heroicons-speaker-wave-solid class="h-5 w-5 text-primary" />
-					<span>Toggle sounds on messages</span>
+					<span>{{ $t('settings.general.sound') }}</span>
 				</p>
 				<input v-model="isAudioEnabled" type="checkbox" class="!toggle !toggle-success">
 			</div>
 			<div class="flex w-full justify-between gap-2 rounded-lg bg-base-200 p-4">
 				<p class="flex items-center justify-center gap-2">
 					<ph-text-align-left-bold class="h-5 w-5 text-primary" />
-					<span>Toggle the summarization when uploading documents or urls</span>
+					<span>{{ $t('settings.general.summarization') }}</span>
 				</p>
 				<input v-model="mustSummarize" type="checkbox" class="!toggle !toggle-success">
 			</div>

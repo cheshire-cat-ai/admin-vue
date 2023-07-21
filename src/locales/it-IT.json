@@ -77,7 +77,12 @@
     },
     "title": "settings.title",
     "desc": "settings.desc",
-    "lang": "settings.lang",
-    "configure": "settings.configure"
+    "configure": "settings.configure",
+    "general": {
+      "title": "settings.general.title",
+      "language": "settings.general.language",
+      "sound": "settings.general.sound",
+      "summarization": "settings.general.summarization"
+    }
   }
 }

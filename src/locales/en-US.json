@@ -20,17 +20,22 @@
   "settings": {
     "title": "Set up your Cat",
     "desc": "Configure your Cheshire Cat to suit your needs",
-    "lang": "Change language",
     "configure": "Configure",
+    "general": {
+      "title": "General Settings",
+      "language": "Change displayed language",
+      "sound": "Toggle sounds on messages",
+      "summarization": "Toggle the summarization when uploading documents or urls"
+    },
     "llm": {
-      "title": "Language Model",
+      "title": "Large Language Model",
       "panel": "Configure the @:settings.llm.title",
-      "desc": "Choose and configure your favourite Large Language Model"
+      "desc": "Choose and configure your favourite @:settings.llm.title"
     },
     "embedder": {
       "title": "Embedder",
       "panel": "Configure the @:settings.embedder.title",
-      "desc": "Choose a language embedder to help the Cat remember conversations and documents"
+      "desc": "Choose a language @:settings.embedder.title to help the Cat remember conversations and documents"
     }
   },
   "chat": {
@@ -77,7 +82,7 @@
     "desc": "This page displays the list of installed plugins together with those from the official registry of the {0}. Here you can enable or disable individual plugins according to your needs, allowing for greater customization of the user experience.",
     "item_title": "{0} by {1}",
     "installed": "Installed plugins: {num}",
-    "upload": "Upload plugin (coming soon)",
+    "upload": "Upload plugin",
     "search": "Search for a plugin"
   }
 }

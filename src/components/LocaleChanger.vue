@@ -26,10 +26,10 @@ const getAvailableLocales = computed(() => {
 
 <template>
 	<div class="join w-fit self-center shadow-xl">
-		<button class="btn-primary join-item btn" @click="changeLocale">
+		<button class="btn btn-primary join-item btn-sm" @click="changeLocale">
 			Change
 		</button>
-		<SelectBox ref="selectLocale" class="join-item min-w-fit bg-base-100 p-1" 
+		<SelectBox ref="selectLocale" class="join-item min-w-fit bg-base-100" padding="py-1 px-2"
 			:picked="locale" :list="getAvailableLocales" />
 	</div>
 </template>
