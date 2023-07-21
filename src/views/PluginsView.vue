@@ -96,7 +96,7 @@ const searchPlugin = () => {
 			<div v-for="item in filteredList" :key="item.id" class="flex gap-4 rounded-xl bg-base-100 p-4">
 				<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain">
 				<div v-else class="avatar placeholder self-center">
-					<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-blue-500 to-primary text-base-100">
+					<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-accent to-primary text-base-100">
 						<span class="text-5xl font-bold leading-3">{{ _.upperFirst(item.name)[0] }}</span>
 					</div>
 				</div>

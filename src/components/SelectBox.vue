@@ -5,10 +5,12 @@ const props = withDefaults(defineProps<{
         value: string
     }[],
     picked?: string,
-	color?: string
+	color?: string,
+	padding?: string
 }>(), {
 	picked: (p) => p.list[0].value,
-	color: 'bg-base-100'
+	color: 'bg-base-100',
+	padding: 'p-2'
 })
 
 const selectedElement = ref(props.list.find(v => v.value === props.picked) ?? props.list[0])
@@ -25,8 +27,8 @@ defineExpose({
 <template>
 	<Listbox v-model="selectedElement" by="value" @update:modelValue="value => emit('update', value)">
 		<div class="relative rounded-lg">
-			<ListboxButton :class="[ color ]"
-				class="flex w-full cursor-default items-center justify-between gap-1 rounded-md p-2 text-left text-sm">
+			<ListboxButton :class="[ color, padding ]"
+				class="flex w-full cursor-default items-center justify-between gap-1 rounded-md text-left text-sm">
 				<span class="block truncate font-semibold">{{ selectedElement.label }}</span>
 				<heroicons-chevron-up-down-20-solid class="h-6 w-6" />
 			</ListboxButton>
