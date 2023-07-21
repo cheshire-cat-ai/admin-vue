@@ -3,7 +3,6 @@ import type { BotMessage, UserMessage } from '@models/Message'
 import { now, uniqueId, defaultsDeep } from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
 import { apiClient, tryRequest } from '@/api'
-import { ErrorCode } from '@utils/errors'
 import type { PromptSettings } from 'ccat-api'
 
 export const useMessages = defineStore('messages', () => {
@@ -44,7 +43,7 @@ export const useMessages = defineStore('messages', () => {
 
   const getDefaultPromptSettings = async () => {
     const result = await tryRequest(
-      apiClient.api.settingsPrompt.getDefaultPromptSettings(), 
+      apiClient.api?.settingsPrompt.getDefaultPromptSettings(), 
       "Getting all the default prompt settings", 
       "Unable to fetch default prompt settings"
     )
@@ -82,7 +81,7 @@ export const useMessages = defineStore('messages', () => {
       }
     }).onError(error => {
       currentState.loading = currentState.ready = false
-      currentState.error = Object.values(ErrorCode)[error]
+      currentState.error = error.description
     }).onDisconnected(() => {
       currentState.ready = false
     })

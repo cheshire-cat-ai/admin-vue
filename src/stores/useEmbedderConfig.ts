@@ -11,12 +11,12 @@ export const useEmbedderConfig = defineStore('embedder', () => {
 
   const { sendNotificationFromJSON } = useNotifications()
 
-  const { state: embedders, isLoading, error } = useAsyncState(EmbedderConfigService.getEmbedders(), undefined)
+  const { state: embedders, isLoading } = useAsyncState(EmbedderConfigService.getEmbedders(), undefined)
 
   watchEffect(() => {
     currentState.loading = isLoading.value
-    currentState.data = embedders.value
-    currentState.error = error.value as string
+    currentState.data = embedders.value?.data
+    currentState.error = embedders.value?.status === 'error' ? embedders.value.message : undefined
     if (currentState.data) {
       currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].title
       currentState.settings = currentState.data.settings.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {})
@@ -24,7 +24,7 @@ export const useEmbedderConfig = defineStore('embedder', () => {
   })
   
   const getAvailableEmbedders = () => {
-    return embedders.value?.schemas ? Object.values(embedders.value.schemas) : []
+    return embedders.value?.data?.schemas ? Object.values(embedders.value.data.schemas) : []
   }
 
   const getEmbedderSchema = (selected = currentState.selected) => {
@@ -38,21 +38,13 @@ export const useEmbedderConfig = defineStore('embedder', () => {
   }
 
   const setEmbedderSettings = async (name: string, settings: JSONSettings) => {
-    try {
-      const result = await EmbedderConfigService.setEmbedderSettings(name, settings)
-      sendNotificationFromJSON(result)
-      if (result.status != 'error') {
-        currentState.selected = name
-        currentState.settings[name] = settings
-      }
-      return result.status != 'error'
-    } catch (error) {
-      sendNotificationFromJSON({
-        status: 'error',
-        message: error as string
-      })
-      return false
+    const result = await EmbedderConfigService.setEmbedderSettings(name, settings)
+    sendNotificationFromJSON(result)
+    if (result.status != 'error') {
+      currentState.selected = name
+      currentState.settings[name] = settings
     }
+    return result.status != 'error'
   }
 
   return {

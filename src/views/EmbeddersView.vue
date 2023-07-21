@@ -33,9 +33,15 @@ const saveEmbedder = async () => {
 }
 
 const lastTimeUpdated = computed(() => {
-	const dateString = embedderState.value.data?.settings.find(v => v.name === currentSchema.value?.title)?.updatedAt
-	if (dateString) return new Date(dateString).toLocaleString().concat(' UTC')
-	else return 'never'
+	const dateString = embedderState.value.data?.settings.find(v => v.name === currentSchema.value?.title)?.updated_at
+	if (dateString) return new Date(dateString * 1000).toLocaleString()
+	else return 'Never'
+})
+
+const requiredFilled = computed(() => {
+	const requiredFields = currentSchema.value?.required
+	if (!requiredFields || requiredFields.length === 0) return true
+	else return requiredFields.every(v => currentSettings.value[v])
 })
 
 watchDeep(embedderState, () => {
@@ -51,18 +57,15 @@ watchDeep(embedderState, () => {
 		<div v-else-if="embedderState.error || !getAvailableEmbedders().length"
 			class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				{{ $t('failed_fetch', { msg: 'available embedders' }) }}
+				{{ embedderState.error }}
 			</div>
 		</div>
 		<div v-else class="flex grow flex-col gap-4">
-			<SelectBox ref="selectEmbedder" :picked="embedderState.selected" class="bg-base-200"
+			<SelectBox ref="selectEmbedder" :picked="embedderState.selected"
 				:list="getAvailableEmbedders().map(p => ({ label: p.name_human_readable, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col">
-					<!--<p class="text-sm text-neutral-focus">
-						{{ currentSchema?.title }}
-					</p>-->
 					<p class="font-medium">
 						{{ currentSchema?.description }}
 					</p>
@@ -77,10 +80,11 @@ watchDeep(embedderState, () => {
 					</p>
 					<input v-model="currentSettings[prop.env_names[0]]" 
 						:type="prop.type === 'string' ? 'text' : 'number'" :placeholder="prop.title"
-						class="input-primary input input-sm w-full" :class="{ 'pr-0': prop.type !== 'string' }">
+						class="input input-primary input-sm w-full" :class="{ 'pr-0': prop.type !== 'string' }">
 				</div>
 			</div>
-			<button class="btn-success btn-sm btn mt-auto normal-case" @click="saveEmbedder">
+			<button class="btn btn-success btn-sm mt-auto normal-case" 
+				:disabled="!requiredFilled" @click="saveEmbedder">
 				{{ $t('save') }}
 			</button>
 		</div>

@@ -35,11 +35,14 @@ body {
   .btn-outline {
     @apply border-2;
   }
-  .focus, .active {
+  .focus {
     @apply !bg-primary hover:bg-primary-focus focus:bg-primary-focus text-base-100;
   }
+  .menu .active {
+    @apply !bg-base-200 hover:!bg-base-200 !text-primary;
+  }
   .menu li > *:active {
-    @apply !bg-primary-focus
+    @apply !bg-base-200 !text-primary
   }
   .btn-ghost {
     @apply disabled:bg-transparent;
@@ -59,7 +62,7 @@ body {
     @apply border-2;
   }
   .select, .input, .textarea {
-    @apply overflow-hidden outline outline-offset-2 outline-2 border-0 !ring-0 !transition-all !duration-75 focus:outline-primary;
+    @apply overflow-hidden outline outline-offset-2 bg-transparent outline-2 border-0 !ring-0 !transition-all !duration-75 focus:outline-primary;
   }
   .toggle {
     @apply !bg-none !border-2;

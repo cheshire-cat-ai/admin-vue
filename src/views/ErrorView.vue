@@ -11,7 +11,7 @@
 			<br>
 			<span class="text-2xl text-primary">Meow!</span>
 		</p>
-		<button class="btn-error btn rounded">
+		<button class="btn btn-error rounded">
 			<RouterLink to="/">
 				{{ $t('error.go_back') }}
 			</RouterLink>

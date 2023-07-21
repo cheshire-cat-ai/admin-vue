@@ -32,32 +32,38 @@ const props = defineProps<{
 	why: any
 }>()
 
-const cleanedText = props.text.replace(/"(.+)"/gm, '$1')
-
 const elementContent = ref<HTMLParagraphElement>()
-const showReadMore = ref(false)
+const isLengthy = ref(false), showReadMore = ref(true)
 
-const maxLength = 4000
+const maxLength = 3000
+
+const renderedText = computed(() => showReadMore.value ? markdown.render(props.text.slice(0, maxLength)) : markdown.render(props.text))
 
 watch(elementContent, () => {
 	if (!elementContent.value) return
 	const content = (elementContent.value.textContent || elementContent.value.innerText).replaceAll('\n', '')
-	showReadMore.value = content.length >= maxLength
+	isLengthy.value = content.length >= maxLength
 })
+
 </script>
 
 <template>
-	<div class="chat gap-x-3" :class="[sender === 'bot' ? 'chat-start' : 'chat-end']">
-		<div class="chat-image px-2 text-lg">
+	<div class="chat my-2 gap-x-3" :class="[sender === 'bot' ? 'chat-start' : 'chat-end']">
+		<div class="chat-image text-lg">
 			{{ sender === 'bot' ? '😺' : '🙂' }}
 		</div>
-		<div class="chat-bubble m-2 min-h-fit break-words rounded-lg p-2 md:p-4" :class="{ '!pr-10': why }">
-			<p ref="elementContent" class="text-ellipsis" 
-				v-html="showReadMore ? markdown.render(cleanedText.slice(0, maxLength)) : markdown.render(cleanedText)" />
-			<a v-if="showReadMore" @click="showReadMore = false">Read more...</a>
-			<button v-if="why" class="btn-primary btn-square btn-xs btn absolute right-1 top-1 m-1 !p-0"
+		<div class="chat-bubble flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral">
+			<div class="p-2 md:p-3">
+				<p ref="elementContent" class="text-ellipsis" v-html="renderedText" />
+				<div v-if="isLengthy" class="flex justify-end font-bold">
+					<a v-if="showReadMore" @click="showReadMore = false">Read more</a>
+					<a v-else @click="showReadMore = true">Hide content</a>
+				</div>
+			</div>
+			<div v-if="why" class="divider divider-horizontal m-0 w-px before:bg-base-200 after:bg-base-200" />
+			<button v-if="why" class="btn btn-circle btn-primary btn-xs mx-2"
 				@click="whyPanel?.togglePanel()">
-				<p class="text-base text-neutral">
+				<p class="text-base">
 					?
 				</p>
 			</button>
@@ -65,7 +71,7 @@ watch(elementContent, () => {
 		<SidePanel v-if="why" ref="whyPanel" title="Why this response">
 			<div class="flex flex-col gap-4">
 				<div class="overflow-x-auto rounded-md border-2 border-neutral">
-					<table class="table-zebra table-sm table text-center">
+					<table class="table table-zebra table-sm text-center">
 						<thead class="bg-base-200 text-neutral">
 							<th>🧰 Tool</th>
 							<th>⌨️ Input</th>

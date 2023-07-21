@@ -5,18 +5,18 @@ import { apiClient, tryRequest } from '@/api'
  * Meaning this service sends files to the backend.
  */
 const RabbitHoleService = Object.freeze({
-  sendFile: async (file: File) => {
+  sendFile: async (file: File, summary?: boolean) => {
     const result = await tryRequest(
-      apiClient.api.rabbitHole.uploadFile({ file }), 
+      apiClient.api?.rabbitHole.uploadFile({ file, summary }), 
       `File ${file.name} successfully sent down the rabbit hole`, 
       "Unable to send the file to the rabbit hole",
       "Sending a file to the rabbit hole"
     )
     return result.data
   },
-  sendWeb: async (url: string) => {
+  sendWeb: async (url: string, summary?: boolean) => {
     const result = await tryRequest(
-      apiClient.api.rabbitHole.uploadUrl({ url }), 
+      apiClient.api?.rabbitHole.uploadUrl({ url, summary }), 
       "Website successfully sent down the rabbit hole", 
       "Unable to send the website to the rabbit hole",
       "Sending a website content to the rabbit hole"
@@ -25,7 +25,7 @@ const RabbitHoleService = Object.freeze({
   },
   sendMemory: async (file: File) => {
     const result = await tryRequest(
-      apiClient.api.rabbitHole.uploadMemory({ file }), 
+      apiClient.api?.rabbitHole.uploadMemory({ file }), 
       "Memories file successfully sent down the rabbit hole", 
       "Unable to send the memories to the rabbit hole",
       "Sending a bunch of memories to the rabbit hole"

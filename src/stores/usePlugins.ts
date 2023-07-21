@@ -13,18 +13,14 @@ export const usePlugins = defineStore('plugins', () => {
     }
   })
 
-  const { state: plugins, isLoading, error, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), {
-    results: 0,
-    installed: [],
-    registry: []
-  })
+  const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), undefined)
 
   const { showNotification } = useNotifications()
 
   watchEffect(() => {
     currentState.loading = isLoading.value
-    currentState.data = plugins.value
-    currentState.error = error.value as string
+    currentState.data = plugins.value?.data
+    currentState.error = plugins.value?.status === 'error' ? plugins.value.message : undefined
   })
 
   const togglePlugin = async (id: Plugin['id']) => {

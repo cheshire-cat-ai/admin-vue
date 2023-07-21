@@ -10,6 +10,7 @@ export const useSettings = defineStore('settings', () => {
     valueDark: 'dark',
     valueLight: 'light'
   })
+  const mustSummarize = useLocalStorage('mustSummarize', false)
 
   const toggleDark = useToggle(isDark)
 
@@ -41,7 +42,8 @@ export const useSettings = defineStore('settings', () => {
     currentFilters,
     currentLocale,
     toggleDark,
-    setLocale
+    mustSummarize,
+    setLocale,
   }
 })
 

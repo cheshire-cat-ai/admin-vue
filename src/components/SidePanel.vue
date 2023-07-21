@@ -34,17 +34,17 @@ defineExpose({
 							leave="transform transition ease-in-out duration-500" leave-from="translate-x-0"
 							leave-to="translate-x-full" @afterLeave="closePanel">
 							<DialogPanel class="pointer-events-auto relative w-screen md:max-w-xl">
-								<div class="flex h-full flex-col gap-4 overflow-y-auto bg-base-100 p-4 text-neutral shadow-xl">
-									<div class="flex items-center justify-between gap-2">
+								<div class="flex h-full flex-col gap-4 overflow-y-auto bg-base-200 text-neutral">
+									<div class="flex items-center justify-between gap-2 p-2 md:p-4">
 										<DialogTitle class="text-lg font-semibold">
 											{{ title }}
 										</DialogTitle>
-										<button class="btn-error btn-square btn-sm btn" @click="isOpen = false">
+										<button class="btn btn-circle btn-error btn-sm" @click="isOpen = false">
 											<span class="sr-only">Close panel</span>
 											<heroicons-x-mark-20-solid class="h-6 w-6" />
 										</button>
 									</div>
-									<div class="relative flex flex-1 flex-col p-4">
+									<div class="relative flex flex-1 flex-col p-2 md:p-4">
 										<slot />
 									</div>
 								</div>

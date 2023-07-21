@@ -29,18 +29,17 @@ const saveChatSettings = () => {
 				<p class="mb-1 text-sm font-medium text-primary">
 					{{ $t('chat.settings.title') }}
 				</p>
-				<textarea v-model="tempSettings.prefix" 
-					class="textarea block w-full resize-y !outline-offset-0"
-					placeholder="Enter the prompt prefix..." />
+				<textarea v-model="tempSettings.prefix" placeholder="Enter the prompt prefix..."
+					class="textarea block w-full resize-y overflow-auto !outline-offset-0" />
 			</div>
 			<template v-for="(v, k) in tempSettings" :key="k">
 				<div v-if="typeof v === 'boolean'" class="flex gap-2">
 					<p>{{ _.join(_.map(_.split(k.toString(), "_"), (s) => _.capitalize(s)), " ") }}</p>
-					<input v-model="tempSettings[k]" type="checkbox" class="!toggle-success !toggle">
+					<input v-model="tempSettings[k]" type="checkbox" class="!toggle !toggle-success">
 				</div>
 			</template>
 		</div>
-		<button class="btn-success btn-sm btn mt-auto normal-case" @click="saveChatSettings">
+		<button class="btn btn-success btn-sm mt-auto normal-case" @click="saveChatSettings">
 			{{ $t('save') }}
 		</button>
 	</div>

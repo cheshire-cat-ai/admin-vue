@@ -193,26 +193,14 @@ const downloadResult = () => {
 <template>
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
 		<div class="flex gap-4">
-			<div class="form-control w-full">
-				<label class="label">
-					<span class="label-text font-medium text-primary">{{ $t('memory.label.input') }}</span>
-				</label>
-				<div class="relative w-full">
-					<input v-model.trim="callText" type="text" placeholder="Enter a text..." 
-						:disabled="Boolean(memoryState.error) || memoryState.loading"
-						class="input-primary input input-sm w-full" @keyup.enter="recallMemory()">
-					<button class="btn-primary btn-square btn-sm btn absolute right-0 top-0"
-						:disabled="Boolean(memoryState.error) || memoryState.loading" @click="recallMemory()">
-						<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
-					</button>
-				</div>
-			</div>
+			<InputBox v-model.trim="callText" placeholder="Enter a text..." :label="$t('memory.label.input')" 
+				search :disabled="Boolean(memoryState.error) || memoryState.loading" @send="recallMemory()" />
 			<div class="form-control">
 				<label class="label">
 					<span class="label-text font-medium text-primary">{{ $t('memory.label.k') }}</span>
 				</label>
 				<input v-model="kMems" :disabled="Boolean(memoryState.error) || memoryState.loading" type="number" min="1" 
-					class="input-primary input input-sm join-item w-24 pl-2 pr-0">
+					class="input input-primary input-sm w-24 pl-2 pr-0">
 			</div>
 		</div>
 		<div v-if="showSpinner || memoryState.loading" class="flex grow items-center justify-center">
@@ -231,7 +219,12 @@ const downloadResult = () => {
 					defaultLocale: 'en',
 					fontFamily: 'Ubuntu',
 					background: 'transparent',
-					animations: { speed: 300, },
+					animations: { 
+						speed: 300,
+						dynamicAnimation: {
+							enabled: false
+						}
+					},
 					toolbar: {
 						tools: {
 							zoomin: false,
@@ -265,6 +258,7 @@ const downloadResult = () => {
 					}
 				},
 				grid: {
+					borderColor: isDark ? '#F4F4F5' : '#383938',
 					xaxis: { lines: { show: true, }, },   
 					yaxis: { lines: { show: true, }, },
 				},
@@ -298,10 +292,10 @@ const downloadResult = () => {
 		<div class="divider !my-0" />
 		<div class="join w-fit self-center shadow-xl">
 			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
-				class="btn-error join-item btn" @click="boxWipe?.toggleModal()">
+				class="btn btn-error join-item" @click="boxWipe?.toggleModal()">
 				{{ $t('memory.wipe') }}
 			</button>
-			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
+			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100 p-1" :list="getSelectCollections" />
 		</div>
 		<ModalBox ref="boxWipe">
 			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
@@ -316,10 +310,10 @@ const downloadResult = () => {
 					</template>
 				</i18n-t>
 				<div class="flex items-center justify-center gap-2">
-					<button class="btn-outline btn-sm btn" @click="boxWipe?.toggleModal()">
+					<button class="btn btn-outline btn-sm" @click="boxWipe?.toggleModal()">
 						{{ $t('no') }}
 					</button>
-					<button class="btn-error btn-sm btn" @click="wipeMemory()">
+					<button class="btn btn-error btn-sm" @click="wipeMemory()">
 						{{ $t('yes') }}
 					</button>
 				</div>
@@ -335,7 +329,7 @@ const downloadResult = () => {
 		</SidePanel>
 		<SidePanel v-if="clickedPoint" ref="pointInfoPanel" title="Memory content">
 			<div class="overflow-x-auto rounded-md border-2 border-neutral">
-				<table class="table-zebra table-sm table">
+				<table class="table table-zebra table-sm">
 					<tbody>
 						<tr v-for="data in Object.entries(clickedPoint)" :key="data[0]">
 							<td v-t="`memory.metadata.${data[0]}`" />
@@ -344,7 +338,7 @@ const downloadResult = () => {
 					</tbody>
 				</table>
 			</div>
-			<button v-if="!['procedural', 'query'].includes(clickedPoint.collection)" class="btn-error btn-sm btn mt-auto" 
+			<button v-if="!['procedural', 'query'].includes(clickedPoint.collection)" class="btn btn-error btn-sm mt-auto" 
 				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
 				{{ $t('memory.delete') }}
 			</button>
