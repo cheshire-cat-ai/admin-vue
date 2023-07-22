@@ -28,12 +28,3 @@ export interface UserMessage extends MessageBase {
  * The union type for all message types.
  */
 export type Message = BotMessage | UserMessage
-
-/**
- * The type of the prompt settings to pass to the cat via websocket.
- */
-export type PromptSettings = {
-  prefix: string
-} & {
-  [key: string]: boolean
-}
