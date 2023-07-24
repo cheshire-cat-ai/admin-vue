@@ -72,7 +72,7 @@ watch(elementContent, () => {
 			<div class="flex flex-col gap-4">
 				<div class="overflow-x-auto rounded-md border-2 border-neutral">
 					<table class="table table-zebra table-sm text-center">
-						<thead class="bg-base-200 text-neutral">
+						<thead class="bg-base-100 text-neutral">
 							<th>🧰 Tool</th>
 							<th>⌨️ Input</th>
 							<th>💬 Output</th>

@@ -336,7 +336,7 @@ const downloadResult = () => {
 		</SidePanel>
 		<SidePanel v-if="clickedPoint" ref="pointInfoPanel" title="Memory content">
 			<div class="overflow-x-auto rounded-md border-2 border-neutral">
-				<table class="table table-zebra table-sm">
+				<table class="table table-zebra table-sm bg-base-100">
 					<tbody>
 						<tr v-for="data in Object.entries(clickedPoint)" :key="data[0]">
 							<td>{{ _.capitalize(data[0]) }}</td>
