@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import _ from 'lodash'
-import download from 'downloadjs'
 import { useMemory } from '@stores/useMemory'
 import { useSettings } from '@stores/useSettings'
 import SelectBox from '@components/SelectBox.vue'
@@ -185,7 +184,13 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 const downloadResult = () => {
 	const output = { export_time: now() }
 	_.assign(output, callOutput.value)
-	download(JSON.stringify(output, undefined, 2), 'recalledMemories.json', 'application/json')
+	const element = document.createElement('a')
+	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(output, undefined, 2)))
+	element.setAttribute('download', 'recalledMemories.json')
+	element.style.display = 'none'
+	document.body.appendChild(element)
+	element.click()
+	document.body.removeChild(element)
 }
 </script>
 

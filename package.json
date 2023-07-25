@@ -27,7 +27,6 @@
     "axios": "^1.4.0",
     "ccat-api": "^0.6.1",
     "daisyui": "^3.3.1",
-    "downloadjs": "^1.4.7",
     "highlight.js": "^11.8.0",
     "lodash": "^4.17.21",
     "pinia": "^2.1.4",
