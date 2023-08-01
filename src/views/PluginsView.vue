@@ -154,7 +154,7 @@ const searchPlugin = () => {
 								{{ tag.trim() }}
 							</div>
 						</div>
-						<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" type="checkbox" disabled 
+						<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" type="checkbox" 
 							class="!toggle !toggle-success" @click="togglePlugin(item.id)">
 					</div>
 				</div>
