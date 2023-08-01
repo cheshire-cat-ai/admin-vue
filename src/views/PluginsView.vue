@@ -156,7 +156,7 @@ const searchPlugin = () => {
 						</div>
 						<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" 
 							:value="(item as any)?.active ?? false" type="checkbox" 
-							class="!toggle !toggle-success" @click="togglePlugin(item.id)">
+							class="!toggle !toggle-success" @click="togglePlugin(item.id, item.name, (item as any)?.active ?? false)">
 					</div>
 				</div>
 			</div>

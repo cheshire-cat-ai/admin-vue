@@ -25,9 +25,14 @@ export const usePlugins = defineStore('plugins', () => {
 
   const isInstalled = (id: Plugin['id']) => currentState.data?.installed.find(p => p.id === id)
 
-  const togglePlugin = async (id: Plugin['id']) => {
+  const togglePlugin = async (id: Plugin['id'], name: Plugin['name'], active: boolean) => {
     if (isInstalled(id)) {
+      showNotification({
+        text: `Plugin ${name} is being switched ${active ? 'off' : 'on'}!`,
+        type: active ? 'error' : 'success'
+      })
       await PluginService.togglePlugin(id)
+      fetchPlugins()
       return true
     }
     return false
