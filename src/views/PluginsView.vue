@@ -124,8 +124,8 @@ const searchPlugin = () => {
 								class="link-primary link no-underline" :class="{'pointer-events-none': item.author_url === ''}">
 								{{ item.author_name }}
 							</a>
-							<button v-if="isInstalled(item.id)" class="btn btn-circle btn-ghost btn-xs ml-2" disabled
-								@click="openSettings(item.id)">
+							<button v-if="isInstalled(item.id) && (item as any)?.active" 
+								class="btn btn-circle btn-ghost btn-xs ml-2" @click="openSettings(item.id)">
 								<heroicons-cog-6-tooth-20-solid class="h-4 w-4" />
 							</button>
 						</p>
