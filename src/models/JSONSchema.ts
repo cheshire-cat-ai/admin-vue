@@ -11,3 +11,19 @@ export interface JSONResponse<T> {
   readonly message: string
   readonly data?: T
 }
+
+export interface SchemaField {
+	label: string
+	as: string
+	name: string
+  type: string
+  rules?: string
+  default?: any
+}
+
+export const InputType = {
+  number: 'number',
+  integer: 'number',
+  string: 'text',
+  boolean: 'checkbox',
+} as const
