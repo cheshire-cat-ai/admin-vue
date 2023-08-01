@@ -32,10 +32,10 @@ const updateProperties = (selected = currentSchema.value?.title) => {
 	currentSettings.value = getEmbedderSettings(selected)
 }
 
-const saveProvider = async (payload: JSONSettings) => {
-	const llmName = selectEmbedder.value?.selectedElement
-	if (!llmName?.value) return
-	const res = await setEmbedderSettings(llmName.value, payload)
+const saveEmbedder = async (payload: JSONSettings) => {
+	const embName = selectEmbedder.value?.selectedElement
+	if (!embName?.value) return
+	const res = await setEmbedderSettings(embName.value, payload)
 	if (res) emit('close')
 }
 
@@ -79,7 +79,7 @@ watchDeep(embedderState, () => {
 						{{ lastTimeUpdated }}
 					</p>
 				</div>
-				<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="saveProvider" />
+				<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="saveEmbedder" />
 			</div>
 		</div>
 	</div>
