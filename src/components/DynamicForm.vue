@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { SchemaField } from '@models/JSONSchema'
+import type { JSONSettings, SchemaField } from '@models/JSONSchema'
 import { merge } from 'lodash'
 import { Form, Field } from 'vee-validate'
 
@@ -26,7 +26,7 @@ watchImmediate(props, () => {
 })
 
 defineEmits<{
-	(e: 'submit', payload: object): void,
+	(e: 'submit', payload: JSONSettings): void,
 }>()
 </script>
 
@@ -43,7 +43,7 @@ defineEmits<{
 				:class="[ attrs.type === 'checkbox' ? '!toggle !toggle-success' : 'input input-primary input-sm w-full !transition-all' ]" />
 		</div>
 		<div class="mt-auto flex gap-2">
-			<button class="btn btn-error btn-sm grow normal-case" @click="resetForm()"> <!-- TODO: Si buggano e cachano le key con lo stesso nome -->
+			<button class="btn btn-error btn-sm grow normal-case" @click="resetForm()">
 				Reset
 			</button>
 			<button class="btn btn-success btn-sm grow normal-case" :disabled="disabled || Object.keys(errors).length > 0">

@@ -32,10 +32,10 @@ const updateProperties = (selected = currentSchema.value?.title) => {
 	currentSettings.value = getProviderSettings(selected)
 }
 
-const saveProvider = async (payload: object) => {
+const saveProvider = async (payload: JSONSettings) => {
 	const llmName = selectProvider.value?.selectedElement
 	if (!llmName?.value) return
-	const res = await setProviderSettings(llmName.value, payload as JSONSettings)
+	const res = await setProviderSettings(llmName.value, payload)
 	if (res) emit('close')
 }
 
@@ -44,8 +44,6 @@ const lastTimeUpdated = computed(() => {
 	if (dateString) return new Date(dateString * 1000).toLocaleString()
 	else return 'Never'
 })
-
-const shish = (payload: object) => console.log(payload)
 
 onMounted(() => {
 	updateProperties(selectProvider.value?.selectedElement?.value)
@@ -81,7 +79,7 @@ watchDeep(llmState, () => {
 						{{ lastTimeUpdated }}
 					</p>
 				</div>
-				<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="shish" />
+				<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="saveProvider" />
 			</div>
 		</div>
 	</div>
