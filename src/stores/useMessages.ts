@@ -35,9 +35,7 @@ export const useMessages = defineStore('messages', () => {
     ]
   })
 
-  const promptSettings = useLocalStorage<PromptSettings>("promptSettings", {
-    prefix: ""
-  } as PromptSettings)
+  const promptSettings = useLocalStorage<PromptSettings>("promptSettings", {} as PromptSettings)
 
   const { showNotification } = useNotifications()
 
@@ -133,6 +131,7 @@ export const useMessages = defineStore('messages', () => {
     promptSettings,
     addMessage,
     selectRandomDefaultMessages,
+    getDefaultPromptSettings,
     dispatchMessage
   }
 })

@@ -29,6 +29,9 @@ body {
   html {
     font-family: "Ubuntu", system-ui, sans-serif;
   }
+  input[type="number"] {
+    @apply !pr-0;
+  }
 }
 
 @layer components {

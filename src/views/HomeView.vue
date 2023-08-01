@@ -320,7 +320,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 					<heroicons-microphone-solid class="h-6 w-6" />
 				</button>
 			</div>
-			<button v-if="isScrollable" class="btn btn-circle btn-primary btn-outline btn-sm absolute bottom-24 right-4 bg-base-100"
+			<button v-if="isScrollable" class="btn btn-circle btn-primary btn-outline btn-sm absolute bottom-28 right-4 bg-base-100"
 				@click="scrollToBottom">
 				<heroicons-arrow-down-20-solid class="h-5 w-5" />
 			</button>
