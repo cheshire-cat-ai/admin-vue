@@ -255,7 +255,18 @@ const downloadResult = () => {
 					},
 					zoom: {
 						type: 'xy',
-						autoScaleYaxis: true
+						autoScaleYaxis: true,
+						zoomedArea: {
+							fill: {
+								color: isDark ? '#F4F4F5' : '#383938',
+								opacity: 0.4
+							},
+							stroke: {
+								color: isDark ? '#F4F4F5' : '#383938',
+								opacity: 0.4,
+								width: 1
+							}
+						}
 					}
 				},
 				noData: {
