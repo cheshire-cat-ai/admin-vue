@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import _ from 'lodash'
-import { type Plugin, AcceptedPluginTypes } from 'ccat-api'
+import { type Plugin, AcceptedPluginTypes, type JsonSchema } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
+import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
+import type { JSONSettings } from '@models/JSONSchema'
 
 const store = usePlugins()
-const { togglePlugin, removePlugin, installPlugin } = store
+const { togglePlugin, removePlugin, installPlugin, getSettings, updateSettings, isInstalled } = store
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { currentFilters } = storeToRefs(useSettings())
@@ -14,10 +16,13 @@ const { currentFilters } = storeToRefs(useSettings())
 const { open: uploadPlugin, onChange: onPluginUpload } = useFileDialog()
 
 const boxRemove = ref<InstanceType<typeof ModalBox>>()
+const settingsPanel = ref<InstanceType<typeof SidePanel>>()
 const searchText = ref("")
 const pluginsList = ref<Plugin[]>([])
 const filteredList = ref<Plugin[]>([])
 const selectedPlugin = ref<Plugin>()
+const currentSettings = ref<JSONSettings>()
+const currentSchema = ref<JsonSchema>()
 
 watchDeep(pluginsState, () => {
 	pluginsList.value = [...new Set([
@@ -46,6 +51,13 @@ onPluginUpload(files => {
 	installPlugin(files[0])
 })
 
+const openSettings = async (id: string) => {
+	const pluginSettings = await getSettings(id)
+	currentSettings.value = pluginSettings?.settings
+	currentSchema.value = pluginSettings?.schema
+	settingsPanel.value?.togglePanel()
+}
+
 const searchPlugin = () => {
 	filteredList.value = pluginsList.value.filter(p => {
 		return p.name.toLowerCase().includes(searchText.value) ||
@@ -68,20 +80,8 @@ const searchPlugin = () => {
 			</p>
 		</div>
 		<div class="flex flex-col gap-4">
-			<div class="form-control w-full">
-				<label class="label">
-					<span class="label-text font-medium text-primary">Search for a plugin</span>
-				</label>
-				<div class="relative w-full">
-					<input v-model.trim="searchText" type="text" placeholder="Enter a plugin name..."
-						:disabled="pluginsState.loading || Boolean(pluginsState.error)"
-						class="input input-primary input-sm w-full" @keyup.enter="searchPlugin()">
-					<button class="btn btn-square btn-primary btn-sm absolute right-0 top-0" 
-						:disabled="pluginsState.loading || Boolean(pluginsState.error)" @click="searchPlugin()">
-						<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
-					</button>
-				</div>
-			</div>
+			<InputBox v-model.trim="searchText" placeholder="Enter a plugin name..." label="Search for a plugin" 
+				search :disabled="pluginsState.loading || Boolean(pluginsState.error)" @send="searchPlugin()" />
 			<div class="flex flex-wrap justify-center gap-2">
 				<button v-for="(v, k) in currentFilters" :key="k" class="btn btn-xs rounded-full" disabled
 					:class="[ v ? 'btn-primary text-base-100' : 'btn-ghost !border-2 !border-primary' ]" 
@@ -92,7 +92,7 @@ const searchPlugin = () => {
 		</div>
 		<div class="flex flex-wrap items-end justify-between gap-2">
 			<p class="font-medium">
-				Installed plugins: {{ pluginsState.data?.installed.length ?? 0 }}
+				Installed plugins: {{ pluginsState.data?.installed?.length ?? 0 }}
 			</p>
 			<button :disabled="pluginsState.loading || Boolean(pluginsState.error)"
 				class="btn btn-primary btn-sm" @click="uploadPlugin({ multiple: false, accept: AcceptedPluginTypes.join(',') })">
@@ -104,14 +104,14 @@ const searchPlugin = () => {
 		</div>
 		<div v-else-if="pluginsState.error" class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				Failed to fetch plugins
+				{{ pluginsState.error }}
 			</div>
 		</div>
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
-			<div v-for="item in filteredList" :key="item.id" class="flex gap-4 rounded-xl bg-base-200 p-4">
+			<div v-for="item in filteredList" :key="item.id" class="flex gap-4 rounded-xl bg-base-100 p-4">
 				<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain">
 				<div v-else class="avatar placeholder self-center">
-					<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-blue-500 to-primary text-base-100">
+					<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-accent to-primary text-base-100">
 						<span class="text-5xl font-bold leading-3">{{ _.upperFirst(item.name)[0] }}</span>
 					</div>
 				</div>
@@ -124,21 +124,24 @@ const searchPlugin = () => {
 								class="link-primary link no-underline" :class="{'pointer-events-none': item.author_url === ''}">
 								{{ item.author_name }}
 							</a>
+							<button v-if="isInstalled(item.id)" class="btn btn-circle btn-ghost btn-xs ml-2" disabled
+								@click="openSettings(item.id)">
+								<heroicons-cog-6-tooth-20-solid class="h-4 w-4" />
+							</button>
 						</p>
 						<template v-if="item.id !== 'core_plugin'">
-							<!-- TODO: When server adds the property, show only for installed plugins, otherwise a "INSTALL" button -->
-							<button class="btn btn-error btn-xs" @click="openRemoveModal(item)">
+							<button v-if="isInstalled(item.id)" class="btn btn-error btn-xs" @click="openRemoveModal(item)">
 								Delete
 							</button>
-							<!--<button class="btn-success btn-xs btn">
+							<button v-else class="btn btn-success btn-xs">
 								Install
-							</button>-->
+							</button>
 						</template>
 					</div>
 					<div class="flex items-center gap-1 text-sm font-medium text-neutral-focus">
 						<p>v{{ item.version }}</p>
 						<a v-if="item.plugin_url" :href="item.plugin_url" target="_blank" 
-							class="btn btn-square btn-ghost btn-xs text-primary">
+							class="btn btn-circle btn-ghost btn-xs text-primary">
 							<heroicons-link-20-solid class="h-4 w-4" />
 						</a>
 					</div>
@@ -151,8 +154,7 @@ const searchPlugin = () => {
 								{{ tag.trim() }}
 							</div>
 						</div>
-						<!-- TODO: When server adds the property, show toggle only for installed plugins -->
-						<input v-if="item.id !== 'core_plugin'" type="checkbox" disabled 
+						<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" type="checkbox" disabled 
 							class="!toggle !toggle-success" @click="togglePlugin(item.id)">
 					</div>
 				</div>
@@ -163,6 +165,14 @@ const searchPlugin = () => {
 				No plugins found with this name.
 			</p>
 		</div>
+		<SidePanel ref="settingsPanel" title="Plugin Settings">
+			<p>
+				{{ currentSettings }}
+			</p>
+			<button class="btn btn-success btn-sm mt-auto">
+				Save
+			</button>
+		</SidePanel>
 		<ModalBox ref="boxRemove">
 			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
 				<h3 class="text-lg font-bold text-primary">

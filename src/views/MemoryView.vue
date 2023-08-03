@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import _ from 'lodash'
-import download from 'downloadjs'
 import { useMemory } from '@stores/useMemory'
 import { useSettings } from '@stores/useSettings'
 import SelectBox from '@components/SelectBox.vue'
@@ -185,33 +184,27 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 const downloadResult = () => {
 	const output = { export_time: now() }
 	_.assign(output, callOutput.value)
-	download(JSON.stringify(output, undefined, 2), 'recalledMemories.json', 'application/json')
+	const element = document.createElement('a')
+	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(output, undefined, 2)))
+	element.setAttribute('download', 'recalledMemories.json')
+	element.style.display = 'none'
+	document.body.appendChild(element)
+	element.click()
+	document.body.removeChild(element)
 }
 </script>
 
 <template>
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
 		<div class="flex gap-4">
-			<div class="form-control w-full">
-				<label class="label">
-					<span class="label-text font-medium text-primary">Search similar memories</span>
-				</label>
-				<div class="relative w-full">
-					<input v-model.trim="callText" type="text" placeholder="Enter a text..." 
-						:disabled="Boolean(memoryState.error) || memoryState.loading"
-						class="input input-primary input-sm w-full" @keyup.enter="recallMemory()">
-					<button class="btn btn-square btn-primary btn-sm absolute right-0 top-0"
-						:disabled="Boolean(memoryState.error) || memoryState.loading" @click="recallMemory()">
-						<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
-					</button>
-				</div>
-			</div>
+			<InputBox v-model.trim="callText" placeholder="Enter a text..." label="Search similar memories" 
+				search :disabled="Boolean(memoryState.error) || memoryState.loading" @send="recallMemory()" />
 			<div class="form-control">
 				<label class="label">
 					<span class="label-text font-medium text-primary">K memories</span>
 				</label>
 				<input v-model="kMems" :disabled="Boolean(memoryState.error) || memoryState.loading" type="number" min="1" 
-					class="input input-primary input-sm w-24 pl-2 pr-0">
+					class="input input-primary input-sm w-24">
 			</div>
 		</div>
 		<div v-if="showSpinner || memoryState.loading" class="flex grow items-center justify-center">
@@ -222,7 +215,7 @@ const downloadResult = () => {
 				{{ memoryState.error }}
 			</p>
 		</div>
-		<ApexChart v-else-if="!showSpinner && !memoryState.error && callOutput" 
+		<ApexChart v-else-if="plotOutput && callOutput" v-memo="[callOutput, plotOutput, isDark]"
 			type="scatter" width="100%" height="500" class="min-w-full max-w-full" 
 			:options="{
 				chart: {
@@ -230,7 +223,9 @@ const downloadResult = () => {
 					defaultLocale: 'en',
 					fontFamily: 'Ubuntu',
 					background: 'transparent',
-					animations: { speed: 300, },
+					animations: { 
+						speed: 300
+					},
 					toolbar: {
 						tools: {
 							zoomin: false,
@@ -260,10 +255,34 @@ const downloadResult = () => {
 					},
 					zoom: {
 						type: 'xy',
-						autoScaleYaxis: true
+						autoScaleYaxis: true,
+						zoomedArea: {
+							fill: {
+								color: isDark ? '#F4F4F5' : '#383938',
+								opacity: 0.4
+							},
+							stroke: {
+								color: isDark ? '#F4F4F5' : '#383938',
+								opacity: 0.4,
+								width: 1
+							}
+						}
+					}
+				},
+				noData: {
+					text: 'No points available',
+					align: 'center',
+					verticalAlign: 'middle',
+					offsetX: 0,
+					offsetY: 0,
+					style: {
+						color: isDark ? '#F4F4F5' : '#383938',
+						fontSize: '2rem',
+						fontFamily: 'Ubuntu'
 					}
 				},
 				grid: {
+					borderColor: isDark ? '#F4F4F5' : '#383938',
 					xaxis: { lines: { show: true, }, },   
 					yaxis: { lines: { show: true, }, },
 				},
@@ -300,7 +319,7 @@ const downloadResult = () => {
 				class="btn btn-error join-item" @click="boxWipe?.toggleModal()">
 				Wipe
 			</button>
-			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-200 p-1" :list="getSelectCollections" />
+			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100 p-1" :list="getSelectCollections" />
 		</div>
 		<ModalBox ref="boxWipe">
 			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
@@ -332,17 +351,17 @@ const downloadResult = () => {
 				</div>
 			</div>
 		</ModalBox>
-		<SidePanel v-if="callOutput" ref="memoryDetailsPanel" title="Memory details">
-			<div class="flex w-full flex-col">
+		<SidePanel ref="memoryDetailsPanel" title="Memory details">
+			<div v-if="callOutput" class="flex w-full flex-col">
 				<p class="self-start rounded-t-md bg-primary px-2 py-1 font-medium text-base-100">
 					{{ callOutput.embedder }}
 				</p>
 				<MemorySelect class="rounded-tl-none" :result="callOutput.collections" />
 			</div>
 		</SidePanel>
-		<SidePanel v-if="clickedPoint" ref="pointInfoPanel" title="Memory content">
-			<div class="overflow-x-auto rounded-md border-2 border-neutral">
-				<table class="table table-zebra table-sm">
+		<SidePanel ref="pointInfoPanel" title="Memory content">
+			<div v-if="clickedPoint" class="overflow-x-auto rounded-md border-2 border-neutral">
+				<table class="table table-zebra table-sm bg-base-100">
 					<tbody>
 						<tr v-for="data in Object.entries(clickedPoint)" :key="data[0]">
 							<td>{{ _.capitalize(data[0]) }}</td>
@@ -351,8 +370,8 @@ const downloadResult = () => {
 					</tbody>
 				</table>
 			</div>
-			<button v-if="!['procedural', 'query'].includes(clickedPoint.collection)" class="btn btn-error btn-sm mt-auto" 
-				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
+			<button v-if="clickedPoint && !['procedural', 'query'].includes(clickedPoint.collection)" 
+				class="btn btn-error btn-sm mt-auto" @click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
 				Delete memory point
 			</button>
 		</SidePanel>

@@ -1,5 +1,4 @@
 import { apiClient, tryRequest } from '@/api'
-import type { PluginsList } from 'ccat-api'
 
 /*
  * This is a service that is used to get the list of plugins active on the Cheshire Cat.
@@ -7,22 +6,33 @@ import type { PluginsList } from 'ccat-api'
  */
 const PluginService = Object.freeze({
   getPlugins: async () => {
-    const result = await tryRequest(
+    return await tryRequest(
       apiClient.value?.api?.plugins.listAvailablePlugins(), 
       "Getting all the available plugins", 
       "Unable to fetch the plugins"
     )
-    return {
-      results: result.data?.results,
-      installed: result.data?.installed,
-      registry: result.data?.registry
-    } as Omit<PluginsList, 'status'>
   },
   togglePlugin: async (id: string) => {
     const result = await tryRequest(
       apiClient.value?.api?.plugins.togglePlugin(id), 
       `Toggle plugin ${id}`, 
       `Unable to toggle plugin ${id}`
+    )
+    return result.data
+  },
+  getSettings: async (id: string) => {
+    const result = await tryRequest(
+      apiClient.api?.plugins.getPluginSettings(id), 
+      `Getting plugin ${id} settings`, 
+      `Unable to get plugin ${id} settings`
+    )
+    return result.data
+  },
+  updateSettings: async (id: string, settings: Record<string, any>) => {
+    const result = await tryRequest(
+      apiClient.api?.plugins.upsertPluginSettings(id, settings), 
+      `Updating plugin ${id} settings`, 
+      `Unable to update plugin ${id} settings`
     )
     return result.data
   },

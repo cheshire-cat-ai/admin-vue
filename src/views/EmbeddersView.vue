@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useEmbedderConfig } from '@stores/useEmbedderConfig'
 import type { JSONSettings } from '@models/JSONSchema'
-import type { Schema } from 'ccat-api'
+import type { JsonSchema } from 'ccat-api'
 import SelectBox from '@components/SelectBox.vue'
 
 const storeEmbedder = useEmbedderConfig()
@@ -9,7 +9,7 @@ const { getAvailableEmbedders, getEmbedderSchema, getEmbedderSettings, setEmbedd
 const { currentState: embedderState } = storeToRefs(storeEmbedder)
 
 const selectEmbedder = ref<InstanceType<typeof SelectBox>>()
-const currentSchema = ref<Schema>()
+const currentSchema = ref<JsonSchema>()
 const currentSettings = ref<JSONSettings>({})
 
 const emit = defineEmits<{
@@ -38,6 +38,12 @@ const lastTimeUpdated = computed(() => {
 	else return 'Never'
 })
 
+const requiredFilled = computed(() => {
+	const requiredFields = currentSchema.value?.required
+	if (!requiredFields || requiredFields.length === 0) return true
+	else return requiredFields.every(v => currentSettings.value[v])
+})
+
 watchDeep(embedderState, () => {
 	updateProperties(selectEmbedder.value?.selectedElement?.value)
 }, { flush: 'post', immediate: true })
@@ -51,12 +57,12 @@ watchDeep(embedderState, () => {
 		<div v-else-if="embedderState.error || !getAvailableEmbedders().length"
 			class="flex grow items-center justify-center">
 			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				Failed to fetch available embedders
+				{{ embedderState.error }}
 			</div>
 		</div>
 		<div v-else class="flex grow flex-col gap-4">
-			<SelectBox ref="selectEmbedder" :picked="embedderState.selected" class="bg-base-200"
-				:list="getAvailableEmbedders().map(p => ({ label: p.name_human_readable, value: p.title }))"
+			<SelectBox ref="selectEmbedder" :picked="embedderState.selected"
+				:list="getAvailableEmbedders().map(p => ({ label: p.name_human_readable ?? p.title, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col">
@@ -78,7 +84,8 @@ watchDeep(embedderState, () => {
 						class="input input-primary input-sm w-full" :class="{ 'pr-0': prop.type !== 'string' }">
 				</div>
 			</div>
-			<button class="btn btn-success btn-sm mt-auto normal-case" @click="saveEmbedder">
+			<button class="btn btn-success btn-sm mt-auto normal-case" 
+				:disabled="!requiredFilled" @click="saveEmbedder">
 				Save
 			</button>
 		</div>

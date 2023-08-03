@@ -25,7 +25,7 @@ const authenticate = () => {
 </script>
 
 <template>
-	<div class="flex min-h-screen flex-col scroll-smooth bg-base-100 text-sm text-neutral transition-colors selection:bg-primary md:text-base">
+	<div class="flex min-h-screen flex-col scroll-smooth bg-base-200 text-sm text-neutral transition-colors selection:bg-primary md:text-base">
 		<Header />
 		<NotificationStack />
 		<ModalBox ref="authBox" shown :closable="false">

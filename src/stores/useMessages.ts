@@ -134,6 +134,7 @@ export const useMessages = defineStore('messages', () => {
     promptSettings,
     addMessage,
     selectRandomDefaultMessages,
+    getDefaultPromptSettings,
     dispatchMessage
   }
 })

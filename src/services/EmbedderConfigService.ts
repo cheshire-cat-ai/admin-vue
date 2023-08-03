@@ -6,12 +6,11 @@ import type { JSONSettings } from '@models/JSONSchema'
  */
 const EmbedderService = Object.freeze({
   getEmbedders: async () => {
-    const result = await tryRequest(
+    return await tryRequest(
       apiClient.value?.api?.settingsEmbedder.getEmbedderSettings(), 
       "Getting all the available embedders", 
       "Unable to get the list of available embedders"
     )
-    return result.data
   },
   setEmbedderSettings: async (languageEmbedderName: string, settings: JSONSettings) => {
     return await tryRequest(

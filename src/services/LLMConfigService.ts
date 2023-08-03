@@ -6,12 +6,11 @@ import type { JSONSettings } from '@models/JSONSchema'
  */
 const LLMService = Object.freeze({
   getProviders: async () => {
-    const result = await tryRequest(
+    return await tryRequest(
       apiClient.value?.api?.settingsLargeLanguageModel.getLlmSettings(), 
       "Getting all the available providers", 
       "Unable to get the list of available providers"
     )
-    return result.data
   },
   setProviderSettings: async (languageModelName: string, settings: JSONSettings) => {
     return await tryRequest(

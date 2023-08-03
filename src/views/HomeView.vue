@@ -146,8 +146,13 @@ onActivated(() => {
  */
 const dispatchWebsite = () => {
 	if (!insertedURL.value) return
-	sendWebsite(insertedURL.value)
-	boxUploadURL.value?.toggleModal()
+	try { 
+		new URL(insertedURL.value)
+		sendWebsite(insertedURL.value)
+		boxUploadURL.value?.toggleModal()
+	} catch (_) {
+		insertedURL.value = ''
+	}
 }
 
 /**
@@ -200,7 +205,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 					</span>
 					to send to the Cheshire Cat, meow!
 				</p>
-				<button class="btn btn-square btn-error btn-sm absolute right-2 top-2" @click="isOverDropZone = false">
+				<button class="btn btn-circle btn-error btn-sm absolute right-2 top-2" @click="isOverDropZone = false">
 					<heroicons-x-mark-20-solid class="h-6 w-6" />
 				</button>
 			</div>
@@ -237,16 +242,12 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				{{ msg }}
 			</div>
 		</div>
-		<div class="fixed bottom-0 left-0 flex w-full items-center justify-center bg-gradient-to-t from-base-100 px-2 py-4">
+		<div class="fixed bottom-0 left-0 flex w-full items-center justify-center bg-gradient-to-t from-base-200 px-2 py-4">
 			<div class="flex w-full max-w-screen-lg items-center gap-2 md:gap-4">
-				<label class="btn btn-circle swap border-none bg-transparent text-primary hover:bg-base-300">
-					<input v-model="isAudioEnabled" type="checkbox" class="modal-toggle">
-					<heroicons-speaker-wave-solid class="swap-on h-6 w-6" />
-					<heroicons-speaker-x-mark-solid class="swap-off h-6 w-6" />
-				</label>
 				<div class="relative w-full">
 					<textarea ref="textArea" v-model.trim="userMessage" :disabled="inputDisabled"
-						class="textarea block max-h-20 w-full resize-none !outline-offset-0" :class="[ isTwoLines ? 'pr-10' : 'pr-20' ]"
+						class="textarea block max-h-20 w-full resize-none overflow-auto bg-base-200 !outline-offset-0" 
+						:class="[ isTwoLines ? 'pr-10' : 'pr-20' ]"
 						:placeholder="generatePlaceholder(messagesState.loading, isListening, messagesState.error)" @keydown="preventSend" />
 					<div :class="[ isTwoLines ? 'flex-col-reverse' : '' ]" class="absolute right-2 top-1/2 flex -translate-y-1/2 gap-1">
 						<button :disabled="inputDisabled || userMessage.length === 0"
@@ -319,7 +320,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 					<heroicons-microphone-solid class="h-6 w-6" />
 				</button>
 			</div>
-			<button v-if="isScrollable" class="btn btn-circle btn-primary btn-outline btn-sm absolute bottom-24 right-4 bg-base-100"
+			<button v-if="isScrollable" class="btn btn-circle btn-primary btn-outline btn-sm absolute bottom-28 right-4 bg-base-100"
 				@click="scrollToBottom">
 				<heroicons-arrow-down-20-solid class="h-5 w-5" />
 			</button>
@@ -330,8 +331,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 					Insert URL
 				</h3>
 				<p>Write down the URL you want the Cat to digest :</p>
-				<input v-model="insertedURL" type="text" placeholder="Enter url..."
-					class="input input-bordered input-primary input-sm w-full">
+				<InputBox v-model.trim="insertedURL" placeholder="Enter url..." />
 				<button class="btn btn-primary btn-sm" @click="dispatchWebsite">
 					Send
 				</button>

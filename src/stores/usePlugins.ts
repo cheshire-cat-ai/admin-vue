@@ -2,6 +2,7 @@ import type { PluginsState } from '@stores/types'
 import type { Plugin } from 'ccat-api'
 import { useNotifications } from '@stores/useNotifications'
 import PluginService from '@services/PluginService'
+import type { JSONSettings } from '@models/JSONSchema'
 
 export const usePlugins = defineStore('plugins', () => {
   const currentState = reactive<PluginsState>({
@@ -13,26 +14,38 @@ export const usePlugins = defineStore('plugins', () => {
     }
   })
 
-  const { state: plugins, isLoading, error, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), {
-    results: 0,
-    installed: [],
-    registry: []
-  })
+  const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), undefined)
 
   const { showNotification } = useNotifications()
 
   watchEffect(() => {
     currentState.loading = isLoading.value
-    currentState.data = plugins.value
-    currentState.error = error.value as string
+    currentState.data = plugins.value?.data
+    currentState.error = plugins.value?.status === 'error' ? plugins.value.message : undefined
   })
 
+  const isInstalled = (id: Plugin['id']) => currentState.data?.installed.find(p => p.id === id)
+
   const togglePlugin = async (id: Plugin['id']) => {
-    if (currentState.data?.installed.find(p => p.id === id)) {
+    if (isInstalled(id)) {
       await PluginService.togglePlugin(id)
       return true
     }
     return false
+  }
+
+  const getSettings = async (id: Plugin['id']) => {
+    if (isInstalled(id)) {
+      return await PluginService.getSettings(id)
+    }
+    return undefined
+  }
+
+  const updateSettings = async (id: Plugin['id'], settings: JSONSettings) => {
+    if (isInstalled(id)) {
+      return await PluginService.updateSettings(id, settings)
+    }
+    return undefined
   }
 
   const removePlugin = async (id: Plugin['id']) => {
@@ -62,7 +75,10 @@ export const usePlugins = defineStore('plugins', () => {
     togglePlugin,
     fetchPlugins,
     removePlugin,
-    installPlugin
+    installPlugin,
+    isInstalled,
+    getSettings,
+    updateSettings
   }
 })
 

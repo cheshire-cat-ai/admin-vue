@@ -1,7 +1,6 @@
 import { AxiosError } from "axios"
 import type { JSONResponse } from "@models/JSONSchema"
 import LogService from "@services/LogService"
-import { capitalize } from "lodash"
 import { CatClient, type CancelablePromise, ApiError } from 'ccat-api'
 
 /**
@@ -65,14 +64,11 @@ export const tryRequest = async <T>(
     } as JSONResponse<T>
   } catch (err) {
     if (err instanceof AxiosError) {
-      error = capitalize(err.message)
-      LogService.print(error)
-      if (err.code === "ERR_NETWORK") throw "Network error for"
-      else if (err.code !== "ECONNABORTED") throw "Failed to fetch"
-    }
-    if (err instanceof ApiError) {
+      LogService.print(err.message)
+      if (err.code === "ERR_NETWORK") error = "Network error while requesting"
+    } else if (err instanceof ApiError) {
       LogService.print(err.body.detail)
-      throw "Failed to fetch"
+      error = "Unable to authenticate request"
     }
     return {
       status: 'error',
