@@ -1,3 +1,5 @@
+import type { AuthForm } from "@/api"
+
 export const useSettings = defineStore('settings', () => {
   const isAudioEnabled = useLocalStorage('isAudioEnabled', true)
   const isDark = useDark({
@@ -9,7 +11,13 @@ export const useSettings = defineStore('settings', () => {
     valueLight: 'light'
   })
   const mustSummarize = useLocalStorage('mustSummarize', false)
-  const isAuth = useLocalStorage('isAuth', false)
+  const authSettings = useLocalStorage<AuthForm>('authSettings', {
+    baseUrl: 'localhost',
+    authKey: '',
+    port: 1865,
+    secure: false
+  })
+  const isAuth = ref(false)
 
   const toggleDark = useToggle(isDark)
 
@@ -24,6 +32,7 @@ export const useSettings = defineStore('settings', () => {
     isAudioEnabled,
     isDark,
     isAuth,
+    authSettings,
     currentFilters,
     toggleDark,
     mustSummarize

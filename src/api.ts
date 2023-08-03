@@ -11,12 +11,11 @@ export const apiClient = ref<CatClient>()
 export interface AuthForm {
   baseUrl: string
   authKey: string
-  port: string
+  port: number
   secure: boolean
 }
 
 export const updateClient = ({ baseUrl, authKey, port, secure }: AuthForm) => {
-  apiClient.value?.reset()
   apiClient.value = new CatClient({
     baseUrl: baseUrl,
     authKey: authKey,

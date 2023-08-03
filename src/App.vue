@@ -1,25 +1,22 @@
 <script setup lang="ts">
 import ModalBox from '@components/ModalBox.vue'
-import { updateClient, apiClient, type AuthForm } from '@/api'
+import { updateClient, apiClient } from '@/api'
 import { useSettings } from '@stores/useSettings'
+import { cloneDeep } from 'lodash'
 
-const { isAuth } = storeToRefs(useSettings())
+const { authSettings, isAuth } = storeToRefs(useSettings())
 
 const authBox = ref<InstanceType<typeof ModalBox>>()
-const clientConfig = reactive<AuthForm>({
-	baseUrl: 'localhost',
-	authKey: '',
-	port: '1865',
-	secure: false
-})
+const clientConfig = reactive(cloneDeep(authSettings.value))
 
 const authenticate = () => {
 	updateClient(clientConfig)
 	apiClient.value?.api?.status.home().then(() => {
 		isAuth.value = true
 		authBox.value?.toggleModal()
+		authSettings.value = clientConfig
 	}).catch(() => {
-		console.log("error!")
+		apiClient.value?.reset()
 	})
 }
 </script>
@@ -57,7 +54,7 @@ const authenticate = () => {
 					<input v-model="clientConfig.secure" type="checkbox" class="!toggle !toggle-success">
 					<p>Secure protocols</p>
 				</div>
-				<button class="btn btn-error btn-sm" @click="authenticate">
+				<button class="btn btn-success btn-sm" @click="authenticate">
 					Authenticate
 				</button>
 			</div>
