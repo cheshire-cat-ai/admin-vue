@@ -22,7 +22,7 @@ const PluginService = Object.freeze({
   },
   getSettings: async (id: string) => {
     const result = await tryRequest(
-      apiClient.api?.plugins.getPluginSettings(id), 
+      apiClient.value?.api?.plugins.getPluginSettings(id), 
       `Getting plugin ${id} settings`, 
       `Unable to get plugin ${id} settings`
     )
@@ -30,7 +30,7 @@ const PluginService = Object.freeze({
   },
   updateSettings: async (id: string, settings: Record<string, any>) => {
     const result = await tryRequest(
-      apiClient.api?.plugins.upsertPluginSettings(id, settings), 
+      apiClient.value?.api?.plugins.upsertPluginSettings(id, settings), 
       `Updating plugin ${id} settings`, 
       `Unable to update plugin ${id} settings`
     )

@@ -38,20 +38,20 @@ const authenticate = () => {
 						<label class="label">
 							<span class="label-text font-medium text-primary">Base URL</span>
 						</label>
-						<input v-model="clientConfig.baseUrl" placeholder="localhost" type="text" class="input-primary input input-sm">
+						<input v-model="clientConfig.baseUrl" placeholder="localhost" type="text" class="input input-primary input-sm">
 					</div>
 					<div class="form-control">
 						<label class="label">
 							<span class="label-text font-medium text-primary">Port</span>
 						</label>
-						<input v-model="clientConfig.port" placeholder="1865" type="number" class="input-primary input input-sm w-24 pr-0">
+						<input v-model="clientConfig.port" placeholder="1865" type="number" class="input input-primary input-sm w-24 pr-0">
 					</div>
 				</div>
 				<div class="form-control">
 					<label class="label">
 						<span class="label-text font-medium text-primary">Auth Key</span>
 					</label>
-					<input v-model="clientConfig.authKey" type="text" class="input-primary input input-sm">
+					<input v-model="clientConfig.authKey" type="text" class="input input-primary input-sm">
 				</div>
 				<div class="my-2 flex gap-2">
 					<input v-model="clientConfig.secure" type="checkbox" class="!toggle !toggle-success">

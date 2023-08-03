@@ -7,7 +7,7 @@ import { apiClient, tryRequest } from '@/api'
 const RabbitHoleService = Object.freeze({
   sendFile: async (file: File, summary?: boolean) => {
     const result = await tryRequest(
-      apiClient.value?.api?.rabbitHole.uploadFile({ file }), 
+      apiClient.value?.api?.rabbitHole.uploadFile({ file, summary }), 
       `File ${file.name} successfully sent down the rabbit hole`, 
       "Unable to send the file to the rabbit hole",
       "Sending a file to the rabbit hole"
@@ -16,7 +16,7 @@ const RabbitHoleService = Object.freeze({
   },
   sendWeb: async (url: string, summary?: boolean) => {
     const result = await tryRequest(
-      apiClient.value?.api?.rabbitHole.uploadUrl({ url }), 
+      apiClient.value?.api?.rabbitHole.uploadUrl({ url, summary }), 
       "Website successfully sent down the rabbit hole", 
       "Unable to send the website to the rabbit hole",
       "Sending a website content to the rabbit hole"
