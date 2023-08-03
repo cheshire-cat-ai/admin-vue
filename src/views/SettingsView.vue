@@ -20,7 +20,7 @@ const openSidePanel = (title: keyof typeof panelTitles) => {
 </script>
 
 <template>
-	<div class="grid auto-rows-min gap-8 self-center md:w-3/4 md:grid-cols-2">
+	<div class="grid w-full auto-rows-min gap-8 self-center md:w-3/4 md:grid-cols-2">
 		<div class="col-span-2 flex flex-col items-center justify-center gap-2 rounded-md p-4">
 			<p class="text-3xl font-bold text-primary">
 				Set up your Cat
@@ -57,16 +57,16 @@ const openSidePanel = (title: keyof typeof panelTitles) => {
 			<p class="text-xl font-bold">
 				General Settings
 			</p>
-			<div class="flex w-full justify-between gap-2 rounded-lg bg-base-200 p-4">
+			<div class="flex w-full items-center justify-between gap-2 rounded-lg bg-base-200 p-4">
 				<p class="flex items-center justify-center gap-2">
-					<heroicons-speaker-wave-solid class="h-5 w-5 text-primary" />
+					<heroicons-speaker-wave-solid class="h-5 w-5 shrink-0 text-primary" />
 					<span>Toggle sounds on messages</span>
 				</p>
 				<input v-model="isAudioEnabled" type="checkbox" class="!toggle !toggle-success">
 			</div>
-			<div class="flex w-full justify-between gap-2 rounded-lg bg-base-200 p-4">
+			<div class="flex w-full items-center justify-between gap-2 rounded-lg bg-base-200 p-4">
 				<p class="flex items-center justify-center gap-2">
-					<ph-text-align-left-bold class="h-5 w-5 text-primary" />
+					<ph-text-align-left-bold class="h-5 w-5 shrink-0 text-primary" />
 					<span>Toggle the summarization when uploading documents or urls</span>
 				</p>
 				<input v-model="mustSummarize" type="checkbox" class="!toggle !toggle-success">
