@@ -21,7 +21,6 @@ watchImmediate(props, () => {
 			[c.name]: c.default ?? ''
 		}
 	}, {})
-	console.log(initValues.value)
 	initValues.value = merge(initValues.value, props.initial)
 })
 
@@ -31,8 +30,8 @@ defineEmits<{
 </script>
 
 <template>
-	<Form v-slot="{ errors, resetForm }" class="flex h-full flex-col gap-2" 
-		:initialValues="initValues" @submit="$emit('submit', $event)">
+	<Form v-slot="{ errors }" class="flex h-full flex-col gap-2" 
+		:initialValues="initValues" :validateOnMount="true" @submit="$emit('submit', $event)">
 		<div v-for="{ name, label, ...attrs } in fields" :key="name" class="form-control w-full"
 			:class="{ 'flex-row-reverse items-center justify-end': attrs.type === 'checkbox' }">
 			<label v-if="label" class="label justify-start gap-1" :for="name">
@@ -43,10 +42,11 @@ defineEmits<{
 				:class="[ attrs.type === 'checkbox' ? '!toggle !toggle-success' : 'input input-primary input-sm w-full !transition-all' ]" />
 		</div>
 		<div class="mt-auto flex gap-2">
-			<button class="btn btn-error btn-sm grow normal-case" @click="resetForm()">
+			<button type="reset" class="btn btn-error btn-sm grow normal-case">
 				Reset
 			</button>
-			<button class="btn btn-success btn-sm grow normal-case" :disabled="disabled || Object.keys(errors).length > 0">
+			<button type="submit" class="btn btn-success btn-sm grow normal-case" 
+				:disabled="disabled || Object.keys(errors).length > 0">
 				Save
 			</button>
 		</div>
