@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = toReactive(withDefaults(defineProps<{
+const definedProps = withDefaults(defineProps<{
     list: {
         label: string,
         value: string
@@ -11,7 +11,9 @@ const props = toReactive(withDefaults(defineProps<{
 	picked: p => p.list[0].value,
 	color: 'bg-base-100',
 	padding: 'p-2'
-}))
+})
+
+const props = reactive(definedProps)
 
 const selectedElement = ref(props.list.find(v => v.value === props.picked) ?? props.list[0])
 

@@ -1,11 +1,13 @@
 <script setup lang="ts">
-const props = toReactive(withDefaults(defineProps<{
+const definedProps = withDefaults(defineProps<{
     shown?: boolean
 	closable?: boolean
 }>(), {
 	shown: false,
 	closable: true
-}))
+})
+
+const props = reactive(definedProps)
 
 const [isOpen, toggleModal] = useToggle(props.shown)
 
