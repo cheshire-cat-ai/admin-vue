@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import _ from 'lodash'
+import { capitalize, join, map, cloneDeep, split } from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
 import { useMessages } from '@stores/useMessages'
 import type { PromptSettings } from 'ccat-api'
@@ -9,7 +9,7 @@ const { getDefaultPromptSettings } = messagesStore
 const { promptSettings } = storeToRefs(messagesStore)
 const { showNotification } = useNotifications()
 
-const tempSettings = ref<PromptSettings>(_.cloneDeep(promptSettings.value))
+const tempSettings = ref<PromptSettings>(cloneDeep(promptSettings.value))
 
 const emit = defineEmits<{
 	(e: 'close'): void
@@ -46,7 +46,7 @@ const saveChatSettings = () => {
 			</div>
 			<template v-for="(v, k) in tempSettings" :key="k">
 				<div v-if="typeof v === 'boolean'" class="flex gap-2">
-					<p>{{ _.join(_.map(_.split(k.toString(), "_"), (s) => _.capitalize(s)), " ") }}</p>
+					<p>{{ join(map(split(k.toString(), "_"), (s) => capitalize(s)), " ") }}</p>
 					<input v-model="tempSettings[k]" type="checkbox" class="!toggle !toggle-success">
 				</div>
 			</template>
