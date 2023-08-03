@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import _ from 'lodash'
+import { upperFirst } from 'lodash'
 import { type Plugin, AcceptedPluginTypes, type JsonSchema } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
@@ -112,7 +112,7 @@ const searchPlugin = () => {
 				<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain">
 				<div v-else class="avatar placeholder self-center">
 					<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-accent to-primary text-base-100">
-						<span class="text-5xl font-bold leading-3">{{ _.upperFirst(item.name)[0] }}</span>
+						<span class="text-5xl font-bold leading-3">{{ upperFirst(item.name)[0] }}</span>
 					</div>
 				</div>
 				<div class="flex grow flex-col">
