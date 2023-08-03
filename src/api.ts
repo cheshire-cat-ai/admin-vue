@@ -3,14 +3,16 @@ import type { JSONResponse } from "@models/JSONSchema"
 import LogService from "@services/LogService"
 import { CatClient, type CancelablePromise, ApiError } from 'ccat-api'
 
+const { CORE_HOST, CORE_PORT, CORE_USE_SECURE_PROTOCOLS, API_KEY } = window.catCoreConfig
+
 /**
  * API client to make requests to the endpoints and passing the API_KEY for authentication.
  */
 export const apiClient = new CatClient({
-  baseUrl: window.catCoreConfig.CORE_HOST,
-  authKey: window.catCoreConfig.API_KEY ?? '',
-  port: window.catCoreConfig.CORE_PORT ?? '',
-  secure: window.catCoreConfig.CORE_USE_SECURE_PROTOCOLS,
+  baseUrl: CORE_HOST,
+  authKey: API_KEY,
+  port: CORE_PORT ? parseInt(CORE_PORT) : undefined,
+  secure: CORE_USE_SECURE_PROTOCOLS,
   timeout: 10000,
   ws: {
     path: 'ws',
