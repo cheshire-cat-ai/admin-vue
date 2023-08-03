@@ -215,7 +215,7 @@ const downloadResult = () => {
 				{{ memoryState.error }}
 			</p>
 		</div>
-		<ApexChart v-else-if="plotOutput && callOutput" v-memo="[callOutput, plotOutput]"
+		<ApexChart v-else-if="plotOutput && callOutput" v-memo="[callOutput, plotOutput, isDark]"
 			type="scatter" width="100%" height="500" class="min-w-full max-w-full" 
 			:options="{
 				chart: {
@@ -256,6 +256,18 @@ const downloadResult = () => {
 					zoom: {
 						type: 'xy',
 						autoScaleYaxis: true
+					}
+				},
+				noData: {
+					text: 'No points available',
+					align: 'center',
+					verticalAlign: 'middle',
+					offsetX: 0,
+					offsetY: 0,
+					style: {
+						color: isDark ? '#F4F4F5' : '#383938',
+						fontSize: '2rem',
+						fontFamily: 'Ubuntu'
 					}
 				},
 				grid: {
