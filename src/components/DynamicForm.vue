@@ -5,14 +5,14 @@ import { Form, Field } from 'vee-validate'
 
 const props = withDefaults(defineProps<{
 	fields: SchemaField[]
-	initial?: object,
+	initial?: JSONSettings,
     disabled?: boolean
 }>(), {
 	initial: () => ({}),
     disabled: false 
 })
 
-const initValues = ref<object>()
+const initValues = ref<JSONSettings>()
 
 watchImmediate(props, () => {
 	initValues.value = props.fields.reduce((p, c) => {
@@ -22,6 +22,7 @@ watchImmediate(props, () => {
 		}
 	}, {})
 	initValues.value = merge(initValues.value, props.initial)
+	console.log(initValues.value)
 })
 
 defineEmits<{

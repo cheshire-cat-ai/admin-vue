@@ -26,7 +26,7 @@ const updateProperties = (selected = currentSchema.value?.title) => {
 			label: value.title,
 			type: InputType[value.type as keyof typeof InputType],
 			rules: value.default !== undefined ? '' : 'required',
-			default: value.default,
+			default: value.default
 		}
 	})
 	currentSettings.value = getProviderSettings(selected)
