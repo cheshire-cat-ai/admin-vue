@@ -10,8 +10,8 @@ const { currentState: llmState } = storeToRefs(storeLLM)
 
 const selectProvider = ref<InstanceType<typeof SelectBox>>()
 const currentSchema = ref<JsonSchema>()
-const currentSettings = ref<JSONSettings>()
-const currentFields = ref<SchemaField[]>()
+const currentSettings = ref<JSONSettings>({})
+const currentFields = ref<SchemaField[]>([])
 
 const emit = defineEmits<{
 	(e: "close"): void
@@ -19,9 +19,7 @@ const emit = defineEmits<{
 
 const updateProperties = (selected = currentSchema.value?.title) => {
 	currentSchema.value = getProviderSchema(selected)
-	currentFields.value = Object.entries(
-		currentSchema.value?.properties ?? {}
-	).map<SchemaField>(([key, value]) => {
+	currentFields.value = Object.entries(currentSchema.value?.properties ?? {}).map<SchemaField>(([key, value]) => {
 		return {
 			name: key,
 			as: "input",
@@ -42,9 +40,7 @@ const saveProvider = async (payload: JSONSettings) => {
 }
 
 const lastTimeUpdated = computed(() => {
-	const dateString = llmState.value.data?.settings.find(
-		(v) => v.name === currentSchema.value?.title
-	)?.updated_at
+	const dateString = llmState.value.data?.settings.find((v) => v.name === currentSchema.value?.title)?.updated_at
 	if (dateString) return new Date(dateString * 1000).toLocaleString()
 	else return "Never"
 })
@@ -72,7 +68,7 @@ watchDeep(llmState, () => {
 			<SelectBox ref="selectProvider" :picked="llmState.selected" :list="getAvailableProviders().map((p) => ({
 				label: p.name_human_readable ?? p.title,
 				value: p.title,
-			}))" @update="(e) => updateProperties(e.value)" />
+			}))" @update="e => updateProperties(e.value)" />
 			<div v-if="currentFields" class="flex grow flex-col gap-4">
 				<div class="flex flex-col">
 					<p class="font-medium">

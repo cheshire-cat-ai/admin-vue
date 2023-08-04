@@ -1,7 +1,7 @@
 /**
  * Map the individual settings record for each provider or embedder
  */
-export type JSONSettings<TSettings = unknown> = Record<string, TSettings>;
+export type JSONSettings<TSettings = unknown> = Record<string, TSettings>
 
 /**
  * The structure of the generic JSON that arrives from the endpoints
@@ -26,4 +26,4 @@ export const InputType = {
   integer: "number",
   string: "text",
   boolean: "checkbox",
-} as const;
+} as const

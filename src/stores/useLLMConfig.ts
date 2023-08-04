@@ -11,31 +11,20 @@ export const useLLMConfig = defineStore("llm", () => {
 
   const { sendNotificationFromJSON } = useNotifications()
 
-  const { state: providers, isLoading } = useAsyncState(
-    LLMConfigService.getProviders(),
-    undefined
-  )
+  const { state: providers, isLoading } = useAsyncState(LLMConfigService.getProviders(), undefined)
 
   watchEffect(() => {
     currentState.loading = isLoading.value
     currentState.data = providers.value?.data
-    currentState.error =
-      providers.value?.status === "error" ? providers.value.message : undefined
+    currentState.error = providers.value?.status === "error" ? providers.value.message : undefined
     if (currentState.data) {
-      currentState.selected =
-        currentState.data.selected_configuration ??
-        Object.values(currentState.data.schemas)[0].title
-      currentState.settings = currentState.data.settings.reduce(
-        (acc, { name, value }) => ({ ...acc, [name]: value }),
-        {}
-      )
+      currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].title
+      currentState.settings = currentState.data.settings.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {})
     }
   })
 
   const getAvailableProviders = () => {
-    return providers.value?.data?.schemas
-      ? Object.values(providers.value.data.schemas)
-      : []
+    return providers.value?.data?.schemas ? Object.values(providers.value.data.schemas) : []
   }
 
   const getProviderSchema = (selected = currentState.selected) => {

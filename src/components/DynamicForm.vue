@@ -15,7 +15,7 @@ const props = withDefaults(
 	}
 )
 
-const dynamicForm = ref<InstanceType<typeof Form> | null>(null)
+const dynamicForm = ref<InstanceType<typeof Form>>()
 const initValues = ref<JSONSettings>()
 
 watch(props, () => {
