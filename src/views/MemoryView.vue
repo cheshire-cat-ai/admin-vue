@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import _ from 'lodash'
+import { map, omitBy, reduce, values, isEmpty, capitalize, entries, assign, remove, pull } from 'lodash'
 import { useMemory } from '@stores/useMemory'
 import { useSettings } from '@stores/useSettings'
 import SelectBox from '@components/SelectBox.vue'
@@ -63,7 +63,7 @@ const wipeMemory = async () => {
  * @param mats the matrices to pass to the algorithm
  */
 const reduceTo2d = (options: ConstructorParameters<typeof TSNE>['1'], iterations: number, ...mats: number[][][]) => {
-    const matrix = _.map(_.omitBy(mats, _.isEmpty), v => Matrix.from(v))
+    const matrix = map(omitBy(mats, isEmpty), v => Matrix.from(v))
     const tsne = new TSNE(matrix.reduce((p, c) => p.concat(c, "vertical")), options).transform(iterations)
 	return tsne instanceof Matrix ? tsne.to2dArray : tsne
 }
@@ -74,21 +74,21 @@ const reduceTo2d = (options: ConstructorParameters<typeof TSNE>['1'], iterations
  * @param mats additional matrices to concatenate in the reduction
  */
 const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[][]) => {
-	const collectionsLengths = _.reduce(jsonResult, (a, v, k) => ({ ...a, [k]: v.length }), {}) as Record<string, number>
+	const collectionsLengths = reduce(jsonResult, (a, v, k) => ({ ...a, [k]: v.length }), {}) as Record<string, number>
 
-	const maxPerplexity = _.reduce(_.values(collectionsLengths), (p, c) => p + c, 0)
+	const maxPerplexity = reduce(values(collectionsLengths), (p, c) => p + c, 0)
 
 	const matrix = reduceTo2d({ 
 		perplexity: Math.min(Math.max(kMems.value, 2), maxPerplexity)
-	}, 1000, ..._.map(jsonResult, (v) => _.map(v, c => c.vector)), mats)
+	}, 1000, ...map(jsonResult, (v) => map(v, c => c.vector)), mats)
 
 	return {
 		matrix,
-		data: _.map(_.entries(jsonResult), (c, i, k) => {
+		data: map(entries(jsonResult), (c, i, k) => {
 			const prev = k.slice(0, i).reduce((p, v) => p + v[1].length, 0)
 			const curr = c[1].length
 			return {
-				name: _.capitalize(c[0]),
+				name: capitalize(c[0]),
 				data: matrix.slice(prev, prev + curr).map(m => ({
 					x: m[0],
 					y: m[1]
@@ -162,7 +162,7 @@ const getSelectCollections = computed(() => {
 	}
 	return [
 		{ label: `All (${totalCollections})`, value: 'all' },
-		...data.map(v => ({ label: `${_.capitalize(v.name)} (${v.vectors_count})`, value: v.name }))
+		...data.map(v => ({ label: `${capitalize(v.name)} (${v.vectors_count})`, value: v.name }))
 	]
 })
 
@@ -172,8 +172,8 @@ const deleteMemoryMarker = async (collection: string, memory: string) => {
 	if (index == undefined || pointData == undefined) return
 	await deleteMemoryPoint(collection, memory)
 	pointInfoPanel.value?.togglePanel()
-	_.remove(pointData.meta ?? [], v => v.id == memory)
-	_.pull(pointData.data, pointData.data[index])
+	remove(pointData.meta ?? [], v => v.id == memory)
+	pull(pointData.data, pointData.data[index])
 }
 
 const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex, w }: any) => {
@@ -183,7 +183,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 
 const downloadResult = () => {
 	const output = { export_time: now() }
-	_.assign(output, callOutput.value)
+	assign(output, callOutput.value)
 	const element = document.createElement('a')
 	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(output, undefined, 2)))
 	element.setAttribute('download', 'recalledMemories.json')
@@ -215,7 +215,7 @@ const downloadResult = () => {
 				{{ memoryState.error }}
 			</p>
 		</div>
-		<ApexChart v-else-if="plotOutput && callOutput" v-memo="[callOutput, plotOutput]"
+		<ApexChart v-else-if="plotOutput && callOutput" v-memo="[callOutput, plotOutput, isDark]"
 			type="scatter" width="100%" height="500" class="min-w-full max-w-full" 
 			:options="{
 				chart: {
@@ -255,7 +255,30 @@ const downloadResult = () => {
 					},
 					zoom: {
 						type: 'xy',
-						autoScaleYaxis: true
+						autoScaleYaxis: true,
+						zoomedArea: {
+							fill: {
+								color: isDark ? '#F4F4F5' : '#383938',
+								opacity: 0.4
+							},
+							stroke: {
+								color: isDark ? '#F4F4F5' : '#383938',
+								opacity: 0.4,
+								width: 1
+							}
+						}
+					}
+				},
+				noData: {
+					text: 'No points available',
+					align: 'center',
+					verticalAlign: 'middle',
+					offsetX: 0,
+					offsetY: 0,
+					style: {
+						color: isDark ? '#F4F4F5' : '#383938',
+						fontSize: '2rem',
+						fontFamily: 'Ubuntu'
 					}
 				},
 				grid: {
@@ -341,7 +364,7 @@ const downloadResult = () => {
 				<table class="table table-zebra table-sm bg-base-100">
 					<tbody>
 						<tr v-for="data in Object.entries(clickedPoint)" :key="data[0]">
-							<td>{{ _.capitalize(data[0]) }}</td>
+							<td>{{ capitalize(data[0]) }}</td>
 							<td>{{ data[1] }}</td>
 						</tr>
 					</tbody>
