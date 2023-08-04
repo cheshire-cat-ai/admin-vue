@@ -163,8 +163,8 @@ const searchPlugin = () => {
 						<div class="flex flex-wrap items-center gap-2">
 							<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" type="checkbox" disabled 
 								class="!toggle !toggle-success" @click="togglePlugin(item.id)">
-							<button v-if="item.id !== 'core_plugin' && isInstalled(item.id)" 
-								class="btn btn-circle btn-ghost btn-sm" @click="openSettings(item)">
+							<button v-if="isInstalled(item.id)" class="btn btn-circle btn-ghost btn-sm" 
+								@click="openSettings(item)">
 								<heroicons-cog-6-tooth-20-solid class="h-5 w-5" />
 							</button>
 						</div>
