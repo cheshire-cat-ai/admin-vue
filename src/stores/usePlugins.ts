@@ -15,6 +15,7 @@ export const usePlugins = defineStore('plugins', () => {
   })
 
   const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), undefined)
+  const { state: settings, execute: fetchSettings } = useAsyncState(PluginService.getPluginsSettings(), undefined)
 
   const { showNotification } = useNotifications()
 
@@ -25,6 +26,9 @@ export const usePlugins = defineStore('plugins', () => {
   })
 
   const isInstalled = (id: Plugin['id']) => currentState.data?.installed.find(p => p.id === id)
+
+  const getSchema = (id: Plugin['id']) => settings.value?.data?.schemas[id]
+  const getSettings = (id: Plugin['id']) => settings.value?.data?.settings.find(p => (p as any).id === id)
 
   const togglePlugin = async (id: Plugin['id'], name: Plugin['name'], active: boolean) => {
     if (isInstalled(id)) {
@@ -37,13 +41,6 @@ export const usePlugins = defineStore('plugins', () => {
       return true
     }
     return false
-  }
-
-  const getSettings = async (id: Plugin['id']) => {
-    if (isInstalled(id)) {
-      return await PluginService.getSettings(id)
-    }
-    return undefined
   }
 
   const updateSettings = async (id: Plugin['id'], settings: JSONSettings) => {
@@ -82,8 +79,10 @@ export const usePlugins = defineStore('plugins', () => {
     removePlugin,
     installPlugin,
     isInstalled,
+    updateSettings,
+    getSchema,
     getSettings,
-    updateSettings
+    fetchSettings,
   }
 })
 

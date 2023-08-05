@@ -207,14 +207,8 @@ const downloadResult = () => {
 					class="input input-primary input-sm w-24">
 			</div>
 		</div>
-		<div v-if="showSpinner || memoryState.loading" class="flex grow items-center justify-center">
-			<span class="loading loading-spinner w-12 text-primary" />
-		</div>
-		<div v-else-if="memoryState.error" class="flex grow items-center justify-center">
-			<p class="w-fit rounded bg-error p-4 font-semibold text-base-100">
-				{{ memoryState.error }}
-			</p>
-		</div>
+		<ErrorBox v-if="showSpinner || memoryState.loading || memoryState.error" 
+			:load="showSpinner || memoryState.loading" :error="memoryState.error" />
 		<ApexChart v-else-if="plotOutput && callOutput" v-memo="[callOutput, plotOutput]"
 			type="scatter" width="100%" height="500" class="min-w-full max-w-full" 
 			:options="{

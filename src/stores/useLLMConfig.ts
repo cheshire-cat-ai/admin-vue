@@ -13,23 +13,26 @@ export const useLLMConfig = defineStore('llm', () => {
 
   const { state: providers, isLoading } = useAsyncState(LLMConfigService.getProviders(), undefined)
 
+  const getAvailableProviders = computed(() => {
+    const schemas = providers.value?.data?.schemas ? Object.values(providers.value.data.schemas) : []
+    if (schemas.length === 0) currentState.error = 'No large language models found'
+    return schemas
+  })
+
   watchEffect(() => {
     currentState.loading = isLoading.value
     currentState.data = providers.value?.data
     currentState.error = providers.value?.status === 'error' ? providers.value.message : undefined
+    
     if (currentState.data) {
       currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].title
       currentState.settings = currentState.data.settings.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {})
     }
   })
 
-  const getAvailableProviders = () => {
-    return providers.value?.data?.schemas ? Object.values(providers.value.data.schemas) : []
-  }
-
   const getProviderSchema = (selected = currentState.selected) => {
     if (!selected) return undefined
-    return getAvailableProviders().find((schema) => schema.title === selected)
+    return getAvailableProviders.value.find((schema) => schema.title === selected)
   }
 
   const getProviderSettings = (selected = currentState.selected) => {
@@ -49,8 +52,8 @@ export const useLLMConfig = defineStore('llm', () => {
 
   return {
     currentState,
-    setProviderSettings,
     getAvailableProviders,
+    setProviderSettings,
     getProviderSchema,
     getProviderSettings
   }

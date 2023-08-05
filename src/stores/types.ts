@@ -1,7 +1,7 @@
 import type { Message } from '@models/Message'
 import type { Notification } from '@models/Notification'
 import type { JSONSettings } from '@models/JSONSchema'
-import type { CollectionsList, ConfigurationsResponse, PluginsList } from 'ccat-api'
+import type { CollectionsList, ModelsResponse, PluginsList } from 'ccat-api'
 import type { FileResponse, WebResponse } from 'ccat-api'
 
 /**
@@ -31,7 +31,7 @@ export type FileUploaderState = AsyncState<RabbitHoleResponse>
 /**
  * Defines the structure of the settings config state.
  */
-export interface SettingsConfigState extends AsyncState<ConfigurationsResponse> {
+export interface SettingsConfigState extends AsyncState<ModelsResponse> {
   selected?: string
   settings: Record<string, JSONSettings>
 }

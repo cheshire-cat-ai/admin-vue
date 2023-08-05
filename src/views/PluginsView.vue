@@ -8,7 +8,7 @@ import ModalBox from '@components/ModalBox.vue'
 import type { JSONSettings } from '@models/JSONSchema'
 
 const store = usePlugins()
-const { togglePlugin, removePlugin, installPlugin, getSettings, updateSettings, isInstalled } = store
+const { togglePlugin, removePlugin, installPlugin, updateSettings, isInstalled, getSchema, getSettings } = store
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { currentFilters } = storeToRefs(useSettings())
@@ -51,10 +51,9 @@ onPluginUpload(files => {
 	installPlugin(files[0])
 })
 
-const openSettings = async (id: string) => {
-	const pluginSettings = await getSettings(id)
-	currentSettings.value = pluginSettings?.settings
-	currentSchema.value = pluginSettings?.schema
+const openSettings = (id: string) => {
+	currentSettings.value = getSettings(id)
+	currentSchema.value = getSchema(id)
 	settingsPanel.value?.togglePanel()
 }
 
@@ -99,14 +98,8 @@ const searchPlugin = () => {
 				Upload plugin
 			</button>
 		</div>
-		<div v-if="pluginsState.loading" class="flex grow items-center justify-center">
-			<span class="loading loading-spinner w-12 text-primary" />
-		</div>
-		<div v-else-if="pluginsState.error" class="flex grow items-center justify-center">
-			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				{{ pluginsState.error }}
-			</div>
-		</div>
+		<ErrorBox v-if="pluginsState.loading || pluginsState.error" 
+			:load="pluginsState.loading" :error="pluginsState.error" />
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<div v-for="item in filteredList" :key="item.id" class="flex gap-4 rounded-xl bg-base-100 p-4">
 				<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain">
@@ -124,7 +117,7 @@ const searchPlugin = () => {
 								class="link-primary link no-underline" :class="{'pointer-events-none': item.author_url === ''}">
 								{{ item.author_name }}
 							</a>
-							<button v-if="isInstalled(item.id) && (item as any)?.active" 
+							<button v-if="isInstalled(item.id) && getSchema(item.id)" :disabled="!item.active" 
 								class="btn btn-circle btn-ghost btn-xs ml-2" @click="openSettings(item.id)">
 								<heroicons-cog-6-tooth-20-solid class="h-4 w-4" />
 							</button>
@@ -154,9 +147,8 @@ const searchPlugin = () => {
 								{{ tag.trim() }}
 							</div>
 						</div>
-						<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" 
-							:value="(item as any)?.active ?? false" type="checkbox" 
-							class="!toggle !toggle-success" @click="togglePlugin(item.id, item.name, (item as any)?.active ?? false)">
+						<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" v-model="item.active" type="checkbox" 
+							class="!toggle !toggle-success" @click="togglePlugin(item.id, item.name, item.active ?? false)">
 					</div>
 				</div>
 			</div>

@@ -13,23 +13,26 @@ export const useEmbedderConfig = defineStore('embedder', () => {
 
   const { state: embedders, isLoading } = useAsyncState(EmbedderConfigService.getEmbedders(), undefined)
 
+  const getAvailableEmbedders = computed(() => {
+    const schemas = embedders.value?.data?.schemas ? Object.values(embedders.value.data.schemas) : []
+    if (schemas.length === 0) currentState.error = 'No embedders found'
+    return schemas
+  })
+
   watchEffect(() => {
     currentState.loading = isLoading.value
     currentState.data = embedders.value?.data
     currentState.error = embedders.value?.status === 'error' ? embedders.value.message : undefined
+
     if (currentState.data) {
       currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].title
       currentState.settings = currentState.data.settings.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {})
     }
   })
-  
-  const getAvailableEmbedders = () => {
-    return embedders.value?.data?.schemas ? Object.values(embedders.value.data.schemas) : []
-  }
 
   const getEmbedderSchema = (selected = currentState.selected) => {
     if (!selected) return undefined
-    return getAvailableEmbedders().find((schema) => schema.title === selected)
+    return getAvailableEmbedders.value.find((schema) => schema.title === selected)
   }
 
   const getEmbedderSettings = (selected = currentState.selected) => {

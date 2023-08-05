@@ -5,8 +5,8 @@ import type { JsonSchema } from 'ccat-api'
 import SelectBox from '@components/SelectBox.vue'
 
 const storeEmbedder = useEmbedderConfig()
-const { getAvailableEmbedders, getEmbedderSchema, getEmbedderSettings, setEmbedderSettings } = storeEmbedder
-const { currentState: embedderState } = storeToRefs(storeEmbedder)
+const { getEmbedderSchema, getEmbedderSettings, setEmbedderSettings } = storeEmbedder
+const { currentState: embedderState, getAvailableEmbedders } = storeToRefs(storeEmbedder)
 
 const selectEmbedder = ref<InstanceType<typeof SelectBox>>()
 const currentSchema = ref<JsonSchema>()
@@ -51,18 +51,11 @@ watchDeep(embedderState, () => {
 
 <template>
 	<div class="flex grow flex-col gap-4">
-		<div v-if="embedderState.loading" class="flex grow items-center justify-center">
-			<span class="loading loading-spinner w-12 text-primary" />
-		</div>
-		<div v-else-if="embedderState.error || !getAvailableEmbedders().length"
-			class="flex grow items-center justify-center">
-			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				{{ embedderState.error }}
-			</div>
-		</div>
+		<ErrorBox v-if="embedderState.loading || embedderState.error" 
+			:load="embedderState.loading" :error="embedderState.error" />
 		<div v-else class="flex grow flex-col gap-4">
 			<SelectBox ref="selectEmbedder" :picked="embedderState.selected"
-				:list="getAvailableEmbedders().map(p => ({ label: p.name_human_readable ?? p.title, value: p.title }))"
+				:list="getAvailableEmbedders.map(p => ({ label: p.nameHumanReadable ?? p.title, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex flex-col gap-4">
 				<div class="flex flex-col">

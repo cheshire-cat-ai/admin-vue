@@ -1,4 +1,5 @@
 import { apiClient, tryRequest } from '@/api'
+import type { JSONSettings } from '@models/JSONSchema'
 
 /*
  * This is a service that is used to get the list of plugins active on the Cheshire Cat.
@@ -12,6 +13,13 @@ const PluginService = Object.freeze({
       "Unable to fetch the plugins"
     )
   },
+  getPluginsSettings: async () => {
+    return await tryRequest(
+      apiClient.api?.plugins.getPluginsSettings(), 
+      `Getting plugins settings`, 
+      `Unable to get plugins settings`
+    )
+  },
   togglePlugin: async (id: string) => {
     const result = await tryRequest(
       apiClient.api?.plugins.togglePlugin(id), 
@@ -20,15 +28,7 @@ const PluginService = Object.freeze({
     )
     return result.data
   },
-  getSettings: async (id: string) => {
-    const result = await tryRequest(
-      apiClient.api?.plugins.getPluginSettings(id), 
-      `Getting plugin ${id} settings`, 
-      `Unable to get plugin ${id} settings`
-    )
-    return result.data
-  },
-  updateSettings: async (id: string, settings: Record<string, any>) => {
+  updateSettings: async (id: string, settings: JSONSettings) => {
     const result = await tryRequest(
       apiClient.api?.plugins.upsertPluginSettings(id, settings), 
       `Updating plugin ${id} settings`, 
@@ -46,7 +46,7 @@ const PluginService = Object.freeze({
   },
   sendFile: async (file: File) => {
     const result = await tryRequest(
-      apiClient.api?.plugins.uploadPlugin({ file }), 
+      apiClient.api?.plugins.installPlugin({ file }), 
       "Uploaded plugin successfully", 
       "Unable to upload the plugin"
     )
