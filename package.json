@@ -25,7 +25,7 @@
     "animate.css": "^4.1.1",
     "apexcharts": "^3.41.1",
     "axios": "^1.4.0",
-    "ccat-api": "^0.6.2",
+    "ccat-api": "github:cheshire-cat-ai/api-client-ts#develop",
     "daisyui": "^3.5.1",
     "highlight.js": "^11.8.0",
     "lodash": "^4.17.21",
