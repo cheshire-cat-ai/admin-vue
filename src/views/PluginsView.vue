@@ -51,9 +51,10 @@ onPluginUpload(files => {
 	installPlugin(files[0])
 })
 
-const openSettings = (id: string) => {
-	currentSettings.value = getSettings(id)
-	currentSchema.value = getSchema(id)
+const openSettings = (plugin: Plugin) => {
+	selectedPlugin.value = plugin
+	currentSettings.value = getSettings(plugin.id)
+	currentSchema.value = getSchema(plugin.id)
 	settingsPanel.value?.togglePanel()
 }
 
@@ -101,7 +102,7 @@ const searchPlugin = () => {
 		<ErrorBox v-if="pluginsState.loading || pluginsState.error" 
 			:load="pluginsState.loading" :error="pluginsState.error" />
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
-			<div v-for="item in filteredList" :key="item.id" class="flex gap-4 rounded-xl bg-base-100 p-4">
+			<div v-for="item in filteredList" :key="item.id" class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
 				<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain">
 				<div v-else class="avatar placeholder self-center">
 					<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-accent to-primary text-base-100">
@@ -117,10 +118,6 @@ const searchPlugin = () => {
 								class="link-primary link no-underline" :class="{'pointer-events-none': item.author_url === ''}">
 								{{ item.author_name }}
 							</a>
-							<button v-if="isInstalled(item.id) && getSchema(item.id)" :disabled="!item.active" 
-								class="btn btn-circle btn-ghost btn-xs ml-2" @click="openSettings(item.id)">
-								<heroicons-cog-6-tooth-20-solid class="h-4 w-4" />
-							</button>
 						</p>
 						<template v-if="item.id !== 'core_plugin'">
 							<button v-if="isInstalled(item.id)" class="btn btn-error btn-xs" @click="openRemoveModal(item)">
@@ -131,24 +128,30 @@ const searchPlugin = () => {
 							</button>
 						</template>
 					</div>
-					<div class="flex items-center gap-1 text-sm font-medium text-neutral-focus">
+					<div class="flex h-6 items-center gap-1 text-sm font-medium text-neutral-focus">
 						<p>v{{ item.version }}</p>
 						<a v-if="item.plugin_url" :href="item.plugin_url" target="_blank" 
 							class="btn btn-circle btn-ghost btn-xs text-primary">
 							<heroicons-link-20-solid class="h-4 w-4" />
 						</a>
 					</div>
-					<p class="text-sm">
+					<p class="my-2 text-sm">
 						{{ item.description }}
 					</p>
-					<div class="flex items-center justify-between gap-4">
-						<div class="mt-2 flex flex-wrap gap-2">
+					<div class="flex h-8 items-center justify-between gap-4">
+						<div class="flex flex-wrap gap-2">
 							<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
 								{{ tag.trim() }}
 							</div>
 						</div>
-						<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" v-model="item.active" type="checkbox" 
-							class="!toggle !toggle-success" @click="togglePlugin(item.id, item.name, item.active ?? false)">
+						<div class="flex flex-wrap items-center gap-2">
+							<button v-if="isInstalled(item.id) && getSchema(item.id) && item.active"
+								class="btn btn-circle btn-ghost btn-sm" @click="openSettings(item)">
+								<heroicons-cog-6-tooth-20-solid class="h-5 w-5" />
+							</button>
+							<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" v-model="item.active" type="checkbox" 
+								class="!toggle !toggle-success" @click="togglePlugin(item.id, item.name, item.active)">
+						</div>
 					</div>
 				</div>
 			</div>
@@ -162,7 +165,7 @@ const searchPlugin = () => {
 			<p>
 				{{ currentSettings }}
 			</p>
-			<button class="btn btn-success btn-sm mt-auto">
+			<button class="btn btn-success btn-sm mt-auto" @click="updateSettings(selectedPlugin?.id, {})">
 				Save
 			</button>
 		</SidePanel>

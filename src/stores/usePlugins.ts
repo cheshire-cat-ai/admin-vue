@@ -28,6 +28,7 @@ export const usePlugins = defineStore('plugins', () => {
   const isInstalled = (id: Plugin['id']) => currentState.data?.installed.find(p => p.id === id)
 
   const getSchema = (id: Plugin['id']) => settings.value?.data?.schemas[id]
+
   const getSettings = (id: Plugin['id']) => settings.value?.data?.settings.find(p => (p as any).id === id)
 
   const togglePlugin = async (id: Plugin['id'], name: Plugin['name'], active: boolean) => {
@@ -43,17 +44,16 @@ export const usePlugins = defineStore('plugins', () => {
     return false
   }
 
-  const updateSettings = async (id: Plugin['id'], settings: JSONSettings) => {
-    if (isInstalled(id)) {
-      return await PluginService.updateSettings(id, settings)
-    }
-    return undefined
+  const updateSettings = async (id: Plugin['id'] | undefined, settings: JSONSettings) => {
+    if (!id) return
+    if (isInstalled(id)) await PluginService.updateSettings(id, settings)
   }
 
   const removePlugin = async (id: Plugin['id']) => {
     if (currentState.data?.installed.find(p => p.id === id)) {
       await PluginService.deletePlugin(id)
       fetchPlugins()
+      return true
     }
     return false
   }
