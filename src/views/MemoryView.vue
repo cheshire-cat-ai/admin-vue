@@ -249,7 +249,30 @@ const downloadResult = () => {
 					},
 					zoom: {
 						type: 'xy',
-						autoScaleYaxis: true
+						autoScaleYaxis: true,
+						zoomedArea: {
+							fill: {
+								color: isDark ? '#F4F4F5' : '#383938',
+								opacity: 0.4
+							},
+							stroke: {
+								color: isDark ? '#F4F4F5' : '#383938',
+								opacity: 0.4,
+								width: 1
+							}
+						}
+					}
+				},
+				noData: {
+					text: 'No points available',
+					align: 'center',
+					verticalAlign: 'middle',
+					offsetX: 0,
+					offsetY: 0,
+					style: {
+						color: isDark ? '#F4F4F5' : '#383938',
+						fontSize: '2rem',
+						fontFamily: 'Ubuntu'
 					}
 				},
 				grid: {

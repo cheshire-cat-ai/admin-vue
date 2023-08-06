@@ -98,6 +98,10 @@ body {
   @apply !max-w-none !right-1/2 translate-x-1/2 gap-2;
 }
 
+.apexcharts-text, .apexcharts-legend-text {
+  @apply !font-medium;
+}
+
 .apexcharts-toolbar > * {
   @apply !m-0;
 }
