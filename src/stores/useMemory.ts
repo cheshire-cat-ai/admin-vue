@@ -2,7 +2,7 @@ import MemoryService from '@services/MemoryService'
 import { useMessages } from '@stores/useMessages'
 import { useNotifications } from '@stores/useNotifications'
 import type { CollectionsState } from '@stores/types'
-import _ from 'lodash'
+import { remove } from 'lodash'
 
 export const useMemory = defineStore('memory', () => {
   const currentState = reactive<CollectionsState>({
@@ -37,7 +37,7 @@ export const useMemory = defineStore('memory', () => {
 
   const wipeCollection = async (collection: string) => {
     const result = await MemoryService.wipeCollection(collection)
-    if (result.status == 'success') _.remove(currentState.data ?? [], v => v.name == collection)
+    if (result.status == 'success') remove(currentState.data ?? [], v => v.name == collection)
     return sendNotificationFromJSON(result)
   }
 
