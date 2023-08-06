@@ -194,7 +194,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 		class="relative flex w-full max-w-screen-lg flex-col justify-center gap-4 self-center overflow-hidden !pt-0 text-sm"
 		:class="{
 			'pb-16 md:pb-20': !isTwoLines,
-			'pb-20 md:pb-24': isTwoLines,
+			'pb-24 md:pb-28': isTwoLines,
 		}">
 		<div v-if="isOverDropZone" class="flex h-full w-full grow flex-col items-center justify-center py-4 md:pb-0">
 			<div class="relative flex w-full grow items-center justify-center rounded-md border-2 border-dashed border-primary p-2 md:p-4">
@@ -210,8 +210,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				</button>
 			</div>
 		</div>
-		<ErrorBox v-if="messagesState.loading || messagesState.error" 
-			:load="messagesState.loading" :error="messagesState.error" />
+		<ErrorBox v-if="!messagesState.ready" :load="messagesState.loading" :error="messagesState.error" />
 		<div v-else-if="messagesState.messages.length" class="flex grow flex-col overflow-y-auto">
 			<MessageBox v-for="msg in messagesState.messages"
 				:key="msg.id"
@@ -264,8 +263,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									</button>
 								</li>
 								<li>
-									<!-- :disabled="rabbitHoleState.loading" -->
-									<button disabled
+									<button :disabled="rabbitHoleState.loading"
 										class="btn join-item w-full flex-nowrap px-2" 
 										@click="openMemory({ multiple: false, accept: AcceptedMemoryTypes.join(',') })">
 										<span class="grow normal-case">Upload memories</span>

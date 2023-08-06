@@ -29,7 +29,7 @@ export const usePlugins = defineStore('plugins', () => {
 
   const getSchema = (id: Plugin['id']) => settings.value?.data?.schemas[id]
 
-  const getSettings = (id: Plugin['id']) => settings.value?.data?.settings.find(p => (p as any).id === id)
+  const getSettings = (id: Plugin['id']) => settings.value?.data?.settings.find(p => p.id === id)
 
   const togglePlugin = async (id: Plugin['id'], name: Plugin['name'], active: boolean) => {
     if (isInstalled(id)) {
