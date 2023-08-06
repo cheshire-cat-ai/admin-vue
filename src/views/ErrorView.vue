@@ -7,13 +7,13 @@
 		<p class="text-5xl font-bold">
 			<span class="text-error">404</span>
 			<br>
-			<span>Cat Not Found</span>
+			<span class="text-neutral">{{ $t('error.not_found') }}</span>
 			<br>
 			<span class="text-2xl text-error">You’ve stumbled down the wrong rabbit hole!</span>
 		</p>
 		<button class="btn btn-error">
 			<RouterLink to="/">
-				Go back to Home!
+				{{ $t('error.go_back') }}
 			</RouterLink>
 		</button>
 	</div>

@@ -70,8 +70,7 @@ watchDeep(embedderState, () => {
 						{{ currentSchema?.description }}
 					</p>
 					<p class="text-xs text-neutral-focus/75">
-						Last time updated:
-						{{ lastTimeUpdated }}
+						{{ $t('last_update', { time: lastTimeUpdated }) }}
 					</p>
 				</div>
 				<div v-for="prop in currentSchema?.properties" :key="prop.title" class="flex flex-col gap-2">
@@ -86,7 +85,7 @@ watchDeep(embedderState, () => {
 			</div>
 			<button class="btn btn-success btn-sm mt-auto normal-case" 
 				:disabled="!requiredFilled" @click="saveEmbedder">
-				Save
+				{{ $t('save') }}
 			</button>
 		</div>
 	</div>

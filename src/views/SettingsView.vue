@@ -5,9 +5,11 @@ import { useSettings } from '@stores/useSettings'
 const store = useSettings()
 const { mustSummarize, isAudioEnabled } = storeToRefs(store)
 
+const { t } = useI18n()
+
 const panelTitles = {
-	'embedder': 'Configure the Embedder',
-	'llm': 'Configure the Language Model'
+	'embedder': t('settings.embedder.panel'),
+	'llm': t('settings.llm.panel')
 } as const
 
 const sidePanel = ref<InstanceType<typeof SidePanel>>()
@@ -23,51 +25,58 @@ const openSidePanel = (title: keyof typeof panelTitles) => {
 	<div class="grid w-full auto-rows-min gap-8 self-center md:w-3/4 md:grid-cols-2">
 		<div class="col-span-2 flex flex-col items-center justify-center gap-2 rounded-md p-4">
 			<p class="text-3xl font-bold text-primary">
-				Set up your Cat
+				{{ $t('settings.title') }}
 			</p>
 			<p class="font-medium">
-				Configure your Cheshire Cat to suit your needs
+				{{ $t('settings.desc') }}
 			</p>
 		</div>
 		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 md:col-span-1">
 			<p class="text-xl font-bold">
-				Large Language Model
+				{{ $t('settings.llm.title') }}
 			</p>
 			<p class="text-center">
-				Choose and configure your favourite LLM from a list of supported providers
+				{{ $t('settings.llm.desc') }}
 			</p>
 			<RouterLink :to="{ name: 'providers' }" class="btn btn-primary btn-sm"
 				@click="openSidePanel('llm')">
-				Configure
+				{{ $t('settings.configure') }}
 			</RouterLink>
 		</div>
 		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 md:col-span-1">
 			<p class="text-xl font-bold">
-				Embedder
+				{{ $t('settings.embedder.title') }}
 			</p>
 			<p class="text-center">
-				Choose a language embedder to help the Cat remember conversations and documents
+				{{ $t('settings.embedder.desc') }}
 			</p>
 			<RouterLink :to="{ name: 'embedders' }" class="btn btn-primary btn-sm"
 				@click="openSidePanel('embedder')">
-				Configure
+				{{ $t('settings.configure') }}
 			</RouterLink>
 		</div>
 		<div class="col-span-2 flex flex-col items-center justify-between gap-4 rounded-lg bg-base-100 p-4">
 			<p class="text-xl font-bold">
-				General Settings
+				{{ $t('settings.general.title') }}
 			</p>
 			<div class="flex w-full items-center justify-between gap-2 rounded-lg bg-base-200 p-4">
 				<p class="flex items-center justify-center gap-2">
+					<heroicons-language-20-solid class="h-5 w-5 shrink-0 text-primary" />
+					<span>{{ $t('settings.general.language') }}</span>
+				</p>
+				<LocaleChanger />
+			</div>
+			<div class="flex w-full justify-between gap-2 rounded-lg bg-base-200 p-4">
+				<p class="flex items-center justify-center gap-2">
 					<heroicons-speaker-wave-solid class="h-5 w-5 shrink-0 text-primary" />
-					<span>Toggle sounds on messages</span>
+					<span>{{ $t('settings.general.sound') }}</span>
 				</p>
 				<input v-model="isAudioEnabled" type="checkbox" class="!toggle !toggle-success">
 			</div>
 			<div class="flex w-full items-center justify-between gap-2 rounded-lg bg-base-200 p-4">
 				<p class="flex items-center justify-center gap-2">
 					<ph-text-align-left-bold class="h-5 w-5 shrink-0 text-primary" />
-					<span>Toggle the summarization when uploading documents or urls</span>
+					<span>{{ $t('settings.general.summarization') }}</span>
 				</p>
 				<input v-model="mustSummarize" type="checkbox" class="!toggle !toggle-success">
 			</div>

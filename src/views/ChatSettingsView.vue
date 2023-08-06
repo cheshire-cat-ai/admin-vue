@@ -39,7 +39,7 @@ const saveChatSettings = () => {
 			</button>
 			<div class="form-control mb-4 w-full">
 				<p class="mb-1 text-sm font-medium text-primary">
-					Prompt prefix
+					{{ $t('chat.settings.title') }}
 				</p>
 				<textarea v-model="tempSettings.prefix" placeholder="Enter the prompt prefix..."
 					class="textarea block w-full resize-y overflow-auto !outline-offset-0" />
@@ -52,7 +52,7 @@ const saveChatSettings = () => {
 			</template>
 		</div>
 		<button class="btn btn-success btn-sm mt-auto normal-case" @click="saveChatSettings">
-			Save
+			{{ $t('save') }}
 		</button>
 	</div>
 </template>

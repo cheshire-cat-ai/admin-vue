@@ -1,3 +1,5 @@
+import { Locales, LocaleCode } from "@/i18n"
+
 export const useSettings = defineStore('settings', () => {
   const isAudioEnabled = useLocalStorage('isAudioEnabled', true)
   const isDark = useDark({
@@ -19,12 +21,29 @@ export const useSettings = defineStore('settings', () => {
     disabled: true
   })
 
+  const currentLocale = useLocalStorage<LocaleCode>('currentLocale', LocaleCode.EN_US)
+
+  const setLocale = (localeCode = currentLocale.value, fallbackLocale?: LocaleCode) => {
+    currentLocale.value = localeCode || fallbackLocale || LocaleCode.EN_US
+    const htmlElement = document.documentElement
+    htmlElement.setAttribute("lang", localeCode)
+  
+    if (Locales[localeCode].dir !== "ltr") {
+      htmlElement.setAttribute("dir", Locales[localeCode].dir)
+    } else {
+      htmlElement.removeAttribute("dir")
+    }
+    return currentLocale.value
+  }
+
   return {
     isAudioEnabled,
     isDark,
     currentFilters,
+    currentLocale,
     toggleDark,
-    mustSummarize
+    mustSummarize,
+    setLocale,
   }
 })
 

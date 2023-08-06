@@ -1,0 +1,88 @@
+{
+  "headers": {
+    "home": "headers.home",
+    "memory": "headers.memory",
+    "plugins": "headers.plugins",
+    "settings": "headers.settings",
+    "docs": "headers.docs"
+  },
+  "chat": {
+    "settings": {
+      "title": "chat.settings.title"
+    },
+    "loading": "chat.loading",
+    "dropdown": {
+      "settings": "chat.dropdown.settings",
+      "memories": "chat.dropdown.memories",
+      "url": "chat.dropdown.url",
+      "file": "chat.dropdown.file",
+      "clear": "chat.dropdown.clear"
+    },
+    "upload_url": {
+      "title": "chat.upload_url.title",
+      "desc": "chat.upload_url.desc"
+    }
+  },
+  "save": "save",
+  "failed_fetch": "failed_fetch",
+  "last_update": "last_update",
+  "error": {
+    "not_found": "error.not_found",
+    "go_back": "error.go_back"
+  },
+  "send": "send",
+  "memory": {
+    "all": "memory.all",
+    "label": {
+      "input": "memory.label.input",
+      "k": "memory.label.k"
+    },
+    "plot": {
+      "export": "memory.plot.export",
+      "details": "memory.plot.details",
+      "more": "memory.plot.more"
+    },
+    "metadata": {
+      "id": "ID",
+      "collection": "Collection",
+      "text": "Text",
+      "source": "Source",
+      "when": "When",
+      "score": "Score"
+    },
+    "wipe": "memory.wipe",
+    "delete": "memory.delete",
+    "wipe_modal": "memory.wipe_modal"
+  },
+  "no": "no",
+  "yes": "yes",
+  "cheshire_cat": "cheshire_cat",
+  "plugins": {
+    "search": "plugins.search",
+    "installed": "plugins.installed",
+    "upload": "plugins.upload",
+    "desc": "plugins.desc",
+    "item_title": "plugins.item_title"
+  },
+  "settings": {
+    "embedder": {
+      "panel": "settings.embedder.panel",
+      "title": "settings.embedder.title",
+      "desc": "settings.embedder.desc"
+    },
+    "llm": {
+      "panel": "settings.llm.panel",
+      "title": "settings.llm.title",
+      "desc": "settings.llm.desc"
+    },
+    "title": "settings.title",
+    "desc": "settings.desc",
+    "configure": "settings.configure",
+    "general": {
+      "title": "settings.general.title",
+      "language": "settings.general.language",
+      "sound": "settings.general.sound",
+      "summarization": "settings.general.summarization"
+    }
+  }
+}

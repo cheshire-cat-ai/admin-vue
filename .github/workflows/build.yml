@@ -21,6 +21,8 @@ jobs:
         node-version: 16
     - name: Install dependencies
       run: npm ci
+    - name: Check translations
+      run: npm run i18n
     - name: Build static files
       run: npm run build --if-present
     - name: Zip Release

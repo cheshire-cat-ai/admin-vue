@@ -70,17 +70,14 @@ const searchPlugin = () => {
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
 		<div class="col-span-2 flex flex-col items-center justify-center gap-2 rounded-md p-4">
 			<p class="text-3xl font-bold text-primary">
-				Plugins
+				{{ $t('headers.plugins') }}
 			</p>
-			<p class="text-center font-medium">
-				This page displays the list of installed plugins together with 
-				those from the official registry of the <strong>Cheshire Cat</strong>.
-				Here you can enable or disable individual plugins according to your needs,
-				allowing for greater customization of the user experience.
-			</p>
+			<i18n-t keypath="plugins.desc" tag="p" class="text-center font-medium">
+				<strong>{{ $t('cheshire_cat') }}</strong>
+			</i18n-t>
 		</div>
 		<div class="flex flex-col gap-4">
-			<InputBox v-model.trim="searchText" placeholder="Enter a plugin name..." label="Search for a plugin" 
+			<InputBox v-model.trim="searchText" placeholder="Enter a plugin name..." :label="$t('plugins.search')" 
 				search :disabled="pluginsState.loading || Boolean(pluginsState.error)" @send="searchPlugin()" />
 			<div class="flex flex-wrap justify-center gap-2">
 				<button v-for="(v, k) in currentFilters" :key="k" class="btn btn-xs rounded-full" disabled
@@ -92,11 +89,11 @@ const searchPlugin = () => {
 		</div>
 		<div class="flex flex-wrap items-end justify-between gap-2">
 			<p class="font-medium">
-				Installed plugins: {{ pluginsState.data?.installed?.length ?? 0 }}
+				{{ $t('plugins.installed', { num: pluginsState.data?.installed?.length ?? 0 }) }}
 			</p>
 			<button :disabled="pluginsState.loading || Boolean(pluginsState.error)"
 				class="btn btn-primary btn-sm" @click="uploadPlugin({ multiple: false, accept: AcceptedPluginTypes.join(',') })">
-				Upload plugin
+				{{ $t('plugins.upload') }}
 			</button>
 		</div>
 		<div v-if="pluginsState.loading" class="flex grow items-center justify-center">
@@ -117,9 +114,8 @@ const searchPlugin = () => {
 				</div>
 				<div class="flex grow flex-col">
 					<div class="flex justify-between">
-						<p class="text-sm font-medium text-neutral-focus">
+						<i18n-t keypath="plugins.item_title" tag="p" class="text-sm font-medium text-neutral-focus">
 							<span class="text-xl font-bold text-neutral">{{ item.name }}</span>
-							by
 							<a :href="item.author_url" target="_blank" 
 								class="link-primary link no-underline" :class="{'pointer-events-none': item.author_url === ''}">
 								{{ item.author_name }}
@@ -128,7 +124,7 @@ const searchPlugin = () => {
 								@click="openSettings(item.id)">
 								<heroicons-cog-6-tooth-20-solid class="h-4 w-4" />
 							</button>
-						</p>
+						</i18n-t>
 						<template v-if="item.id !== 'core_plugin'">
 							<button v-if="isInstalled(item.id)" class="btn btn-error btn-xs" @click="openRemoveModal(item)">
 								Delete
