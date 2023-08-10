@@ -41,7 +41,7 @@ export const useMessages = defineStore('messages', () => {
 
   const getDefaultPromptSettings = async () => {
     const result = await tryRequest(
-      apiClient.api?.settingsPrompt.getDefaultPromptSettings(), 
+      apiClient.api?.prompt.getDefaultPromptSettings(), 
       "Getting all the default prompt settings", 
       "Unable to fetch default prompt settings"
     )

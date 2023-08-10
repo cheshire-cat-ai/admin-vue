@@ -8,13 +8,13 @@ export const usePlugins = defineStore('plugins', () => {
   const currentState = reactive<PluginsState>({
     loading: false,
     data: {
-      results: 0,
       installed: [],
       registry: []
     }
   })
 
   const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), undefined)
+  const { state: settings, execute: fetchSettings } = useAsyncState(PluginService.getPluginsSettings(), undefined)
 
   const { showNotification } = useNotifications()
 
@@ -26,32 +26,33 @@ export const usePlugins = defineStore('plugins', () => {
 
   const isInstalled = (id: Plugin['id']) => currentState.data?.installed.find(p => p.id === id)
 
-  const togglePlugin = async (id: Plugin['id']) => {
+  const getSchema = (id: Plugin['id']) => settings.value?.data?.settings.find(p => p.name === id)?.schema
+
+  const getSettings = (id: Plugin['id']) => settings.value?.data?.settings.find(p => p.name === id)?.value
+
+  const togglePlugin = async (id: Plugin['id'], name: Plugin['name'], active: boolean) => {
     if (isInstalled(id)) {
+      showNotification({
+        text: `Plugin ${name} is being switched ${active ? 'off' : 'on'}!`,
+        type: active ? 'error' : 'success'
+      })
       await PluginService.togglePlugin(id)
+      fetchPlugins()
       return true
     }
     return false
   }
 
-  const getSettings = async (id: Plugin['id']) => {
-    if (isInstalled(id)) {
-      return await PluginService.getSettings(id)
-    }
-    return undefined
-  }
-
-  const updateSettings = async (id: Plugin['id'], settings: JSONSettings) => {
-    if (isInstalled(id)) {
-      return await PluginService.updateSettings(id, settings)
-    }
-    return undefined
+  const updateSettings = async (id: Plugin['id'] | undefined, settings: JSONSettings) => {
+    if (!id) return
+    if (isInstalled(id)) await PluginService.updateSettings(id, settings)
   }
 
   const removePlugin = async (id: Plugin['id']) => {
     if (currentState.data?.installed.find(p => p.id === id)) {
       await PluginService.deletePlugin(id)
       fetchPlugins()
+      return true
     }
     return false
   }
@@ -77,8 +78,10 @@ export const usePlugins = defineStore('plugins', () => {
     removePlugin,
     installPlugin,
     isInstalled,
+    updateSettings,
+    getSchema,
     getSettings,
-    updateSettings
+    fetchSettings,
   }
 })
 
