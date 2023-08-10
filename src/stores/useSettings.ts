@@ -1,3 +1,5 @@
+import { apiClient, tryRequest } from "@/api"
+
 export const useSettings = defineStore('settings', () => {
   const isAudioEnabled = useLocalStorage('isAudioEnabled', true)
   const isDark = useDark({
@@ -19,11 +21,23 @@ export const useSettings = defineStore('settings', () => {
     disabled: true
   })
 
+  const getStatus = async () => {
+    const result = await tryRequest(
+      apiClient.api?.status.home(), 
+      "Getting Cheshire Cat status", 
+      "Unable to fetch Cheshire Cat status"
+    )
+    return result.data
+  }
+  
+  const { state: cat } = useAsyncState(getStatus(), undefined)
+
   return {
     isAudioEnabled,
     isDark,
     currentFilters,
     toggleDark,
+    cat,
     mustSummarize
   }
 })

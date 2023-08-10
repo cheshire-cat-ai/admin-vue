@@ -5,8 +5,8 @@ import type { JsonSchema } from 'ccat-api'
 import SelectBox from '@components/SelectBox.vue'
 
 const storeEmbedder = useEmbedderConfig()
-const { getAvailableEmbedders, getEmbedderSchema, getEmbedderSettings, setEmbedderSettings } = storeEmbedder
-const { currentState: embedderState } = storeToRefs(storeEmbedder)
+const { getEmbedderSchema, getEmbedderSettings, setEmbedderSettings } = storeEmbedder
+const { currentState: embedderState, getAvailableEmbedders } = storeToRefs(storeEmbedder)
 
 const selectEmbedder = ref<InstanceType<typeof SelectBox>>()
 const currentSchema = ref<JsonSchema>()
@@ -39,16 +39,6 @@ const saveEmbedder = async (payload: JSONSettings) => {
 	if (res) emit('close')
 }
 
-const lastTimeUpdated = computed(() => {
-	const dateString = embedderState.value.data?.settings.find(v => v.name === currentSchema.value?.title)?.updated_at
-	if (dateString) return new Date(dateString * 1000).toLocaleString()
-	else return 'Never'
-})
-
-onMounted(() => {
-	updateProperties(selectEmbedder.value?.selectedElement?.value)
-})
-
 watchDeep(embedderState, () => {
 	updateProperties(selectEmbedder.value?.selectedElement?.value)
 }, { immediate: true })
@@ -56,29 +46,16 @@ watchDeep(embedderState, () => {
 
 <template>
 	<div class="flex grow flex-col gap-4">
-		<div v-if="embedderState.loading" class="flex grow items-center justify-center">
-			<span class="loading loading-spinner w-12 text-primary" />
-		</div>
-		<div v-else-if="embedderState.error || !getAvailableEmbedders().length"
-			class="flex grow items-center justify-center">
-			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				{{ embedderState.error }}
-			</div>
-		</div>
+		<ErrorBox v-if="embedderState.loading || embedderState.error" 
+			:load="embedderState.loading" :error="embedderState.error" />
 		<div v-else class="flex grow flex-col gap-4">
 			<SelectBox ref="selectEmbedder" :picked="embedderState.selected"
-				:list="getAvailableEmbedders().map(p => ({ label: p.name_human_readable ?? p.title, value: p.title }))"
+				:list="getAvailableEmbedders.map(p => ({ label: p?.humanReadableName ?? p?.title, value: p?.title }))"
 				@update="e => updateProperties(e.value)" />
-			<div v-if="currentFields" class="flex grow flex-col gap-4">
-				<div class="flex flex-col">
-					<p class="font-medium">
-						{{ currentSchema?.description }}
-					</p>
-					<p class="text-xs text-neutral-focus/75">
-						Last time updated:
-						{{ lastTimeUpdated }}
-					</p>
-				</div>
+			<div class="flex flex-col gap-4">
+				<p class="font-medium">
+					{{ currentSchema?.description }}
+				</p>
 				<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="saveEmbedder" />
 			</div>
 		</div>

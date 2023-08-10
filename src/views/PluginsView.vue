@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { upperFirst } from 'lodash'
+import { upperFirst, entries } from 'lodash'
 import { type Plugin, AcceptedPluginTypes } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
@@ -8,7 +8,7 @@ import ModalBox from '@components/ModalBox.vue'
 import { InputType, type SchemaField, type JSONSettings } from '@models/JSONSchema'
 
 const store = usePlugins()
-const { togglePlugin, removePlugin, installPlugin, getSettings, updateSettings, isInstalled } = store
+const { togglePlugin, removePlugin, installPlugin, updateSettings, isInstalled, getSchema, getSettings } = store
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { currentFilters } = storeToRefs(useSettings())
@@ -51,10 +51,10 @@ onPluginUpload(files => {
 	installPlugin(files[0])
 })
 
-const openSettings = async (plugin: Plugin) => {
+const openSettings = (plugin: Plugin) => {
 	selectedPlugin.value = plugin
-	const pluginSettings = await getSettings(plugin.id)
-	currentFields.value = Object.entries(pluginSettings?.schema.properties ?? {}).map<SchemaField>(([key, value]) => {
+	const pluginSchema = getSchema(plugin.id)
+	currentFields.value = entries(pluginSchema?.properties).map<SchemaField>(([key, value]) => {
 		return {
 			name: key,
 			as: "input",
@@ -64,7 +64,7 @@ const openSettings = async (plugin: Plugin) => {
 			default: value.default,
 		}
 	})
-	currentSettings.value = pluginSettings?.settings
+	currentSettings.value = getSettings(plugin.id)
 	settingsPanel.value?.togglePanel()
 }
 
@@ -78,17 +78,6 @@ const searchPlugin = () => {
 
 <template>
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
-		<div class="col-span-2 flex flex-col items-center justify-center gap-2 rounded-md p-4">
-			<p class="text-3xl font-bold text-primary">
-				Plugins
-			</p>
-			<p class="text-center font-medium">
-				This page displays the list of installed plugins together with 
-				those from the official registry of the <strong>Cheshire Cat</strong>.
-				Here you can enable or disable individual plugins according to your needs,
-				allowing for greater customization of the user experience.
-			</p>
-		</div>
 		<div class="flex flex-col gap-4">
 			<InputBox v-model.trim="searchText" placeholder="Enter a plugin name..." label="Search for a plugin" 
 				search :disabled="pluginsState.loading || Boolean(pluginsState.error)" @send="searchPlugin()" />
@@ -109,14 +98,8 @@ const searchPlugin = () => {
 				Upload plugin
 			</button>
 		</div>
-		<div v-if="pluginsState.loading" class="flex grow items-center justify-center">
-			<span class="loading loading-spinner w-12 text-primary" />
-		</div>
-		<div v-else-if="pluginsState.error" class="flex grow items-center justify-center">
-			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				{{ pluginsState.error }}
-			</div>
-		</div>
+		<ErrorBox v-if="pluginsState.loading || pluginsState.error" 
+			:load="pluginsState.loading" :error="pluginsState.error" />
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<div v-for="item in filteredList" :key="item.id" class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
 				<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain">
@@ -151,22 +134,22 @@ const searchPlugin = () => {
 							<heroicons-link-20-solid class="h-4 w-4" />
 						</a>
 					</div>
-					<p class="my-1 text-sm">
+					<p class="my-2 text-sm">
 						{{ item.description }}
 					</p>
-					<div class="flex items-center justify-between gap-4">
+					<div class="flex h-8 items-center justify-between gap-4">
 						<div class="flex flex-wrap gap-2">
 							<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
 								{{ tag.trim() }}
 							</div>
 						</div>
 						<div class="flex flex-wrap items-center gap-2">
-							<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" type="checkbox" disabled 
-								class="!toggle !toggle-success" @click="togglePlugin(item.id)">
-							<button v-if="isInstalled(item.id)" class="btn btn-circle btn-ghost btn-sm" 
-								@click="openSettings(item)">
+							<button v-if="isInstalled(item.id) && getSchema(item.id) && item.active"
+								class="btn btn-circle btn-ghost btn-sm" @click="openSettings(item)">
 								<heroicons-cog-6-tooth-20-solid class="h-5 w-5" />
 							</button>
+							<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" v-model="item.active" type="checkbox" 
+								class="!toggle !toggle-success" @click="togglePlugin(item.id, item.name, item.active!)">
 						</div>
 					</div>
 				</div>

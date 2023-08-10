@@ -5,8 +5,8 @@ import type { JsonSchema } from "ccat-api"
 import SelectBox from "@components/SelectBox.vue"
 
 const storeLLM = useLLMConfig()
-const { getAvailableProviders, getProviderSchema, setProviderSettings, getProviderSettings } = storeLLM
-const { currentState: llmState } = storeToRefs(storeLLM)
+const { getProviderSchema, setProviderSettings, getProviderSettings } = storeLLM
+const { currentState: llmState, getAvailableProviders } = storeToRefs(storeLLM)
 
 const selectProvider = ref<InstanceType<typeof SelectBox>>()
 const currentSchema = ref<JsonSchema>()
@@ -39,16 +39,6 @@ const saveProvider = async (payload: JSONSettings) => {
 	if (res) emit("close")
 }
 
-const lastTimeUpdated = computed(() => {
-	const dateString = llmState.value.data?.settings.find((v) => v.name === currentSchema.value?.title)?.updated_at
-	if (dateString) return new Date(dateString * 1000).toLocaleString()
-	else return "Never"
-})
-
-onMounted(() => {
-	updateProperties(selectProvider.value?.selectedElement?.value)
-})
-
 watchDeep(llmState, () => {
 	updateProperties(selectProvider.value?.selectedElement?.value)
 }, { immediate: true })
@@ -56,29 +46,16 @@ watchDeep(llmState, () => {
 
 <template>
 	<div class="flex grow flex-col gap-4">
-		<div v-if="llmState.loading" class="flex grow items-center justify-center">
-			<span class="loading loading-spinner w-12 text-primary" />
-		</div>
-		<div v-else-if="llmState.error || !getAvailableProviders().length" class="flex grow items-center justify-center">
-			<div class="rounded-md bg-error p-4 font-bold text-base-100 shadow-xl">
-				{{ llmState.error }}
-			</div>
-		</div>
+		<ErrorBox v-if="llmState.loading || llmState.error" 
+			:load="llmState.loading" :error="llmState.error" />
 		<div v-else class="flex grow flex-col gap-4">
-			<SelectBox ref="selectProvider" :picked="llmState.selected" :list="getAvailableProviders().map((p) => ({
-				label: p.name_human_readable ?? p.title,
-				value: p.title,
-			}))" @update="e => updateProperties(e.value)" />
-			<div v-if="currentFields" class="flex grow flex-col gap-4">
-				<div class="flex flex-col">
-					<p class="font-medium">
-						{{ currentSchema?.description }}
-					</p>
-					<p class="text-xs text-neutral-focus/75">
-						Last time updated:
-						{{ lastTimeUpdated }}
-					</p>
-				</div>
+			<SelectBox ref="selectProvider" :picked="llmState.selected"
+				:list="getAvailableProviders.map(p => ({ label: p.humanReadableName ?? p.title, value: p.title }))"
+				@update="e => updateProperties(e.value)" />
+			<div class="flex flex-col gap-4">
+				<p class="font-medium">
+					{{ currentSchema?.description }}
+				</p>
 				<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="saveProvider" />
 			</div>
 		</div>

@@ -49,10 +49,10 @@ watch(elementContent, () => {
 
 <template>
 	<div class="chat my-2 gap-x-3" :class="[sender === 'bot' ? 'chat-start' : 'chat-end']">
-		<div class="chat-image text-lg">
+		<div class="chat-image row-[1] text-lg">
 			{{ sender === 'bot' ? '😺' : '🙂' }}
 		</div>
-		<div class="chat-bubble flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral">
+		<div class="chat-bubble row-[1] flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral">
 			<div class="p-2 md:p-3">
 				<p ref="elementContent" class="text-ellipsis" v-html="renderedText" />
 				<div v-if="isLengthy" class="flex justify-end font-bold">

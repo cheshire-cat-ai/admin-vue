@@ -207,15 +207,9 @@ const downloadResult = () => {
 					class="input input-primary input-sm w-24">
 			</div>
 		</div>
-		<div v-if="showSpinner || memoryState.loading" class="flex grow items-center justify-center">
-			<span class="loading loading-spinner w-12 text-primary" />
-		</div>
-		<div v-else-if="memoryState.error" class="flex grow items-center justify-center">
-			<p class="w-fit rounded bg-error p-4 font-semibold text-base-100">
-				{{ memoryState.error }}
-			</p>
-		</div>
-		<ApexChart v-else-if="plotOutput && callOutput" v-memo="[callOutput, plotOutput, isDark]"
+		<ErrorBox v-if="showSpinner || memoryState.loading || memoryState.error" 
+			:load="showSpinner || memoryState.loading" :error="memoryState.error" />
+		<ApexChart v-else-if="plotOutput && callOutput" v-memo="[callOutput, plotOutput]"
 			type="scatter" width="100%" height="500" class="min-w-full max-w-full" 
 			:options="{
 				chart: {
@@ -326,7 +320,6 @@ const downloadResult = () => {
 				<h3 class="text-lg font-bold text-primary">
 					Wipe collection
 				</h3>
-				<!-- Do the check with i18n -->
 				<p v-if="selectCollection?.selectedElement.label.startsWith('All')">
 					Are you sure you want to wipe 
 					<span class="font-bold">
@@ -363,9 +356,9 @@ const downloadResult = () => {
 			<div v-if="clickedPoint" class="overflow-x-auto rounded-md border-2 border-neutral">
 				<table class="table table-zebra table-sm bg-base-100">
 					<tbody>
-						<tr v-for="data in Object.entries(clickedPoint)" :key="data[0]">
-							<td>{{ capitalize(data[0]) }}</td>
-							<td>{{ data[1] }}</td>
+						<tr v-for="(data, key) of clickedPoint" :key="key">
+							<td>{{ capitalize(key) }}</td>
+							<td>{{ data }}</td>
 						</tr>
 					</tbody>
 				</table>
