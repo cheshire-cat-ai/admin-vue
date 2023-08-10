@@ -2,6 +2,7 @@ import type { JSONSettings } from '@models/JSONSchema'
 import EmbedderConfigService from '@services/EmbedderConfigService'
 import { useNotifications } from '@stores/useNotifications'
 import type { SettingsConfigState } from '@stores/types'
+import type { JsonSchema } from 'ccat-api'
 
 export const useEmbedderConfig = defineStore('embedder', () => {
   const currentState = reactive<SettingsConfigState>({
@@ -14,9 +15,10 @@ export const useEmbedderConfig = defineStore('embedder', () => {
   const { state: embedders, isLoading } = useAsyncState(EmbedderConfigService.getEmbedders(), undefined)
 
   const getAvailableEmbedders = computed(() => {
-    const schemas = embedders.value?.data?.schemas ? Object.values(embedders.value.data.schemas) : []
+    const settings = embedders.value?.data?.settings
+    const schemas = settings ? settings.map(s => s.schema) : []
     if (schemas.length === 0) currentState.error = 'No embedders found'
-    return schemas
+    return schemas as JsonSchema[]
   })
 
   watchEffect(() => {
@@ -25,14 +27,14 @@ export const useEmbedderConfig = defineStore('embedder', () => {
     currentState.error = embedders.value?.status === 'error' ? embedders.value.message : undefined
 
     if (currentState.data) {
-      currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].title
+      currentState.selected = currentState.data.selected_configuration ?? currentState.data.settings[0].schema?.title
       currentState.settings = currentState.data.settings.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {})
     }
   })
 
   const getEmbedderSchema = (selected = currentState.selected) => {
     if (!selected) return undefined
-    return getAvailableEmbedders.value.find((schema) => schema.title === selected)
+    return getAvailableEmbedders.value.find(schema => schema?.title === selected)
   }
 
   const getEmbedderSettings = (selected = currentState.selected) => {

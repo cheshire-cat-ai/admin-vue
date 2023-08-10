@@ -150,7 +150,7 @@ const searchPlugin = () => {
 								<heroicons-cog-6-tooth-20-solid class="h-5 w-5" />
 							</button>
 							<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" v-model="item.active" type="checkbox" 
-								class="!toggle !toggle-success" @click="togglePlugin(item.id, item.name, item.active)">
+								class="!toggle !toggle-success" @click="togglePlugin(item.id, item.name, item.active!)">
 						</div>
 					</div>
 				</div>

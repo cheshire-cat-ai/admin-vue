@@ -2,6 +2,7 @@ import type { SettingsConfigState } from '@stores/types'
 import LLMConfigService from '@services/LLMConfigService'
 import { useNotifications } from '@stores/useNotifications'
 import type { JSONSettings } from '@models/JSONSchema'
+import type { JsonSchema } from 'ccat-api'
 
 export const useLLMConfig = defineStore('llm', () => {
   const currentState = reactive<SettingsConfigState>({
@@ -14,9 +15,10 @@ export const useLLMConfig = defineStore('llm', () => {
   const { state: providers, isLoading } = useAsyncState(LLMConfigService.getProviders(), undefined)
 
   const getAvailableProviders = computed(() => {
-    const schemas = providers.value?.data?.schemas ? Object.values(providers.value.data.schemas) : []
+    const settings = providers.value?.data?.settings
+    const schemas = settings ? settings.map(s => s.schema) : []
     if (schemas.length === 0) currentState.error = 'No large language models found'
-    return schemas
+    return schemas as JsonSchema[]
   })
 
   watchEffect(() => {
@@ -25,14 +27,14 @@ export const useLLMConfig = defineStore('llm', () => {
     currentState.error = providers.value?.status === 'error' ? providers.value.message : undefined
     
     if (currentState.data) {
-      currentState.selected = currentState.data.selected_configuration ?? Object.values(currentState.data.schemas)[0].title
+      currentState.selected = currentState.data.selected_configuration ?? currentState.data.settings[0].schema?.title
       currentState.settings = currentState.data.settings.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {})
     }
   })
 
   const getProviderSchema = (selected = currentState.selected) => {
     if (!selected) return undefined
-    return getAvailableProviders.value.find((schema) => schema.title === selected)
+    return getAvailableProviders.value.find(schema => schema?.title === selected)
   }
 
   const getProviderSettings = (selected = currentState.selected) => {

@@ -8,7 +8,6 @@ export const usePlugins = defineStore('plugins', () => {
   const currentState = reactive<PluginsState>({
     loading: false,
     data: {
-      results: 0,
       installed: [],
       registry: []
     }
@@ -27,9 +26,9 @@ export const usePlugins = defineStore('plugins', () => {
 
   const isInstalled = (id: Plugin['id']) => currentState.data?.installed.find(p => p.id === id)
 
-  const getSchema = (id: Plugin['id']) => settings.value?.data?.schemas[id]
+  const getSchema = (id: Plugin['id']) => settings.value?.data?.settings.find(p => p.name === id)?.schema
 
-  const getSettings = (id: Plugin['id']) => settings.value?.data?.settings.find(p => p.id === id)
+  const getSettings = (id: Plugin['id']) => settings.value?.data?.settings.find(p => p.name === id)?.value
 
   const togglePlugin = async (id: Plugin['id'], name: Plugin['name'], active: boolean) => {
     if (isInstalled(id)) {

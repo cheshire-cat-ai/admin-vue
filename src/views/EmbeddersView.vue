@@ -32,12 +32,6 @@ const saveEmbedder = async () => {
 	if (res) emit('close')
 }
 
-const lastTimeUpdated = computed(() => {
-	const dateString = embedderState.value.data?.settings.find(v => v.name === currentSchema.value?.title)?.updated_at
-	if (dateString) return new Date(dateString * 1000).toLocaleString()
-	else return 'Never'
-})
-
 const requiredFilled = computed(() => {
 	const requiredFields = currentSchema.value?.required
 	if (!requiredFields || requiredFields.length === 0) return true
@@ -55,18 +49,12 @@ watchDeep(embedderState, () => {
 			:load="embedderState.loading" :error="embedderState.error" />
 		<div v-else class="flex grow flex-col gap-4">
 			<SelectBox ref="selectEmbedder" :picked="embedderState.selected"
-				:list="getAvailableEmbedders.map(p => ({ label: p.nameHumanReadable ?? p.title, value: p.title }))"
+				:list="getAvailableEmbedders.map(p => ({ label: p?.nameHumanReadable ?? p?.title, value: p?.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex flex-col gap-4">
-				<div class="flex flex-col">
-					<p class="font-medium">
-						{{ currentSchema?.description }}
-					</p>
-					<p class="text-xs text-neutral-focus/75">
-						Last time updated:
-						{{ lastTimeUpdated }}
-					</p>
-				</div>
+				<p class="font-medium">
+					{{ currentSchema?.description }}
+				</p>
 				<div v-for="prop in currentSchema?.properties" :key="prop.title" class="flex flex-col gap-2">
 					<p class="text-sm text-neutral-focus">
 						<span v-if="!prop.default" class="font-bold text-error">*</span>
