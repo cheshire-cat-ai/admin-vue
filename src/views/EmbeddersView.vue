@@ -49,7 +49,7 @@ watchDeep(embedderState, () => {
 			:load="embedderState.loading" :error="embedderState.error" />
 		<div v-else class="flex grow flex-col gap-4">
 			<SelectBox ref="selectEmbedder" :picked="embedderState.selected"
-				:list="getAvailableEmbedders.map(p => ({ label: p?.nameHumanReadable ?? p?.title, value: p?.title }))"
+				:list="getAvailableEmbedders.map(p => ({ label: p?.humanReadableName ?? p?.title, value: p?.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex flex-col gap-4">
 				<p class="font-medium">

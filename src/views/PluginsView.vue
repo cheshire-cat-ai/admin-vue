@@ -68,17 +68,6 @@ const searchPlugin = () => {
 
 <template>
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
-		<div class="col-span-2 flex flex-col items-center justify-center gap-2 rounded-md p-4">
-			<p class="text-3xl font-bold text-primary">
-				Plugins
-			</p>
-			<p class="text-center font-medium">
-				This page displays the list of installed plugins together with 
-				those from the official registry of the <strong>Cheshire Cat</strong>.
-				Here you can enable or disable individual plugins according to your needs,
-				allowing for greater customization of the user experience.
-			</p>
-		</div>
 		<div class="flex flex-col gap-4">
 			<InputBox v-model.trim="searchText" placeholder="Enter a plugin name..." label="Search for a plugin" 
 				search :disabled="pluginsState.loading || Boolean(pluginsState.error)" @send="searchPlugin()" />
