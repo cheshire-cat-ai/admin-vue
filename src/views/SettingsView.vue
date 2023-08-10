@@ -3,7 +3,7 @@ import SidePanel from '@components/SidePanel.vue'
 import { useSettings } from '@stores/useSettings'
 
 const store = useSettings()
-const { mustSummarize, isAudioEnabled, cat } = storeToRefs(store)
+const { isAudioEnabled, cat } = storeToRefs(store)
 
 const panelTitles = {
 	'embedder': 'Configure the Embedder',
@@ -60,13 +60,6 @@ const openSidePanel = (title: keyof typeof panelTitles) => {
 					<span>Toggle sounds on messages</span>
 				</p>
 				<input v-model="isAudioEnabled" type="checkbox" class="!toggle !toggle-success">
-			</div>
-			<div class="flex w-full items-center justify-between gap-2 rounded-lg bg-base-200 p-4">
-				<p class="flex items-center justify-center gap-2">
-					<ph-text-align-left-bold class="h-5 w-5 shrink-0 text-primary" />
-					<span>Toggle the summarization when uploading documents or urls</span>
-				</p>
-				<input v-model="mustSummarize" type="checkbox" class="!toggle !toggle-success">
 			</div>
 		</div>
 		<SidePanel ref="sidePanel" :title="panelTitle">

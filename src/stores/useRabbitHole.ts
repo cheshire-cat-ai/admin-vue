@@ -2,7 +2,6 @@ import type { FileUploaderState } from '@stores/types'
 import { getErrorMessage } from '@utils/errors'
 import { useNotifications } from '@stores/useNotifications'
 import RabbitHoleService from '@services/RabbitHoleService'
-import { useSettings } from '@stores/useSettings'
 
 export const useRabbitHole = defineStore('rabbitHole', () => {
   const currentState = reactive<FileUploaderState>({
@@ -10,11 +9,10 @@ export const useRabbitHole = defineStore('rabbitHole', () => {
   })
 
   const { showNotification } = useNotifications()
-  const { mustSummarize } = storeToRefs(useSettings())
 
   const sendFile = (file: File) => {
     currentState.loading = true
-    RabbitHoleService.sendFile(file, mustSummarize.value).then(data => {
+    RabbitHoleService.sendFile(file).then(data => {
       currentState.loading = false
       currentState.data = data
       showNotification({
@@ -28,7 +26,7 @@ export const useRabbitHole = defineStore('rabbitHole', () => {
 
   const sendWebsite = (url: string) => {
     currentState.loading = true
-    RabbitHoleService.sendWeb(url, mustSummarize.value).then(data => {
+    RabbitHoleService.sendWeb(url).then(data => {
       currentState.loading = false
       currentState.data = data
       showNotification({
