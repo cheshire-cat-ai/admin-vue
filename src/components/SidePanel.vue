@@ -1,21 +1,22 @@
 <script setup lang="ts">
 defineProps<{
-    title: string
+	title: string
 }>()
 
-const [ isOpen, togglePanel ] = useToggle(false)
+const [isOpen, togglePanel] = useToggle(false)
 
 const emit = defineEmits<{
-	(e: 'close'): void
+	(e: "close"): void
 }>()
 
 const closePanel = () => {
 	isOpen.value = false
-	emit('close')
+	emit("close")
 }
 
 defineExpose({
-    togglePanel, isOpen
+	togglePanel,
+	isOpen,
 })
 </script>
 

@@ -4,10 +4,10 @@ import { useNotifications } from '@stores/useNotifications'
 import type { JSONSettings } from '@models/JSONSchema'
 import type { JsonSchema } from 'ccat-api'
 
-export const useLLMConfig = defineStore('llm', () => {
+export const useLLMConfig = defineStore("llm", () => {
   const currentState = reactive<SettingsConfigState>({
     loading: false,
-    settings: {}
+    settings: {},
   })
 
   const { sendNotificationFromJSON } = useNotifications()
@@ -24,7 +24,7 @@ export const useLLMConfig = defineStore('llm', () => {
   watchEffect(() => {
     currentState.loading = isLoading.value
     currentState.data = providers.value?.data
-    currentState.error = providers.value?.status === 'error' ? providers.value.message : undefined
+    currentState.error = providers.value?.status === "error" ? providers.value.message : undefined
     
     if (currentState.data) {
       currentState.selected = currentState.data.selected_configuration ?? currentState.data.settings[0].schema?.title
@@ -39,17 +39,17 @@ export const useLLMConfig = defineStore('llm', () => {
 
   const getProviderSettings = (selected = currentState.selected) => {
     if (!selected) return {} satisfies JSONSettings
-    return currentState.settings[selected] ?? {} satisfies JSONSettings
+    return currentState.settings[selected] ?? ({} satisfies JSONSettings)
   }
 
   const setProviderSettings = async (name: string, settings: JSONSettings) => {
     const result = await LLMConfigService.setProviderSettings(name, settings)
     sendNotificationFromJSON(result)
-    if (result.status != 'error') {
+    if (result.status != "error") {
       currentState.selected = name
       currentState.settings[name] = settings
     }
-    return result.status != 'error'
+    return result.status != "error"
   }
 
   return {
@@ -57,7 +57,7 @@ export const useLLMConfig = defineStore('llm', () => {
     getAvailableProviders,
     setProviderSettings,
     getProviderSchema,
-    getProviderSettings
+    getProviderSettings,
   }
 })
 

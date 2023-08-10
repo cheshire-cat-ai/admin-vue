@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { type JSONSettings, type SchemaField, InputType } from '@models/JSONSchema'
 import { useEmbedderConfig } from '@stores/useEmbedderConfig'
-import type { JSONSettings } from '@models/JSONSchema'
 import type { JsonSchema } from 'ccat-api'
 import SelectBox from '@components/SelectBox.vue'
 
@@ -11,6 +11,7 @@ const { currentState: embedderState, getAvailableEmbedders } = storeToRefs(store
 const selectEmbedder = ref<InstanceType<typeof SelectBox>>()
 const currentSchema = ref<JsonSchema>()
 const currentSettings = ref<JSONSettings>({})
+const currentFields = ref<SchemaField[]>([])
 
 const emit = defineEmits<{
 	(e: 'close'): void
@@ -18,29 +19,29 @@ const emit = defineEmits<{
 
 const updateProperties = (selected = currentSchema.value?.title) => {
 	currentSchema.value = getEmbedderSchema(selected)
-	currentSettings.value = getEmbedderSettings(selected)
-	Object.values(currentSchema.value?.properties ?? {}).forEach(p => {
-		if (!p.env_names) return
-		if (!currentSettings.value[p.env_names[0]]) currentSettings.value[p.env_names[0]] = p.default
+	currentFields.value = Object.entries(currentSchema.value?.properties ?? {}).map<SchemaField>(([key, value]) => {
+		return {
+			name: key,
+			as: 'input',
+			label: value.title,
+			type: InputType[value.type as keyof typeof InputType],
+			rules: value.default !== undefined ? '' : 'required',
+			default: value.default,
+		}
 	})
+	currentSettings.value = getEmbedderSettings(selected)
 }
 
-const saveEmbedder = async () => {
+const saveEmbedder = async (payload: JSONSettings) => {
 	const embName = selectEmbedder.value?.selectedElement
 	if (!embName?.value) return
-	const res = await setEmbedderSettings(embName.value, currentSettings.value)
+	const res = await setEmbedderSettings(embName.value, payload)
 	if (res) emit('close')
 }
 
-const requiredFilled = computed(() => {
-	const requiredFields = currentSchema.value?.required
-	if (!requiredFields || requiredFields.length === 0) return true
-	else return requiredFields.every(v => currentSettings.value[v])
-})
-
 watchDeep(embedderState, () => {
 	updateProperties(selectEmbedder.value?.selectedElement?.value)
-}, { flush: 'post', immediate: true })
+}, { immediate: true })
 </script>
 
 <template>
@@ -55,20 +56,8 @@ watchDeep(embedderState, () => {
 				<p class="font-medium">
 					{{ currentSchema?.description }}
 				</p>
-				<div v-for="prop in currentSchema?.properties" :key="prop.title" class="flex flex-col gap-2">
-					<p class="text-sm text-neutral-focus">
-						<span v-if="!prop.default" class="font-bold text-error">*</span>
-						{{ prop.title }}
-					</p>
-					<input v-model="currentSettings[prop.env_names[0]]" 
-						:type="prop.type === 'string' ? 'text' : 'number'" :placeholder="prop.title"
-						class="input input-primary input-sm w-full" :class="{ 'pr-0': prop.type !== 'string' }">
-				</div>
+				<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="saveEmbedder" />
 			</div>
-			<button class="btn btn-success btn-sm mt-auto normal-case" 
-				:disabled="!requiredFilled" @click="saveEmbedder">
-				Save
-			</button>
 		</div>
 	</div>
 </template>

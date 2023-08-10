@@ -10,6 +10,7 @@ declare module 'vue' {
     Dialog: typeof import('@headlessui/vue')['Dialog']
     DialogPanel: typeof import('@headlessui/vue')['DialogPanel']
     DialogTitle: typeof import('@headlessui/vue')['DialogTitle']
+    DynamicForm: typeof import('./src/components/DynamicForm.vue')['default']
     ErrorBox: typeof import('./src/components/ErrorBox.vue')['default']
     Header: typeof import('./src/components/Header.vue')['default']
     HeroiconsAdjustmentsHorizontalSolid: typeof import('~icons/heroicons/adjustments-horizontal-solid')['default']

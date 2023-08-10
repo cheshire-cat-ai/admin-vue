@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { upperFirst } from 'lodash'
-import { type Plugin, AcceptedPluginTypes, type JsonSchema } from 'ccat-api'
+import { upperFirst, entries } from 'lodash'
+import { type Plugin, AcceptedPluginTypes } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
 import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
-import type { JSONSettings } from '@models/JSONSchema'
+import { InputType, type SchemaField, type JSONSettings } from '@models/JSONSchema'
 
 const store = usePlugins()
 const { togglePlugin, removePlugin, installPlugin, updateSettings, isInstalled, getSchema, getSettings } = store
@@ -22,7 +22,7 @@ const pluginsList = ref<Plugin[]>([])
 const filteredList = ref<Plugin[]>([])
 const selectedPlugin = ref<Plugin>()
 const currentSettings = ref<JSONSettings>()
-const currentSchema = ref<JsonSchema>()
+const currentFields = ref<SchemaField[]>([])
 
 watchDeep(pluginsState, () => {
 	pluginsList.value = [...new Set([
@@ -53,8 +53,18 @@ onPluginUpload(files => {
 
 const openSettings = (plugin: Plugin) => {
 	selectedPlugin.value = plugin
+	const pluginSchema = getSchema(plugin.id)
+	currentFields.value = entries(pluginSchema?.properties).map<SchemaField>(([key, value]) => {
+		return {
+			name: key,
+			as: "input",
+			label: value.title,
+			type: InputType[value.type as keyof typeof InputType],
+			rules: value.default !== undefined ? "" : "required",
+			default: value.default,
+		}
+	})
 	currentSettings.value = getSettings(plugin.id)
-	currentSchema.value = getSchema(plugin.id)
 	settingsPanel.value?.togglePanel()
 }
 
@@ -151,12 +161,8 @@ const searchPlugin = () => {
 			</p>
 		</div>
 		<SidePanel ref="settingsPanel" title="Plugin Settings">
-			<p>
-				{{ currentSettings }}
-			</p>
-			<button class="btn btn-success btn-sm mt-auto" @click="updateSettings(selectedPlugin?.id, {})">
-				Save
-			</button>
+			<DynamicForm v-if="selectedPlugin" :fields="currentFields" :initial="currentSettings" 
+				@submit="updateSettings(selectedPlugin.id, $event)" />
 		</SidePanel>
 		<ModalBox ref="boxRemove">
 			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
