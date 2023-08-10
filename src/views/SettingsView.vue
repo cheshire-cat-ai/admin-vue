@@ -22,7 +22,7 @@ const openSidePanel = (title: keyof typeof panelTitles) => {
 <template>
 	<div class="grid w-full auto-rows-min gap-8 self-center md:w-3/4 md:grid-cols-2">
 		<div class="col-span-2 flex flex-col items-center justify-center gap-2 rounded-md p-4">
-			<p class="font-medium">
+			<p class="text-lg font-bold">
 				Cheshire Cat AI - Version {{ cat?.version ?? 'Unknown' }}
 			</p>
 		</div>

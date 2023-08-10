@@ -46,7 +46,6 @@ declare module 'vue' {
     NotificationStack: typeof import('./src/components/NotificationStack.vue')['default']
     PhBrainFill: typeof import('~icons/ph/brain-fill')['default']
     PhPlugFill: typeof import('~icons/ph/plug-fill')['default']
-    PhTextAlignLeftBold: typeof import('~icons/ph/text-align-left-bold')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SelectBox: typeof import('./src/components/SelectBox.vue')['default']

@@ -211,7 +211,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 			</div>
 		</div>
 		<ErrorBox v-if="!messagesState.ready" :load="messagesState.loading" :error="messagesState.error" />
-		<div v-else-if="messagesState.messages.length" class="flex grow flex-col overflow-y-auto">
+		<div v-else-if="messagesState.messages.length > 0" class="flex grow flex-col overflow-y-auto">
 			<MessageBox v-for="msg in messagesState.messages"
 				:key="msg.id"
 				:sender="msg.sender"

@@ -20,6 +20,14 @@ const PluginService = Object.freeze({
       `Unable to get plugins settings`
     )
   },
+  getSinglePluginSettings: async (id: string) => {
+    const result = await tryRequest(
+      apiClient.api?.plugins.getPluginSettings(id), 
+      `Getting plugin ${id} settings`, 
+      `Unable to get plugin ${id} settings`
+    )
+    return result.data
+  },
   togglePlugin: async (id: string) => {
     const result = await tryRequest(
       apiClient.api?.plugins.togglePlugin(id), 
@@ -29,12 +37,11 @@ const PluginService = Object.freeze({
     return result.data
   },
   updateSettings: async (id: string, settings: JSONSettings) => {
-    const result = await tryRequest(
+    return await tryRequest(
       apiClient.api?.plugins.upsertPluginSettings(id, settings), 
-      `Updating plugin ${id} settings`, 
+      `Updated plugin ${id} settings`, 
       `Unable to update plugin ${id} settings`
     )
-    return result.data
   },
   deletePlugin: async (id: string) => {
     const result = await tryRequest(

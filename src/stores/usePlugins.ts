@@ -16,7 +16,7 @@ export const usePlugins = defineStore('plugins', () => {
   const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), undefined)
   const { state: settings, execute: fetchSettings } = useAsyncState(PluginService.getPluginsSettings(), undefined)
 
-  const { showNotification } = useNotifications()
+  const { showNotification, sendNotificationFromJSON } = useNotifications()
 
   watchEffect(() => {
     currentState.loading = isLoading.value
@@ -28,13 +28,13 @@ export const usePlugins = defineStore('plugins', () => {
 
   const getSchema = (id: Plugin['id']) => settings.value?.data?.settings.find(p => p.name === id)?.schema
 
-  const getSettings = (id: Plugin['id']) => settings.value?.data?.settings.find(p => p.name === id)?.value
+  const getSettings = async (id: Plugin['id']) => (await PluginService.getSinglePluginSettings(id))?.value
 
   const togglePlugin = async (id: Plugin['id'], name: Plugin['name'], active: boolean) => {
     if (isInstalled(id)) {
       showNotification({
-        text: `Plugin ${name} is being switched ${active ? 'off' : 'on'}!`,
-        type: active ? 'error' : 'success'
+        text: `Plugin ${name} is being switched ${active ? 'OFF' : 'ON'}!`,
+        type: 'info'
       })
       await PluginService.togglePlugin(id)
       fetchPlugins()
@@ -44,8 +44,12 @@ export const usePlugins = defineStore('plugins', () => {
   }
 
   const updateSettings = async (id: Plugin['id'] | undefined, settings: JSONSettings) => {
-    if (!id) return
-    if (isInstalled(id)) await PluginService.updateSettings(id, settings)
+    if (!id) return false
+    if (isInstalled(id)) {
+      const res = await PluginService.updateSettings(id, settings)
+      sendNotificationFromJSON(res)
+      return res.status != "error"
+    }
   }
 
   const removePlugin = async (id: Plugin['id']) => {

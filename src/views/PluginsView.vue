@@ -51,9 +51,10 @@ onPluginUpload(files => {
 	installPlugin(files[0])
 })
 
-const openSettings = (plugin: Plugin) => {
+const openSettings = async (plugin: Plugin) => {
 	selectedPlugin.value = plugin
 	const pluginSchema = getSchema(plugin.id)
+	currentSettings.value = await getSettings(plugin.id)
 	currentFields.value = entries(pluginSchema?.properties).map<SchemaField>(([key, value]) => {
 		return {
 			name: key,
@@ -64,8 +65,12 @@ const openSettings = (plugin: Plugin) => {
 			default: value.default,
 		}
 	})
-	currentSettings.value = getSettings(plugin.id)
 	settingsPanel.value?.togglePanel()
+}
+
+const savePluginSettings = async (payload: JSONSettings) => {
+	const res = await updateSettings(selectedPlugin.value?.id, payload)
+	if (res) settingsPanel.value?.togglePanel()
 }
 
 const searchPlugin = () => {
@@ -161,8 +166,7 @@ const searchPlugin = () => {
 			</p>
 		</div>
 		<SidePanel ref="settingsPanel" title="Plugin Settings">
-			<DynamicForm v-if="selectedPlugin" :fields="currentFields" :initial="currentSettings" 
-				@submit="updateSettings(selectedPlugin.id, $event)" />
+			<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="savePluginSettings" />
 		</SidePanel>
 		<ModalBox ref="boxRemove">
 			<div class="flex flex-col items-center justify-center gap-4 text-neutral">

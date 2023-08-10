@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { entries } from 'lodash'
 import { type JSONSettings, type SchemaField, InputType } from "@models/JSONSchema"
 import { useLLMConfig } from "@stores/useLLMConfig"
 import type { JsonSchema } from "ccat-api"
@@ -19,7 +20,7 @@ const emit = defineEmits<{
 
 const updateProperties = (selected = currentSchema.value?.title) => {
 	currentSchema.value = getProviderSchema(selected)
-	currentFields.value = Object.entries(currentSchema.value?.properties ?? {}).map<SchemaField>(([key, value]) => {
+	currentFields.value = entries(currentSchema.value?.properties ?? {}).map<SchemaField>(([key, value]) => {
 		return {
 			name: key,
 			as: "input",
@@ -52,7 +53,7 @@ watchDeep(llmState, () => {
 			<SelectBox ref="selectProvider" :picked="llmState.selected"
 				:list="getAvailableProviders.map(p => ({ label: p.humanReadableName ?? p.title, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
-			<div class="flex flex-col gap-4">
+			<div class="flex grow flex-col gap-4">
 				<p class="font-medium">
 					{{ currentSchema?.description }}
 				</p>

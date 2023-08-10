@@ -18,7 +18,7 @@ const props = withDefaults(
 const dynamicForm = ref<InstanceType<typeof Form>>()
 const initValues = ref<JSONSettings>()
 
-watch(props, () => {
+watchImmediate(props, () => {
 	initValues.value = props.fields.reduce((p, c) => {
 		return {
 			...p,
