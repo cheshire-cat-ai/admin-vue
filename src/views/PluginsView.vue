@@ -60,7 +60,7 @@ const openSettings = async (plugin: Plugin) => {
 			name: key,
 			as: "input",
 			label: value.title,
-			type: InputType[value.type as keyof typeof InputType],
+			type: value.format ?? InputType[value.type as keyof typeof InputType],
 			rules: value.default !== undefined ? "" : "required",
 			default: value.default,
 		}
