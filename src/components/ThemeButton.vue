@@ -6,8 +6,6 @@ const { toggleDark } = store
 const { isDark } = storeToRefs(store)
 
 watchEffect(() => {
-	// BUG: Fix css styling for code snippets in markdown
-	// The current code doesn't work, it just imports them and use the latest imported
 	if (isDark.value) import("highlight.js/styles/github-dark.css")
 	else import("highlight.js/styles/github.css")
 })
