@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const definedProps = withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
     shown?: boolean
 	closable?: boolean
 }>(), {
@@ -7,12 +7,12 @@ const definedProps = withDefaults(defineProps<{
 	closable: true
 })
 
-const props = reactive(definedProps)
+const { shown, closable } = toRefs(props)
 
-const [isOpen, toggleModal] = useToggle(props.shown)
+const [isOpen, toggleModal] = useToggle(shown.value)
 
 const closeModal = () => {
-	if (props.closable) toggleModal()
+	if (closable.value) toggleModal()
 }
 
 defineExpose({

@@ -48,7 +48,7 @@ const { wipeAllCollections, wipeCollection, callMemory, deleteMemoryPoint } = me
  */
 const wipeMemory = async () => {
 	if (selectCollection.value) {
-		const selected = selectCollection.value.selectedElement?.value
+		const selected = selectCollection.value.selected?.value
 		if (!selected) return
 		if (selected === 'all') await wipeAllCollections()
 		else await wipeCollection(selected)
@@ -157,9 +157,6 @@ const recallMemory = async () => {
 const getSelectCollections = computed(() => {
 	const data = memoryState.value.data ?? []
 	const totalCollections = data.map(v => v.vectors_count).reduce((p, c) => p + c, 0)
-	if (selectCollection.value?.selectedElement?.value === 'all') {
-		selectCollection.value.selectedElement.label = `All (${totalCollections})`
-	}
 	return [
 		{ label: `All (${totalCollections})`, value: 'all' },
 		...data.map(v => ({ label: `${capitalize(v.name)} (${v.vectors_count})`, value: v.name }))
@@ -320,17 +317,17 @@ const downloadResult = () => {
 				<h3 class="text-lg font-bold text-primary">
 					Wipe collection
 				</h3>
-				<p v-if="selectCollection?.selectedElement.label.startsWith('All')">
+				<p v-if="selectCollection?.selected.label.startsWith('All')">
 					Are you sure you want to wipe 
 					<span class="font-bold">
-						{{ selectCollection?.selectedElement.label.toLowerCase() }}
+						{{ selectCollection?.selected.label.toLowerCase() }}
 					</span> 
 					the collections?
 				</p>
 				<p v-else>
 					Are you sure you want to wipe the 
 					<span class="font-bold">
-						{{ selectCollection?.selectedElement.label.toLowerCase() }}
+						{{ selectCollection?.selected.label.toLowerCase() }}
 					</span>
 					collection?
 				</p>

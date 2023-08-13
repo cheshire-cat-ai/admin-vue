@@ -13,7 +13,6 @@ The Cheshire Cat is a framework to build long tail AIs:
 - 100% dockerized for simple and efficient deployment
 - Extensibility via plugins, offering unparalleled flexibility to users.
 
-
 ### Pre-requisites
 
 Make sure you have the following installed on your machine:
@@ -55,5 +54,5 @@ Build the app for production
 Runs the build and serves the built app on port `3000` (default)
 
 ```bash
-  npm run start
+  npm run preview
 ```

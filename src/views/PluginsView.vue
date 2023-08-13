@@ -8,7 +8,8 @@ import ModalBox from '@components/ModalBox.vue'
 import { InputType, type SchemaField, type JSONSettings } from '@models/JSONSchema'
 
 const store = usePlugins()
-const { togglePlugin, removePlugin, installPlugin, updateSettings, isInstalled, getSchema, getSettings } = store
+const { togglePlugin, removePlugin, installPlugin,
+	updateSettings, isInstalled, getSchema, getSettings } = store
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { currentFilters } = storeToRefs(useSettings())
@@ -17,6 +18,7 @@ const { open: uploadPlugin, onChange: onPluginUpload } = useFileDialog()
 
 const boxRemove = ref<InstanceType<typeof ModalBox>>()
 const settingsPanel = ref<InstanceType<typeof SidePanel>>()
+const selectedPageSize = ref(25)
 const searchText = ref("")
 const pluginsList = ref<Plugin[]>([])
 const filteredList = ref<Plugin[]>([])
@@ -76,7 +78,7 @@ const savePluginSettings = async (payload: JSONSettings) => {
 const searchPlugin = () => {
 	filteredList.value = pluginsList.value.filter(p => {
 		return p.name.toLowerCase().includes(searchText.value) ||
-		p.id.toLowerCase().includes(searchText.value)
+			p.id.toLowerCase().includes(searchText.value)
 	})
 }
 </script>
@@ -98,6 +100,7 @@ const searchPlugin = () => {
 			<p class="font-medium">
 				Installed plugins: {{ pluginsState.data?.installed?.length ?? 0 }}
 			</p>
+			<!--<SelectBox v-model="selectedPageSize" :list="[10, 25, 50, 100].map(p => ({ label: p.toString(), value: p }))" />-->
 			<button :disabled="pluginsState.loading || Boolean(pluginsState.error)"
 				class="btn btn-primary btn-sm" @click="uploadPlugin({ multiple: false, accept: AcceptedPluginTypes.join(',') })">
 				Upload plugin
@@ -106,59 +109,62 @@ const searchPlugin = () => {
 		<ErrorBox v-if="pluginsState.loading || pluginsState.error" 
 			:load="pluginsState.loading" :error="pluginsState.error" />
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
-			<div v-for="item in filteredList" :key="item.id" class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
-				<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain">
-				<div v-else class="avatar placeholder self-center">
-					<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-accent to-primary text-base-100">
-						<span class="text-5xl font-bold leading-3">{{ upperFirst(item.name)[0] }}</span>
+			<Pagination v-slot="{ list }" :list="filteredList" :pageSize="selectedPageSize">
+				<div v-for="item in list" :key="item.id" 
+					class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
+					<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain">
+					<div v-else class="avatar placeholder self-center">
+						<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-accent to-primary text-base-100">
+							<span class="text-5xl font-bold leading-3">{{ upperFirst(item.name)[0] }}</span>
+						</div>
 					</div>
-				</div>
-				<div class="flex grow flex-col">
-					<div class="flex justify-between">
-						<p class="text-sm font-medium text-neutral-focus">
-							<span class="text-xl font-bold text-neutral">{{ item.name }}</span>
-							by
-							<a :href="item.author_url" target="_blank" 
-								class="link-primary link no-underline" :class="{'pointer-events-none': item.author_url === ''}">
-								{{ item.author_name }}
+					<div class="flex grow flex-col">
+						<div class="flex justify-between">
+							<p class="text-sm font-medium text-neutral-focus">
+								<span class="text-xl font-bold text-neutral">{{ item.name }}</span>
+								by
+								<a :href="item.author_url" target="_blank" 
+									class="link-primary link no-underline" :class="{'pointer-events-none': item.author_url === ''}">
+									{{ item.author_name }}
+								</a>
+							</p>
+							<template v-if="item.id !== 'core_plugin'">
+								<button v-if="isInstalled(item.id)" class="btn btn-error btn-xs" @click="openRemoveModal(item)">
+									Delete
+								</button>
+								<button v-else class="btn btn-success btn-xs">
+									Install
+								</button>
+							</template>
+						</div>
+						<div class="flex h-6 items-center gap-1 text-sm font-medium text-neutral-focus">
+							<p>v{{ item.version }}</p>
+							<a v-if="item.plugin_url" :href="item.plugin_url" target="_blank" 
+								class="btn btn-circle btn-ghost btn-xs text-primary">
+								<heroicons-link-20-solid class="h-4 w-4" />
 							</a>
+						</div>
+						<p class="my-2 text-sm">
+							{{ item.description }}
 						</p>
-						<template v-if="item.id !== 'core_plugin'">
-							<button v-if="isInstalled(item.id)" class="btn btn-error btn-xs" @click="openRemoveModal(item)">
-								Delete
-							</button>
-							<button v-else class="btn btn-success btn-xs">
-								Install
-							</button>
-						</template>
-					</div>
-					<div class="flex h-6 items-center gap-1 text-sm font-medium text-neutral-focus">
-						<p>v{{ item.version }}</p>
-						<a v-if="item.plugin_url" :href="item.plugin_url" target="_blank" 
-							class="btn btn-circle btn-ghost btn-xs text-primary">
-							<heroicons-link-20-solid class="h-4 w-4" />
-						</a>
-					</div>
-					<p class="my-2 text-sm">
-						{{ item.description }}
-					</p>
-					<div class="flex h-8 items-center justify-between gap-4">
-						<div class="flex flex-wrap gap-2">
-							<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
-								{{ tag.trim() }}
+						<div class="flex h-8 items-center justify-between gap-4">
+							<div class="flex flex-wrap gap-2">
+								<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
+									{{ tag.trim() }}
+								</div>
+							</div>
+							<div class="flex flex-wrap items-center gap-2">
+								<button v-if="isInstalled(item.id) && getSchema(item.id) && item.active"
+									class="btn btn-circle btn-ghost btn-sm" @click="openSettings(item)">
+									<heroicons-cog-6-tooth-20-solid class="h-5 w-5" />
+								</button>
+								<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" v-model="item.active" type="checkbox" 
+									class="!toggle !toggle-success" @click="togglePlugin(item.id, item.name, item.active!)">
 							</div>
 						</div>
-						<div class="flex flex-wrap items-center gap-2">
-							<button v-if="isInstalled(item.id) && getSchema(item.id) && item.active"
-								class="btn btn-circle btn-ghost btn-sm" @click="openSettings(item)">
-								<heroicons-cog-6-tooth-20-solid class="h-5 w-5" />
-							</button>
-							<input v-if="item.id !== 'core_plugin' && isInstalled(item.id)" v-model="item.active" type="checkbox" 
-								class="!toggle !toggle-success" @click="togglePlugin(item.id, item.name, item.active!)">
-						</div>
 					</div>
 				</div>
-			</div>
+			</Pagination>
 		</div>
 		<div v-else class="flex grow items-center justify-center">
 			<p class="rounded-lg bg-base-200 p-4 text-lg font-medium md:text-xl">

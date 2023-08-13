@@ -3,13 +3,12 @@ import { entries } from 'lodash'
 import { type JSONSettings, type SchemaField, InputType } from '@models/JSONSchema'
 import { useEmbedderConfig } from '@stores/useEmbedderConfig'
 import type { JsonSchema } from 'ccat-api'
-import SelectBox from '@components/SelectBox.vue'
 
 const storeEmbedder = useEmbedderConfig()
 const { getEmbedderSchema, getEmbedderSettings, setEmbedderSettings } = storeEmbedder
 const { currentState: embedderState, getAvailableEmbedders } = storeToRefs(storeEmbedder)
 
-const selectEmbedder = ref<InstanceType<typeof SelectBox>>()
+const selectedEmbedder = ref(embedderState.value.selected)
 const currentSchema = ref<JsonSchema>()
 const currentSettings = ref<JSONSettings>({})
 const currentFields = ref<SchemaField[]>([])
@@ -34,14 +33,13 @@ const updateProperties = (selected = currentSchema.value?.title) => {
 }
 
 const saveEmbedder = async (payload: JSONSettings) => {
-	const embName = selectEmbedder.value?.selectedElement
-	if (!embName?.value) return
-	const res = await setEmbedderSettings(embName.value, payload)
+	if (!selectedEmbedder.value) return
+	const res = await setEmbedderSettings(selectedEmbedder.value, payload)
 	if (res) emit('close')
 }
 
 watchDeep(embedderState, () => {
-	updateProperties(selectEmbedder.value?.selectedElement?.value)
+	updateProperties(selectedEmbedder.value)
 }, { immediate: true })
 </script>
 
@@ -50,8 +48,8 @@ watchDeep(embedderState, () => {
 		<ErrorBox v-if="embedderState.loading || embedderState.error" 
 			:load="embedderState.loading" :error="embedderState.error" />
 		<div v-else class="flex grow flex-col gap-4">
-			<SelectBox ref="selectEmbedder" :picked="embedderState.selected"
-				:list="getAvailableEmbedders.map(p => ({ label: p?.humanReadableName ?? p?.title, value: p?.title }))"
+			<SelectBox v-model="selectedEmbedder"
+				:list="getAvailableEmbedders.map(p => ({ label: p.humanReadableName ?? p.title, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex grow flex-col gap-4">
 				<p class="font-medium">

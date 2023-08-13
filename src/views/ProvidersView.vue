@@ -3,13 +3,12 @@ import { entries } from 'lodash'
 import { type JSONSettings, type SchemaField, InputType } from "@models/JSONSchema"
 import { useLLMConfig } from "@stores/useLLMConfig"
 import type { JsonSchema } from "ccat-api"
-import SelectBox from "@components/SelectBox.vue"
 
 const storeLLM = useLLMConfig()
 const { getProviderSchema, setProviderSettings, getProviderSettings } = storeLLM
 const { currentState: llmState, getAvailableProviders } = storeToRefs(storeLLM)
 
-const selectProvider = ref<InstanceType<typeof SelectBox>>()
+const selectedProvider = ref(llmState.value.selected)
 const currentSchema = ref<JsonSchema>()
 const currentSettings = ref<JSONSettings>({})
 const currentFields = ref<SchemaField[]>([])
@@ -19,6 +18,7 @@ const emit = defineEmits<{
 }>()
 
 const updateProperties = (selected = currentSchema.value?.title) => {
+	selectedProvider.value = selected
 	currentSchema.value = getProviderSchema(selected)
 	currentFields.value = entries(currentSchema.value?.properties ?? {}).map<SchemaField>(([key, value]) => {
 		return {
@@ -34,14 +34,13 @@ const updateProperties = (selected = currentSchema.value?.title) => {
 }
 
 const saveProvider = async (payload: JSONSettings) => {
-	const llmName = selectProvider.value?.selectedElement
-	if (!llmName?.value) return
-	const res = await setProviderSettings(llmName.value, payload)
+	if (!selectedProvider.value) return
+	const res = await setProviderSettings(selectedProvider.value, payload)
 	if (res) emit("close")
 }
 
 watchDeep(llmState, () => {
-	updateProperties(selectProvider.value?.selectedElement?.value)
+	updateProperties(llmState.value.selected)
 }, { immediate: true })
 </script>
 
@@ -50,7 +49,7 @@ watchDeep(llmState, () => {
 		<ErrorBox v-if="llmState.loading || llmState.error" 
 			:load="llmState.loading" :error="llmState.error" />
 		<div v-else class="flex grow flex-col gap-4">
-			<SelectBox ref="selectProvider" :picked="llmState.selected"
+			<SelectBox v-model="selectedProvider"
 				:list="getAvailableProviders.map(p => ({ label: p.humanReadableName ?? p.title, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex grow flex-col gap-4">
