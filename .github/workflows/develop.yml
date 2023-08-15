@@ -1,4 +1,4 @@
-name: Release Zip
+name: Release Develop Zip
 
 on:
   push:

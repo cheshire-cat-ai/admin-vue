@@ -1,4 +1,4 @@
-name: Release Zip
+name: Release Main Zip
 
 on:
   push:
@@ -10,6 +10,7 @@ concurrency:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   build:
