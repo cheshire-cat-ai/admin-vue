@@ -13,13 +13,19 @@ const markdown = new Remarkable({
 	typographer: true,
 	highlight: (str, lang) => {
 		if (lang && hljs.getLanguage(lang)) {
-			try { return hljs.highlight(str, { language: lang }).value }
-			catch (_) { console.log(_) }
+			try {
+				return hljs.highlight(str, { language: lang }).value
+			} catch (_) {
+				console.log(_)
+			}
 		}
-		try { return hljs.highlightAuto(str).value }
-		catch (_) { console.log(_) }
+		try {
+			return hljs.highlightAuto(str).value
+		} catch (_) {
+			console.log(_)
+		}
 		return '' // use external default escaping
-	}
+	},
 }).use(linkify)
 
 markdown.inline.ruler.enable(['sup', 'sub'])
@@ -27,24 +33,26 @@ markdown.core.ruler.enable(['abbr'])
 markdown.block.ruler.enable(['footnote', 'deflist'])
 
 const props = defineProps<{
-	sender: 'bot' | 'user',
-	text: string,
+	sender: 'bot' | 'user'
+	text: string
 	why: any
 }>()
 
 const elementContent = ref<HTMLParagraphElement>()
-const isLengthy = ref(false), showReadMore = ref(true)
+const isLengthy = ref(false),
+	showReadMore = ref(true)
 
 const maxLength = 3000
 
-const renderedText = computed(() => showReadMore.value ? markdown.render(props.text.slice(0, maxLength)) : markdown.render(props.text))
+const renderedText = computed(() =>
+	showReadMore.value ? markdown.render(props.text.slice(0, maxLength)) : markdown.render(props.text),
+)
 
 watch(elementContent, () => {
 	if (!elementContent.value) return
 	const content = (elementContent.value.textContent || elementContent.value.innerText).replaceAll('\n', '')
 	isLengthy.value = content.length >= maxLength
 })
-
 </script>
 
 <template>
@@ -61,11 +69,8 @@ watch(elementContent, () => {
 				</div>
 			</div>
 			<div v-if="why" class="divider divider-horizontal m-0 w-px before:bg-base-200 after:bg-base-200" />
-			<button v-if="why" class="btn btn-circle btn-primary btn-xs mx-2"
-				@click="whyPanel?.togglePanel()">
-				<p class="text-base">
-					?
-				</p>
+			<button v-if="why" class="btn btn-circle btn-primary btn-xs mx-2" @click="whyPanel?.togglePanel()">
+				<p class="text-base">?</p>
 			</button>
 		</div>
 		<SidePanel v-if="why" ref="whyPanel" title="Why this response">

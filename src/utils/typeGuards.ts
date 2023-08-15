@@ -23,5 +23,5 @@ export const isError = (value: unknown): value is Error => value instanceof Erro
  * @param value
  */
 export const isErrorLikeObject = (value: unknown): value is { message: string } => {
-  return !!(value && typeof value === 'object' && 'message' in value)
+	return !!(value && typeof value === 'object' && 'message' in value)
 }

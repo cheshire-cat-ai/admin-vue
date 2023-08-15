@@ -2,7 +2,7 @@ name: Release Main Zip
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -17,33 +17,33 @@ jobs:
     timeout-minutes: 120
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
-    - name: Install dependencies
-      run: npm ci
-    - name: "TODO to Issue"
-      uses: "alstr/todo-to-issue-action@v4"
-      with:
-        IDENTIFIERS: '[{"name": "FEATURE", "labels": ["enhancement"]}, {"name": "BUG", "labels": ["bug"]}]'
-        ISSUE_TEMPLATE: '**Describe the reason of this issue**\n{{ body }}\n\nThe issue is present here:\n\n{{ snippet }}'
-    - name: Build static files
-      run: npm run build --if-present
-    - name: Zip Release
-      uses: TheDoctor0/zip-release@0.7.1
-      with:
-        type: 'zip'
-        filename: 'release.zip'
-        directory: './dist'
-        path: '.'
-    - name: Upload Release
-      uses: ncipollo/release-action@v1.12.0
-      with:
-        tag: 'Admin'
-        artifacts: './dist/release.zip'
-        allowUpdates: true
-        replacesArtifacts: true
-        body: |
-          ${{ github.event.head_commit.message }}
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm ci
+      - name: 'TODO to Issue'
+        uses: 'alstr/todo-to-issue-action@v4'
+        with:
+          IDENTIFIERS: '[{"name": "FEATURE", "labels": ["enhancement"]}, {"name": "BUG", "labels": ["bug"]}]'
+          ISSUE_TEMPLATE: '**Describe the reason of this issue**\n{{ body }}\n\nThe issue is present here:\n\n{{ snippet }}'
+      - name: Build static files
+        run: npm run build --if-present
+      - name: Zip Release
+        uses: TheDoctor0/zip-release@0.7.1
+        with:
+          type: 'zip'
+          filename: 'release.zip'
+          directory: './dist'
+          path: '.'
+      - name: Upload Release
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          tag: 'Admin'
+          artifacts: './dist/release.zip'
+          allowUpdates: true
+          replacesArtifacts: true
+          body: |
+            ${{ github.event.head_commit.message }}
+          token: ${{ secrets.GITHUB_TOKEN }}

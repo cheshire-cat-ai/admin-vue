@@ -4,25 +4,25 @@ import { useMemory } from '@stores/useMemory'
 import { useSettings } from '@stores/useSettings'
 import SelectBox from '@components/SelectBox.vue'
 import { now } from 'lodash'
-import ApexChart from "vue3-apexcharts"
+import ApexChart from 'vue3-apexcharts'
 import { Matrix, TSNE } from '@saehrimnir/druidjs'
 import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
 import type { VectorsData } from 'ccat-api'
 
 interface MarkerData {
-	id: string,
-	collection: string,
-	text: string,
-	when: string,
-	source: string,
+	id: string
+	collection: string
+	text: string
+	when: string
+	source: string
 	score: number
 }
 
 interface PlotData {
 	name: string
 	data: {
-		x: number,
+		x: number
 		y: number
 	}[]
 	meta?: MarkerData[]
@@ -30,14 +30,17 @@ interface PlotData {
 
 const { isDark } = storeToRefs(useSettings())
 
-const callText = ref(''), callOutput = ref<VectorsData>(), kMems = ref(10)
-const plotOutput = ref<PlotData[]>([]), clickedPoint = ref<MarkerData>()
+const callText = ref(''),
+	callOutput = ref<VectorsData>(),
+	kMems = ref(10)
+const plotOutput = ref<PlotData[]>([]),
+	clickedPoint = ref<MarkerData>()
 const pointInfoPanel = ref<InstanceType<typeof SidePanel>>()
 const memoryDetailsPanel = ref<InstanceType<typeof SidePanel>>()
 const boxWipe = ref<InstanceType<typeof ModalBox>>()
 const selectCollection = ref<InstanceType<typeof SelectBox>>()
 
-const [ showSpinner, toggleSpinner ] = useToggle(false)
+const [showSpinner, toggleSpinner] = useToggle(false)
 
 const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
@@ -63,8 +66,11 @@ const wipeMemory = async () => {
  * @param mats the matrices to pass to the algorithm
  */
 const reduceTo2d = (options: ConstructorParameters<typeof TSNE>['1'], iterations: number, ...mats: number[][][]) => {
-    const matrix = map(omitBy(mats, isEmpty), v => Matrix.from(v))
-    const tsne = new TSNE(matrix.reduce((p, c) => p.concat(c, "vertical")), options).transform(iterations)
+	const matrix = map(omitBy(mats, isEmpty), v => Matrix.from(v))
+	const tsne = new TSNE(
+		matrix.reduce((p, c) => p.concat(c, 'vertical')),
+		options,
+	).transform(iterations)
 	return tsne instanceof Matrix ? tsne.to2dArray : tsne
 }
 
@@ -78,9 +84,14 @@ const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[
 
 	const maxPerplexity = reduce(values(collectionsLengths), (p, c) => p + c, 0)
 
-	const matrix = reduceTo2d({ 
-		perplexity: Math.min(Math.max(kMems.value, 2), maxPerplexity)
-	}, 1000, ...map(jsonResult, (v) => map(v, c => c.vector)), mats)
+	const matrix = reduceTo2d(
+		{
+			perplexity: Math.min(Math.max(kMems.value, 2), maxPerplexity),
+		},
+		1000,
+		...map(jsonResult, v => map(v, c => c.vector)),
+		mats,
+	)
 
 	return {
 		matrix,
@@ -91,7 +102,7 @@ const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[
 				name: capitalize(c[0]),
 				data: matrix.slice(prev, prev + curr).map(m => ({
 					x: m[0],
-					y: m[1]
+					y: m[1],
 				})),
 				meta: c[1].map(v => {
 					return {
@@ -100,11 +111,11 @@ const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[
 						text: v.page_content,
 						source: v.metadata.source,
 						when: new Date(v.metadata.when * 1000).toLocaleString(),
-						score: v.score
+						score: v.score,
 					}
-				})
+				}),
 			}
-		}) as PlotData[]
+		}) as PlotData[],
 	}
 }
 
@@ -137,16 +148,18 @@ const recallMemory = async () => {
 		name: 'Query',
 		data: memoryPlot.matrix.slice(-1).map(v => ({
 			x: v[0],
-			y: v[1]
+			y: v[1],
 		})),
-		meta: [{
-			id: 'none',
-			collection: 'query',
-			text: callText.value,
-			source: 'query',
-			when: 'now',
-			score: 1,
-		}]
+		meta: [
+			{
+				id: 'none',
+				collection: 'query',
+				text: callText.value,
+				source: 'query',
+				when: 'now',
+				score: 1,
+			},
+		],
 	})
 
 	callOutput.value = result.vectors
@@ -159,7 +172,7 @@ const getSelectCollections = computed(() => {
 	const totalCollections = data.map(v => v.vectors_count).reduce((p, c) => p + c, 0)
 	return [
 		{ label: `All (${totalCollections})`, value: 'all' },
-		...data.map(v => ({ label: `${capitalize(v.name)} (${v.vectors_count})`, value: v.name }))
+		...data.map(v => ({ label: `${capitalize(v.name)} (${v.vectors_count})`, value: v.name })),
 	]
 })
 
@@ -182,7 +195,10 @@ const downloadResult = () => {
 	const output = { export_time: now() }
 	assign(output, callOutput.value)
 	const element = document.createElement('a')
-	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(output, undefined, 2)))
+	element.setAttribute(
+		'href',
+		'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(output, undefined, 2)),
+	)
 	element.setAttribute('download', 'recalledMemories.json')
 	element.style.display = 'none'
 	document.body.appendChild(element)
@@ -194,28 +210,44 @@ const downloadResult = () => {
 <template>
 	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
 		<div class="flex gap-4">
-			<InputBox v-model.trim="callText" placeholder="Enter a text..." label="Search similar memories" 
-				search :disabled="Boolean(memoryState.error) || memoryState.loading" @send="recallMemory()" />
+			<InputBox
+				v-model.trim="callText"
+				placeholder="Enter a text..."
+				label="Search similar memories"
+				search
+				:disabled="Boolean(memoryState.error) || memoryState.loading"
+				@send="recallMemory()" />
 			<div class="form-control">
 				<label class="label">
 					<span class="label-text font-medium text-primary">K memories</span>
 				</label>
-				<input v-model="kMems" :disabled="Boolean(memoryState.error) || memoryState.loading" type="number" min="1" 
-					class="input input-primary input-sm w-24">
+				<input
+					v-model="kMems"
+					:disabled="Boolean(memoryState.error) || memoryState.loading"
+					type="number"
+					min="1"
+					class="input input-primary input-sm w-24" />
 			</div>
 		</div>
-		<ErrorBox v-if="showSpinner || memoryState.loading || memoryState.error" 
-			:load="showSpinner || memoryState.loading" :error="memoryState.error" />
-		<ApexChart v-else-if="plotOutput && callOutput" v-memo="[callOutput, plotOutput]"
-			type="scatter" width="100%" height="500" class="min-w-full max-w-full" 
+		<ErrorBox
+			v-if="showSpinner || memoryState.loading || memoryState.error"
+			:load="showSpinner || memoryState.loading"
+			:error="memoryState.error" />
+		<ApexChart
+			v-else-if="plotOutput && callOutput"
+			v-memo="[callOutput, plotOutput]"
+			type="scatter"
+			width="100%"
+			height="500"
+			class="min-w-full max-w-full"
 			:options="{
 				chart: {
 					offsetY: 8,
 					defaultLocale: 'en',
 					fontFamily: 'Ubuntu',
 					background: 'transparent',
-					animations: { 
-						speed: 300
+					animations: {
+						speed: 300,
 					},
 					toolbar: {
 						tools: {
@@ -227,21 +259,21 @@ const downloadResult = () => {
 									index: 3,
 									title: 'Export the recalled memories',
 									class: 'custom-icon',
-									click: downloadResult
+									click: downloadResult,
 								},
 								{
 									icon: '<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>Details</button>',
 									index: 3,
 									title: 'Show the recalled memories details',
 									class: 'custom-icon',
-									click: () => memoryDetailsPanel?.togglePanel()
-								}
-							]
+									click: () => memoryDetailsPanel?.togglePanel(),
+								},
+							],
 						},
 						export: {
-							csv: { filename: 'recallPlot', },
-							svg: { filename: 'recallPlot', },
-							png: { filename: 'recallPlot', }
+							csv: { filename: 'recallPlot' },
+							svg: { filename: 'recallPlot' },
+							png: { filename: 'recallPlot' },
 						},
 					},
 					zoom: {
@@ -250,15 +282,15 @@ const downloadResult = () => {
 						zoomedArea: {
 							fill: {
 								color: isDark ? '#F4F4F5' : '#383938',
-								opacity: 0.4
+								opacity: 0.4,
 							},
 							stroke: {
 								color: isDark ? '#F4F4F5' : '#383938',
 								opacity: 0.4,
-								width: 1
-							}
-						}
-					}
+								width: 1,
+							},
+						},
+					},
 				},
 				noData: {
 					text: 'No points available',
@@ -269,75 +301,72 @@ const downloadResult = () => {
 					style: {
 						color: isDark ? '#F4F4F5' : '#383938',
 						fontSize: '2rem',
-						fontFamily: 'Ubuntu'
-					}
+						fontFamily: 'Ubuntu',
+					},
 				},
 				grid: {
 					borderColor: isDark ? '#F4F4F5' : '#383938',
-					xaxis: { lines: { show: true, }, },   
-					yaxis: { lines: { show: true, }, },
+					xaxis: { lines: { show: true } },
+					yaxis: { lines: { show: true } },
 				},
-				legend: { showForSingleSeries: true, },
-				theme: { mode: isDark ? 'dark' : 'light', },
+				legend: { showForSingleSeries: true },
+				theme: { mode: isDark ? 'dark' : 'light' },
 				tooltip: {
 					theme: isDark ? 'dark' : 'light',
 					intersect: true,
-					style: { fontFamily: 'Ubuntu', },
+					style: { fontFamily: 'Ubuntu' },
 					custom: ({ seriesIndex, dataPointIndex, w }: any) => {
 						const text = w.config.series[seriesIndex].meta[dataPointIndex].text
 						return `<div class=\'marker-tooltip flex flex-col p-1\'>
 							<i>${text.substring(0, 30).concat('...')}</i>
 							<b><i>*Click to show more*</i></b>
 						</div>`
-					}
+					},
 				},
-				markers: { strokeWidth: 0, },
+				markers: { strokeWidth: 0 },
 				yaxis: {
 					type: 'numeric',
-					labels: { show: false, },
-					tooltip: { enabled: false, }
+					labels: { show: false },
+					tooltip: { enabled: false },
 				},
 				xaxis: {
 					type: 'numeric',
-					labels: { show: false, },
-					tooltip: { enabled: false, }
-				}
+					labels: { show: false },
+					tooltip: { enabled: false },
+				},
 			}"
-			:series="plotOutput" @markerClick="onMarkerClick" />
+			:series="plotOutput"
+			@markerClick="onMarkerClick" />
 		<div class="divider !my-0" />
 		<div class="join w-fit self-center shadow-xl">
-			<button :disabled="Boolean(memoryState.error) || memoryState.loading" 
-				class="btn btn-error join-item" @click="boxWipe?.toggleModal()">
+			<button
+				:disabled="Boolean(memoryState.error) || memoryState.loading"
+				class="btn btn-error join-item"
+				@click="boxWipe?.toggleModal()">
 				Wipe
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100 p-1" :list="getSelectCollections" />
 		</div>
 		<ModalBox ref="boxWipe">
 			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
-				<h3 class="text-lg font-bold text-primary">
-					Wipe collection
-				</h3>
+				<h3 class="text-lg font-bold text-primary">Wipe collection</h3>
 				<p v-if="selectCollection?.selected.label.startsWith('All')">
-					Are you sure you want to wipe 
+					Are you sure you want to wipe
 					<span class="font-bold">
 						{{ selectCollection?.selected.label.toLowerCase() }}
-					</span> 
+					</span>
 					the collections?
 				</p>
 				<p v-else>
-					Are you sure you want to wipe the 
+					Are you sure you want to wipe the
 					<span class="font-bold">
 						{{ selectCollection?.selected.label.toLowerCase() }}
 					</span>
 					collection?
 				</p>
 				<div class="flex items-center justify-center gap-2">
-					<button class="btn btn-outline btn-sm" @click="boxWipe?.toggleModal()">
-						No
-					</button>
-					<button class="btn btn-error btn-sm" @click="wipeMemory()">
-						Yes
-					</button>
+					<button class="btn btn-outline btn-sm" @click="boxWipe?.toggleModal()">No</button>
+					<button class="btn btn-error btn-sm" @click="wipeMemory()">Yes</button>
 				</div>
 			</div>
 		</ModalBox>
@@ -360,8 +389,10 @@ const downloadResult = () => {
 					</tbody>
 				</table>
 			</div>
-			<button v-if="clickedPoint && !['procedural', 'query'].includes(clickedPoint.collection)" 
-				class="btn btn-error btn-sm mt-auto" @click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
+			<button
+				v-if="clickedPoint && !['procedural', 'query'].includes(clickedPoint.collection)"
+				class="btn btn-error btn-sm mt-auto"
+				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
 				Delete memory point
 			</button>
 		</SidePanel>
@@ -373,4 +404,3 @@ const downloadResult = () => {
 	@apply font-medium text-primary;
 }
 </style>
-

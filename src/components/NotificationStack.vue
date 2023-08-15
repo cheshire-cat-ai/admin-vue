@@ -7,12 +7,15 @@ const { getNotifications } = useNotifications()
 <template>
 	<div class="toast toast-end toast-top top-16 z-50">
 		<TransitionGroup name="notifications">
-			<div v-for="notification in getNotifications()" 
-				:key="notification.id" class="alert grid-cols-none py-2 font-medium text-base-100" :class="{
-					'hidden': notification.hidden,
+			<div
+				v-for="notification in getNotifications()"
+				:key="notification.id"
+				class="alert grid-cols-none py-2 font-medium text-base-100"
+				:class="{
+					hidden: notification.hidden,
 					'alert-info': notification.type === 'info',
 					'alert-error': notification.type === 'error',
-					'alert-success': notification.type === 'success'
+					'alert-success': notification.type === 'success',
 				}">
 				<span>{{ notification.text }}</span>
 			</div>
@@ -21,12 +24,15 @@ const { getNotifications } = useNotifications()
 </template>
 
 <style scoped>
-.notifications-move, .notifications-enter-active, .notifications-leave-active {
-    transition: all 0.5s ease;
+.notifications-move,
+.notifications-enter-active,
+.notifications-leave-active {
+	transition: all 0.5s ease;
 }
 
-.notifications-enter-from, .notifications-leave-to {
-    opacity: 0;
-    transform: translateX(30px);
+.notifications-enter-from,
+.notifications-leave-to {
+	opacity: 0;
+	transform: translateX(30px);
 }
 </style>

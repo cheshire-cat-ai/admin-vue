@@ -5,90 +5,94 @@ import PluginService from '@services/PluginService'
 import type { JSONSettings } from '@models/JSONSchema'
 
 export const usePlugins = defineStore('plugins', () => {
-  const currentState = reactive<PluginsState>({
-    loading: false,
-    data: {
-      installed: [],
-      registry: []
-    }
-  })
+	const currentState = reactive<PluginsState>({
+		loading: false,
+		data: {
+			installed: [],
+			registry: [],
+		},
+	})
 
-  const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), undefined)
-  const { state: settings, execute: fetchSettings } = useAsyncState(PluginService.getPluginsSettings(), undefined)
+	const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), undefined)
+	const { state: settings, execute: fetchSettings } = useAsyncState(PluginService.getPluginsSettings(), undefined)
 
-  const { showNotification, sendNotificationFromJSON } = useNotifications()
+	const { showNotification, sendNotificationFromJSON } = useNotifications()
 
-  watchEffect(() => {
-    currentState.loading = isLoading.value
-    currentState.data = plugins.value?.data
-    currentState.error = plugins.value?.status === 'error' ? plugins.value.message : undefined
-  })
+	watchEffect(() => {
+		currentState.loading = isLoading.value
+		currentState.data = plugins.value?.data
+		currentState.error = plugins.value?.status === 'error' ? plugins.value.message : undefined
+	})
 
-  const isInstalled = (id: Plugin['id']) => currentState.data?.installed.find(p => p.id === id)
+	const isInstalled = (id: Plugin['id']) => currentState.data?.installed.find(p => p.id === id)
 
-  const getSchema = (id: Plugin['id']) => settings.value?.data?.settings.find(p => p.name === id)?.schema
+	const getSchema = (id: Plugin['id']) => settings.value?.data?.settings.find(p => p.name === id)?.schema
 
-  const getSettings = async (id: Plugin['id']) => (await PluginService.getSinglePluginSettings(id))?.value
+	const getSettings = async (id: Plugin['id']) => (await PluginService.getSinglePluginSettings(id))?.value
 
-  const togglePlugin = async (id: Plugin['id'], name: Plugin['name'], active: boolean) => {
-    if (isInstalled(id)) {
-      showNotification({
-        text: `Plugin ${name} is being switched ${active ? 'OFF' : 'ON'}!`,
-        type: 'info'
-      })
-      await PluginService.togglePlugin(id)
-      fetchPlugins()
-      return true
-    }
-    return false
-  }
+	const togglePlugin = async (id: Plugin['id'], name: Plugin['name'], active: boolean) => {
+		if (isInstalled(id)) {
+			showNotification({
+				text: `Plugin ${name} is being switched ${active ? 'OFF' : 'ON'}!`,
+				type: 'info',
+			})
+			await PluginService.togglePlugin(id)
+			fetchPlugins()
+			return true
+		}
+		return false
+	}
 
-  const updateSettings = async (id: Plugin['id'] | undefined, settings: JSONSettings) => {
-    if (!id) return false
-    if (isInstalled(id)) {
-      const res = await PluginService.updateSettings(id, settings)
-      sendNotificationFromJSON(res)
-      return res.status != "error"
-    }
-  }
+	const updateSettings = async (id: Plugin['id'] | undefined, settings: JSONSettings) => {
+		if (!id) return false
+		if (isInstalled(id)) {
+			const res = await PluginService.updateSettings(id, settings)
+			sendNotificationFromJSON(res)
+			return res.status != 'error'
+		}
+	}
 
-  const removePlugin = async (id: Plugin['id']) => {
-    if (currentState.data?.installed.find(p => p.id === id)) {
-      await PluginService.deletePlugin(id)
-      fetchPlugins()
-      return true
-    }
-    return false
-  }
+	const removePlugin = async (id: Plugin['id']) => {
+		if (currentState.data?.installed.find(p => p.id === id)) {
+			await PluginService.deletePlugin(id)
+			fetchPlugins()
+			return true
+		}
+		return false
+	}
 
-  const installPlugin = (file: File) => {
-    currentState.loading = true
-    PluginService.sendFile(file).then(() => {
-      showNotification({
-        text: `Plugin ${file.name} installed successfully!`,
-        type: 'success'
-      })
-      fetchPlugins()
-    }).catch(() => showNotification({
-      text: `Unable to install the plugin ${file.name}.`,
-      type: 'error'
-    }))
-  }
-  
-  return {
-    currentState,
-    togglePlugin,
-    fetchPlugins,
-    removePlugin,
-    installPlugin,
-    isInstalled,
-    updateSettings,
-    getSchema,
-    getSettings,
-    fetchSettings,
-  }
+	const installPlugin = (file: File) => {
+		currentState.loading = true
+		PluginService.sendFile(file)
+			.then(() => {
+				showNotification({
+					text: `Plugin ${file.name} installed successfully!`,
+					type: 'success',
+				})
+				fetchPlugins()
+			})
+			.catch(() =>
+				showNotification({
+					text: `Unable to install the plugin ${file.name}.`,
+					type: 'error',
+				}),
+			)
+	}
+
+	return {
+		currentState,
+		togglePlugin,
+		fetchPlugins,
+		removePlugin,
+		installPlugin,
+		isInstalled,
+		updateSettings,
+		getSchema,
+		getSettings,
+		fetchSettings,
+	}
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(usePlugins, import.meta.hot))
+	import.meta.hot.accept(acceptHMRUpdate(usePlugins, import.meta.hot))
 }

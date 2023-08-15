@@ -38,17 +38,24 @@ const saveEmbedder = async (payload: JSONSettings) => {
 	if (res) emit('close')
 }
 
-watchDeep(embedderState, () => {
-	updateProperties(selectedEmbedder.value)
-}, { immediate: true })
+watchDeep(
+	embedderState,
+	() => {
+		updateProperties(selectedEmbedder.value)
+	},
+	{ immediate: true },
+)
 </script>
 
 <template>
 	<div class="flex grow flex-col gap-4">
-		<ErrorBox v-if="embedderState.loading || embedderState.error" 
-			:load="embedderState.loading" :error="embedderState.error" />
+		<ErrorBox
+			v-if="embedderState.loading || embedderState.error"
+			:load="embedderState.loading"
+			:error="embedderState.error" />
 		<div v-else class="flex grow flex-col gap-4">
-			<SelectBox v-model="selectedEmbedder"
+			<SelectBox
+				v-model="selectedEmbedder"
 				:list="getAvailableEmbedders.map(p => ({ label: p.humanReadableName ?? p.title, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex grow flex-col gap-4">
