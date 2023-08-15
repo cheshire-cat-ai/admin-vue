@@ -3,8 +3,14 @@ name: Vitest Unit Tests
 on:
   push:
     branches: [ main, master, develop ]
+    paths:
+      - "**.ts"
+      - "**.vue"
   pull_request:
     branches: [ main, master, develop ]
+    paths:
+      - "**.ts"
+      - "**.vue"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
