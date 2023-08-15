@@ -3,6 +3,12 @@ name: Release Develop Zip
 on:
   push:
     branches: [develop]
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.gitignore'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

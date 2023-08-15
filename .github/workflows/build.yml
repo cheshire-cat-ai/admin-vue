@@ -3,6 +3,12 @@ name: Release Main Zip
 on:
   push:
     branches: [main, master]
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - 'Dockerfile'
+      - 'docker-compose.yml'
+      - '.gitignore'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
