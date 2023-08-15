@@ -8,15 +8,11 @@
     "plugin:tailwindcss/recommended",
     "@vue/typescript/recommended",
     "plugin:vue/vue3-essential",
-    "@vue/eslint-config-typescript"
+    "@vue/eslint-config-typescript",
+    "prettier"
   ],
-  "ignorePatterns": [
-    "**/*.config.js", 
-    "!**/eslint.config.js"
-  ],
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "ignorePatterns": ["**/*.config.js"],
+  "plugins": ["@typescript-eslint"],
   "parser": "vue-eslint-parser",
   "parserOptions": {
     "ecmaVersion": "latest",
@@ -29,7 +25,7 @@
     "@typescript-eslint/no-explicit-any": "warn",
     "keyword-spacing": "error",
     "space-infix-ops": "error",
-		"space-unary-ops": "error",
+    "space-unary-ops": "error",
     "prefer-const": "error",
     "object-curly-spacing": ["error", "always"],
     "no-empty-function": "off",
@@ -37,17 +33,24 @@
     "vue/multi-word-component-names": "off",
     "vue/max-attributes-per-line": "off",
     "vue/first-attribute-linebreak": "off",
-    "vue/html-indent": ["error", "tab", {
+    "vue/html-indent": [
+      "error",
+      "tab",
+      {
         "attribute": 1,
         "baseIndent": 1,
         "closeBracket": 0,
         "alignAttributesVertically": true,
         "ignores": []
-    }],
-    "vue/html-closing-bracket-newline": ["warn", {
+      }
+    ],
+    "vue/html-closing-bracket-newline": [
+      "warn",
+      {
         "singleline": "never",
         "multiline": "never"
-    }],
+      }
+    ],
     "vue/v-on-event-hyphenation": "off",
     "vue/attribute-hyphenation": "off",
     "tailwindcss/no-custom-classname": "off"
