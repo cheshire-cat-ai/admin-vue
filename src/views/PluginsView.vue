@@ -11,7 +11,7 @@ const store = usePlugins()
 const { togglePlugin, removePlugin, installPlugin, updateSettings, isInstalled, getSchema, getSettings } = store
 const { currentState: pluginsState } = storeToRefs(store)
 
-const { currentFilters } = storeToRefs(useSettings())
+const { pluginsFilters } = storeToRefs(useSettings())
 
 const { open: uploadPlugin, onChange: onPluginUpload } = useFileDialog()
 
@@ -79,8 +79,8 @@ const searchPlugin = () => {
 	})
 }
 
-watch(currentFilters, () => {
-	const filters = currentFilters.value
+watch(pluginsFilters, () => {
+	const filters = pluginsFilters.value
 	filteredList.value = pluginsList.value.filter(p => {
 		const list =
 			filters.presence.current == 'both' ||
@@ -107,9 +107,9 @@ watch(currentFilters, () => {
 				@send="searchPlugin()" />
 			<div class="flex flex-wrap justify-center gap-2">
 				<button
-					v-for="(v, k) of currentFilters"
+					v-for="(v, k) of pluginsFilters"
 					:key="k"
-					class="btn btn-xs rounded-full btn-ghost !border-2 !border-primary"
+					class="btn btn-ghost btn-xs rounded-full !border-2 !border-primary"
 					@click="v.current = v.values[v.values.indexOf(v.current) + 1] ?? v.values[0]">
 					<span class="text-primary">{{ k }}:</span>
 					<span>{{ v.current }}</span>

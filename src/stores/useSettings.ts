@@ -21,20 +21,16 @@ export const useSettings = defineStore('settings', () => {
 
 	const toggleDark = useToggle(isDark)
 
-	const currentFilters = useLocalStorage<Filter>(
-		'currentFilters',
-		{
-			presence: {
-				current: 'both',
-				values: ['both', 'installed', 'registry'],
-			},
-			visibility: {
-				current: 'both',
-				values: ['both', 'enabled', 'disabled'],
-			},
+	const pluginsFilters = useLocalStorage<Filter>('pluginsFilters', {
+		presence: {
+			current: 'both',
+			values: ['both', 'installed', 'registry'],
 		},
-		{ mergeDefaults: (storageValue, defaults) => merge(storageValue, defaults) },
-	)
+		visibility: {
+			current: 'both',
+			values: ['both', 'enabled', 'disabled'],
+		},
+	})
 
 	const getStatus = async () => {
 		const result = await tryRequest(
@@ -50,7 +46,7 @@ export const useSettings = defineStore('settings', () => {
 	return {
 		isAudioEnabled,
 		isDark,
-		currentFilters,
+		pluginsFilters,
 		toggleDark,
 		cat,
 	}
