@@ -10,7 +10,6 @@
 <a href="https://github.com/cheshire-cat-ai/admin-vue/tags">
   <img alt="GitHub tag (with filter)" src="https://img.shields.io/github/v/tag/cheshire-cat-ai/admin-vue">
 </a>
-<img alt="GitHub top language" src="https://img.shields.io/github/languages/top/cheshire-cat-ai/admin-vue">
 
 # Cheshire Cat Admin UI 🐱
 
