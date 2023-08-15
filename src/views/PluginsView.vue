@@ -78,6 +78,21 @@ const searchPlugin = () => {
 		return p.name.toLowerCase().includes(searchText.value) || p.id.toLowerCase().includes(searchText.value)
 	})
 }
+
+watch(currentFilters, () => {
+	const filters = currentFilters.value
+	filteredList.value = pluginsList.value.filter(p => {
+		const list =
+			filters.presence.current == 'both' ||
+			(filters.presence.current == 'installed' && isInstalled(p.id)) ||
+			(filters.presence.current == 'registry' && !isInstalled(p.id))
+		const visible =
+			filters.visibility.current == 'both' ||
+			(filters.visibility.current == 'enabled' && p.active) ||
+			(filters.visibility.current == 'disabled' && !p.active)
+		return list && visible
+	})
+})
 </script>
 
 <template>
@@ -92,13 +107,12 @@ const searchPlugin = () => {
 				@send="searchPlugin()" />
 			<div class="flex flex-wrap justify-center gap-2">
 				<button
-					v-for="(v, k) in currentFilters"
+					v-for="(v, k) of currentFilters"
 					:key="k"
-					class="btn btn-xs rounded-full"
-					disabled
-					:class="[v ? 'btn-primary text-base-100' : 'btn-ghost !border-2 !border-primary']"
-					@click="currentFilters[k] = !currentFilters[k]">
-					{{ k }}
+					class="btn btn-xs rounded-full btn-ghost !border-2 !border-primary"
+					@click="v.current = v.values[v.values.indexOf(v.current) + 1] ?? v.values[0]">
+					<span class="text-primary">{{ k }}:</span>
+					<span>{{ v.current }}</span>
 				</button>
 			</div>
 		</div>

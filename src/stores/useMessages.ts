@@ -61,6 +61,8 @@ export const useMessages = defineStore('messages', () => {
 		 * and dispatches the received messages to the store.
 		 * It also dispatches the error to the store if an error occurs.
 		 */
+		// TODO: Fix why the websocket doesn't trigger onConnected in development mode
+		currentState.ready = import.meta.env.DEV // Temporary fix
 		apiClient
 			.onConnected(() => {
 				currentState.ready = true

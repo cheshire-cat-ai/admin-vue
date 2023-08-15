@@ -1,4 +1,12 @@
 import { apiClient, tryRequest } from '@/api'
+import { merge } from 'lodash'
+
+interface Filter {
+	[k: string]: {
+		values: string[]
+		current: string
+	}
+}
 
 export const useSettings = defineStore('settings', () => {
 	const isAudioEnabled = useLocalStorage('isAudioEnabled', true)
@@ -13,12 +21,20 @@ export const useSettings = defineStore('settings', () => {
 
 	const toggleDark = useToggle(isDark)
 
-	const currentFilters = useLocalStorage('currentFilters', {
-		installed: true,
-		registry: true,
-		enabled: true,
-		disabled: true,
-	})
+	const currentFilters = useLocalStorage<Filter>(
+		'currentFilters',
+		{
+			presence: {
+				current: 'both',
+				values: ['both', 'installed', 'registry'],
+			},
+			visibility: {
+				current: 'both',
+				values: ['both', 'enabled', 'disabled'],
+			},
+		},
+		{ mergeDefaults: (storageValue, defaults) => merge(storageValue, defaults) },
+	)
 
 	const getStatus = async () => {
 		const result = await tryRequest(

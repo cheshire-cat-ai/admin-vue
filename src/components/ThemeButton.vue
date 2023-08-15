@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { useSettings } from '@stores/useSettings'
+import githubLight from 'highlight.js/styles/github.css?raw'
+import githubDark from 'highlight.js/styles/github-dark.css?raw'
 
 const store = useSettings()
 const { toggleDark } = store
 const { isDark } = storeToRefs(store)
 
+const { css } = useStyleTag(isDark.value ? githubDark : githubLight)
+
 watchEffect(() => {
-	// BUG: Fix css styling for code snippets in markdown
-	// The current code doesn't work, it just imports them and use the latest imported
-	if (isDark.value) import('highlight.js/styles/github-dark.css')
-	else import('highlight.js/styles/github.css')
+	css.value = isDark.value ? githubDark : githubLight
 })
 </script>
 
