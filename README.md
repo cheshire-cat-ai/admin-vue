@@ -1,14 +1,14 @@
 <a href="https://github.com/cheshire-cat-ai/admin-vue">
-  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/cheshire-cat-ai/admin-vue?style=social">
+  <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/cheshire-cat-ai/admin-vue?logo=github&style=flat-square">
 </a>
 <a href="https://discord.gg/bHX5sNFCYU">
-  <img src="https://img.shields.io/discord/1092359754917089350?logo=discord" alt="chat on Discord">
+  <img src="https://img.shields.io/discord/1092359754917089350?logo=discord&style=flat-square" alt="chat on Discord">
 </a>
 <a href="https://github.com/cheshire-cat-ai/admin-vue/issues">
-  <img alt="GitHub issues" src="https://img.shields.io/github/issues/cheshire-cat-ai/admin-vue">
+  <img alt="GitHub issues" src="https://img.shields.io/github/issues/cheshire-cat-ai/admin-vue?logo=github&style=flat-square">
 </a>
 <a href="https://github.com/cheshire-cat-ai/admin-vue/tags">
-  <img alt="GitHub tag (with filter)" src="https://img.shields.io/github/v/tag/cheshire-cat-ai/admin-vue">
+  <img alt="GitHub tag (with filter)" src="https://img.shields.io/github/v/tag/cheshire-cat-ai/admin-vue?logo=github&style=flat-square">
 </a>
 
 # Cheshire Cat Admin UI 🐱
