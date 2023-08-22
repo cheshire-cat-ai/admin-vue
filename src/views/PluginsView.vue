@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { upperFirst, entries } from 'lodash'
+import { upperFirst, entries, isEmpty } from 'lodash'
 import { type Plugin, AcceptedPluginTypes } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
@@ -181,7 +181,7 @@ watch(pluginsFilters, () => {
 							</div>
 							<div class="flex flex-wrap items-center gap-2">
 								<button
-									v-if="isInstalled(item.id) && getSchema(item.id) && item.active"
+									v-if="isInstalled(item.id) && !isEmpty(getSchema(item.id)) && item.active"
 									class="btn btn-circle btn-ghost btn-sm"
 									@click="openSettings(item)">
 									<heroicons-cog-6-tooth-20-solid class="h-5 w-5" />
