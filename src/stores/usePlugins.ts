@@ -35,30 +35,31 @@ export const usePlugins = defineStore('plugins', () => {
 			const res = await PluginService.togglePlugin(id)
 			if (res.status == 'success') {
 				showNotification({
-					text: `Plugin ${name} is being switched ${active ? 'OFF' : 'ON'}!`,
+					text: `Plugin "${name}" is being switched ${active ? 'OFF' : 'ON'}!`,
 					type: 'info',
 				})
 			} else sendNotificationFromJSON(res)
 			fetchPlugins()
-			return true
+			return res.status != 'error'
 		}
 		return false
 	}
 
-	const updateSettings = async (id: Plugin['id'] | undefined, settings: JSONSettings) => {
-		if (!id) return false
+	const updateSettings = async (id: Plugin['id'], settings: JSONSettings) => {
 		if (isInstalled(id)) {
 			const res = await PluginService.updateSettings(id, settings)
 			sendNotificationFromJSON(res)
 			return res.status != 'error'
 		}
+		return false
 	}
 
 	const removePlugin = async (id: Plugin['id']) => {
 		if (currentState.data?.installed.find(p => p.id === id)) {
-			await PluginService.deletePlugin(id)
+			const res = await PluginService.deletePlugin(id)
+			sendNotificationFromJSON(res)
 			fetchPlugins()
-			return true
+			return res.status != 'error'
 		}
 		return false
 	}

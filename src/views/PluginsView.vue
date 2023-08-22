@@ -69,7 +69,8 @@ const openSettings = async (plugin: Plugin) => {
 }
 
 const savePluginSettings = async (payload: JSONSettings) => {
-	const res = await updateSettings(selectedPlugin.value?.id, payload)
+	if (!selectedPlugin.value?.id) return
+	const res = await updateSettings(selectedPlugin.value.id, payload)
 	if (res) settingsPanel.value?.togglePanel()
 }
 
