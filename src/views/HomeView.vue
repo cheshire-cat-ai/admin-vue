@@ -3,7 +3,7 @@ import { useRabbitHole } from '@stores/useRabbitHole'
 import { useMessages } from '@stores/useMessages'
 import { useSound } from '@vueuse/sound'
 import { useMemory } from '@stores/useMemory'
-import { AcceptedFileTypes, type AcceptedFileType, AcceptedMemoryTypes, type AcceptedMemoryType } from 'ccat-api'
+import { AcceptedMemoryTypes } from 'ccat-api'
 import { useSettings } from '@stores/useSettings'
 import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
@@ -63,12 +63,7 @@ const contentHandler = (content: string | File[] | null) => {
 		} catch (_) {
 			dispatchMessage(content)
 		}
-	} else {
-		content.forEach(f => {
-			if (AcceptedFileTypes.includes(f.type as AcceptedFileType)) sendFile(f)
-			else if (AcceptedMemoryTypes.includes(f.type as AcceptedMemoryType)) sendMemory(f)
-		})
-	}
+	} else content.forEach(f => sendFile(f))
 }
 
 /**
@@ -307,7 +302,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									<button
 										:disabled="rabbitHoleState.loading"
 										class="btn join-item w-full flex-nowrap px-2"
-										@click="openFile({ multiple: false, accept: AcceptedFileTypes.join(',') })">
+										@click="openFile({ multiple: false })">
 										<span class="grow normal-case">Upload file</span>
 										<span class="rounded-lg bg-warning p-1 text-base-100">
 											<heroicons-document-text-solid class="h-6 w-6" />

@@ -32,11 +32,13 @@ export const usePlugins = defineStore('plugins', () => {
 
 	const togglePlugin = async (id: Plugin['id'], name: Plugin['name'], active: boolean) => {
 		if (isInstalled(id)) {
-			showNotification({
-				text: `Plugin ${name} is being switched ${active ? 'OFF' : 'ON'}!`,
-				type: 'info',
-			})
-			await PluginService.togglePlugin(id)
+			const res = await PluginService.togglePlugin(id)
+			if (res.status == 'success') {
+				showNotification({
+					text: `Plugin ${name} is being switched ${active ? 'OFF' : 'ON'}!`,
+					type: 'info',
+				})
+			} else sendNotificationFromJSON(res)
 			fetchPlugins()
 			return true
 		}
@@ -61,22 +63,11 @@ export const usePlugins = defineStore('plugins', () => {
 		return false
 	}
 
-	const installPlugin = (file: File) => {
+	const installPlugin = async (file: File) => {
 		currentState.loading = true
-		PluginService.sendFile(file)
-			.then(() => {
-				showNotification({
-					text: `Plugin ${file.name} installed successfully!`,
-					type: 'success',
-				})
-				fetchPlugins()
-			})
-			.catch(() =>
-				showNotification({
-					text: `Unable to install the plugin ${file.name}.`,
-					type: 'error',
-				}),
-			)
+		const res = await PluginService.sendFile(file)
+		currentState.loading = false
+		sendNotificationFromJSON(res)
 	}
 
 	return {

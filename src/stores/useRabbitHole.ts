@@ -1,5 +1,4 @@
 import type { FileUploaderState } from '@stores/types'
-import { getErrorMessage } from '@utils/errors'
 import { useNotifications } from '@stores/useNotifications'
 import RabbitHoleService from '@services/RabbitHoleService'
 
@@ -8,54 +7,30 @@ export const useRabbitHole = defineStore('rabbitHole', () => {
 		loading: false,
 	})
 
-	const { showNotification } = useNotifications()
+	const { sendNotificationFromJSON } = useNotifications()
 
-	const sendFile = (file: File) => {
+	const sendFile = async (file: File) => {
 		currentState.loading = true
-		RabbitHoleService.sendFile(file)
-			.then(data => {
-				currentState.loading = false
-				currentState.data = data
-				showNotification({
-					text: `File ${file.name} successfully sent down the rabbit hole!`,
-					type: 'success',
-				})
-			})
-			.catch(error => {
-				currentState.error = getErrorMessage(error)
-			})
+		const res = await RabbitHoleService.sendFile(file)
+		currentState.loading = false
+		currentState.data = res.data
+		sendNotificationFromJSON(res)
 	}
 
-	const sendWebsite = (url: string) => {
+	const sendWebsite = async (url: string) => {
 		currentState.loading = true
-		RabbitHoleService.sendWeb(url)
-			.then(data => {
-				currentState.loading = false
-				currentState.data = data
-				showNotification({
-					text: `Website successfully sent down the rabbit hole!`,
-					type: 'success',
-				})
-			})
-			.catch(error => {
-				currentState.error = getErrorMessage(error)
-			})
+		const res = await RabbitHoleService.sendWeb(url)
+		currentState.loading = false
+		currentState.data = res.data
+		sendNotificationFromJSON(res)
 	}
 
-	const sendMemory = (file: File) => {
+	const sendMemory = async (file: File) => {
 		currentState.loading = true
-		RabbitHoleService.sendMemory(file)
-			.then(data => {
-				currentState.loading = false
-				currentState.data = data
-				showNotification({
-					text: `Memories successfully sent down the rabbit hole!`,
-					type: 'success',
-				})
-			})
-			.catch(error => {
-				currentState.error = getErrorMessage(error)
-			})
+		const res = await RabbitHoleService.sendMemory(file)
+		currentState.loading = false
+		currentState.data = res.data
+		sendNotificationFromJSON(res)
 	}
 
 	return {

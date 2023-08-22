@@ -1,5 +1,4 @@
 import { apiClient, tryRequest } from '@/api'
-import { merge } from 'lodash'
 
 interface Filter {
 	[k: string]: {

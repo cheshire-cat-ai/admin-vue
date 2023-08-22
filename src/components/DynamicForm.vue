@@ -25,7 +25,7 @@ watchImmediate(props, () => {
 	initValues.value = props.fields.reduce((p, c) => {
 		return {
 			...p,
-			[c.name]: c.default ?? '',
+			[c.name]: c.default ?? c.type === 'checkbox' ? false : '',
 		}
 	}, {})
 	initValues.value = merge(initValues.value, props.initial)

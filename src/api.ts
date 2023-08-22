@@ -1,7 +1,7 @@
-import { AxiosError } from 'axios'
 import type { JSONResponse } from '@models/JSONSchema'
 import LogService from '@services/LogService'
-import { CatClient, type CancelablePromise, ApiError } from 'ccat-api'
+import { CatClient, type CancelablePromise } from 'ccat-api'
+import { getErrorMessage } from '@utils/errors'
 
 const { CORE_HOST, CORE_PORT, CORE_USE_SECURE_PROTOCOLS, API_KEY } = window.catCoreConfig
 
@@ -44,8 +44,8 @@ export const tryRequest = async <T>(
 
 		const result = (await request) as T
 
-		if (typeof log === 'string') LogService.print(log)
-		else LogService.print(...log)
+		if (typeof log === 'string') LogService.success(log)
+		else LogService.success(...log)
 
 		return {
 			status: 'success',
@@ -53,16 +53,9 @@ export const tryRequest = async <T>(
 			data: result,
 		} as JSONResponse<T>
 	} catch (err) {
-		if (err instanceof AxiosError) {
-			LogService.print(err.message)
-			if (err.code === 'ERR_NETWORK') error = 'Network error while requesting'
-		} else if (err instanceof ApiError) {
-			LogService.print(err.body.detail)
-			error = 'Unable to authenticate request'
-		}
 		return {
 			status: 'error',
-			message: error,
+			message: getErrorMessage(err, error),
 		} as JSONResponse<T>
 	}
 }

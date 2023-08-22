@@ -26,7 +26,7 @@ const updateProperties = (selected = currentSchema.value?.title) => {
 			as: 'input',
 			label: value.title,
 			type: InputType[value.type as keyof typeof InputType],
-			rules: value.default !== undefined ? '' : 'required',
+			rules: value.default !== undefined || value.type == 'checkbox' ? '' : 'required',
 			default: value.default,
 		}
 	})
@@ -57,9 +57,16 @@ watchDeep(
 				:list="getAvailableProviders.map(p => ({ label: p.humanReadableName ?? p.title, value: p.title }))"
 				@update="e => updateProperties(e.value)" />
 			<div class="flex grow flex-col gap-4">
-				<p class="font-medium">
-					{{ currentSchema?.description }}
-				</p>
+				<div class="flex items-center gap-1 font-medium">
+					<a
+						v-if="currentSchema?.link"
+						:href="currentSchema.link"
+						target="_blank"
+						class="btn btn-circle btn-primary btn-xs">
+						<heroicons-link-20-solid class="h-4 w-4" />
+					</a>
+					<span>{{ currentSchema?.description }}</span>
+				</div>
 				<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="saveProvider" />
 			</div>
 		</div>

@@ -29,12 +29,11 @@ const PluginService = Object.freeze({
 		return result.data
 	},
 	togglePlugin: async (id: string) => {
-		const result = await tryRequest(
+		return await tryRequest(
 			apiClient.api?.plugins.togglePlugin(id),
 			`Toggle plugin ${id}`,
 			`Unable to toggle plugin ${id}`,
 		)
-		return result.data
 	},
 	updateSettings: async (id: string, settings: JSONSettings) => {
 		return await tryRequest(
@@ -44,20 +43,18 @@ const PluginService = Object.freeze({
 		)
 	},
 	deletePlugin: async (id: string) => {
-		const result = await tryRequest(
+		return await tryRequest(
 			apiClient.api?.plugins.deletePlugin(id),
 			`Deleted plugin ${id}`,
 			`Unable to delete plugin ${id}`,
 		)
-		return result.data
 	},
 	sendFile: async (file: File) => {
-		const result = await tryRequest(
+		return await tryRequest(
 			apiClient.api?.plugins.installPlugin({ file }),
-			'Uploaded plugin successfully',
-			'Unable to upload the plugin',
+			`Plugin ${file.name} installed successfully!`,
+			`Unable to install the plugin ${file.name}`,
 		)
-		return result.data
 	},
 })
 

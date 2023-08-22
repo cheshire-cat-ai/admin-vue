@@ -61,7 +61,7 @@ const openSettings = async (plugin: Plugin) => {
 			as: 'input',
 			label: value.title,
 			type: value.format ?? InputType[value.type as keyof typeof InputType],
-			rules: value.default !== undefined ? '' : 'required',
+			rules: value.default !== undefined || value.type == 'checkbox' ? '' : 'required',
 			default: value.default,
 		}
 	})
@@ -165,7 +165,7 @@ watch(pluginsFilters, () => {
 								v-if="item.plugin_url"
 								:href="item.plugin_url"
 								target="_blank"
-								class="btn btn-circle btn-ghost btn-xs text-primary">
+								class="btn btn-circle btn-primary btn-xs">
 								<heroicons-link-20-solid class="h-4 w-4" />
 							</a>
 						</div>
