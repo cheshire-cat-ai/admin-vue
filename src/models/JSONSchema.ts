@@ -18,6 +18,10 @@ export interface SchemaField {
 	name: string
 	type: string
 	rules?: string
+	children?: {
+		value: string
+		text: string
+	}[]
 	default?: string | number | boolean
 }
 

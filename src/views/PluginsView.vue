@@ -6,6 +6,7 @@ import { useSettings } from '@stores/useSettings'
 import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
 import { InputType, type SchemaField, type JSONSettings } from '@models/JSONSchema'
+import { getEnumValues } from '@utils/schema'
 
 const store = usePlugins()
 const { togglePlugin, removePlugin, installPlugin, updateSettings, isInstalled, getSchema, getSettings } = store
@@ -58,11 +59,12 @@ const openSettings = async (plugin: Plugin) => {
 	currentFields.value = entries(pluginSchema?.properties).map<SchemaField>(([key, value]) => {
 		return {
 			name: key,
-			as: 'input',
+			as: getEnumValues(value, pluginSchema?.definitions ?? {}) ? 'select' : 'input',
 			label: value.title,
 			type: value.format ?? InputType[value.type as keyof typeof InputType],
 			rules: value.default !== undefined || value.type == 'checkbox' ? '' : 'required',
 			default: value.default,
+			children: getEnumValues(value, pluginSchema?.definitions ?? {})?.map(v => ({ value: v, text: v }))
 		}
 	})
 	settingsPanel.value?.togglePanel()

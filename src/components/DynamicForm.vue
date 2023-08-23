@@ -48,7 +48,7 @@ defineEmits<{
 		@submit="$emit('submit', $event)">
 		<div class="form-control w-full">
 			<div
-				v-for="{ name, label, ...attrs } in fields"
+				v-for="{ name, label, children, ...attrs } in fields"
 				:key="name"
 				class="form-control w-full py-2"
 				:class="{
@@ -64,11 +64,20 @@ defineEmits<{
 					:placeholder="label"
 					v-bind="attrs"
 					:disabled="disabled"
-					:class="[
-						attrs.type === 'checkbox'
-							? '!toggle !toggle-success'
-							: 'input input-primary input-sm w-full !transition-all',
-					]" />
+					:class="{
+						'!toggle !toggle-success': attrs.type === 'checkbox',
+						'select select-bordered select-sm w-full !leading-4': attrs.as === 'select',
+						'input input-primary input-sm w-full !transition-all': attrs.type != 'checkbox' && attrs.as != 'select'
+					}">
+					<template v-if="children && children.length">
+						<component :is="'option'"
+							v-for="({ text, ...childAttrs }, idx) in children"
+							:key="idx"
+							v-bind="childAttrs">
+							{{ text }}
+						</component>
+					</template>
+				</Field>
 			</div>
 		</div>
 		<div class="mt-auto flex gap-2">
