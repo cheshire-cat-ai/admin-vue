@@ -58,7 +58,7 @@ defineEmits<{
 					<span v-if="attrs.default === undefined" class="font-bold text-error">*</span>
 					<span class="label-text font-medium">{{ label }}</span>
 				</label>
-				<CheckBox v-if="attrs.type === 'checkbox'" :name="name" />
+				<CheckBox v-if="attrs.type === 'checkbox'" :indeterminate="attrs.default == undefined" :name="name" :rules="attrs.rules" />
 				<Field v-else
 					:id="name"
 					:name="name"

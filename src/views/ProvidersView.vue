@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { entries } from 'lodash'
-import { type JSONSettings, type SchemaField, InputType } from '@models/JSONSchema'
+import { type JSONSettings, type SchemaField } from '@models/JSONSchema'
 import { useLLMConfig } from '@stores/useLLMConfig'
 import type { JsonSchema } from 'ccat-api'
+import { generateVeeObject } from '@utils/schema'
 
 const storeLLM = useLLMConfig()
 const { getProviderSchema, setProviderSettings, getProviderSettings } = storeLLM
@@ -20,16 +20,7 @@ const emit = defineEmits<{
 const updateProperties = (selected = currentSchema.value?.title) => {
 	selectedProvider.value = selected
 	currentSchema.value = getProviderSchema(selected)
-	currentFields.value = entries(currentSchema.value?.properties ?? {}).map<SchemaField>(([key, value]) => {
-		return {
-			name: key,
-			as: 'input',
-			label: value.title,
-			type: InputType[value.type as keyof typeof InputType],
-			rules: value.default !== undefined || value.type == 'checkbox' ? '' : 'required',
-			default: value.default,
-		}
-	})
+	currentFields.value = generateVeeObject(currentSchema.value?.properties ?? {}, currentSchema.value?.definitions ?? {})
 	currentSettings.value = getProviderSettings(selected)
 }
 

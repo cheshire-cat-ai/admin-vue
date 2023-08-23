@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { upperFirst, entries, isEmpty } from 'lodash'
+import { upperFirst, isEmpty } from 'lodash'
 import { type Plugin, AcceptedPluginTypes } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
 import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
-import { InputType, type SchemaField, type JSONSettings } from '@models/JSONSchema'
-import { getEnumValues } from '@utils/schema'
+import { type SchemaField, type JSONSettings } from '@models/JSONSchema'
+import { generateVeeObject } from '@utils/schema'
 
 const store = usePlugins()
 const { togglePlugin, removePlugin, installPlugin, updateSettings, isInstalled, getSchema, getSettings } = store
@@ -56,17 +56,7 @@ const openSettings = async (plugin: Plugin) => {
 	selectedPlugin.value = plugin
 	const pluginSchema = getSchema(plugin.id)
 	currentSettings.value = await getSettings(plugin.id)
-	currentFields.value = entries(pluginSchema?.properties).map<SchemaField>(([key, value]) => {
-		return {
-			name: key,
-			as: getEnumValues(value, pluginSchema?.definitions ?? {}) ? 'select' : 'input',
-			label: value.title,
-			type: value.format ?? InputType[value.type as keyof typeof InputType],
-			rules: value.default !== undefined || value.type == 'checkbox' ? '' : 'required',
-			default: value.default,
-			children: getEnumValues(value, pluginSchema?.definitions ?? {})?.map(v => ({ value: v, text: v }))
-		}
-	})
+	currentFields.value = generateVeeObject(pluginSchema?.properties ?? {}, pluginSchema?.definitions ?? {})
 	settingsPanel.value?.togglePanel()
 }
 
