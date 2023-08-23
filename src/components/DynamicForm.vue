@@ -25,7 +25,7 @@ watchImmediate(props, () => {
 	initValues.value = props.fields.reduce((p, c) => {
 		return {
 			...p,
-			[c.name]: c.default ?? c.type === 'checkbox' ? false : '',
+			[c.name]: c.default,
 		}
 	}, {})
 	initValues.value = merge(initValues.value, props.initial)
@@ -68,7 +68,8 @@ defineEmits<{
 						'!toggle !toggle-success': attrs.type === 'checkbox',
 						'select select-bordered select-sm w-full !leading-4': attrs.as === 'select',
 						'input input-primary input-sm w-full !transition-all': attrs.type != 'checkbox' && attrs.as != 'select'
-					}">
+					}"
+					@vnodeMounted="v => v.el!['indeterminate'] = attrs.default == undefined">
 					<template v-if="children && children.length">
 						<component :is="'option'"
 							v-for="({ text, ...childAttrs }, idx) in children"
