@@ -58,18 +58,17 @@ defineEmits<{
 					<span v-if="attrs.default === undefined" class="font-bold text-error">*</span>
 					<span class="label-text font-medium">{{ label }}</span>
 				</label>
-				<Field
+				<CheckBox v-if="attrs.type === 'checkbox'" :name="name" />
+				<Field v-else
 					:id="name"
 					:name="name"
 					:placeholder="label"
 					v-bind="attrs"
 					:disabled="disabled"
 					:class="{
-						'!toggle !toggle-success': attrs.type === 'checkbox',
 						'select select-bordered select-sm w-full !leading-4': attrs.as === 'select',
-						'input input-primary input-sm w-full !transition-all': attrs.type != 'checkbox' && attrs.as != 'select'
-					}"
-					@vnodeMounted="v => v.el!['indeterminate'] = attrs.default == undefined">
+						'input input-primary input-sm w-full !transition-all': attrs.as != 'select'
+					}">
 					<template v-if="children && children.length">
 						<component :is="'option'"
 							v-for="({ text, ...childAttrs }, idx) in children"
