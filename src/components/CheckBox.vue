@@ -12,18 +12,18 @@ const { name, indeterminate, rules } = toRefs(props)
 
 const toggleEl = ref<HTMLInputElement>()
 
-onMounted(() => {
-    if (toggleEl.value) {
-        toggleEl.value.indeterminate = indeterminate.value
-    }
-})
-
 const { checked, handleChange } = useField(name, rules, {
     type: 'checkbox',
     validateOnValueUpdate: true,
     checkedValue: true,
     uncheckedValue: false
-});
+})
+
+onMounted(() => {
+    if (toggleEl.value) {
+        toggleEl.value.indeterminate = indeterminate.value
+    }
+})
 </script>
 
 <template>
