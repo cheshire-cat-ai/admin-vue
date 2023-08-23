@@ -69,6 +69,7 @@ export const usePlugins = defineStore('plugins', () => {
 		const res = await PluginService.sendFile(file)
 		currentState.loading = false
 		sendNotificationFromJSON(res)
+		fetchPlugins()
 	}
 
 	return {

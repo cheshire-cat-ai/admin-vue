@@ -25,7 +25,7 @@ watchImmediate(props, () => {
 	initValues.value = props.fields.reduce((p, c) => {
 		return {
 			...p,
-			[c.name]: c.default ?? c.type === 'checkbox' ? false : '',
+			[c.name]: c.default,
 		}
 	}, {})
 	initValues.value = merge(initValues.value, props.initial)
@@ -48,7 +48,7 @@ defineEmits<{
 		@submit="$emit('submit', $event)">
 		<div class="form-control w-full">
 			<div
-				v-for="{ name, label, ...attrs } in fields"
+				v-for="{ name, label, children, ...attrs } in fields"
 				:key="name"
 				class="form-control w-full py-2"
 				:class="{
@@ -58,17 +58,26 @@ defineEmits<{
 					<span v-if="attrs.default === undefined" class="font-bold text-error">*</span>
 					<span class="label-text font-medium">{{ label }}</span>
 				</label>
-				<Field
+				<CheckBox v-if="attrs.type === 'checkbox'" :indeterminate="attrs.default == undefined" :name="name" :rules="attrs.rules" />
+				<Field v-else
 					:id="name"
 					:name="name"
 					:placeholder="label"
 					v-bind="attrs"
 					:disabled="disabled"
-					:class="[
-						attrs.type === 'checkbox'
-							? '!toggle !toggle-success'
-							: 'input input-primary input-sm w-full !transition-all',
-					]" />
+					:class="{
+						'select select-bordered select-sm w-full !leading-4': attrs.as === 'select',
+						'input input-primary input-sm w-full !transition-all': attrs.as != 'select'
+					}">
+					<template v-if="children && children.length">
+						<component :is="'option'"
+							v-for="({ text, ...childAttrs }, idx) in children"
+							:key="idx"
+							v-bind="childAttrs">
+							{{ text }}
+						</component>
+					</template>
+				</Field>
 			</div>
 		</div>
 		<div class="mt-auto flex gap-2">
