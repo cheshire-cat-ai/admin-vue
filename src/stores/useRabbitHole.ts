@@ -33,11 +33,14 @@ export const useRabbitHole = defineStore('rabbitHole', () => {
 		sendNotificationFromJSON(res)
 	}
 
+	const getAllowedMimetypes = async () => await RabbitHoleService.getAllowedMimetypes()
+
 	return {
 		currentState,
 		sendFile,
 		sendWebsite,
 		sendMemory,
+		getAllowedMimetypes
 	}
 })
 

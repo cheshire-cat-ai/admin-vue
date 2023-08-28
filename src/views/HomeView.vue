@@ -35,7 +35,7 @@ const { play: playPop } = useSound('pop.mp3')
 const { play: playRec } = useSound('start-rec.mp3')
 
 const filesStore = useRabbitHole()
-const { sendFile, sendWebsite, sendMemory } = filesStore
+const { sendFile, sendWebsite, sendMemory, getAllowedMimetypes } = filesStore
 const { currentState: rabbitHoleState } = storeToRefs(filesStore)
 
 const { wipeConversation } = useMemory()
@@ -90,16 +90,20 @@ useEventListener<ClipboardEvent>(dropContentZone, 'paste', evt => {
 })
 
 /**
- * Handles the file upload by calling the Rabbit Hole endpoint with the file attached.
+ * Handles the file upload by calling the Rabbit Hole endpoint to check mimetypes.
  */
+const uploadFile = async () => {
+	const allowedMimetypes = await getAllowedMimetypes()
+	openFile({ multiple: false, accept: allowedMimetypes?.join(',') })
+}
+
 onFileUpload(files => {
-	if (files == null) return
-	sendFile(files[0])
+	if (!files) return
+	const arr: File[] = []
+	for (const file of files) arr.push(file)
+	contentHandler(arr)
 })
 
-/**
- * Handles the memory upload by calling the Rabbit Hole endpoint with the file attached.
- */
 onMemoryUpload(files => {
 	if (files == null) return
 	sendMemory(files[0])
@@ -130,18 +134,10 @@ watchDeep(
 	() => {
 		isScrollable.value = document.documentElement.scrollHeight > document.documentElement.clientHeight
 		scrollToBottom()
-		textArea.value?.focus()
 		if (messagesState.value.messages.length > 0 && isAudioEnabled.value) playPop()
 	},
 	{ flush: 'post' },
 )
-
-/**
- * When switching to the page, the input box is focussed.
- */
-onActivated(() => {
-	textArea.value?.focus()
-})
 
 /**
  * Dispatches the inserted url to the RabbitHole service and closes the modal.
@@ -247,6 +243,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 						ref="textArea"
 						v-model.trim="userMessage"
 						:disabled="inputDisabled"
+						autofocus
 						class="textarea block max-h-20 w-full resize-none overflow-auto bg-base-200 !outline-offset-0"
 						:class="[isTwoLines ? 'pr-10' : 'pr-20']"
 						:placeholder="generatePlaceholder(messagesState.loading, isListening, messagesState.error)"
@@ -302,7 +299,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									<button
 										:disabled="rabbitHoleState.loading"
 										class="btn join-item w-full flex-nowrap px-2"
-										@click="openFile({ multiple: false })">
+										@click="uploadFile()">
 										<span class="grow normal-case">Upload file</span>
 										<span class="rounded-lg bg-warning p-1 text-base-100">
 											<heroicons-document-text-solid class="h-6 w-6" />
