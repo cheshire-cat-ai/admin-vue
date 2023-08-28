@@ -94,7 +94,7 @@ useEventListener<ClipboardEvent>(dropContentZone, 'paste', evt => {
  */
 const uploadFile = async () => {
 	const allowedMimetypes = await getAllowedMimetypes()
-	openFile({ multiple: false, accept: allowedMimetypes?.join(',') })
+	openFile({ accept: allowedMimetypes?.join(',') })
 }
 
 onFileUpload(files => {
@@ -106,7 +106,7 @@ onFileUpload(files => {
 
 onMemoryUpload(files => {
 	if (files == null) return
-	sendMemory(files[0])
+	for (const file of files) sendMemory(file)
 })
 
 /**
@@ -277,7 +277,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									<button
 										:disabled="rabbitHoleState.loading"
 										class="btn join-item w-full flex-nowrap px-2"
-										@click="openMemory({ multiple: false, accept: AcceptedMemoryTypes.join(',') })">
+										@click="openMemory({ accept: AcceptedMemoryTypes.join(',') })">
 										<span class="grow normal-case">Upload memories</span>
 										<span class="rounded-lg bg-success p-1 text-base-100">
 											<ph-brain-fill class="h-6 w-6" />
