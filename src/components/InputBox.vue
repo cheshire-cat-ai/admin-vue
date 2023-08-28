@@ -2,14 +2,16 @@
 withDefaults(
 	defineProps<{
 		modelValue: string
-		disabled?: boolean
-		search?: boolean
 		label?: string
 		placeholder?: string
+		disabled?: boolean
+		search?: boolean
+		autofocus?: boolean
 	}>(),
 	{
 		disabled: false,
 		search: false,
+		autofocus: true,
 		label: '',
 		placeholder: '',
 	},
@@ -32,6 +34,7 @@ defineEmits<{
 				type="text"
 				:placeholder="placeholder"
 				:disabled="disabled"
+				:autofocus="autofocus"
 				class="input input-primary input-sm w-full !transition-all"
 				@keyup.enter="$emit('send')"
 				@input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" />

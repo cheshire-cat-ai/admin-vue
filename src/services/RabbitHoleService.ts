@@ -29,6 +29,15 @@ const RabbitHoleService = Object.freeze({
 			'Sending a bunch of memories to the rabbit hole',
 		)
 	},
+	getAllowedMimetypes: async () => {
+		const result = await tryRequest(
+			apiClient.api?.rabbitHole.getAllowedMimetypes(),
+			'Memories file successfully sent down the rabbit hole!',
+			'Unable to send the memories to the rabbit hole!',
+			'Sending a bunch of memories to the rabbit hole',
+		)
+		return result.data?.allowed
+	},
 })
 
 export default RabbitHoleService

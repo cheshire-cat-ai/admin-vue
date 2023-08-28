@@ -18,6 +18,7 @@ const emit = defineEmits<{
 }>()
 
 const updateProperties = (selected = currentSchema.value?.title) => {
+	selectedEmbedder.value = selected
 	currentSchema.value = getEmbedderSchema(selected)
 	currentFields.value = generateVeeObject(currentSchema.value?.properties ?? {}, currentSchema.value?.definitions ?? {})
 	currentSettings.value = getEmbedderSettings(selected)
@@ -32,7 +33,7 @@ const saveEmbedder = async (payload: JSONSettings) => {
 watchDeep(
 	embedderState,
 	() => {
-		updateProperties(selectedEmbedder.value)
+		updateProperties(embedderState.value.selected)
 	},
 	{ immediate: true },
 )
@@ -40,10 +41,7 @@ watchDeep(
 
 <template>
 	<div class="flex grow flex-col gap-4">
-		<ErrorBox
-			v-if="embedderState.loading || embedderState.error"
-			:load="embedderState.loading"
-			:error="embedderState.error" />
+		<ErrorBox v-if="embedderState.loading || embedderState.error" :load="embedderState.loading" :error="embedderState.error" />
 		<div v-else class="flex grow flex-col gap-4">
 			<SelectBox
 				v-model="selectedEmbedder"
