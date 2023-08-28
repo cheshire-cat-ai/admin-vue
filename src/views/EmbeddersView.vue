@@ -33,7 +33,7 @@ const saveEmbedder = async (payload: JSONSettings) => {
 watchDeep(
 	embedderState,
 	() => {
-		updateProperties(selectedEmbedder.value)
+		updateProperties(embedderState.value.selected)
 	},
 	{ immediate: true },
 )
