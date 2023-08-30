@@ -5,7 +5,7 @@ import { configDefaults, defineConfig } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
-import { HeadlessUiResolver } from 'unplugin-vue-components/resolvers'
+import { HeadlessUiResolver, VueUseComponentsResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 import Unfonts from 'unplugin-fonts/vite'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -23,7 +23,7 @@ export default defineConfig({
 		}),
 		Components({
 			dts: true,
-			resolvers: [HeadlessUiResolver({ prefix: '' }), IconsResolver({ prefix: '' })],
+			resolvers: [HeadlessUiResolver({ prefix: '' }), IconsResolver({ prefix: '' }), VueUseComponentsResolver()],
 		}),
 		Icons({ autoInstall: true }),
 		Unfonts({

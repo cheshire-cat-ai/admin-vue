@@ -41,7 +41,10 @@ watchDeep(
 
 <template>
 	<div class="flex grow flex-col gap-4">
-		<ErrorBox v-if="embedderState.loading || embedderState.error" :load="embedderState.loading" :error="embedderState.error" />
+		<ErrorBox
+			v-if="embedderState.loading || embedderState.error"
+			:load="embedderState.loading"
+			:error="embedderState.error" />
 		<div v-else class="flex grow flex-col gap-4">
 			<SelectBox
 				v-model="selectedEmbedder"

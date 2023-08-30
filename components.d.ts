@@ -51,5 +51,6 @@ declare module 'vue' {
     ThemeButton: typeof import('./src/components/ThemeButton.vue')['default']
     TransitionChild: typeof import('@headlessui/vue')['TransitionChild']
     TransitionRoot: typeof import('@headlessui/vue')['TransitionRoot']
+    UseImage: typeof import('@vueuse/components')['UseImage']
   }
 }

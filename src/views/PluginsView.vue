@@ -126,12 +126,15 @@ watch(pluginsFilters, () => {
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<Pagination v-slot="{ list }" :list="filteredList" :pageSize="selectedPageSize">
 				<div v-for="item in list" :key="item.id" class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
-					<img v-if="item.thumb" :src="item.thumb" class="h-20 w-20 self-center object-contain" />
-					<div v-else class="avatar placeholder self-center">
-						<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-accent to-primary text-base-100">
-							<span class="text-5xl font-bold leading-3">{{ upperFirst(item.name)[0] }}</span>
-						</div>
-					</div>
+					<UseImage :src="item.thumb" class="h-20 w-20 self-center object-contain">
+						<template #error>
+							<div class="avatar placeholder self-center">
+								<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-accent to-primary text-base-100">
+									<span class="text-5xl font-bold leading-3">{{ upperFirst(item.name)[0] }}</span>
+								</div>
+							</div>
+						</template>
+					</UseImage>
 					<div class="flex grow flex-col">
 						<div class="flex justify-between">
 							<p class="text-sm font-medium text-neutral-focus">

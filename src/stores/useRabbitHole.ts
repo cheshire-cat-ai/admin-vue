@@ -40,7 +40,7 @@ export const useRabbitHole = defineStore('rabbitHole', () => {
 		sendFile,
 		sendWebsite,
 		sendMemory,
-		getAllowedMimetypes
+		getAllowedMimetypes,
 	}
 })
 
