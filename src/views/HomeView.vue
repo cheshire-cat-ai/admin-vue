@@ -28,7 +28,8 @@ const { textarea: textArea } = useTextareaAutosize({
 	},
 })
 
-const { isListening, isSupported, toggle: toggleRecording, result: transcript } = useSpeechRecognition()
+const { isListening, toggle: toggleRecording, result: transcript } = useSpeechRecognition()
+const { state: micState, isSupported, query: queryMic } = usePermission('microphone', { controls: true })
 const { open: openFile, onChange: onFileUpload } = useFileDialog()
 const { open: openMemory, onChange: onMemoryUpload } = useFileDialog()
 const { play: playPop } = useSound('pop.mp3')
@@ -120,7 +121,11 @@ watchEffect(() => {
 /**
  * Toggle recording and plays an audio if enabled
  */
-const toggleListening = () => {
+const toggleListening = async () => {
+	if (micState.value !== 'granted') {
+		const permState = await queryMic()
+		if (permState?.state !== 'granted') return
+	}
 	toggleRecording()
 	if (isListening.value && isAudioEnabled.value) playRec()
 }
