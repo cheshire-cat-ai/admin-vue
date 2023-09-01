@@ -41,7 +41,11 @@ watchDeep(
 
 <template>
 	<div class="flex grow flex-col gap-4">
-		<ErrorBox v-if="llmState.loading || llmState.error" :load="llmState.loading" :error="llmState.error" />
+		<ErrorBox 
+			v-if="llmState.loading || llmState.error" 
+			:load="llmState.loading" 
+			:error="llmState.error"
+			text="Saving settings..." />
 		<div v-else class="flex grow flex-col gap-4">
 			<SelectBox
 				v-model="selectedProvider"

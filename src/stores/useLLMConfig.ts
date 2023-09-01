@@ -46,7 +46,9 @@ export const useLLMConfig = defineStore('llm', () => {
 	}
 
 	const setProviderSettings = async (name: string, settings: JSONSettings) => {
+		currentState.loading = true
 		const result = await LLMConfigService.setProviderSettings(name, settings)
+		currentState.loading = false
 		sendNotificationFromJSON(result)
 		if (result.status != 'error') {
 			currentState.selected = name

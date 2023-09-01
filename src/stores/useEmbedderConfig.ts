@@ -46,7 +46,9 @@ export const useEmbedderConfig = defineStore('embedder', () => {
 	}
 
 	const setEmbedderSettings = async (name: string, settings: JSONSettings) => {
+		currentState.loading = true
 		const result = await EmbedderConfigService.setEmbedderSettings(name, settings)
+		currentState.loading = false
 		sendNotificationFromJSON(result)
 		if (result.status != 'error') {
 			currentState.selected = name

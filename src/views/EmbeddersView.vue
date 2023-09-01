@@ -44,7 +44,8 @@ watchDeep(
 		<ErrorBox
 			v-if="embedderState.loading || embedderState.error"
 			:load="embedderState.loading"
-			:error="embedderState.error" />
+			:error="embedderState.error"
+			text="Saving settings..." />
 		<div v-else class="flex grow flex-col gap-4">
 			<SelectBox
 				v-model="selectedEmbedder"

@@ -11,11 +11,13 @@ const props = withDefaults(
 		modelValue?: SelectItem['value']
 		color?: string
 		padding?: string
+		disabled?: boolean
 	}>(),
 	{
 		modelValue: (p: { list: SelectItem[] }) => p.list[0].value, // TODO: Fix this (why it doesn't infer the type of props?)
 		color: 'bg-base-100',
 		padding: 'p-2',
+		disabled: false
 	},
 )
 
@@ -43,7 +45,7 @@ defineExpose({
 </script>
 
 <template>
-	<Listbox v-model="selected" by="value" @update:modelValue="updateSelect">
+	<Listbox v-model="selected" by="value" :disabled="disabled" @update:modelValue="updateSelect">
 		<div class="relative rounded-lg">
 			<ListboxButton
 				:class="[color, padding]"
