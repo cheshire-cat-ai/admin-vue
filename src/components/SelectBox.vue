@@ -17,7 +17,7 @@ const props = withDefaults(
 		modelValue: (p: { list: SelectItem[] }) => p.list[0].value, // TODO: Fix this (why it doesn't infer the type of props?)
 		color: 'bg-base-100',
 		padding: 'p-2',
-		disabled: false
+		disabled: false,
 	},
 )
 

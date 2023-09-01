@@ -1,12 +1,15 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
-	load: boolean
-	error?: string
-	text?: string
-}>(), {
-	error: undefined,
-	text: "Getting ready..."
-})
+withDefaults(
+	defineProps<{
+		load: boolean
+		error?: string
+		text?: string
+	}>(),
+	{
+		error: undefined,
+		text: 'Getting ready...',
+	},
+)
 </script>
 
 <template>
