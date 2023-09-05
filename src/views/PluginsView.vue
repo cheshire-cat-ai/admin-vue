@@ -71,7 +71,8 @@ const searchPlugin = () => {
 	})
 }
 
-watch(pluginsFilters, () => {
+watchEffect(() => {
+	// TODO: Improve filtering rules and code logic
 	const filters = pluginsFilters.value
 	filteredList.value = pluginsList.value.filter(p => {
 		const list =
@@ -185,7 +186,11 @@ watch(pluginsFilters, () => {
 									v-model="item.active"
 									type="checkbox"
 									class="!toggle !toggle-success"
-									@click="togglePlugin(item.id, item.name, item.active!)" />
+									@click="async () => {
+										// TODO: Fix this workaround used to prevent checkbox switching when an error occurs
+										const res = await togglePlugin(item.id, item.name, item.active ?? false)
+										item.active = res ? item.active : false
+									}" />
 							</div>
 						</div>
 					</div>

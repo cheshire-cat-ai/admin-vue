@@ -24,7 +24,7 @@ export const usePlugins = defineStore('plugins', () => {
 		currentState.error = plugins.value?.status === 'error' ? plugins.value.message : undefined
 	})
 
-	const isInstalled = (id: Plugin['id']) => currentState.data?.installed.find(p => p.id === id)
+	const isInstalled = (id: Plugin['id']) => currentState.data?.installed.some(p => p.id === id)
 
 	const getSchema = (id: Plugin['id']) => settings.value?.data?.settings.find(p => p.name === id)?.schema
 
