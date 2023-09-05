@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { generateVeeObject } from '@utils/schema'
 import { type JSONSettings, type SchemaField } from '@models/JSONSchema'
 import { useEmbedderConfig } from '@stores/useEmbedderConfig'
 import type { JsonSchema } from 'ccat-api'

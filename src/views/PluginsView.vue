@@ -6,7 +6,6 @@ import { useSettings } from '@stores/useSettings'
 import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
 import { type SchemaField, type JSONSettings } from '@models/JSONSchema'
-import { generateVeeObject } from '@utils/schema'
 
 const store = usePlugins()
 const { togglePlugin, removePlugin, installPlugin, updateSettings, isInstalled, getSchema, getSettings } = store

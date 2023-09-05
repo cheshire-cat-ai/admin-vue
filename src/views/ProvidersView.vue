@@ -2,7 +2,6 @@
 import { type JSONSettings, type SchemaField } from '@models/JSONSchema'
 import { useLLMConfig } from '@stores/useLLMConfig'
 import type { JsonSchema } from 'ccat-api'
-import { generateVeeObject } from '@utils/schema'
 
 const storeLLM = useLLMConfig()
 const { getProviderSchema, setProviderSettings, getProviderSettings } = storeLLM

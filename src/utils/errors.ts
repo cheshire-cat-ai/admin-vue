@@ -1,4 +1,3 @@
-import { isApiError, isError, isErrorLikeObject, isString } from '@utils/typeGuards'
 /**
  * This module defines and export a collection of functions that are related to error management or error manipulation
  * commonly used throughout the application.

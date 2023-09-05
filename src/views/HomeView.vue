@@ -3,7 +3,6 @@ import { useRabbitHole } from '@stores/useRabbitHole'
 import { useMessages } from '@stores/useMessages'
 import { useSound } from '@vueuse/sound'
 import { useMemory } from '@stores/useMemory'
-import { AcceptedMemoryTypes } from 'ccat-api'
 import { useSettings } from '@stores/useSettings'
 import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
@@ -30,14 +29,10 @@ const { textarea: textArea } = useTextareaAutosize({
 
 const { isListening, toggle: toggleRecording, result: transcript } = useSpeechRecognition()
 const { state: micState, isSupported, query: queryMic } = usePermission('microphone', { controls: true })
-const { open: openFile, onChange: onFileUpload } = useFileDialog()
-const { open: openMemory, onChange: onMemoryUpload } = useFileDialog()
 const { play: playPop } = useSound('pop.mp3')
 const { play: playRec } = useSound('start-rec.mp3')
 
-const filesStore = useRabbitHole()
-const { sendFile, sendWebsite, sendMemory, getAllowedMimetypes } = filesStore
-const { currentState: rabbitHoleState } = storeToRefs(filesStore)
+const { currentState: rabbitHoleState } = storeToRefs(useRabbitHole())
 
 const { wipeConversation } = useMemory()
 const router = useRouter()
@@ -51,20 +46,23 @@ const randomDefaultMessages = selectRandomDefaultMessages()
 
 const dropContentZone = ref<HTMLDivElement>()
 
+// TODO: Fix why I can't use composables directly inside template
+const uploadFile = uploadToRabbitHole
+
 /**
  * Calls the specific endpoints based on the mime type of the file
  */
-const contentHandler = (content: string | File[] | null) => {
+const contentHandler = async (content: string | File[] | null) => {
 	if (!content) return
 	if (typeof content === 'string') {
 		if (content.trim().length == 0) return
 		try {
 			new URL(content)
-			sendWebsite(content)
+			uploadToRabbitHole("web", content)
 		} catch (_) {
 			dispatchMessage(content)
 		}
-	} else content.forEach(f => sendFile(f))
+	} else content.forEach(f => uploadToRabbitHole("content", f))
 }
 
 /**
@@ -88,26 +86,6 @@ useEventListener<ClipboardEvent>(dropContentZone, 'paste', evt => {
 	const text = evt.clipboardData?.getData('text')
 	const files = evt.clipboardData?.getData('file') || Array.from(evt.clipboardData?.files ?? [])
 	contentHandler(text || files)
-})
-
-/**
- * Handles the file upload by calling the Rabbit Hole endpoint to check mimetypes.
- */
-const uploadFile = async () => {
-	const allowedMimetypes = await getAllowedMimetypes()
-	openFile({ accept: allowedMimetypes?.join(',') })
-}
-
-onFileUpload(files => {
-	if (!files) return
-	const arr: File[] = []
-	for (const file of files) arr.push(file)
-	contentHandler(arr)
-})
-
-onMemoryUpload(files => {
-	if (files == null) return
-	for (const file of files) sendMemory(file)
 })
 
 /**
@@ -151,7 +129,7 @@ const dispatchWebsite = () => {
 	if (!insertedURL.value) return
 	try {
 		new URL(insertedURL.value)
-		sendWebsite(insertedURL.value)
+		uploadToRabbitHole("web", insertedURL.value)
 		boxUploadURL.value?.toggleModal()
 	} catch (_) {
 		insertedURL.value = ''
@@ -282,7 +260,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									<button
 										:disabled="rabbitHoleState.loading"
 										class="btn join-item w-full flex-nowrap px-2"
-										@click="openMemory({ accept: AcceptedMemoryTypes.join(',') })">
+										@click="uploadFile('memory')">
 										<span class="grow normal-case">Upload memories</span>
 										<span class="rounded-lg bg-success p-1 text-base-100">
 											<ph-brain-fill class="h-6 w-6" />
@@ -304,7 +282,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									<button
 										:disabled="rabbitHoleState.loading"
 										class="btn join-item w-full flex-nowrap px-2"
-										@click="uploadFile()">
+										@click="uploadFile('content')">
 										<span class="grow normal-case">Upload file</span>
 										<span class="rounded-lg bg-warning p-1 text-base-100">
 											<heroicons-document-text-solid class="h-6 w-6" />

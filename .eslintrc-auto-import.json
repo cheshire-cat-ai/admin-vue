@@ -306,6 +306,13 @@
     "suite": true,
     "test": true,
     "vi": true,
-    "vitest": true
+    "vitest": true,
+    "generateVeeObject": true,
+    "getErrorMessage": true,
+    "isApiError": true,
+    "isError": true,
+    "isErrorLikeObject": true,
+    "isString": true,
+    "uploadToRabbitHole": true
   }
 }

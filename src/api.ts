@@ -1,7 +1,6 @@
 import type { JSONResponse } from '@models/JSONSchema'
 import LogService from '@services/LogService'
 import { CatClient, type CancelablePromise } from 'ccat-api'
-import { getErrorMessage } from '@utils/errors'
 
 const { CORE_HOST, CORE_PORT, CORE_USE_SECURE_PROTOCOLS, API_KEY } = window.catCoreConfig
 

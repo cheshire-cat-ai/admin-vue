@@ -9,24 +9,7 @@ import { Matrix, TSNE } from '@saehrimnir/druidjs'
 import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
 import type { VectorsData } from 'ccat-api'
-
-interface MarkerData {
-	id: string
-	collection: string
-	text: string
-	when: string
-	source: string
-	score: number
-}
-
-interface PlotData {
-	name: string
-	data: {
-		x: number
-		y: number
-	}[]
-	meta?: MarkerData[]
-}
+import type { MarkerData, PlotData } from '@models/Plot'
 
 const { isDark } = storeToRefs(useSettings())
 
@@ -45,6 +28,9 @@ const [showSpinner, toggleSpinner] = useToggle(false)
 const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
 const { wipeAllCollections, wipeCollection, callMemory, deleteMemoryPoint } = memoryStore
+
+// TODO: Fix why I can't use composables directly inside template
+const uploadFile = uploadToRabbitHole
 
 /**
  * If "all", wipes all the collections in memory, otherwise only the selected one
@@ -254,6 +240,13 @@ const downloadResult = () => {
 							zoomin: false,
 							pan: false,
 							customIcons: [
+								{
+									icon: '<button class=\'btn-success btn btn-xs whitespace-nowrap\'>Import memories</button>',
+									index: 3,
+									title: 'Import some memories',
+									class: 'custom-icon',
+									click: () => uploadFile('memory'),
+								},
 								{
 									icon: '<button class=\'btn-info btn btn-xs whitespace-nowrap\'>Export memories</button>',
 									index: 3,

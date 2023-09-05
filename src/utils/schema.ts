@@ -1,7 +1,7 @@
 import { InputType, type SchemaField } from '@models/JSONSchema'
 import { entries } from 'lodash'
 
-const getEnumValues = (property: Record<string, any>, definitions: Record<string, any>): any[] | undefined => {
+const getEnumValues = (property: Record<string, unknown>, definitions: Record<string, any>): any[] | undefined => {
 	if (property['$ref']) {
 		const name = (property['$ref'] as string).split('/').at(-1)
 		if (!name) return undefined
@@ -12,7 +12,7 @@ const getEnumValues = (property: Record<string, any>, definitions: Record<string
 	} else return undefined
 }
 
-export const generateVeeObject = (properties: Record<string, any>, definitions: Record<string, any>) => {
+export const generateVeeObject = (properties: Record<string, any>, definitions: Record<string, unknown>) => {
 	return entries(properties).map<SchemaField>(([key, value]) => {
 		return {
 			name: key,
