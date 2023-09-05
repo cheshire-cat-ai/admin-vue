@@ -29,7 +29,10 @@ export const useMemory = defineStore('memory', () => {
 
 	const wipeAllCollections = async () => {
 		const result = await MemoryService.wipeAllCollections()
-		if (result.status == 'success') await fetchCollections()
+		if (result.status == 'success' && currentState.data) {
+			remove(currentState.data, v => v.name != 'procedural') 
+			fetchCollections()
+		}
 		return sendNotificationFromJSON(result)
 	}
 
@@ -41,7 +44,10 @@ export const useMemory = defineStore('memory', () => {
 
 	const wipeCollection = async (collection: string) => {
 		const result = await MemoryService.wipeCollection(collection)
-		if (result.status == 'success') remove(currentState.data ?? [], v => v.name == collection)
+		if (result.status == 'success' && currentState.data) {
+			remove(currentState.data, v => v.name == collection)
+			fetchCollections()
+		}
 		return sendNotificationFromJSON(result)
 	}
 
