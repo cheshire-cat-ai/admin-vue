@@ -75,3 +75,8 @@ Runs the build and serves the built app on port `3000` (default)
 ```bash
   npm run preview
 ```
+
+## Contributors
+
+<!-- readme: collaborators,contributors,antonioru/- -start -->
+<!-- readme: collaborators,contributors,antonioru/- -end -->
