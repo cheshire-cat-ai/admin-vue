@@ -79,4 +79,135 @@ Runs the build and serves the built app on port `3000` (default)
 ## Contributors
 
 <!-- readme: collaborators,contributors,antonioru/- -start -->
+<table>
+<tr>
+    <td align="center">
+        <a href="https://github.com/pieroit">
+            <img src="https://avatars.githubusercontent.com/u/6328377?v=4" width="100;" alt="pieroit"/>
+            <br />
+            <sub><b>Piero Savastano</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/zAlweNy26">
+            <img src="https://avatars.githubusercontent.com/u/41266342?v=4" width="100;" alt="zAlweNy26"/>
+            <br />
+            <sub><b>Dany</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/PaperBackPear3">
+            <img src="https://avatars.githubusercontent.com/u/44753919?v=4" width="100;" alt="PaperBackPear3"/>
+            <br />
+            <sub><b>Fabio Angeloni</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/AngyDev">
+            <img src="https://avatars.githubusercontent.com/u/44018650?v=4" width="100;" alt="AngyDev"/>
+            <br />
+            <sub><b>Angela Busato</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/fedestyla">
+            <img src="https://avatars.githubusercontent.com/u/6248817?v=4" width="100;" alt="fedestyla"/>
+            <br />
+            <sub><b>Federico Palmieri</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/EugenioPetulla">
+            <img src="https://avatars.githubusercontent.com/u/3589467?v=4" width="100;" alt="EugenioPetulla"/>
+            <br />
+            <sub><b>Eugenio Petullà</b></sub>
+        </a>
+    </td></tr>
+<tr>
+    <td align="center">
+        <a href="https://github.com/joke2k">
+            <img src="https://avatars.githubusercontent.com/u/359076?v=4" width="100;" alt="joke2k"/>
+            <br />
+            <sub><b>Daniele Faraglia</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/Zap123">
+            <img src="https://avatars.githubusercontent.com/u/1328102?v=4" width="100;" alt="Zap123"/>
+            <br />
+            <sub><b>Luca Costa</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/Jhonnyr97">
+            <img src="https://avatars.githubusercontent.com/u/42291959?v=4" width="100;" alt="Jhonnyr97"/>
+            <br />
+            <sub><b>Nilthon Jhon Rojas Apumayta</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/DShKMG">
+            <img src="https://avatars.githubusercontent.com/u/73855386?v=4" width="100;" alt="DShKMG"/>
+            <br />
+            <sub><b>Null</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/zioproto">
+            <img src="https://avatars.githubusercontent.com/u/789701?v=4" width="100;" alt="zioproto"/>
+            <br />
+            <sub><b>Saverio Proto</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/Steve707-AE">
+            <img src="https://avatars.githubusercontent.com/u/72551650?v=4" width="100;" alt="Steve707-AE"/>
+            <br />
+            <sub><b>Null</b></sub>
+        </a>
+    </td></tr>
+<tr>
+    <td align="center">
+        <a href="https://github.com/TochKa21U">
+            <img src="https://avatars.githubusercontent.com/u/132001957?v=4" width="100;" alt="TochKa21U"/>
+            <br />
+            <sub><b>Null</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/ClaReQurv">
+            <img src="https://avatars.githubusercontent.com/u/114885071?v=4" width="100;" alt="ClaReQurv"/>
+            <br />
+            <sub><b>Tydron16</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/calebgcc">
+            <img src="https://avatars.githubusercontent.com/u/49289653?v=4" width="100;" alt="calebgcc"/>
+            <br />
+            <sub><b>Caleb Gucciardi</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/elio1fiore">
+            <img src="https://avatars.githubusercontent.com/u/54111358?v=4" width="100;" alt="elio1fiore"/>
+            <br />
+            <sub><b>Elio FIore</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/lorenzopalloni">
+            <img src="https://avatars.githubusercontent.com/u/43707531?v=4" width="100;" alt="lorenzopalloni"/>
+            <br />
+            <sub><b>Lorenzo Palloni</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/salvog7">
+            <img src="https://avatars.githubusercontent.com/u/126958773?v=4" width="100;" alt="salvog7"/>
+            <br />
+            <sub><b>Salvatore</b></sub>
+        </a>
+    </td></tr>
+</table>
 <!-- readme: collaborators,contributors,antonioru/- -end -->
