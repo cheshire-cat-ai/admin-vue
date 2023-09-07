@@ -67,7 +67,9 @@ const savePluginSettings = async (payload: JSONSettings) => {
 
 const searchPlugin = () => {
 	filteredList.value = pluginsList.value.filter(p => {
-		return p.name.toLowerCase().includes(searchText.value) || p.id.toLowerCase().includes(searchText.value)
+		return p.name.toLowerCase().includes(searchText.value)
+			|| p.tags.toLowerCase().includes(searchText.value)
+			|| p.author_name.toLowerCase().includes(searchText.value)
 	})
 }
 
