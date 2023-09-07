@@ -1,5 +1,5 @@
 import { InputType, type SchemaField } from '@models/JSONSchema'
-import { entries } from 'lodash'
+import { capitalize, entries } from 'lodash'
 
 const getEnumValues = (property: Record<string, unknown>, definitions: Record<string, any>): any[] | undefined => {
 	if (property['$ref']) {
@@ -16,7 +16,7 @@ export const generateVeeObject = (properties: Record<string, any>, definitions: 
 		return {
 			name: key,
 			as: getEnumValues(value, definitions) ? 'select' : 'input',
-			label: value.title,
+			label: value.title ?? capitalize(key),
 			type: value.format ?? (value.type ? InputType[value.type as keyof typeof InputType] : undefined),
 			rules: value.default == undefined ? 'required' : '',
 			default: value.default,

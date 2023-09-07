@@ -50,7 +50,7 @@ defineEmits<{
 			<div
 				v-for="{ name, label, children, ...attrs } in fields"
 				:key="name"
-				class="form-control w-full py-2"
+				class="form-control w-full"
 				:class="{
 					'flex-row-reverse items-center justify-end': attrs.type === 'checkbox',
 				}">
@@ -71,8 +71,8 @@ defineEmits<{
 					v-bind="attrs"
 					:disabled="disabled"
 					:class="{
-						'select select-bordered select-sm w-full !leading-4': attrs.as === 'select',
-						'input input-primary input-sm w-full !transition-all': attrs.as != 'select',
+						'select select-bordered select-sm mb-2 w-full !leading-4': attrs.as === 'select',
+						'input input-primary input-sm mb-2 w-full !transition-all': attrs.as != 'select',
 					}">
 					<template v-if="children && children.length">
 						<component :is="'option'" v-for="({ text, ...childAttrs }, idx) in children" :key="idx" v-bind="childAttrs">
