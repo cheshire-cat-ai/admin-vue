@@ -16,7 +16,7 @@ export interface SchemaField {
 	label: string
 	as: string
 	name: string
-	type: string
+	type?: string
 	rules?: string
 	children?: {
 		value: string
@@ -30,4 +30,5 @@ export const InputType = {
 	integer: 'number',
 	string: 'text',
 	boolean: 'checkbox',
+	select: 'select-one'
 } as const

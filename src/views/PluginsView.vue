@@ -66,10 +66,11 @@ const savePluginSettings = async (payload: JSONSettings) => {
 }
 
 const searchPlugin = () => {
+	const text = searchText.value.toLowerCase() 
 	filteredList.value = pluginsList.value.filter(p => {
-		return p.name.toLowerCase().includes(searchText.value)
-			|| p.tags.toLowerCase().includes(searchText.value)
-			|| p.author_name.toLowerCase().includes(searchText.value)
+		return p.name.toLowerCase().includes(text)
+			|| p.tags.toLowerCase().includes(text)
+			|| p.author_name.toLowerCase().includes(text)
 	})
 }
 
@@ -127,7 +128,8 @@ watchEffect(() => {
 			:error="pluginsState.error" />
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<Pagination v-slot="{ list }" :list="filteredList" :pageSize="selectedPageSize">
-				<div v-for="item in list" :key="item.id" class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
+				<!-- TODO: Update ccat-api package for plugin interface -->
+				<div v-for="item in list" :key="item.id ?? (item as any).url" class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
 					<UseImage :src="item.thumb" class="h-20 w-20 self-center object-contain">
 						<template #error>
 							<div class="avatar placeholder self-center">
