@@ -35,6 +35,13 @@ const PluginService = Object.freeze({
 			`Unable to toggle plugin ${id}`,
 		)
 	},
+	searchPlugin: async (query: string) => {
+		return await tryRequest(
+			apiClient.api?.plugins.listAvailablePlugins(query),
+			`Searching plugins with query: ${query}`,
+			`Unable to search plugins with query: ${query}`,
+		)
+	},
 	updateSettings: async (id: string, settings: JSONSettings) => {
 		return await tryRequest(
 			apiClient.api?.plugins.upsertPluginSettings(id, settings),

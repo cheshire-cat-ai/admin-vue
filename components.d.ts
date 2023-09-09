@@ -23,12 +23,10 @@ declare module 'vue' {
     HeroiconsDocumentTextSolid: typeof import('~icons/heroicons/document-text-solid')['default']
     HeroiconsGlobeAlt: typeof import('~icons/heroicons/globe-alt')['default']
     HeroiconsHome20Solid: typeof import('~icons/heroicons/home20-solid')['default']
-    HeroiconsLink20Solid: typeof import('~icons/heroicons/link20-solid')['default']
     HeroiconsMagnifyingGlass20Solid: typeof import('~icons/heroicons/magnifying-glass20-solid')['default']
     HeroiconsMicrophoneSolid: typeof import('~icons/heroicons/microphone-solid')['default']
     HeroiconsMoonSolid: typeof import('~icons/heroicons/moon-solid')['default']
     HeroiconsPaperAirplaneSolid: typeof import('~icons/heroicons/paper-airplane-solid')['default']
-    HeroiconsSpeakerWaveSolid: typeof import('~icons/heroicons/speaker-wave-solid')['default']
     HeroiconsSunSolid: typeof import('~icons/heroicons/sun-solid')['default']
     HeroiconsTrashSolid: typeof import('~icons/heroicons/trash-solid')['default']
     HeroiconsXMark20Solid: typeof import('~icons/heroicons/x-mark20-solid')['default']
@@ -47,8 +45,6 @@ declare module 'vue' {
     NotificationStack: typeof import('./src/components/NotificationStack.vue')['default']
     Pagination: typeof import('./src/components/Pagination.vue')['default']
     PhBrainFill: typeof import('~icons/ph/brain-fill')['default']
-    PhCaretLeftFill: typeof import('~icons/ph/caret-left-fill')['default']
-    PhCaretRightFill: typeof import('~icons/ph/caret-right-fill')['default']
     PhPlugFill: typeof import('~icons/ph/plug-fill')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
@@ -57,6 +53,5 @@ declare module 'vue' {
     ThemeButton: typeof import('./src/components/ThemeButton.vue')['default']
     TransitionChild: typeof import('@headlessui/vue')['TransitionChild']
     TransitionRoot: typeof import('@headlessui/vue')['TransitionRoot']
-    UseImage: typeof import('@vueuse/components')['UseImage']
   }
 }

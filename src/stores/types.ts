@@ -60,7 +60,7 @@ export interface NotificationsState {
  * Defines the structure of the 'plugins' state.
  * This state contains information about the installed plugins.
  */
-export type PluginsState = AsyncState<PluginsList>
+export type PluginsState = AsyncState<Omit<PluginsList, 'filters'>>
 
 /**
  * Defines the structure of the 'collections' state.

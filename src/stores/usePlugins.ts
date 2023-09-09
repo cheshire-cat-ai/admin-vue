@@ -72,6 +72,14 @@ export const usePlugins = defineStore('plugins', () => {
 		fetchPlugins()
 	}
 
+	const searchPlugin = async (query: string) => {
+		currentState.loading = true
+		const res = await PluginService.searchPlugin(query)
+		if (res.status == 'error') sendNotificationFromJSON(res)
+		currentState.loading = false
+		return res.data
+	}
+
 	return {
 		currentState,
 		togglePlugin,
@@ -83,6 +91,7 @@ export const usePlugins = defineStore('plugins', () => {
 		getSchema,
 		getSettings,
 		fetchSettings,
+		searchPlugin
 	}
 })
 

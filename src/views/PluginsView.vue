@@ -8,7 +8,7 @@ import ModalBox from '@components/ModalBox.vue'
 import { type SchemaField, type JSONSettings } from '@models/JSONSchema'
 
 const store = usePlugins()
-const { togglePlugin, removePlugin, installPlugin, updateSettings, isInstalled, getSchema, getSettings } = store
+const { togglePlugin, removePlugin, installPlugin, updateSettings, isInstalled, getSchema, getSettings, searchPlugin } = store
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { pluginsFilters } = storeToRefs(useSettings())
@@ -65,13 +65,12 @@ const savePluginSettings = async (payload: JSONSettings) => {
 	if (res) settingsPanel.value?.togglePanel()
 }
 
-const searchPlugin = () => {
-	const text = searchText.value.toLowerCase() 
-	filteredList.value = pluginsList.value.filter(p => {
-		return p.name.toLowerCase().includes(text)
-			|| p.tags.toLowerCase().includes(text)
-			|| p.author_name.toLowerCase().includes(text)
-	})
+const queryPlugins = async () => {
+	const text = searchText.value.toLowerCase()
+	const list = await searchPlugin(text)
+	filteredList.value = [
+		...new Set([...(list?.installed ?? []), ...(list?.registry ?? [])]),
+	]
 }
 
 watchEffect(() => {
@@ -100,7 +99,7 @@ watchEffect(() => {
 				label="Search for a plugin"
 				search
 				:disabled="pluginsState.loading || Boolean(pluginsState.error)"
-				@send="searchPlugin()" />
+				@send="queryPlugins()" />
 			<div class="flex flex-wrap justify-center gap-2">
 				<button
 					v-for="(v, k) of pluginsFilters"

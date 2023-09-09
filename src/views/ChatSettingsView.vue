@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { capitalize, join, map, cloneDeep, split } from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
-import { useMessages } from '@stores/useMessages'
+import { useSettings } from '@stores/useSettings'
 import type { PromptSettings } from 'ccat-api'
 
-const messagesStore = useMessages()
-const { getDefaultPromptSettings } = messagesStore
+const messagesStore = useSettings()
+const { getPromptSettings } = messagesStore
 const { promptSettings } = storeToRefs(messagesStore)
 const { showNotification } = useNotifications()
 
@@ -16,7 +16,7 @@ const emit = defineEmits<{
 }>()
 
 const resetChatSettings = async () => {
-	const defaultPromptSettings = await getDefaultPromptSettings()
+	const defaultPromptSettings = await getPromptSettings()
 	if (!defaultPromptSettings) return
 	tempSettings.value = defaultPromptSettings
 }

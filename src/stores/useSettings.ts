@@ -1,4 +1,6 @@
 import { apiClient, tryRequest } from '@/api'
+import type { PromptSettings } from 'ccat-api'
+import { defaultsDeep } from 'lodash'
 
 interface Filter {
 	[k: string]: {
@@ -8,7 +10,10 @@ interface Filter {
 }
 
 export const useSettings = defineStore('settings', () => {
+	const isReadyAndAuth = ref(false)
+
 	const isAudioEnabled = useLocalStorage('isAudioEnabled', true)
+
 	const isDark = useDark({
 		storageKey: 'currentTheme',
 		selector: 'html',
@@ -19,6 +24,8 @@ export const useSettings = defineStore('settings', () => {
 	})
 
 	const toggleDark = useToggle(isDark)
+	
+	const promptSettings = useLocalStorage<PromptSettings>('promptSettings', {} as PromptSettings)
 
 	const pluginsFilters = useLocalStorage<Filter>('pluginsFilters', {
 		presence: {
@@ -40,7 +47,24 @@ export const useSettings = defineStore('settings', () => {
 		return result.data
 	}
 
-	const { state: cat } = useAsyncState(getStatus(), undefined)
+	const getPromptSettings = async () => {
+		const result = await tryRequest(
+			apiClient.api?.prompt.getDefaultPromptSettings(),
+			'Getting all the default prompt settings',
+			'Unable to fetch default prompt settings',
+		)
+		return result.data
+	}
+
+	const { state: defaultPromptSettings, isReady: isOkPrompt } = useAsyncState(getPromptSettings(), undefined)
+
+	const { state: cat, isReady: isOkStatus } = useAsyncState(getStatus(), undefined)
+
+	watchEffect(() => {
+		const statusError = cat.value == undefined, promptError = defaultPromptSettings.value == undefined
+		isReadyAndAuth.value = !(statusError || promptError) && (isOkPrompt.value && isOkStatus.value)
+		defaultsDeep(promptSettings.value, defaultPromptSettings.value)
+	})
 
 	return {
 		isAudioEnabled,
@@ -48,6 +72,9 @@ export const useSettings = defineStore('settings', () => {
 		pluginsFilters,
 		toggleDark,
 		cat,
+		getPromptSettings,
+		promptSettings,
+		isReadyAndAuth
 	}
 })
 
