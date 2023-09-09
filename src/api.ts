@@ -1,7 +1,6 @@
-import { AxiosError } from "axios"
-import type { JSONResponse } from "@models/JSONSchema"
-import LogService from "@services/LogService"
-import { CatClient, type CancelablePromise, ApiError } from 'ccat-api'
+import type { JSONResponse } from '@models/JSONSchema'
+import LogService from '@services/LogService'
+import { CatClient, type CancelablePromise } from 'ccat-api'
 
 /**
  * API client to make requests to the endpoints and passing the API_KEY for authentication.
@@ -43,35 +42,28 @@ export const updateClient = ({ baseUrl, authKey, port, secure }: AuthForm) => {
  * @returns A JSONResponse object containing status, message and optionally a data property
  */
 export const tryRequest = async <T>(
-  request: CancelablePromise<T> | undefined,
-  success: string,
-  error: string,
-  log: unknown[] | string = success,
+	request: CancelablePromise<T> | undefined,
+	success: string,
+	error: string,
+	log: unknown[] | string = success,
 ) => {
-  try {
-    if (request == undefined) throw new Error("Failed to reach the endpoint")
+	try {
+		if (request == undefined) throw new Error('Failed to reach the endpoint')
 
-    const result = (await request) as T
-    
-    if (typeof log === 'string') LogService.print(log)
-    else LogService.print(...log)
+		const result = (await request) as T
 
-    return {
-      status: 'success',
-      message: success,
-      data: result
-    } as JSONResponse<T>
-  } catch (err) {
-    if (err instanceof AxiosError) {
-      LogService.print(err.message)
-      if (err.code === "ERR_NETWORK") error = "Network error while requesting"
-    } else if (err instanceof ApiError) {
-      LogService.print(err.body.detail)
-      error = "Unable to authenticate request"
-    }
-    return {
-      status: 'error',
-      message: error
-    } as JSONResponse<T>
-  }
+		if (typeof log === 'string') LogService.success(log)
+		else LogService.success(...log)
+
+		return {
+			status: 'success',
+			message: success,
+			data: result,
+		} as JSONResponse<T>
+	} catch (err) {
+		return {
+			status: 'error',
+			message: getErrorMessage(err, error),
+		} as JSONResponse<T>
+	}
 }

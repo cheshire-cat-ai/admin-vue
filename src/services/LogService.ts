@@ -3,11 +3,16 @@
  * It doesn't do anything in production mode.
  */
 const LogService = Object.freeze({
-  print: (...args: unknown[]) => {
-    if (import.meta.env.MODE === 'development') {
-      console.log('🐱 Log:', ...args)
-    }
-  }
+	error: (...args: unknown[]) => {
+		if (import.meta.env.MODE === 'development') {
+			console.error('🐱 Log:', ...args)
+		}
+	},
+	success: (...args: unknown[]) => {
+		if (import.meta.env.MODE === 'development') {
+			console.log('🐱 Log:', ...args)
+		}
+	},
 })
 
 export default LogService

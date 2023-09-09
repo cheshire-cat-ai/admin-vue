@@ -1,19 +1,31 @@
 name: Vitest Unit Tests
+
 on:
   push:
-    branches: [ main, master, develop ]
+    branches: [main, master, develop]
+    paths:
+      - '**.ts'
+      - '**.vue'
   pull_request:
-    branches: [ main, master, develop ]
+    branches: [main, master, develop]
+    paths:
+      - '**.ts'
+      - '**.vue'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
-    - name: Install dependencies
-      run: npm ci
-    - name: Run Vitest tests
-      run: npm run unit
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Vitest tests
+        run: npm run unit

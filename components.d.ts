@@ -7,9 +7,12 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    CheckBox: typeof import('./src/components/CheckBox.vue')['default']
     Dialog: typeof import('@headlessui/vue')['Dialog']
     DialogPanel: typeof import('@headlessui/vue')['DialogPanel']
     DialogTitle: typeof import('@headlessui/vue')['DialogTitle']
+    DynamicForm: typeof import('./src/components/DynamicForm.vue')['default']
+    ErrorBox: typeof import('./src/components/ErrorBox.vue')['default']
     Header: typeof import('./src/components/Header.vue')['default']
     HeroiconsAdjustmentsHorizontalSolid: typeof import('~icons/heroicons/adjustments-horizontal-solid')['default']
     HeroiconsArrowDown20Solid: typeof import('~icons/heroicons/arrow-down20-solid')['default']
@@ -25,7 +28,6 @@ declare module 'vue' {
     HeroiconsMicrophoneSolid: typeof import('~icons/heroicons/microphone-solid')['default']
     HeroiconsMoonSolid: typeof import('~icons/heroicons/moon-solid')['default']
     HeroiconsPaperAirplaneSolid: typeof import('~icons/heroicons/paper-airplane-solid')['default']
-    HeroiconsSpeakerWaveSolid: typeof import('~icons/heroicons/speaker-wave-solid')['default']
     HeroiconsSunSolid: typeof import('~icons/heroicons/sun-solid')['default']
     HeroiconsTrashSolid: typeof import('~icons/heroicons/trash-solid')['default']
     HeroiconsXMark20Solid: typeof import('~icons/heroicons/x-mark20-solid')['default']
@@ -42,9 +44,11 @@ declare module 'vue' {
     MessageBox: typeof import('./src/components/MessageBox.vue')['default']
     ModalBox: typeof import('./src/components/ModalBox.vue')['default']
     NotificationStack: typeof import('./src/components/NotificationStack.vue')['default']
+    Pagination: typeof import('./src/components/Pagination.vue')['default']
     PhBrainFill: typeof import('~icons/ph/brain-fill')['default']
+    PhCaretLeftFill: typeof import('~icons/ph/caret-left-fill')['default']
+    PhCaretRightFill: typeof import('~icons/ph/caret-right-fill')['default']
     PhPlugFill: typeof import('~icons/ph/plug-fill')['default']
-    PhTextAlignLeftBold: typeof import('~icons/ph/text-align-left-bold')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SelectBox: typeof import('./src/components/SelectBox.vue')['default']
@@ -52,5 +56,6 @@ declare module 'vue' {
     ThemeButton: typeof import('./src/components/ThemeButton.vue')['default']
     TransitionChild: typeof import('@headlessui/vue')['TransitionChild']
     TransitionRoot: typeof import('@headlessui/vue')['TransitionRoot']
+    UseImage: typeof import('@vueuse/components')['UseImage']
   }
 }

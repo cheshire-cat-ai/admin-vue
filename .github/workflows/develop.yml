@@ -1,8 +1,8 @@
-name: Release Main Zip
+name: Release Develop Zip
 
 on:
   push:
-    branches: [main, master]
+    branches: [develop]
     paths-ignore:
       - 'README.md'
       - 'LICENSE'
@@ -16,7 +16,6 @@ concurrency:
 
 permissions:
   contents: write
-  issues: write
 
 jobs:
   build:
@@ -29,25 +28,20 @@ jobs:
           node-version: 16
       - name: Install dependencies
         run: npm ci
-      - name: 'TODO to Issue'
-        uses: 'alstr/todo-to-issue-action@v4'
-        with:
-          IDENTIFIERS: '[{"name": "FEATURE", "labels": ["enhancement"]}, {"name": "BUG", "labels": ["bug"]}]'
-          ISSUE_TEMPLATE: '**Describe the reason of this issue**\n{{ body }}\n\nThe issue is present here:\n\n{{ snippet }}'
       - name: Build static files
         run: npm run build --if-present
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.7.1
         with:
           type: 'zip'
-          filename: 'release.zip'
+          filename: 'develop.zip'
           directory: './dist'
           path: '.'
       - name: Upload Release
         uses: ncipollo/release-action@v1.12.0
         with:
           tag: 'Admin'
-          artifacts: './dist/release.zip'
+          artifacts: './dist/develop.zip'
           allowUpdates: true
           replacesArtifacts: true
           body: |

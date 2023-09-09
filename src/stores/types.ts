@@ -1,22 +1,22 @@
 import type { Message } from '@models/Message'
 import type { Notification } from '@models/Notification'
 import type { JSONSettings } from '@models/JSONSchema'
-import type { CollectionsList, ConfigurationsResponse, PluginsList } from 'ccat-api'
+import type { CollectionsList, SettingsResponse, PluginsList } from 'ccat-api'
 import type { FileResponse, WebResponse } from 'ccat-api'
 
 /**
  * Defines a generic interface for defining the state of an asynchronous operation.
  */
 export interface AsyncStateBase {
-  loading: boolean
-  error?: string
+	loading: boolean
+	error?: string
 }
 
 /**
  * Defines a generic interface for defining the state of an asynchronous operation that returns data.
  */
 export interface AsyncState<TData> extends AsyncStateBase {
-  data?: TData
+	data?: TData
 }
 
 export type RabbitHoleResponse = FileResponse | WebResponse | Record<string, unknown>
@@ -31,9 +31,9 @@ export type FileUploaderState = AsyncState<RabbitHoleResponse>
 /**
  * Defines the structure of the settings config state.
  */
-export interface SettingsConfigState extends AsyncState<ConfigurationsResponse> {
-  selected?: string
-  settings: Record<string, JSONSettings>
+export interface SettingsConfigState extends AsyncState<SettingsResponse> {
+	selected?: string
+	settings: Record<string, JSONSettings>
 }
 
 /**
@@ -43,9 +43,9 @@ export interface SettingsConfigState extends AsyncState<ConfigurationsResponse> 
  * It extends the AsyncStateBase interface, which defines the structure of the state of an asynchronous operation.
  */
 export interface MessagesState extends AsyncStateBase {
-  ready: boolean
-  messages: Message[]
-  defaultMessages: string[]
+	ready: boolean
+	messages: Message[]
+	defaultMessages: string[]
 }
 
 /**
@@ -53,14 +53,14 @@ export interface MessagesState extends AsyncStateBase {
  * This state contains information about the notifications sent to the user.
  */
 export interface NotificationsState {
-  history: Notification[]
+	history: Notification[]
 }
 
 /**
  * Defines the structure of the 'plugins' state.
  * This state contains information about the installed plugins.
  */
-export type PluginsState = AsyncState<Omit<PluginsList, 'status'>>
+export type PluginsState = AsyncState<PluginsList>
 
 /**
  * Defines the structure of the 'collections' state.

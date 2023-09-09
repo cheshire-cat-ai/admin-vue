@@ -1,4 +1,3 @@
-import { isError, isErrorLikeObject, isString } from '@utils/typeGuards'
 /**
  * This module defines and export a collection of functions that are related to error management or error manipulation
  * commonly used throughout the application.
@@ -9,8 +8,9 @@ import { isError, isErrorLikeObject, isString } from '@utils/typeGuards'
  * If the value is not an error or error-like object, the unknownError argument is returned.
  */
 export const getErrorMessage = (error: unknown, unknownError = 'Unknown error') => {
-  if (isString(error)) return error
-  if (isError(error) || isErrorLikeObject(error)) return error.message
+	if (isApiError(error)) return error.body.detail.error
+	if (isError(error) || isErrorLikeObject(error)) return error.message
+	if (isString(error)) return error
 
-  return unknownError
+	return unknownError
 }

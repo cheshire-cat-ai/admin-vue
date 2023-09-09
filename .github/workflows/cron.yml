@@ -1,0 +1,24 @@
+name: "Update Contributors Infos"
+
+on:
+  schedule:
+    - cron: '* * */7 * *'
+
+permissions:
+  contents: write
+
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate contributors table
+        uses: akhilmhdh/contributors-readme-action@v2.3.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          image_size: 80
+          use_username: true
+      - name: Generate contributors map
+        uses: tunaitis/contributor-map@v1
+        with:
+          output: contributors-map.svg

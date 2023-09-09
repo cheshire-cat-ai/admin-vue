@@ -5,33 +5,39 @@ import { apiClient, tryRequest } from '@/api'
  * Meaning this service sends files to the backend.
  */
 const RabbitHoleService = Object.freeze({
-  sendFile: async (file: File, summary?: boolean) => {
-    const result = await tryRequest(
-      apiClient.value?.api?.rabbitHole.uploadFile({ file, summary }), 
-      `File ${file.name} successfully sent down the rabbit hole`, 
-      "Unable to send the file to the rabbit hole",
-      "Sending a file to the rabbit hole"
-    )
-    return result.data
-  },
-  sendWeb: async (url: string, summary?: boolean) => {
-    const result = await tryRequest(
-      apiClient.value?.api?.rabbitHole.uploadUrl({ url, summary }), 
-      "Website successfully sent down the rabbit hole", 
-      "Unable to send the website to the rabbit hole",
-      "Sending a website content to the rabbit hole"
-    )
-    return result.data
-  },
-  sendMemory: async (file: File) => {
-    const result = await tryRequest(
-      apiClient.value?.api?.rabbitHole.uploadMemory({ file }), 
-      "Memories file successfully sent down the rabbit hole", 
-      "Unable to send the memories to the rabbit hole",
-      "Sending a bunch of memories to the rabbit hole"
-    )
-    return result.data
-  },
+	sendFile: async (file: File) => {
+		return await tryRequest(
+			apiClient.value?.api?.rabbitHole.uploadFile({ file }),
+			`File ${file.name} successfully sent down the rabbit hole!`,
+			'Unable to send the file to the rabbit hole!',
+			'Sending a file to the rabbit hole',
+		)
+	},
+	sendWeb: async (url: string) => {
+		return await tryRequest(
+			apiClient.value?.api?.rabbitHole.uploadUrl({ url }),
+			'Website successfully sent down the rabbit hole!',
+			'Unable to send the website to the rabbit hole!',
+			'Sending a website content to the rabbit hole',
+		)
+	},
+	sendMemory: async (file: File) => {
+		return await tryRequest(
+			apiClient.value?.api?.rabbitHole.uploadMemory({ file }),
+			'Memories file successfully sent down the rabbit hole!',
+			'Unable to send the memories to the rabbit hole!',
+			'Sending a bunch of memories to the rabbit hole',
+		)
+	},
+	getAllowedMimetypes: async () => {
+		const result = await tryRequest(
+			apiClient.value?.api?.rabbitHole.getAllowedMimetypes(),
+			'Memories file successfully sent down the rabbit hole!',
+			'Unable to send the memories to the rabbit hole!',
+			'Sending a bunch of memories to the rabbit hole',
+		)
+		return result.data?.allowed
+	},
 })
 
 export default RabbitHoleService

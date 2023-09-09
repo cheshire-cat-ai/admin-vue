@@ -1,67 +1,49 @@
 import type { FileUploaderState } from '@stores/types'
-import { getErrorMessage } from '@utils/errors'
 import { useNotifications } from '@stores/useNotifications'
 import RabbitHoleService from '@services/RabbitHoleService'
-import { useSettings } from '@stores/useSettings'
 
 export const useRabbitHole = defineStore('rabbitHole', () => {
-  const currentState = reactive<FileUploaderState>({
-    loading: false
-  })
+	const currentState = reactive<FileUploaderState>({
+		loading: false,
+	})
 
-  const { showNotification } = useNotifications()
-  const { mustSummarize } = storeToRefs(useSettings())
+	const { sendNotificationFromJSON } = useNotifications()
 
-  const sendFile = (file: File) => {
-    currentState.loading = true
-    RabbitHoleService.sendFile(file, mustSummarize.value).then(data => {
-      currentState.loading = false
-      currentState.data = data
-      showNotification({
-        text: `File ${file.name} successfully sent down the rabbit hole!`,
-        type: 'success'
-      })
-    }).catch(error => {
-      currentState.error = getErrorMessage(error)
-    })
-  }
+	const sendFile = async (file: File) => {
+		currentState.loading = true
+		const res = await RabbitHoleService.sendFile(file)
+		currentState.loading = false
+		currentState.data = res.data
+		sendNotificationFromJSON(res)
+	}
 
-  const sendWebsite = (url: string) => {
-    currentState.loading = true
-    RabbitHoleService.sendWeb(url, mustSummarize.value).then(data => {
-      currentState.loading = false
-      currentState.data = data
-      showNotification({
-        text: `Website successfully sent down the rabbit hole!`,
-        type: 'success'
-      })
-    }).catch(error => {
-      currentState.error = getErrorMessage(error)
-    })
-  }
+	const sendWebsite = async (url: string) => {
+		currentState.loading = true
+		const res = await RabbitHoleService.sendWeb(url)
+		currentState.loading = false
+		currentState.data = res.data
+		sendNotificationFromJSON(res)
+	}
 
-  const sendMemory = (file: File) => {
-    currentState.loading = true
-    RabbitHoleService.sendMemory(file).then(data => {
-      currentState.loading = false
-      currentState.data = data
-      showNotification({
-        text: `Memories successfully sent down the rabbit hole!`,
-        type: 'success'
-      })
-    }).catch(error => {
-      currentState.error = getErrorMessage(error)
-    })
-  }
+	const sendMemory = async (file: File) => {
+		currentState.loading = true
+		const res = await RabbitHoleService.sendMemory(file)
+		currentState.loading = false
+		currentState.data = res.data
+		sendNotificationFromJSON(res)
+	}
 
-  return {
-    currentState,
-    sendFile,
-    sendWebsite,
-    sendMemory
-  }
+	const getAllowedMimetypes = async () => await RabbitHoleService.getAllowedMimetypes()
+
+	return {
+		currentState,
+		sendFile,
+		sendWebsite,
+		sendMemory,
+		getAllowedMimetypes,
+	}
 })
 
 if (import.meta.hot) {
-  import.meta.hot.accept(acceptHMRUpdate(useRabbitHole, import.meta.hot))
+	import.meta.hot.accept(acceptHMRUpdate(useRabbitHole, import.meta.hot))
 }

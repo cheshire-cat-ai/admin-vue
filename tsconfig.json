@@ -1,57 +1,49 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": [
-    "env.d.ts", 
-    "src/**/*", 
-    "src/**/*.vue",
-    ".eslintrc.json",
-    "components.d.ts",
-    "auto-imports.d.ts",
-    "globals.d.ts",
-    "unit/**/*.test.ts",
-    "e2e/**/*.spec.ts"
-  ],
-  "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "lib": [
-      "ESNext",
-      "DOM"
-    ],
-    "types": [
-      "vitest/globals",
-      "vite/client",
-      "node",
-      "jsdom"
-    ],
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": false,
-    "noEmit": true,
-    "allowJs": true,
-    "removeComments": true,
-    "importHelpers": true,
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
-    "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "composite": false,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@assets/*": ["src/assets/*"],
-      "@components/*": ["src/components/*"],
-      "@stores/*": ["src/stores/*"],
-      "@views/*": ["src/views/*"],
-      "@models/*": ["src/models/*"],
-      "@services/*": ["src/services/*"],
-      "@utils/*": ["src/utils/*"]
-    }
-  },
+	"extends": "@vue/tsconfig/tsconfig.dom.json",
+	"include": [
+		"env.d.ts",
+		"src/**/*",
+		"src/**/*.vue",
+		".eslintrc.json",
+		"components.d.ts",
+		"auto-imports.d.ts",
+		"globals.d.ts",
+		"unit/**/*.test.ts",
+		"e2e/**/*.spec.ts"
+	],
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"lib": ["ESNext", "DOM"],
+		"types": ["vitest/globals", "vite/client", "node", "jsdom"],
+		"moduleResolution": "node",
+		"resolveJsonModule": true,
+		"isolatedModules": false,
+		"noEmit": true,
+		"allowJs": true,
+		"removeComments": true,
+		"importHelpers": true,
+		"forceConsistentCasingInFileNames": true,
+		"esModuleInterop": true,
+		"strict": true,
+		"allowSyntheticDefaultImports": true,
+		"composite": false,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"],
+			"@assets/*": ["src/assets/*"],
+			"@components/*": ["src/components/*"],
+			"@stores/*": ["src/stores/*"],
+			"@views/*": ["src/views/*"],
+			"@models/*": ["src/models/*"],
+			"@services/*": ["src/services/*"],
+			"@utils/*": ["src/utils/*"]
+		}
+	},
 
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ]
+	"references": [
+		{
+			"path": "./tsconfig.node.json"
+		}
+	]
 }

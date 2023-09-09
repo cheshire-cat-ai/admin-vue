@@ -1,32 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Cheshire Cat</title>
-  </head>
-  <body>
-    <noscript>
-      <strong>
-        We're sorry but the app doesn't work properly without JavaScript enabled. Please enable it to continue.
-      </strong>
-    </noscript>
-    <!-- Vue app will be mounted here -->
-    <div id="app"></div>
-    
-    <!--
+	<head>
+		<meta charset="UTF-8" />
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Cheshire Cat</title>
+	</head>
+	<body>
+		<noscript>
+			<strong>
+				We're sorry but the app doesn't work properly without JavaScript enabled. Please enable it to continue.
+			</strong>
+		</noscript>
+		<!-- Vue app will be mounted here -->
+		<div id="app"></div>
+
+		<!--
       Default info on how to connect with core.
       This will be overridden when the admin is served from core
     -->
-    <script>
-      window.catCoreConfig = {
-        "CORE_HOST": "localhost",
-        "CORE_PORT": "1865",
-        "CORE_USE_SECURE_PROTOCOLS": false,
-        "API_KEY": null,
-      }
-    </script>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+		<script>
+			window.catCoreConfig = {
+				CORE_HOST: 'localhost',
+				CORE_PORT: '1865',
+				CORE_USE_SECURE_PROTOCOLS: false,
+				API_KEY: null,
+			}
+		</script>
+		<script type="module" src="/src/main.ts"></script>
+	</body>
 </html>
