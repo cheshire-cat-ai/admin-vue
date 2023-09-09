@@ -38,17 +38,17 @@ export const useMessages = defineStore('messages', () => {
 
 	const promptSettings = useLocalStorage<PromptSettings>('promptSettings', {} as PromptSettings)
 
-  const { showNotification } = useNotifications()
-  const { isAuth } = storeToRefs(useSettings())
+	const { showNotification } = useNotifications()
+	const { isAuth } = storeToRefs(useSettings())
 
-  const getDefaultPromptSettings = async () => {
-    const result = await tryRequest(
-      apiClient.value?.api?.prompt.getDefaultPromptSettings(), 
-      "Getting all the default prompt settings", 
-      "Unable to fetch default prompt settings"
-    )
-    return result.data
-  }
+	const getDefaultPromptSettings = async () => {
+		const result = await tryRequest(
+			apiClient.value?.api?.prompt.getDefaultPromptSettings(),
+			"Getting all the default prompt settings",
+			"Unable to fetch default prompt settings"
+		)
+		return result.data
+	}
 
 	const { state: defaultPromptSettings, isLoading } = useAsyncState(getDefaultPromptSettings(), undefined)
 
@@ -57,45 +57,45 @@ export const useMessages = defineStore('messages', () => {
 		defaultsDeep(promptSettings.value, defaultPromptSettings.value)
 	})
 
-  watchEffect(() => {
-    /**
-     * Subscribes to the messages service on component mount
-     * and dispatches the received messages to the store.
-     * It also dispatches the error to the store if an error occurs.
-     */
-	// TODO: Fix why the websocket doesn't trigger onConnected in development mode
-	currentState.ready = import.meta.env.DEV // Temporary fix
-    if (!isAuth.value) return
-    apiClient.value?.onConnected(() => {
-      currentState.ready = true
-    }).onMessage(({ content, type, why }) => {
-      if (type === 'chat') {
-        addMessage({
-          text: content,
-          sender: 'bot',
-          timestamp: now(),
-          why
-        })
-      } else if (type === 'notification') {
-        showNotification({
-          type: 'info',
-          text: content
-        })
-      }
-    }).onError(error => {
-      currentState.loading = currentState.ready = false
-      currentState.error = error.description
-    }).onDisconnected(() => {
-      currentState.ready = false
-    })
-  })
+	watchEffect(() => {
+		/**
+		 * Subscribes to the messages service on component mount
+		 * and dispatches the received messages to the store.
+		 * It also dispatches the error to the store if an error occurs.
+		 */
+		// TODO: Fix why the websocket doesn't trigger onConnected in development mode
+		currentState.ready = import.meta.env.DEV // Temporary fix
+		if (!isAuth.value) return
+		apiClient.value?.onConnected(() => {
+			currentState.ready = true
+		}).onMessage(({ content, type, why }) => {
+			if (type === 'chat') {
+				addMessage({
+					text: content,
+					sender: 'bot',
+					timestamp: now(),
+					why
+				})
+			} else if (type === 'notification') {
+				showNotification({
+					type: 'info',
+					text: content
+				})
+			}
+		}).onError(error => {
+			currentState.loading = currentState.ready = false
+			currentState.error = error.description
+		}).onDisconnected(() => {
+			currentState.ready = false
+		})
+	})
 
-  tryOnUnmounted(() => {
-    /**
-     * Unsubscribes to the messages service on component unmount
-     */
-    apiClient.value?.close()
-  })
+	tryOnUnmounted(() => {
+		/**
+		 * Unsubscribes to the messages service on component unmount
+		 */
+		apiClient.value?.close()
+	})
 
 	/**
 	 * Adds a message to the list of messages
