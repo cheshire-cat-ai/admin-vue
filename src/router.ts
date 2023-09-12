@@ -7,14 +7,7 @@ const router = createRouter({
 		{
 			path: '/',
 			name: 'home',
-			component: () => import('@views/HomeView.vue'),
-			children: [
-				{
-					path: '',
-					name: 'chat_settings',
-					component: () => import('@views/ChatSettingsView.vue'),
-				},
-			],
+			component: () => import('@views/HomeView.vue')
 		},
 		{
 			path: '/settings',

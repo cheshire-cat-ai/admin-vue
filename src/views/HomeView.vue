@@ -4,7 +4,6 @@ import { useMessages } from '@stores/useMessages'
 import { useSound } from '@vueuse/sound'
 import { useMemory } from '@stores/useMemory'
 import { useSettings } from '@stores/useSettings'
-import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
 
 const messagesStore = useMessages()
@@ -16,7 +15,6 @@ const userMessage = ref(''),
 	isScrollable = ref(false),
 	isTwoLines = ref(false)
 const boxUploadURL = ref<InstanceType<typeof ModalBox>>()
-const chatSettingsPanel = ref<InstanceType<typeof SidePanel>>()
 
 const { textarea: textArea } = useTextareaAutosize({
 	input: userMessage,
@@ -35,7 +33,6 @@ const { play: playRec } = useSound('start-rec.mp3')
 const { currentState: rabbitHoleState } = storeToRefs(useRabbitHole())
 
 const { wipeConversation } = useMemory()
-const router = useRouter()
 const { isAudioEnabled } = storeToRefs(useSettings())
 
 const inputDisabled = computed(() => {
@@ -155,11 +152,6 @@ const preventSend = (e: KeyboardEvent) => {
 	}
 }
 
-const openChatSettings = () => {
-	router.push({ name: 'chat_settings' })
-	chatSettingsPanel.value?.togglePanel()
-}
-
 const generatePlaceholder = (isLoading: boolean, isRecording: boolean, error?: string) => {
 	if (error) return 'Well, well, well, looks like something has gone amiss'
 	if (isLoading) return 'The enigmatic Cheshire cat is pondering...'
@@ -245,17 +237,6 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 								<heroicons-bolt-solid class="h-6 w-6" />
 							</button>
 							<ul tabindex="0" class="dropdown-content join join-vertical !-right-1/4 z-10 mb-5 p-0 [&>li>*]:bg-base-100">
-								<!--<li>
-									<button
-										:disabled="rabbitHoleState.loading"
-										class="btn join-item w-full flex-nowrap px-2"
-										@click="openChatSettings">
-										<span class="grow normal-case">Prompt settings</span>
-										<span class="rounded-lg bg-primary p-1 text-base-100">
-											<heroicons-adjustments-horizontal-solid class="h-6 w-6" />
-										</span>
-									</button>
-								</li>-->
 								<li>
 									<button
 										:disabled="rabbitHoleState.loading"
@@ -328,8 +309,5 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				<button class="btn btn-primary btn-sm" @click="dispatchWebsite">Send</button>
 			</div>
 		</ModalBox>
-		<SidePanel ref="chatSettingsPanel" title="Prompt Settings">
-			<RouterView @close="chatSettingsPanel?.togglePanel()" />
-		</SidePanel>
 	</div>
 </template>
