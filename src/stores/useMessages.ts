@@ -35,7 +35,7 @@ export const useMessages = defineStore('messages', () => {
 		],
 	})
 
-	const { isReadyAndAuth, promptSettings } = storeToRefs(useSettings())
+	const { isReadyAndAuth } = storeToRefs(useSettings())
 	const { showNotification } = useNotifications()
 
 	watchEffect(() => {
@@ -108,7 +108,7 @@ export const useMessages = defineStore('messages', () => {
 	 * Sends a message to the messages service and dispatches it to the store
 	 */
 	const dispatchMessage = (message: string) => {
-		apiClient.send(message, 'user', promptSettings.value)
+		apiClient.send(message, 'user')
 		addMessage({
 			text: message.trim(),
 			timestamp: now(),

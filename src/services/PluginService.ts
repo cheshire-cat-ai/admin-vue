@@ -6,6 +6,13 @@ import type { JSONSettings } from '@models/JSONSchema'
  * It can also toggle them according to the user's choice.
  */
 const PluginService = Object.freeze({
+	installFromRegistry: async (url: string) => {
+		return await tryRequest(
+			apiClient.api?.plugins.installPluginFromRegistry({ url }),
+			'Installing plugin from registry',
+			'Unable to install the plugin from this url',
+		)
+	},
 	getPlugins: async () => {
 		return await tryRequest(
 			apiClient.api?.plugins.listAvailablePlugins(),

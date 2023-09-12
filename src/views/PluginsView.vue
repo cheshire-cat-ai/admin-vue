@@ -8,7 +8,8 @@ import ModalBox from '@components/ModalBox.vue'
 import { type SchemaField, type JSONSettings } from '@models/JSONSchema'
 
 const store = usePlugins()
-const { togglePlugin, removePlugin, installPlugin, updateSettings, isInstalled, getSchema, getSettings, searchPlugin } = store
+const { togglePlugin, removePlugin, installPlugin, updateSettings, 
+	getSchema, getSettings, searchPlugin, installRegistryPlugin } = store
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { pluginsFilters } = storeToRefs(useSettings())
@@ -73,14 +74,14 @@ const queryPlugins = async () => {
 	]
 }
 
-watchEffect(() => {
+watch(pluginsFilters, () => {
 	// TODO: Improve filtering rules and code logic
 	const filters = pluginsFilters.value
 	filteredList.value = pluginsList.value.filter(p => {
 		const list =
 			filters.presence.current == 'both' ||
-			(filters.presence.current == 'installed' && isInstalled(p.id)) ||
-			(filters.presence.current == 'registry' && !isInstalled(p.id))
+			(filters.presence.current == 'installed' && p.id) ||
+			(filters.presence.current == 'registry' && p.url)
 		const visible =
 			filters.visibility.current == 'both' ||
 			(filters.visibility.current == 'enabled' && p.active) ||
@@ -127,8 +128,7 @@ watchEffect(() => {
 			:error="pluginsState.error" />
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<Pagination v-slot="{ list }" :list="filteredList" :pageSize="selectedPageSize">
-				<!-- TODO: Update ccat-api package for plugin interface -->
-				<div v-for="item in list" :key="item.id ?? (item as any).url" class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
+				<div v-for="item in list" :key="item.url ?? item.id" class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
 					<UseImage :src="item.thumb" class="h-20 w-20 self-center object-contain">
 						<template #error>
 							<div class="avatar placeholder self-center">
@@ -151,12 +151,12 @@ watchEffect(() => {
 									{{ item.author_name }}
 								</a>
 							</p>
-							<template v-if="item.id !== 'core_plugin'">
-								<button v-if="isInstalled(item.id)" class="btn btn-error btn-xs" @click="openRemoveModal(item)">
-									Delete
-								</button>
-								<button v-else class="btn btn-success btn-xs">Install</button>
-							</template>
+							<button v-if="item.url" class="btn btn-success btn-xs" 
+								@click="installRegistryPlugin(item.url)">Install</button>
+							<button v-else-if="item.id !== 'core_plugin'" 
+								class="btn btn-error btn-xs" @click="openRemoveModal(item)">
+								Delete
+							</button>
 						</div>
 						<div class="flex h-6 items-center gap-1 text-sm font-medium text-neutral-focus">
 							<p>v{{ item.version }}</p>
@@ -179,13 +179,13 @@ watchEffect(() => {
 							</div>
 							<div class="flex flex-wrap items-center gap-2">
 								<button
-									v-if="isInstalled(item.id) && !isEmpty(getSchema(item.id)) && item.active"
+									v-if="item.id && !isEmpty(getSchema(item.id)) && item.active"
 									class="btn btn-circle btn-ghost btn-sm"
 									@click="openSettings(item)">
 									<heroicons-cog-6-tooth-20-solid class="h-5 w-5" />
 								</button>
 								<input
-									v-if="item.id !== 'core_plugin' && isInstalled(item.id)"
+									v-if="item.id !== 'core_plugin' && item.id"
 									v-model="item.active"
 									type="checkbox"
 									class="!toggle !toggle-success"

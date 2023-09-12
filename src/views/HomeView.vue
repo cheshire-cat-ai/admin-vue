@@ -244,8 +244,8 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 							<button tabindex="0" :disabled="inputDisabled" class="btn btn-circle btn-ghost btn-sm">
 								<heroicons-bolt-solid class="h-6 w-6" />
 							</button>
-							<ul tabindex="0" class="dropdown-content join join-vertical !-right-1/4 z-10 mb-5 p-0">
-								<li>
+							<ul tabindex="0" class="dropdown-content join join-vertical !-right-1/4 z-10 mb-5 p-0 [&>li>*]:bg-base-100">
+								<!--<li>
 									<button
 										:disabled="rabbitHoleState.loading"
 										class="btn join-item w-full flex-nowrap px-2"
@@ -255,7 +255,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 											<heroicons-adjustments-horizontal-solid class="h-6 w-6" />
 										</span>
 									</button>
-								</li>
+								</li>-->
 								<li>
 									<button
 										:disabled="rabbitHoleState.loading"

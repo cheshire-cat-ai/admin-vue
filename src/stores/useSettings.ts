@@ -1,6 +1,4 @@
 import { apiClient, tryRequest } from '@/api'
-import type { PromptSettings } from 'ccat-api'
-import { defaultsDeep } from 'lodash'
 
 interface Filter {
 	[k: string]: {
@@ -24,8 +22,6 @@ export const useSettings = defineStore('settings', () => {
 	})
 
 	const toggleDark = useToggle(isDark)
-	
-	const promptSettings = useLocalStorage<PromptSettings>('promptSettings', {} as PromptSettings)
 
 	const pluginsFilters = useLocalStorage<Filter>('pluginsFilters', {
 		presence: {
@@ -47,23 +43,11 @@ export const useSettings = defineStore('settings', () => {
 		return result.data
 	}
 
-	const getPromptSettings = async () => {
-		const result = await tryRequest(
-			apiClient.api?.prompt.getDefaultPromptSettings(),
-			'Getting all the default prompt settings',
-			'Unable to fetch default prompt settings',
-		)
-		return result.data
-	}
-
-	const { state: defaultPromptSettings, isReady: isOkPrompt } = useAsyncState(getPromptSettings(), undefined)
-
 	const { state: cat, isReady: isOkStatus } = useAsyncState(getStatus(), undefined)
 
 	watchEffect(() => {
-		const statusError = cat.value == undefined, promptError = defaultPromptSettings.value == undefined
-		isReadyAndAuth.value = !(statusError || promptError) && (isOkPrompt.value && isOkStatus.value)
-		defaultsDeep(promptSettings.value, defaultPromptSettings.value)
+		const statusError = cat.value == undefined
+		isReadyAndAuth.value = !statusError && isOkStatus.value
 	})
 
 	return {
@@ -72,8 +56,6 @@ export const useSettings = defineStore('settings', () => {
 		pluginsFilters,
 		toggleDark,
 		cat,
-		getPromptSettings,
-		promptSettings,
 		isReadyAndAuth
 	}
 })

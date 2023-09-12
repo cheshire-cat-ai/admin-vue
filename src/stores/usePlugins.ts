@@ -24,34 +24,26 @@ export const usePlugins = defineStore('plugins', () => {
 		currentState.error = plugins.value?.status === 'error' ? plugins.value.message : undefined
 	})
 
-	const isInstalled = (id: Plugin['id']) => currentState.data?.installed.some(p => p.id === id)
-
 	const getSchema = (id: Plugin['id']) => settings.value?.data?.settings.find(p => p.name === id)?.schema
 
 	const getSettings = async (id: Plugin['id']) => (await PluginService.getSinglePluginSettings(id))?.value
 
 	const togglePlugin = async (id: Plugin['id'], name: Plugin['name'], active: boolean) => {
-		if (isInstalled(id)) {
-			const res = await PluginService.togglePlugin(id)
-			if (res.status == 'success') {
-				showNotification({
-					text: `Plugin "${name}" is being switched ${active ? 'OFF' : 'ON'}!`,
-					type: 'info',
-				})
-			} else sendNotificationFromJSON(res)
-			fetchPlugins()
-			return res.status != 'error'
-		}
-		return false
+		const res = await PluginService.togglePlugin(id)
+		if (res.status == 'success') {
+			showNotification({
+				text: `Plugin "${name}" is being switched ${active ? 'OFF' : 'ON'}!`,
+				type: 'info',
+			})
+		} else sendNotificationFromJSON(res)
+		fetchPlugins()
+		return res.status != 'error'
 	}
 
 	const updateSettings = async (id: Plugin['id'], settings: JSONSettings) => {
-		if (isInstalled(id)) {
-			const res = await PluginService.updateSettings(id, settings)
-			sendNotificationFromJSON(res)
-			return res.status != 'error'
-		}
-		return false
+		const res = await PluginService.updateSettings(id, settings)
+		sendNotificationFromJSON(res)
+		return res.status != 'error'
 	}
 
 	const removePlugin = async (id: Plugin['id']) => {
@@ -80,18 +72,26 @@ export const usePlugins = defineStore('plugins', () => {
 		return res.data
 	}
 
+	const installRegistryPlugin = async (url: string) => {
+		currentState.loading = true
+		const res = await PluginService.installFromRegistry(url)
+		if (res.status == 'error') sendNotificationFromJSON(res)
+		currentState.loading = false
+		return res.data
+	}
+
 	return {
 		currentState,
 		togglePlugin,
 		fetchPlugins,
 		removePlugin,
 		installPlugin,
-		isInstalled,
 		updateSettings,
 		getSchema,
 		getSettings,
 		fetchSettings,
-		searchPlugin
+		searchPlugin,
+		installRegistryPlugin
 	}
 })
 
