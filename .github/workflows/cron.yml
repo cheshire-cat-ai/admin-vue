@@ -18,7 +18,7 @@ jobs:
         with:
           image_size: 80
           use_username: true
-      - name: Generate contributors map
-        uses: tunaitis/contributor-map@v1
-        with:
-          output: contributors-map.svg
+      #- name: Generate contributors map
+      #  uses: tunaitis/contributor-map@v1
+      #  with:
+      #    output: contributors-map.svg
