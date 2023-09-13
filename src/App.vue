@@ -9,9 +9,10 @@ const { isReadyAndAuth } = storeToRefs(settings)
 
 const router = useRouter()
 
+// TODO: Workaround to not call stores when not authenticated
 router.beforeEach(async to => {
-	if (!isReadyAndAuth.value && to.name !== 'home') {
-		return { name: 'home' }
+	if (!isReadyAndAuth.value && to.name !== 'settings') {
+		return { name: 'settings' }
 	}
 })
 
