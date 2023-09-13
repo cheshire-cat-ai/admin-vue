@@ -2,14 +2,13 @@ import type { JSONResponse } from '@models/JSONSchema'
 import LogService from '@services/LogService'
 import { CatClient, type CancelablePromise } from 'ccat-api'
 
-const { CORE_HOST, CORE_PORT, CORE_USE_SECURE_PROTOCOLS, API_KEY } = window.catCoreConfig
+const { CORE_HOST, CORE_PORT, CORE_USE_SECURE_PROTOCOLS } = window.catCoreConfig
 
 /**
  * API client to make requests to the endpoints and passing the API_KEY for authentication.
  */
 export const apiClient = new CatClient({
 	baseUrl: CORE_HOST,
-	authKey: API_KEY,
 	port: CORE_PORT ? parseInt(CORE_PORT) : undefined,
 	secure: CORE_USE_SECURE_PROTOCOLS,
 	timeout: 10000,
@@ -22,6 +21,8 @@ export const apiClient = new CatClient({
 		},
 	},
 })
+
+export const updateAuthKey = (key: string) => apiClient.authKey = key
 
 /**
  * A function that wraps the promise request into a try/catch block

@@ -1,4 +1,5 @@
 import { apiClient, tryRequest } from '@/api'
+import { usePlugins } from './usePlugins'
 
 interface Filter {
 	[k: string]: {
@@ -56,6 +57,7 @@ export const useSettings = defineStore('settings', () => {
 		pluginsFilters,
 		toggleDark,
 		cat,
+		getStatus,
 		isReadyAndAuth
 	}
 })

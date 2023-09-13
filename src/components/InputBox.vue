@@ -7,6 +7,7 @@ withDefaults(
 		disabled?: boolean
 		search?: boolean
 		autofocus?: boolean
+		error?: string
 	}>(),
 	{
 		disabled: false,
@@ -14,6 +15,7 @@ withDefaults(
 		autofocus: true,
 		label: '',
 		placeholder: '',
+		error: ''
 	},
 )
 
@@ -46,5 +48,8 @@ defineEmits<{
 				<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
 			</button>
 		</div>
+		<label v-if="error" class="label">
+			<span class="label-text font-medium text-error">{{ error }}</span>
+		</label>
 	</div>
 </template>
