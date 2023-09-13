@@ -1,5 +1,4 @@
 import { apiClient, tryRequest } from '@/api'
-import { usePlugins } from './usePlugins'
 
 interface Filter {
 	[k: string]: {

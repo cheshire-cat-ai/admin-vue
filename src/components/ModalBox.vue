@@ -14,6 +14,10 @@ const { shown, closable } = toRefs(props)
 
 const [isOpen, toggleModal] = useToggle(shown.value)
 
+watchEffect(() => {
+	isOpen.value = shown.value
+})
+
 const closeModal = () => {
 	if (closable.value) toggleModal()
 }

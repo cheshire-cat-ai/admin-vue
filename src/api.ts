@@ -53,9 +53,13 @@ export const tryRequest = async <T>(
 			data: result,
 		} as JSONResponse<T>
 	} catch (err) {
+		const msg = getErrorMessage(err, error)
+		
+		LogService.error(msg)
+
 		return {
 			status: 'error',
-			message: getErrorMessage(err, error),
+			message: msg,
 		} as JSONResponse<T>
 	}
 }

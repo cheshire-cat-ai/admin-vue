@@ -10,8 +10,8 @@ const { isReadyAndAuth } = storeToRefs(settings)
 const router = useRouter()
 
 router.beforeEach(async to => {
-	if (!isReadyAndAuth.value && to.name !== 'settings') {
-		return { name: 'settings' }
+	if (!isReadyAndAuth.value && to.name !== 'home') {
+		return { name: 'home' }
 	}
 })
 
