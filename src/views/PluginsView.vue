@@ -206,21 +206,23 @@ watch(pluginsFilters, () => {
 		<SidePanel ref="settingsPanel" title="Plugin Settings">
 			<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="savePluginSettings" />
 		</SidePanel>
-		<ModalBox ref="boxRemove">
-			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
-				<h3 class="text-lg font-bold text-primary">Remove plugin</h3>
-				<p>
-					Are you sure you want to remove the
-					<span class="font-bold">
-						{{ selectedPlugin?.name }}
-					</span>
-					plugin?
-				</p>
-				<div class="flex items-center justify-center gap-2">
-					<button class="btn btn-outline btn-sm" @click="boxRemove?.toggleModal()">No</button>
-					<button class="btn btn-error btn-sm" @click="deletePlugin()">Yes</button>
+		<Teleport to="#modal">
+			<ModalBox ref="boxRemove">
+				<div class="flex flex-col items-center justify-center gap-4 text-neutral">
+					<h3 class="text-lg font-bold text-primary">Remove plugin</h3>
+					<p>
+						Are you sure you want to remove the
+						<span class="font-bold">
+							{{ selectedPlugin?.name }}
+						</span>
+						plugin?
+					</p>
+					<div class="flex items-center justify-center gap-2">
+						<button class="btn btn-outline btn-sm" @click="boxRemove?.toggleModal()">No</button>
+						<button class="btn btn-error btn-sm" @click="deletePlugin()">Yes</button>
+					</div>
 				</div>
-			</div>
-		</ModalBox>
+			</ModalBox>
+		</Teleport>
 	</div>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-	<div class="navbar sticky top-0 z-40 min-h-fit bg-base-100 font-medium shadow-md md:px-[5%] lg:px-[10%]">
+	<div class="navbar sticky top-0 min-h-fit bg-base-100 font-medium shadow-md md:px-[5%] lg:px-[10%]">
 		<div class="navbar-start">
 			<RouterLink to="/" class="shrink-0 !bg-transparent">
 				<img src="@assets/logo.svg" class="hidden h-12 w-12 cursor-pointer md:block" />

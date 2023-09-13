@@ -340,29 +340,31 @@ const downloadResult = () => {
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100 p-1" :list="getSelectCollections" />
 		</div>
-		<ModalBox ref="boxWipe">
-			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
-				<h3 class="text-lg font-bold text-primary">Wipe collection</h3>
-				<p v-if="selectCollection?.selected.label.startsWith('All')">
-					Are you sure you want to wipe
-					<span class="font-bold">
-						{{ selectCollection?.selected.label.toLowerCase() }}
-					</span>
-					the collections?
-				</p>
-				<p v-else>
-					Are you sure you want to wipe the
-					<span class="font-bold">
-						{{ selectCollection?.selected.label.toLowerCase() }}
-					</span>
-					collection?
-				</p>
-				<div class="flex items-center justify-center gap-2">
-					<button class="btn btn-outline btn-sm" @click="boxWipe?.toggleModal()">No</button>
-					<button class="btn btn-error btn-sm" @click="wipeMemory()">Yes</button>
+		<Teleport to="#modal">
+			<ModalBox ref="boxWipe">
+				<div class="flex flex-col items-center justify-center gap-4 text-neutral">
+					<h3 class="text-lg font-bold text-primary">Wipe collection</h3>
+					<p v-if="selectCollection?.selected.label.startsWith('All')">
+						Are you sure you want to wipe
+						<span class="font-bold">
+							{{ selectCollection?.selected.label.toLowerCase() }}
+						</span>
+						the collections?
+					</p>
+					<p v-else>
+						Are you sure you want to wipe the
+						<span class="font-bold">
+							{{ selectCollection?.selected.label.toLowerCase() }}
+						</span>
+						collection?
+					</p>
+					<div class="flex items-center justify-center gap-2">
+						<button class="btn btn-outline btn-sm" @click="boxWipe?.toggleModal()">No</button>
+						<button class="btn btn-error btn-sm" @click="wipeMemory()">Yes</button>
+					</div>
 				</div>
-			</div>
-		</ModalBox>
+			</ModalBox>
+		</Teleport>
 		<SidePanel ref="memoryDetailsPanel" title="Memory details">
 			<div v-if="callOutput" class="flex w-full flex-col">
 				<p class="self-start rounded-t-md bg-primary px-2 py-1 font-medium text-base-100">

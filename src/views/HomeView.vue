@@ -301,13 +301,15 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				<heroicons-arrow-down-20-solid class="h-5 w-5" />
 			</button>
 		</div>
-		<ModalBox ref="boxUploadURL">
-			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
-				<h3 class="text-lg font-bold">Insert URL</h3>
-				<p>Write down the URL you want the Cat to digest :</p>
-				<InputBox v-model.trim="insertedURL" placeholder="Enter url..." />
-				<button class="btn btn-primary btn-sm" @click="dispatchWebsite">Send</button>
-			</div>
-		</ModalBox>
+		<Teleport to="#modal">
+			<ModalBox ref="boxUploadURL">
+				<div class="flex flex-col items-center justify-center gap-4 text-neutral">
+					<h3 class="text-lg font-bold">Insert URL</h3>
+					<p>Write down the URL you want the Cat to digest :</p>
+					<InputBox v-model.trim="insertedURL" placeholder="Enter url..." />
+					<button class="btn btn-primary btn-sm" @click="dispatchWebsite">Send</button>
+				</div>
+			</ModalBox>
+		</Teleport>
 	</div>
 </template>
