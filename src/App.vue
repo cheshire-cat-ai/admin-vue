@@ -33,7 +33,7 @@ const authenticate = async () => {
 	<div
 		class="flex min-h-screen flex-col scroll-smooth bg-base-200 text-sm text-neutral transition-colors selection:bg-primary md:text-base">
 		<Teleport to="#modal">
-			<ModalBox ref="authBox" shown :closable="false">
+			<ModalBox ref="authBox" :shown="!isReadyAndAuth" :closable="false">
 				<div class="flex flex-col items-center justify-center gap-4 p-2 text-neutral">
 					<h3 class="text-xl font-bold md:text-2xl">
 						Authentication
