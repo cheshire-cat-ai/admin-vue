@@ -22,7 +22,7 @@ export const apiClient = new CatClient({
 	},
 })
 
-export const updateAuthKey = (key: string) => apiClient.authKey = key
+export const updateAuthKey = (key: string) => (apiClient.authKey = key)
 
 /**
  * A function that wraps the promise request into a try/catch block
@@ -54,7 +54,7 @@ export const tryRequest = async <T>(
 		} as JSONResponse<T>
 	} catch (err) {
 		const msg = getErrorMessage(err, error)
-		
+
 		LogService.error(msg)
 
 		return {

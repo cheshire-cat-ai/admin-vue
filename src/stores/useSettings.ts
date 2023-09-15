@@ -54,7 +54,7 @@ export const useSettings = defineStore('settings', () => {
 		toggleDark,
 		cat,
 		getStatus,
-		isReadyAndAuth
+		isReadyAndAuth,
 	}
 })
 

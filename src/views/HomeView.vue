@@ -50,11 +50,11 @@ const contentHandler = async (content: string | File[] | null) => {
 		if (content.trim().length == 0) return
 		try {
 			new URL(content)
-			uploadToRabbitHole("web", content)
+			uploadToRabbitHole('web', content)
 		} catch (_) {
 			dispatchMessage(content)
 		}
-	} else content.forEach(f => uploadToRabbitHole("content", f))
+	} else content.forEach(f => uploadToRabbitHole('content', f))
 }
 
 /**
@@ -124,7 +124,7 @@ const dispatchWebsite = () => {
 	if (!insertedURL.value) return
 	try {
 		new URL(insertedURL.value)
-		uploadToRabbitHole("web", insertedURL.value)
+		uploadToRabbitHole('web', insertedURL.value)
 		boxUploadURL.value?.toggleModal()
 	} catch (_) {
 		insertedURL.value = ''
@@ -234,7 +234,9 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 							<button tabindex="0" :disabled="inputDisabled" class="btn btn-circle btn-ghost btn-sm">
 								<heroicons-bolt-solid class="h-6 w-6" />
 							</button>
-							<ul tabindex="0" class="dropdown-content join join-vertical !-right-1/4 z-10 mb-5 p-0 [&>li>*]:bg-base-100">
+							<ul
+								tabindex="0"
+								class="dropdown-content join join-vertical !-right-1/4 z-10 mb-5 p-0 [&>li>*]:bg-base-100">
 								<li>
 									<button
 										:disabled="rabbitHoleState.loading"

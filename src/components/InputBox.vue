@@ -15,7 +15,7 @@ const props = withDefaults(
 		autofocus: true,
 		label: '',
 		placeholder: '',
-		error: ''
+		error: '',
 	},
 )
 
@@ -38,7 +38,8 @@ defineEmits<{
 			<span class="label-text font-medium text-primary">{{ label }}</span>
 		</label>
 		<div class="relative w-full">
-			<input ref="inputBox"
+			<input
+				ref="inputBox"
 				:value="modelValue"
 				type="text"
 				:placeholder="placeholder"

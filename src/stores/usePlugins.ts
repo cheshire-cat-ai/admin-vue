@@ -93,7 +93,7 @@ export const usePlugins = defineStore('plugins', () => {
 		getSettings,
 		fetchSettings,
 		searchPlugin,
-		installRegistryPlugin
+		installRegistryPlugin,
 	}
 })
 

@@ -46,7 +46,7 @@ export const useMessages = defineStore('messages', () => {
 		 */
 		currentState.loading = !isReadyAndAuth.value
 		currentState.ready = isReadyAndAuth.value
-		
+
 		apiClient
 			.onConnected(() => {
 				currentState.ready = true

@@ -9,7 +9,7 @@ const { isReadyAndAuth } = storeToRefs(settings)
 
 const router = useRouter()
 
-// TODO: Workaround, because resetAllStores() doesn't work well
+// BUG: Fix `resetAllStores` and remove the workaround
 router.beforeEach(async to => {
 	if (!isReadyAndAuth.value && to.name !== 'settings') {
 		return { name: 'settings' }
@@ -17,7 +17,8 @@ router.beforeEach(async to => {
 })
 
 const authBox = ref<InstanceType<typeof ModalBox>>()
-const authKey = ref(""), hasError = ref(false)
+const authKey = ref(''),
+	hasError = ref(false)
 
 const authenticate = async () => {
 	hasError.value = false
@@ -38,14 +39,13 @@ const authenticate = async () => {
 		<Teleport to="#modal">
 			<ModalBox ref="authBox" :shown="!isReadyAndAuth" :closable="false">
 				<div class="flex flex-col items-center justify-center gap-4 p-2 text-neutral">
-					<h3 class="text-xl font-bold md:text-2xl">
-						Authentication
-					</h3>
-					<InputBox v-model="authKey" label="Auth Key" 
-						:error="hasError ? 'Invalid auth key, please try again.' : ''" @send="authenticate()" />
-					<button class="btn btn-success btn-sm mt-4" @click="authenticate()">
-						Authenticate
-					</button>
+					<h3 class="text-xl font-bold md:text-2xl">Authentication</h3>
+					<InputBox
+						v-model="authKey"
+						label="Auth Key"
+						:error="hasError ? 'Invalid auth key, please try again.' : ''"
+						@send="authenticate()" />
+					<button class="btn btn-success btn-sm mt-4" @click="authenticate()">Authenticate</button>
 				</div>
 			</ModalBox>
 		</Teleport>

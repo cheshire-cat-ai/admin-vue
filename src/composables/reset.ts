@@ -1,8 +1,8 @@
-import LogService from "@services/LogService"
-import type { Pinia, Store } from "pinia"
+import LogService from '@services/LogService'
+import type { Pinia, Store } from 'pinia'
 
 interface ExtendedPinia extends Pinia {
-    _s: Map<string, Store>
+	_s: Map<string, Store>
 }
 
 /**
@@ -10,13 +10,13 @@ interface ExtendedPinia extends Pinia {
  */
 export function resetAllStores() {
 	const pinia = getActivePinia() as ExtendedPinia
-    
-    if (!pinia) return
 
-    pinia._s.forEach(store => {
-        store.$dispose()
-        store.$reset()
-    })
+	if (!pinia) return
 
-    LogService.success("All stores were reset successfully!")
+	pinia._s.forEach(store => {
+		store.$dispose()
+		store.$reset()
+	})
+
+	LogService.success('All stores were reset successfully!')
 }

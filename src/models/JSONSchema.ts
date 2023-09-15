@@ -30,5 +30,5 @@ export const InputType = {
 	integer: 'number',
 	string: 'text',
 	boolean: 'checkbox',
-	select: 'select-one'
+	select: 'select-one',
 } as const
