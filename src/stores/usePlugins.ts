@@ -16,6 +16,8 @@ export const usePlugins = defineStore('plugins', () => {
 	const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), undefined)
 	const { state: settings, execute: fetchSettings } = useAsyncState(PluginService.getPluginsSettings(), undefined)
 
+	onActivated(() => fetchPlugins())
+
 	const { showNotification, sendNotificationFromJSON } = useNotifications()
 
 	watchEffect(() => {

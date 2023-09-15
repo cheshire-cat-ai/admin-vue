@@ -313,6 +313,7 @@
     "isError": true,
     "isErrorLikeObject": true,
     "isString": true,
-    "uploadToRabbitHole": true
+    "uploadToRabbitHole": true,
+    "resetAllStores": true
   }
 }

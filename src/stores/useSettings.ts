@@ -10,8 +10,6 @@ interface Filter {
 export const useSettings = defineStore('settings', () => {
 	const isReadyAndAuth = ref(false)
 
-	const isAudioEnabled = useLocalStorage('isAudioEnabled', true)
-
 	const isDark = useDark({
 		storageKey: 'currentTheme',
 		selector: 'html',
@@ -51,7 +49,6 @@ export const useSettings = defineStore('settings', () => {
 	})
 
 	return {
-		isAudioEnabled,
 		isDark,
 		pluginsFilters,
 		toggleDark,

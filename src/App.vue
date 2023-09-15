@@ -9,7 +9,7 @@ const { isReadyAndAuth } = storeToRefs(settings)
 
 const router = useRouter()
 
-// TODO: Workaround to not call stores when not authenticated
+// TODO: Workaround, because resetAllStores() doesn't work well
 router.beforeEach(async to => {
 	if (!isReadyAndAuth.value && to.name !== 'settings') {
 		return { name: 'settings' }
@@ -20,12 +20,14 @@ const authBox = ref<InstanceType<typeof ModalBox>>()
 const authKey = ref(""), hasError = ref(false)
 
 const authenticate = async () => {
+	hasError.value = false
 	updateAuthKey(authKey.value)
 	const status = await getStatus()
 	hasError.value = status == undefined
 	if (!hasError.value) {
 		authBox.value?.toggleModal()
 		isReadyAndAuth.value = true
+		//resetAllStores()
 	}
 }
 </script>
@@ -39,8 +41,8 @@ const authenticate = async () => {
 					<h3 class="text-xl font-bold md:text-2xl">
 						Authentication
 					</h3>
-					<InputBox v-model="authKey" label="Auth Key"
-						:error="hasError ? 'Invalid auth key, please try again.' : ''" />
+					<InputBox v-model="authKey" label="Auth Key" 
+						:error="hasError ? 'Invalid auth key, please try again.' : ''" @send="authenticate()" />
 					<button class="btn btn-success btn-sm mt-4" @click="authenticate()">
 						Authenticate
 					</button>

@@ -13,10 +13,18 @@ import router from '@/router'
 import 'unfonts.css'
 import 'animate.css'
 import '@assets/main.css'
+import { cloneDeep } from 'lodash'
 
 const app = createApp(App)
 
-app.use(createPinia())
+const pinia = createPinia()
+
+pinia.use(({ store }) => {
+	const state = cloneDeep(store.$state)
+	store.$reset = () => store.$patch(state)
+})
+
+app.use(pinia)
 app.use(router)
 
 app.mount('#app')

@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useRabbitHole } from '@stores/useRabbitHole'
 import { useMessages } from '@stores/useMessages'
-import { useSound } from '@vueuse/sound'
 import { useMemory } from '@stores/useMemory'
-import { useSettings } from '@stores/useSettings'
 import ModalBox from '@components/ModalBox.vue'
 
 const messagesStore = useMessages()
@@ -27,13 +25,10 @@ const { textarea: textArea } = useTextareaAutosize({
 
 const { isListening, toggle: toggleRecording, result: transcript } = useSpeechRecognition()
 const { state: micState, isSupported, query: queryMic } = usePermission('microphone', { controls: true })
-const { play: playPop } = useSound('pop.mp3')
-const { play: playRec } = useSound('start-rec.mp3')
 
 const { currentState: rabbitHoleState } = storeToRefs(useRabbitHole())
 
 const { wipeConversation } = useMemory()
-const { isAudioEnabled } = storeToRefs(useSettings())
 
 const inputDisabled = computed(() => {
 	return messagesState.value.loading || !messagesState.value.ready || Boolean(messagesState.value.error)
@@ -102,7 +97,6 @@ const toggleListening = async () => {
 		if (permState?.state !== 'granted') return
 	}
 	toggleRecording()
-	if (isListening.value && isAudioEnabled.value) playRec()
 }
 
 /**
@@ -114,10 +108,14 @@ watchDeep(
 	() => {
 		isScrollable.value = document.documentElement.scrollHeight > document.documentElement.clientHeight
 		scrollToBottom()
-		if (messagesState.value.messages.length > 0 && isAudioEnabled.value) playPop()
+		textArea.value.focus()
 	},
 	{ flush: 'post' },
 )
+
+onActivated(() => {
+	textArea.value.focus()
+})
 
 /**
  * Dispatches the inserted url to the RabbitHole service and closes the modal.
