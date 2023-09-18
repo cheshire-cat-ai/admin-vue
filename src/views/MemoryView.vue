@@ -29,8 +29,8 @@ const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
 const { wipeAllCollections, wipeCollection, callMemory, deleteMemoryPoint } = memoryStore
 
-// TODO: Fix why I can't use composables directly inside template
-const uploadFile = uploadToRabbitHole
+const { download: downloadMemories } = downloadContent('Recalled_Memories')
+const { upload: uploadFile } = uploadToRabbitHole()
 
 /**
  * If "all", wipes all the collections in memory, otherwise only the selected one
@@ -176,21 +176,6 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 	clickedPoint.value = w.config.series[seriesIndex].meta[dataPointIndex]
 	pointInfoPanel.value?.togglePanel()
 }
-
-const downloadResult = () => {
-	const output = { export_time: now() }
-	assign(output, callOutput.value)
-	const element = document.createElement('a')
-	element.setAttribute(
-		'href',
-		'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(output, undefined, 2)),
-	)
-	element.setAttribute('download', 'recalledMemories.json')
-	element.style.display = 'none'
-	document.body.appendChild(element)
-	element.click()
-	document.body.removeChild(element)
-}
 </script>
 
 <template>
@@ -252,7 +237,7 @@ const downloadResult = () => {
 									index: 3,
 									title: 'Export the recalled memories',
 									class: 'custom-icon',
-									click: downloadResult,
+									click: () => downloadMemories(assign({ export_time: now() }, callOutput)),
 								},
 								{
 									icon: '<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>Details</button>',

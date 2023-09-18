@@ -314,6 +314,7 @@
     "isErrorLikeObject": true,
     "isString": true,
     "uploadToRabbitHole": true,
-    "resetAllStores": true
+    "resetAllStores": true,
+    "downloadContent": true
   }
 }

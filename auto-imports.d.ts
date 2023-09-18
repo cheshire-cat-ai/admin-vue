@@ -39,6 +39,7 @@ declare global {
   const defineComponent: typeof import('vue')['defineComponent']
   const defineStore: typeof import('pinia')['defineStore']
   const describe: typeof import('vitest')['describe']
+  const downloadContent: typeof import('./src/composables/download')['downloadContent']
   const eagerComputed: typeof import('@vueuse/core')['eagerComputed']
   const effectScope: typeof import('vue')['effectScope']
   const expect: typeof import('vitest')['expect']

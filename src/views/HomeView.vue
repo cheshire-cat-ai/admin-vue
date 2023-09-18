@@ -3,6 +3,7 @@ import { useRabbitHole } from '@stores/useRabbitHole'
 import { useMessages } from '@stores/useMessages'
 import { useMemory } from '@stores/useMemory'
 import ModalBox from '@components/ModalBox.vue'
+import { capitalize } from 'lodash'
 
 const messagesStore = useMessages()
 const { dispatchMessage, selectRandomDefaultMessages } = messagesStore
@@ -38,8 +39,8 @@ const randomDefaultMessages = selectRandomDefaultMessages()
 
 const dropContentZone = ref<HTMLDivElement>()
 
-// TODO: Fix why I can't use composables directly inside template
-const uploadFile = uploadToRabbitHole
+const { download: downloadConversation } = downloadContent('Cat_Conversation')
+const { upload: uploadFile } = uploadToRabbitHole()
 
 /**
  * Calls the specific endpoints based on the mime type of the file
@@ -50,11 +51,11 @@ const contentHandler = async (content: string | File[] | null) => {
 		if (content.trim().length == 0) return
 		try {
 			new URL(content)
-			uploadToRabbitHole('web', content)
+			uploadFile('web', content)
 		} catch (_) {
 			dispatchMessage(content)
 		}
-	} else content.forEach(f => uploadToRabbitHole('content', f))
+	} else content.forEach(f => uploadFile('content', f))
 }
 
 /**
@@ -124,7 +125,7 @@ const dispatchWebsite = () => {
 	if (!insertedURL.value) return
 	try {
 		new URL(insertedURL.value)
-		uploadToRabbitHole('web', insertedURL.value)
+		uploadFile('web', insertedURL.value)
 		boxUploadURL.value?.toggleModal()
 	} catch (_) {
 		insertedURL.value = ''
@@ -237,6 +238,19 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 							<ul
 								tabindex="0"
 								class="dropdown-content join join-vertical !-right-1/4 z-10 mb-5 p-0 [&>li>*]:bg-base-100">
+								<li>
+									<button
+										:disabled="messagesState.messages.length === 0"
+										class="btn join-item w-full flex-nowrap px-2"
+										@click="downloadConversation(
+											messagesState.messages.reduce((p, c) => `${p}${capitalize(c.sender)}: ${c.text}\n`, '')
+										)">
+										<span class="grow normal-case">Export conversation</span>
+										<span class="rounded-lg bg-primary p-1 text-base-100">
+											<ph-export-bold class="h-6 w-6" />
+										</span>
+									</button>
+								</li>
 								<li>
 									<button
 										:disabled="rabbitHoleState.loading"

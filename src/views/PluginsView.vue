@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { upperFirst, isEmpty } from 'lodash'
+import { upperFirst, isEmpty, groupBy } from 'lodash'
 import { type Plugin, AcceptedPluginTypes } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
@@ -180,6 +180,24 @@ watch(pluginsFilters, () => {
 						<p class="my-2 text-sm">
 							{{ item.description }}
 						</p>
+						<div v-if="item.hooks && item.tools" class="mb-2 flex items-center gap-2 text-xs">
+							<div v-if="item.hooks.length > 0" class="dropdown-hover dropdown">
+								<label tabindex="0" class="btn btn-square btn-ghost btn-outline btn-xs hover:bg-base-200">🪝</label>
+								<ul tabindex="0" class="dropdown-content z-10 mt-1 w-max rounded-md bg-base-200 p-2 shadow">
+									<div v-for="(hook, index) of groupBy(item.hooks, p => p.priority)" :key="index">
+										<span class="font-medium text-primary">Priority {{ index }} :</span>
+										<br/>
+										<p v-for="{ name } in hook" :key="name">- {{ name }}</p>
+									</div>
+								</ul>
+							</div>
+							<div v-if="item.tools.length > 0" class="dropdown-hover dropdown">
+								<label tabindex="0" class="btn btn-square btn-ghost btn-outline btn-xs hover:bg-base-200">🛠️</label>
+								<ul tabindex="0" class="dropdown-content z-10 mt-1 w-max rounded-md bg-base-200 p-2 shadow">
+									<p v-for="{ name } in item.tools" :key="name">- {{ name }}</p>
+								</ul>
+							</div>
+						</div>
 						<div class="flex h-8 items-center justify-between gap-4">
 							<div class="flex flex-wrap gap-2">
 								<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
