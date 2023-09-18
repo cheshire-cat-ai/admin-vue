@@ -40,7 +40,7 @@ const randomDefaultMessages = selectRandomDefaultMessages()
 const dropContentZone = ref<HTMLDivElement>()
 
 const { download: downloadConversation } = downloadContent('Cat_Conversation')
-const { upload: uploadFile } = uploadToRabbitHole()
+const { upload: uploadFile } = uploadContent()
 
 /**
  * Calls the specific endpoints based on the mime type of the file

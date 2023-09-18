@@ -30,7 +30,7 @@ const { currentState: memoryState } = storeToRefs(memoryStore)
 const { wipeAllCollections, wipeCollection, callMemory, deleteMemoryPoint } = memoryStore
 
 const { download: downloadMemories } = downloadContent('Recalled_Memories')
-const { upload: uploadFile } = uploadToRabbitHole()
+const { upload: uploadFile } = uploadContent()
 
 /**
  * If "all", wipes all the collections in memory, otherwise only the selected one

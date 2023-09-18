@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { upperFirst, isEmpty, groupBy } from 'lodash'
-import { type Plugin, AcceptedPluginTypes } from 'ccat-api'
+import { upperFirst, isEmpty } from 'lodash'
+import { type Plugin } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
 import SidePanel from '@components/SidePanel.vue'
@@ -11,7 +11,6 @@ const store = usePlugins()
 const {
 	togglePlugin,
 	removePlugin,
-	installPlugin,
 	updateSettings,
 	getSchema,
 	getSettings,
@@ -22,7 +21,7 @@ const { currentState: pluginsState } = storeToRefs(store)
 
 const { pluginsFilters } = storeToRefs(useSettings())
 
-const { open: uploadPlugin, onChange: onPluginUpload } = useFileDialog()
+const { upload: uploadFile } = uploadContent()
 
 const boxRemove = ref<InstanceType<typeof ModalBox>>()
 const settingsPanel = ref<InstanceType<typeof SidePanel>>()
@@ -51,14 +50,6 @@ const deletePlugin = async () => {
 	await removePlugin(selectedPlugin.value.id)
 	boxRemove.value?.toggleModal()
 }
-
-/**
- * Handles the plugin upload by calling the installPlugin endpoint with the file attached.
- */
-onPluginUpload(files => {
-	if (files == null) return
-	installPlugin(files[0])
-})
 
 const openSettings = async (plugin: Plugin) => {
 	selectedPlugin.value = plugin
@@ -124,7 +115,7 @@ watch(pluginsFilters, () => {
 			<button
 				:disabled="pluginsState.loading || Boolean(pluginsState.error)"
 				class="btn btn-primary btn-sm"
-				@click="uploadPlugin({ multiple: false, accept: AcceptedPluginTypes.join(',') })">
+				@click="uploadFile('plugin')">
 				Upload plugin
 			</button>
 		</div>
@@ -180,7 +171,7 @@ watch(pluginsFilters, () => {
 						<p class="my-2 text-sm">
 							{{ item.description }}
 						</p>
-						<div v-if="item.hooks && item.tools" class="mb-2 flex items-center gap-2 text-xs">
+						<!--<div v-if="item.hooks && item.tools" class="mb-2 flex items-center gap-2 text-xs">
 							<div v-if="item.hooks.length > 0" class="dropdown-hover dropdown">
 								<label tabindex="0" class="btn btn-square btn-ghost btn-outline btn-xs hover:bg-base-200">🪝</label>
 								<ul tabindex="0" class="dropdown-content z-10 mt-1 w-max rounded-md bg-base-200 p-2 shadow">
@@ -197,7 +188,7 @@ watch(pluginsFilters, () => {
 									<p v-for="{ name } in item.tools" :key="name">- {{ name }}</p>
 								</ul>
 							</div>
-						</div>
+						</div>-->
 						<div class="flex h-8 items-center justify-between gap-4">
 							<div class="flex flex-wrap gap-2">
 								<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
