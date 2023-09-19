@@ -9,7 +9,7 @@
 		"@vue/typescript/recommended",
 		"plugin:vue/vue3-essential",
 		"@vue/eslint-config-typescript",
-		"prettier"
+		"plugin:prettier/recommended"
 	],
 	"ignorePatterns": ["**/*.config.js"],
 	"plugins": ["@typescript-eslint"],

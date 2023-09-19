@@ -242,9 +242,11 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									<button
 										:disabled="messagesState.messages.length === 0"
 										class="btn join-item w-full flex-nowrap px-2"
-										@click="downloadConversation(
-											messagesState.messages.reduce((p, c) => `${p}${capitalize(c.sender)}: ${c.text}\n`, '')
-										)">
+										@click="
+											downloadConversation(
+												messagesState.messages.reduce((p, c) => `${p}${capitalize(c.sender)}: ${c.text}\n`, ''),
+											)
+										">
 										<span class="grow normal-case">Export conversation</span>
 										<span class="rounded-lg bg-primary p-1 text-base-100">
 											<ph-export-bold class="h-6 w-6" />

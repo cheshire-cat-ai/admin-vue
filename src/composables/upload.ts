@@ -15,7 +15,7 @@ export function uploadContent() {
 
 		const allowedMimetypes: string[] = []
 
-		const sendContent = category == 'plugin' ? installPlugin : (category == 'memory' ? sendMemory : sendFile)
+		const sendContent = category == 'plugin' ? installPlugin : category == 'memory' ? sendMemory : sendFile
 
 		onFileUpload(files => {
 			if (files == null) return
@@ -37,6 +37,6 @@ export function uploadContent() {
 	}
 
 	return {
-		upload
+		upload,
 	}
 }

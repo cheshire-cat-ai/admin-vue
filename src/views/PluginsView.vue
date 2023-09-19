@@ -8,15 +8,8 @@ import ModalBox from '@components/ModalBox.vue'
 import { type SchemaField, type JSONSettings } from '@models/JSONSchema'
 
 const store = usePlugins()
-const {
-	togglePlugin,
-	removePlugin,
-	updateSettings,
-	getSchema,
-	getSettings,
-	searchPlugin,
-	installRegistryPlugin,
-} = store
+const { togglePlugin, removePlugin, updateSettings, getSchema, getSettings, searchPlugin, installRegistryPlugin } =
+	store
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { pluginsFilters } = storeToRefs(useSettings())
