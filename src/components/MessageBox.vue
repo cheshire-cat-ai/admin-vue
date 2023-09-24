@@ -38,9 +38,7 @@ const props = defineProps<{
 	why: any
 }>()
 
-const elementContent = ref<HTMLParagraphElement>()
-const isLengthy = ref(false),
-	showReadMore = ref(true)
+const showReadMore = ref(true)
 
 const maxLength = 3000
 
@@ -48,11 +46,7 @@ const renderedText = computed(() =>
 	showReadMore.value ? markdown.render(props.text.slice(0, maxLength)) : markdown.render(props.text),
 )
 
-watch(elementContent, () => {
-	if (!elementContent.value) return
-	const content = (elementContent.value.textContent || elementContent.value.innerText).replaceAll('\n', '')
-	isLengthy.value = content.length >= maxLength
-})
+const isLengthy = computed(() => renderedText.value.length >= maxLength)
 </script>
 
 <template>
@@ -62,7 +56,7 @@ watch(elementContent, () => {
 		</div>
 		<div class="chat-bubble row-[1] flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral">
 			<div class="p-2 md:p-3">
-				<p ref="elementContent" class="text-ellipsis" v-html="renderedText" />
+				<p class="text-ellipsis" v-html="renderedText" />
 				<div v-if="isLengthy" class="flex justify-end font-bold">
 					<a v-if="showReadMore" @click="showReadMore = false">Read more</a>
 					<a v-else @click="showReadMore = true">Hide content</a>
