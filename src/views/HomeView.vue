@@ -58,11 +58,11 @@ const contentHandler = async (content: string | File[] | null) => {
 		if (content.trim().length == 0) return
 		try {
 			new URL(content)
-			uploadToRabbitHole("web", content)
+			uploadToRabbitHole('web', content)
 		} catch (_) {
 			dispatchMessage(content)
 		}
-	} else content.forEach(f => uploadToRabbitHole("content", f))
+	} else content.forEach(f => uploadToRabbitHole('content', f))
 }
 
 /**
@@ -129,7 +129,7 @@ const dispatchWebsite = () => {
 	if (!insertedURL.value) return
 	try {
 		new URL(insertedURL.value)
-		uploadToRabbitHole("web", insertedURL.value)
+		uploadToRabbitHole('web', insertedURL.value)
 		boxUploadURL.value?.toggleModal()
 	} catch (_) {
 		insertedURL.value = ''

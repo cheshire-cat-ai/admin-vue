@@ -38,15 +38,17 @@ const props = defineProps<{
 	why: any
 }>()
 
+const { text } = toRefs(props)
+
 const showReadMore = ref(true)
 
 const maxLength = 3000
 
-const renderedText = computed(() =>
-	showReadMore.value ? markdown.render(props.text.slice(0, maxLength)) : markdown.render(props.text),
-)
+const isLengthy = computed(() => text.value.length >= maxLength)
 
-const isLengthy = computed(() => renderedText.value.length >= maxLength)
+const renderedText = computed(() =>
+	isLengthy.value ? markdown.render(text.value.slice(0, maxLength)) : markdown.render(text.value),
+)
 </script>
 
 <template>

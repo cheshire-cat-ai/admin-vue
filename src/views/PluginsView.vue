@@ -66,11 +66,13 @@ const savePluginSettings = async (payload: JSONSettings) => {
 }
 
 const searchPlugin = () => {
-	const text = searchText.value.toLowerCase() 
+	const text = searchText.value.toLowerCase()
 	filteredList.value = pluginsList.value.filter(p => {
-		return p.name.toLowerCase().includes(text)
-			|| p.tags.toLowerCase().includes(text)
-			|| p.author_name.toLowerCase().includes(text)
+		return (
+			p.name.toLowerCase().includes(text) ||
+			p.tags.toLowerCase().includes(text) ||
+			p.author_name.toLowerCase().includes(text)
+		)
 	})
 }
 
@@ -129,7 +131,10 @@ watchEffect(() => {
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<Pagination v-slot="{ list }" :list="filteredList" :pageSize="selectedPageSize">
 				<!-- TODO: Update ccat-api package for plugin interface -->
-				<div v-for="item in list" :key="item.id ?? (item as any).url" class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
+				<div
+					v-for="item in list"
+					:key="item.id ?? (item as any).url"
+					class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
 					<UseImage :src="item.thumb" class="h-20 w-20 self-center object-contain">
 						<template #error>
 							<div class="avatar placeholder self-center">
@@ -190,11 +195,13 @@ watchEffect(() => {
 									v-model="item.active"
 									type="checkbox"
 									class="!toggle !toggle-success"
-									@click="async () => {
-										// TODO: Fix this workaround used to prevent checkbox switching when an error occurs
-										const res = await togglePlugin(item.id, item.name, item.active ?? false)
-										item.active = res ? item.active : false
-									}" />
+									@click="
+										async () => {
+											// TODO: Fix this workaround used to prevent checkbox switching when an error occurs
+											const res = await togglePlugin(item.id, item.name, item.active ?? false)
+											item.active = res ? item.active : false
+										}
+									" />
 							</div>
 						</div>
 					</div>
