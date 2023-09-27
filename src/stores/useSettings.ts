@@ -8,7 +8,7 @@ interface Filter {
 }
 
 export const useSettings = defineStore('settings', () => {
-	const isReadyAndAuth = ref(false)
+	const isReadyAndAuth = ref(true)
 
 	const isDark = useDark({
 		storageKey: 'currentTheme',
