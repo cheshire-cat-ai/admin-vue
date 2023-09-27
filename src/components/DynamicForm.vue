@@ -48,13 +48,13 @@ defineEmits<{
 		@submit="$emit('submit', $event)">
 		<div class="form-control w-full">
 			<div
-				v-for="{ name, label, children, ...attrs } in fields"
+				v-for="{ name, label, children, description, ...attrs } in fields"
 				:key="name"
 				class="form-control w-full"
 				:class="{
 					'flex-row-reverse items-center justify-end': attrs.type === 'checkbox',
 				}">
-				<label v-if="label" class="label justify-start gap-1" :for="name">
+				<label v-if="label" class="label justify-start gap-1 text-neutral" :for="name">
 					<span v-if="attrs.default === undefined" class="font-bold text-error">*</span>
 					<span class="label-text font-medium">{{ label }}</span>
 				</label>
@@ -67,7 +67,7 @@ defineEmits<{
 					v-else
 					:id="name"
 					:name="name"
-					:placeholder="label"
+					:placeholder="description || label"
 					v-bind="attrs"
 					:disabled="disabled"
 					:class="{
