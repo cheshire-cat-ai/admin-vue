@@ -3,6 +3,7 @@ import type { Plugin } from 'ccat-api'
 import { useNotifications } from '@stores/useNotifications'
 import PluginService from '@services/PluginService'
 import type { JSONSettings } from '@models/JSONSchema'
+import { useSettings } from '@stores/useSettings'
 
 export const usePlugins = defineStore('plugins', () => {
 	const currentState = reactive<PluginsState>({
@@ -13,10 +14,17 @@ export const usePlugins = defineStore('plugins', () => {
 		},
 	})
 
-	const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins(), undefined)
-	const { state: settings, execute: fetchSettings } = useAsyncState(PluginService.getPluginsSettings(), undefined)
+	const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins, undefined)
+	const { state: settings, execute: fetchSettings } = useAsyncState(PluginService.getPluginsSettings, undefined)
 
 	onActivated(() => fetchPlugins())
+
+	const { isReadyAndAuth } = storeToRefs(useSettings())
+
+	watch(isReadyAndAuth, () => {
+		fetchPlugins()
+		fetchSettings()
+	})
 
 	const { showNotification, sendNotificationFromJSON } = useNotifications()
 

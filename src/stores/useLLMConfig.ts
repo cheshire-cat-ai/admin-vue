@@ -12,7 +12,7 @@ export const useLLMConfig = defineStore('llm', () => {
 
 	const { sendNotificationFromJSON } = useNotifications()
 
-	const { state: providers, isLoading } = useAsyncState(LLMConfigService.getProviders(), undefined)
+	const { state: providers, isLoading } = useAsyncState(LLMConfigService.getProviders, undefined)
 
 	const getAvailableProviders = computed(() => {
 		const settings = providers.value?.data?.settings

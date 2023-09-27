@@ -7,15 +7,6 @@ const settings = useSettings()
 const { getStatus } = settings
 const { isReadyAndAuth } = storeToRefs(settings)
 
-const router = useRouter()
-
-// BUG: Fix `resetAllStores` and remove the workaround
-router.beforeEach(async to => {
-	if (!isReadyAndAuth.value && to.name !== 'settings') {
-		return { name: 'settings' }
-	}
-})
-
 const authBox = ref<InstanceType<typeof ModalBox>>()
 const authKey = ref(''),
 	hasError = ref(false)

@@ -3,6 +3,7 @@ import { useMessages } from '@stores/useMessages'
 import { useNotifications } from '@stores/useNotifications'
 import type { CollectionsState } from '@stores/types'
 import { remove } from 'lodash'
+import { useSettings } from '@stores/useSettings'
 
 export const useMemory = defineStore('memory', () => {
 	const currentState = reactive<CollectionsState>({
@@ -14,7 +15,13 @@ export const useMemory = defineStore('memory', () => {
 		state: collections,
 		isLoading,
 		execute: fetchCollections,
-	} = useAsyncState(MemoryService.getCollections(), undefined)
+	} = useAsyncState(MemoryService.getCollections, undefined)
+
+	const { isReadyAndAuth } = storeToRefs(useSettings())
+
+	watch(isReadyAndAuth, () => {
+		fetchCollections()
+	})
 
 	watchEffect(() => {
 		currentState.loading = isLoading.value

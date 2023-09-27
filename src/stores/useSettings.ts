@@ -42,7 +42,7 @@ export const useSettings = defineStore('settings', () => {
 		return result.data
 	}
 
-	const { state: cat } = useAsyncState(getStatus(), {} as Status)
+	const { state: cat } = useAsyncState(getStatus, {} as Status)
 
 	watchEffect(() => {
 		isReadyAndAuth.value = cat.value != undefined
