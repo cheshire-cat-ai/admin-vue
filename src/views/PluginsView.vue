@@ -26,7 +26,7 @@ const selectedPlugin = ref<Plugin>()
 const currentSettings = ref<JSONSettings>()
 const currentFields = ref<SchemaField[]>([])
 
-watchDeep(pluginsState, () => {
+watchEffect(() => {
 	pluginsList.value = [
 		...new Set([...(pluginsState.value.data?.installed ?? []), ...(pluginsState.value.data?.registry ?? [])]),
 	]
@@ -64,7 +64,7 @@ const queryPlugins = async () => {
 	filteredList.value = [...new Set([...(list?.installed ?? []), ...(list?.registry ?? [])])]
 }
 
-watch(pluginsFilters, () => {
+watchEffect(() => {
 	// TODO: Improve filtering rules and code logic
 	const filters = pluginsFilters.value
 	filteredList.value = pluginsList.value.filter(p => {

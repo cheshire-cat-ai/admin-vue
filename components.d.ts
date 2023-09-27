@@ -49,6 +49,7 @@ declare module 'vue' {
     PhBrainFill: typeof import('~icons/ph/brain-fill')['default']
     PhCaretLeftFill: typeof import('~icons/ph/caret-left-fill')['default']
     PhCaretRightFill: typeof import('~icons/ph/caret-right-fill')['default']
+    PhExportBold: typeof import('~icons/ph/export-bold')['default']
     PhPlugFill: typeof import('~icons/ph/plug-fill')['default']
     Popover: typeof import('@headlessui/vue')['Popover']
     PopoverButton: typeof import('@headlessui/vue')['PopoverButton']
