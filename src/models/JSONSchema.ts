@@ -14,6 +14,7 @@ export interface JSONResponse<T> {
 
 export interface SchemaField {
 	label: string
+	description: string
 	as: string
 	name: string
 	type?: string

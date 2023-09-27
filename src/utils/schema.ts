@@ -17,6 +17,7 @@ export const generateVeeObject = (properties: Record<string, any>, definitions: 
 			name: key,
 			as: getEnumValues(value, definitions) ? 'select' : 'input',
 			label: value.title ?? capitalize(key),
+			description: value.description,
 			type: value.format ?? (value.type ? InputType[value.type as keyof typeof InputType] : undefined),
 			rules: value.default == undefined ? 'required' : '',
 			default: value.default,
