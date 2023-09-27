@@ -29,8 +29,8 @@ const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
 const { wipeAllCollections, wipeCollection, callMemory, deleteMemoryPoint } = memoryStore
 
-// TODO: Fix why I can't use composables directly inside template
-const uploadFile = uploadToRabbitHole
+const { download: downloadMemories } = downloadContent('Recalled_Memories')
+const { upload: uploadFile } = uploadContent()
 
 /**
  * If "all", wipes all the collections in memory, otherwise only the selected one
@@ -86,7 +86,7 @@ const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[
 			const curr = c[1].length
 			return {
 				name: capitalize(c[0]),
-				data: matrix.slice(prev, prev + curr).map(m => ({
+				data: matrix.slice(prev, prev + curr).map((m: any) => ({
 					x: m[0],
 					y: m[1],
 				})),
@@ -132,7 +132,7 @@ const recallMemory = async () => {
 
 	plotOutput.value.push({
 		name: 'Query',
-		data: memoryPlot.matrix.slice(-1).map(v => ({
+		data: memoryPlot.matrix.slice(-1).map((v: any) => ({
 			x: v[0],
 			y: v[1],
 		})),
@@ -175,21 +175,6 @@ const deleteMemoryMarker = async (collection: string, memory: string) => {
 const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex, w }: any) => {
 	clickedPoint.value = w.config.series[seriesIndex].meta[dataPointIndex]
 	pointInfoPanel.value?.togglePanel()
-}
-
-const downloadResult = () => {
-	const output = { export_time: now() }
-	assign(output, callOutput.value)
-	const element = document.createElement('a')
-	element.setAttribute(
-		'href',
-		'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(output, undefined, 2)),
-	)
-	element.setAttribute('download', 'recalledMemories.json')
-	element.style.display = 'none'
-	document.body.appendChild(element)
-	element.click()
-	document.body.removeChild(element)
 }
 </script>
 
@@ -252,7 +237,7 @@ const downloadResult = () => {
 									index: 3,
 									title: 'Export the recalled memories',
 									class: 'custom-icon',
-									click: downloadResult,
+									click: () => downloadMemories(assign({ export_time: now() }, callOutput)),
 								},
 								{
 									icon: '<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>Details</button>',
@@ -340,29 +325,31 @@ const downloadResult = () => {
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100 p-1" :list="getSelectCollections" />
 		</div>
-		<ModalBox ref="boxWipe">
-			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
-				<h3 class="text-lg font-bold text-primary">Wipe collection</h3>
-				<p v-if="selectCollection?.selected.label.startsWith('All')">
-					Are you sure you want to wipe
-					<span class="font-bold">
-						{{ selectCollection?.selected.label.toLowerCase() }}
-					</span>
-					the collections?
-				</p>
-				<p v-else>
-					Are you sure you want to wipe the
-					<span class="font-bold">
-						{{ selectCollection?.selected.label.toLowerCase() }}
-					</span>
-					collection?
-				</p>
-				<div class="flex items-center justify-center gap-2">
-					<button class="btn btn-outline btn-sm" @click="boxWipe?.toggleModal()">No</button>
-					<button class="btn btn-error btn-sm" @click="wipeMemory()">Yes</button>
+		<Teleport to="#modal">
+			<ModalBox ref="boxWipe">
+				<div class="flex flex-col items-center justify-center gap-4 text-neutral">
+					<h3 class="text-lg font-bold text-primary">Wipe collection</h3>
+					<p v-if="selectCollection?.selected.label.startsWith('All')">
+						Are you sure you want to wipe
+						<span class="font-bold">
+							{{ selectCollection?.selected.label.toLowerCase() }}
+						</span>
+						the collections?
+					</p>
+					<p v-else>
+						Are you sure you want to wipe the
+						<span class="font-bold">
+							{{ selectCollection?.selected.label.toLowerCase() }}
+						</span>
+						collection?
+					</p>
+					<div class="flex items-center justify-center gap-2">
+						<button class="btn btn-outline btn-sm" @click="boxWipe?.toggleModal()">No</button>
+						<button class="btn btn-error btn-sm" @click="wipeMemory()">Yes</button>
+					</div>
 				</div>
-			</div>
-		</ModalBox>
+			</ModalBox>
+		</Teleport>
 		<SidePanel ref="memoryDetailsPanel" title="Memory details">
 			<div v-if="callOutput" class="flex w-full flex-col">
 				<p class="self-start rounded-t-md bg-primary px-2 py-1 font-medium text-base-100">

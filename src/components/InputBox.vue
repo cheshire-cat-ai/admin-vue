@@ -1,5 +1,5 @@
 <script setup lang="ts">
-withDefaults(
+const props = withDefaults(
 	defineProps<{
 		modelValue: string
 		label?: string
@@ -7,6 +7,7 @@ withDefaults(
 		disabled?: boolean
 		search?: boolean
 		autofocus?: boolean
+		error?: string
 	}>(),
 	{
 		disabled: false,
@@ -14,8 +15,16 @@ withDefaults(
 		autofocus: true,
 		label: '',
 		placeholder: '',
+		error: '',
 	},
 )
+
+const inputBox = ref<HTMLInputElement>()
+const { autofocus } = toRefs(props)
+
+onActivated(() => {
+	if (autofocus.value) inputBox.value?.focus()
+})
 
 defineEmits<{
 	(e: 'send'): void
@@ -30,11 +39,11 @@ defineEmits<{
 		</label>
 		<div class="relative w-full">
 			<input
+				ref="inputBox"
 				:value="modelValue"
 				type="text"
 				:placeholder="placeholder"
 				:disabled="disabled"
-				:autofocus="autofocus"
 				class="input input-primary input-sm w-full !transition-all"
 				@keyup.enter="$emit('send')"
 				@input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" />
@@ -46,5 +55,8 @@ defineEmits<{
 				<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
 			</button>
 		</div>
+		<label v-if="error" class="label">
+			<span class="label-text font-medium text-error">{{ error }}</span>
+		</label>
 	</div>
 </template>

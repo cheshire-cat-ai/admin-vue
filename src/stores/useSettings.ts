@@ -1,4 +1,5 @@
 import { apiClient, tryRequest } from '@/api'
+import type { Status } from 'ccat-api'
 
 interface Filter {
 	[k: string]: {
@@ -8,7 +9,8 @@ interface Filter {
 }
 
 export const useSettings = defineStore('settings', () => {
-	const isAudioEnabled = useLocalStorage('isAudioEnabled', true)
+	const isReadyAndAuth = ref(true)
+
 	const isDark = useDark({
 		storageKey: 'currentTheme',
 		selector: 'html',
@@ -40,14 +42,19 @@ export const useSettings = defineStore('settings', () => {
 		return result.data
 	}
 
-	const { state: cat } = useAsyncState(getStatus(), undefined)
+	const { state: cat } = useAsyncState(getStatus(), {} as Status)
+
+	watchEffect(() => {
+		isReadyAndAuth.value = cat.value != undefined
+	})
 
 	return {
-		isAudioEnabled,
 		isDark,
 		pluginsFilters,
 		toggleDark,
 		cat,
+		getStatus,
+		isReadyAndAuth,
 	}
 })
 

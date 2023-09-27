@@ -1,9 +1,9 @@
 import type { MessagesState } from '@stores/types'
 import type { BotMessage, UserMessage } from '@models/Message'
-import { now, uniqueId, defaultsDeep } from 'lodash'
+import { now, uniqueId } from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
-import { apiClient, tryRequest } from '@/api'
-import type { PromptSettings } from 'ccat-api'
+import { apiClient } from '@/api'
+import { useSettings } from '@stores/useSettings'
 
 export const useMessages = defineStore('messages', () => {
 	const currentState = reactive<MessagesState>({
@@ -35,34 +35,18 @@ export const useMessages = defineStore('messages', () => {
 		],
 	})
 
-	const promptSettings = useLocalStorage<PromptSettings>('promptSettings', {} as PromptSettings)
-
+	const { isReadyAndAuth } = storeToRefs(useSettings())
 	const { showNotification } = useNotifications()
 
-	const getDefaultPromptSettings = async () => {
-		const result = await tryRequest(
-			apiClient.api?.prompt.getDefaultPromptSettings(),
-			'Getting all the default prompt settings',
-			'Unable to fetch default prompt settings',
-		)
-		return result.data
-	}
-
-	const { state: defaultPromptSettings, isLoading } = useAsyncState(getDefaultPromptSettings(), undefined)
-
 	watchEffect(() => {
-		currentState.loading = isLoading.value
-		defaultsDeep(promptSettings.value, defaultPromptSettings.value)
-	})
-
-	tryOnMounted(async () => {
 		/**
 		 * Subscribes to the messages service on component mount
 		 * and dispatches the received messages to the store.
 		 * It also dispatches the error to the store if an error occurs.
 		 */
-		// TODO: Fix why the websocket doesn't trigger onConnected in development mode
-		currentState.ready = import.meta.env.DEV // Temporary fix
+		currentState.loading = !isReadyAndAuth.value
+		currentState.ready = isReadyAndAuth.value
+
 		apiClient
 			.onConnected(() => {
 				currentState.ready = true
@@ -124,7 +108,7 @@ export const useMessages = defineStore('messages', () => {
 	 * Sends a message to the messages service and dispatches it to the store
 	 */
 	const dispatchMessage = (message: string) => {
-		apiClient.send(message, 'user', promptSettings.value)
+		apiClient.send(message, 'user')
 		addMessage({
 			text: message.trim(),
 			timestamp: now(),
@@ -134,10 +118,8 @@ export const useMessages = defineStore('messages', () => {
 
 	return {
 		currentState,
-		promptSettings,
 		addMessage,
 		selectRandomDefaultMessages,
-		getDefaultPromptSettings,
 		dispatchMessage,
 	}
 })

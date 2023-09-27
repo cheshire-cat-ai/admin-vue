@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { upperFirst, isEmpty } from 'lodash'
-import { type Plugin, AcceptedPluginTypes } from 'ccat-api'
+import { type Plugin } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
 import SidePanel from '@components/SidePanel.vue'
@@ -8,12 +8,13 @@ import ModalBox from '@components/ModalBox.vue'
 import { type SchemaField, type JSONSettings } from '@models/JSONSchema'
 
 const store = usePlugins()
-const { togglePlugin, removePlugin, installPlugin, updateSettings, isInstalled, getSchema, getSettings } = store
+const { togglePlugin, removePlugin, updateSettings, getSchema, getSettings, searchPlugin, installRegistryPlugin } =
+	store
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { pluginsFilters } = storeToRefs(useSettings())
 
-const { open: uploadPlugin, onChange: onPluginUpload } = useFileDialog()
+const { upload: uploadFile } = uploadContent()
 
 const boxRemove = ref<InstanceType<typeof ModalBox>>()
 const settingsPanel = ref<InstanceType<typeof SidePanel>>()
@@ -25,7 +26,7 @@ const selectedPlugin = ref<Plugin>()
 const currentSettings = ref<JSONSettings>()
 const currentFields = ref<SchemaField[]>([])
 
-watchDeep(pluginsState, () => {
+watchEffect(() => {
 	pluginsList.value = [
 		...new Set([...(pluginsState.value.data?.installed ?? []), ...(pluginsState.value.data?.registry ?? [])]),
 	]
@@ -43,14 +44,6 @@ const deletePlugin = async () => {
 	boxRemove.value?.toggleModal()
 }
 
-/**
- * Handles the plugin upload by calling the installPlugin endpoint with the file attached.
- */
-onPluginUpload(files => {
-	if (files == null) return
-	installPlugin(files[0])
-})
-
 const openSettings = async (plugin: Plugin) => {
 	selectedPlugin.value = plugin
 	const pluginSchema = getSchema(plugin.id)
@@ -65,15 +58,10 @@ const savePluginSettings = async (payload: JSONSettings) => {
 	if (res) settingsPanel.value?.togglePanel()
 }
 
-const searchPlugin = () => {
+const queryPlugins = async () => {
 	const text = searchText.value.toLowerCase()
-	filteredList.value = pluginsList.value.filter(p => {
-		return (
-			p.name.toLowerCase().includes(text) ||
-			p.tags.toLowerCase().includes(text) ||
-			p.author_name.toLowerCase().includes(text)
-		)
-	})
+	const list = await searchPlugin(text)
+	filteredList.value = [...new Set([...(list?.installed ?? []), ...(list?.registry ?? [])])]
 }
 
 watchEffect(() => {
@@ -82,8 +70,8 @@ watchEffect(() => {
 	filteredList.value = pluginsList.value.filter(p => {
 		const list =
 			filters.presence.current == 'both' ||
-			(filters.presence.current == 'installed' && isInstalled(p.id)) ||
-			(filters.presence.current == 'registry' && !isInstalled(p.id))
+			(filters.presence.current == 'installed' && p.id) ||
+			(filters.presence.current == 'registry' && p.url)
 		const visible =
 			filters.visibility.current == 'both' ||
 			(filters.visibility.current == 'enabled' && p.active) ||
@@ -102,7 +90,7 @@ watchEffect(() => {
 				label="Search for a plugin"
 				search
 				:disabled="pluginsState.loading || Boolean(pluginsState.error)"
-				@send="searchPlugin()" />
+				@send="queryPlugins()" />
 			<div class="flex flex-wrap justify-center gap-2">
 				<button
 					v-for="(v, k) of pluginsFilters"
@@ -120,7 +108,7 @@ watchEffect(() => {
 			<button
 				:disabled="pluginsState.loading || Boolean(pluginsState.error)"
 				class="btn btn-primary btn-sm"
-				@click="uploadPlugin({ multiple: false, accept: AcceptedPluginTypes.join(',') })">
+				@click="uploadFile('plugin')">
 				Upload plugin
 			</button>
 		</div>
@@ -130,10 +118,9 @@ watchEffect(() => {
 			:error="pluginsState.error" />
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<Pagination v-slot="{ list }" :list="filteredList" :pageSize="selectedPageSize">
-				<!-- TODO: Update ccat-api package for plugin interface -->
 				<div
 					v-for="item in list"
-					:key="item.id ?? (item as any).url"
+					:key="item.url ?? item.id"
 					class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
 					<UseImage :src="item.thumb" class="h-20 w-20 self-center object-contain">
 						<template #error>
@@ -157,12 +144,12 @@ watchEffect(() => {
 									{{ item.author_name }}
 								</a>
 							</p>
-							<template v-if="item.id !== 'core_plugin'">
-								<button v-if="isInstalled(item.id)" class="btn btn-error btn-xs" @click="openRemoveModal(item)">
-									Delete
-								</button>
-								<button v-else class="btn btn-success btn-xs">Install</button>
-							</template>
+							<button v-if="item.url" class="btn btn-success btn-xs" @click="installRegistryPlugin(item.url)">
+								Install
+							</button>
+							<button v-else-if="item.id !== 'core_plugin'" class="btn btn-error btn-xs" @click="openRemoveModal(item)">
+								Delete
+							</button>
 						</div>
 						<div class="flex h-6 items-center gap-1 text-sm font-medium text-neutral-focus">
 							<p>v{{ item.version }}</p>
@@ -177,6 +164,24 @@ watchEffect(() => {
 						<p class="my-2 text-sm">
 							{{ item.description }}
 						</p>
+						<!--<div v-if="item.hooks && item.tools" class="mb-2 flex items-center gap-2 text-xs">
+							<div v-if="item.hooks.length > 0" class="dropdown-hover dropdown">
+								<label tabindex="0" class="btn btn-square btn-ghost btn-outline btn-xs hover:bg-base-200">🪝</label>
+								<ul tabindex="0" class="dropdown-content z-10 mt-1 w-max rounded-md bg-base-200 p-2 shadow">
+									<div v-for="(hook, index) of groupBy(item.hooks, p => p.priority)" :key="index">
+										<span class="font-medium text-primary">Priority {{ index }} :</span>
+										<br/>
+										<p v-for="{ name } in hook" :key="name">- {{ name }}</p>
+									</div>
+								</ul>
+							</div>
+							<div v-if="item.tools.length > 0" class="dropdown-hover dropdown">
+								<label tabindex="0" class="btn btn-square btn-ghost btn-outline btn-xs hover:bg-base-200">🛠️</label>
+								<ul tabindex="0" class="dropdown-content z-10 mt-1 w-max rounded-md bg-base-200 p-2 shadow">
+									<p v-for="{ name } in item.tools" :key="name">- {{ name }}</p>
+								</ul>
+							</div>
+						</div>-->
 						<div class="flex h-8 items-center justify-between gap-4">
 							<div class="flex flex-wrap gap-2">
 								<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
@@ -185,13 +190,13 @@ watchEffect(() => {
 							</div>
 							<div class="flex flex-wrap items-center gap-2">
 								<button
-									v-if="isInstalled(item.id) && !isEmpty(getSchema(item.id)) && item.active"
+									v-if="item.id && !isEmpty(getSchema(item.id)) && item.active"
 									class="btn btn-circle btn-ghost btn-sm"
 									@click="openSettings(item)">
 									<heroicons-cog-6-tooth-20-solid class="h-5 w-5" />
 								</button>
 								<input
-									v-if="item.id !== 'core_plugin' && isInstalled(item.id)"
+									v-if="item.id !== 'core_plugin' && item.id"
 									v-model="item.active"
 									type="checkbox"
 									class="!toggle !toggle-success"
@@ -214,21 +219,23 @@ watchEffect(() => {
 		<SidePanel ref="settingsPanel" title="Plugin Settings">
 			<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="savePluginSettings" />
 		</SidePanel>
-		<ModalBox ref="boxRemove">
-			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
-				<h3 class="text-lg font-bold text-primary">Remove plugin</h3>
-				<p>
-					Are you sure you want to remove the
-					<span class="font-bold">
-						{{ selectedPlugin?.name }}
-					</span>
-					plugin?
-				</p>
-				<div class="flex items-center justify-center gap-2">
-					<button class="btn btn-outline btn-sm" @click="boxRemove?.toggleModal()">No</button>
-					<button class="btn btn-error btn-sm" @click="deletePlugin()">Yes</button>
+		<Teleport to="#modal">
+			<ModalBox ref="boxRemove">
+				<div class="flex flex-col items-center justify-center gap-4 text-neutral">
+					<h3 class="text-lg font-bold text-primary">Remove plugin</h3>
+					<p>
+						Are you sure you want to remove the
+						<span class="font-bold">
+							{{ selectedPlugin?.name }}
+						</span>
+						plugin?
+					</p>
+					<div class="flex items-center justify-center gap-2">
+						<button class="btn btn-outline btn-sm" @click="boxRemove?.toggleModal()">No</button>
+						<button class="btn btn-error btn-sm" @click="deletePlugin()">Yes</button>
+					</div>
 				</div>
-			</div>
-		</ModalBox>
+			</ModalBox>
+		</Teleport>
 	</div>
 </template>

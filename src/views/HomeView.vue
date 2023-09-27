@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { useRabbitHole } from '@stores/useRabbitHole'
 import { useMessages } from '@stores/useMessages'
-import { useSound } from '@vueuse/sound'
 import { useMemory } from '@stores/useMemory'
-import { useSettings } from '@stores/useSettings'
-import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
+import { capitalize } from 'lodash'
 
 const messagesStore = useMessages()
 const { dispatchMessage, selectRandomDefaultMessages } = messagesStore
@@ -16,7 +14,6 @@ const userMessage = ref(''),
 	isScrollable = ref(false),
 	isTwoLines = ref(false)
 const boxUploadURL = ref<InstanceType<typeof ModalBox>>()
-const chatSettingsPanel = ref<InstanceType<typeof SidePanel>>()
 
 const { textarea: textArea } = useTextareaAutosize({
 	input: userMessage,
@@ -29,14 +26,10 @@ const { textarea: textArea } = useTextareaAutosize({
 
 const { isListening, toggle: toggleRecording, result: transcript } = useSpeechRecognition()
 const { state: micState, isSupported, query: queryMic } = usePermission('microphone', { controls: true })
-const { play: playPop } = useSound('pop.mp3')
-const { play: playRec } = useSound('start-rec.mp3')
 
 const { currentState: rabbitHoleState } = storeToRefs(useRabbitHole())
 
 const { wipeConversation } = useMemory()
-const router = useRouter()
-const { isAudioEnabled } = storeToRefs(useSettings())
 
 const inputDisabled = computed(() => {
 	return messagesState.value.loading || !messagesState.value.ready || Boolean(messagesState.value.error)
@@ -46,8 +39,8 @@ const randomDefaultMessages = selectRandomDefaultMessages()
 
 const dropContentZone = ref<HTMLDivElement>()
 
-// TODO: Fix why I can't use composables directly inside template
-const uploadFile = uploadToRabbitHole
+const { download: downloadConversation } = downloadContent('Cat_Conversation')
+const { upload: uploadFile } = uploadContent()
 
 /**
  * Calls the specific endpoints based on the mime type of the file
@@ -58,11 +51,11 @@ const contentHandler = async (content: string | File[] | null) => {
 		if (content.trim().length == 0) return
 		try {
 			new URL(content)
-			uploadToRabbitHole('web', content)
+			uploadFile('web', content)
 		} catch (_) {
 			dispatchMessage(content)
 		}
-	} else content.forEach(f => uploadToRabbitHole('content', f))
+	} else content.forEach(f => uploadFile('content', f))
 }
 
 /**
@@ -105,7 +98,6 @@ const toggleListening = async () => {
 		if (permState?.state !== 'granted') return
 	}
 	toggleRecording()
-	if (isListening.value && isAudioEnabled.value) playRec()
 }
 
 /**
@@ -117,10 +109,14 @@ watchDeep(
 	() => {
 		isScrollable.value = document.documentElement.scrollHeight > document.documentElement.clientHeight
 		scrollToBottom()
-		if (messagesState.value.messages.length > 0 && isAudioEnabled.value) playPop()
+		textArea.value.focus()
 	},
 	{ flush: 'post' },
 )
+
+onActivated(() => {
+	textArea.value.focus()
+})
 
 /**
  * Dispatches the inserted url to the RabbitHole service and closes the modal.
@@ -129,7 +125,7 @@ const dispatchWebsite = () => {
 	if (!insertedURL.value) return
 	try {
 		new URL(insertedURL.value)
-		uploadToRabbitHole('web', insertedURL.value)
+		uploadFile('web', insertedURL.value)
 		boxUploadURL.value?.toggleModal()
 	} catch (_) {
 		insertedURL.value = ''
@@ -153,11 +149,6 @@ const preventSend = (e: KeyboardEvent) => {
 		e.preventDefault()
 		sendMessage(userMessage.value)
 	}
-}
-
-const openChatSettings = () => {
-	router.push({ name: 'chat_settings' })
-	chatSettingsPanel.value?.togglePanel()
 }
 
 const generatePlaceholder = (isLoading: boolean, isRecording: boolean, error?: string) => {
@@ -244,15 +235,21 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 							<button tabindex="0" :disabled="inputDisabled" class="btn btn-circle btn-ghost btn-sm">
 								<heroicons-bolt-solid class="h-6 w-6" />
 							</button>
-							<ul tabindex="0" class="dropdown-content join join-vertical !-right-1/4 z-10 mb-5 p-0">
+							<ul
+								tabindex="0"
+								class="dropdown-content join join-vertical !-right-1/4 z-10 mb-5 p-0 [&>li>*]:bg-base-100">
 								<li>
 									<button
-										:disabled="rabbitHoleState.loading"
+										:disabled="messagesState.messages.length === 0"
 										class="btn join-item w-full flex-nowrap px-2"
-										@click="openChatSettings">
-										<span class="grow normal-case">Prompt settings</span>
+										@click="
+											downloadConversation(
+												messagesState.messages.reduce((p, c) => `${p}${capitalize(c.sender)}: ${c.text}\n`, ''),
+											)
+										">
+										<span class="grow normal-case">Export conversation</span>
 										<span class="rounded-lg bg-primary p-1 text-base-100">
-											<heroicons-adjustments-horizontal-solid class="h-6 w-6" />
+											<ph-export-bold class="h-6 w-6" />
 										</span>
 									</button>
 								</li>
@@ -320,16 +317,15 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				<heroicons-arrow-down-20-solid class="h-5 w-5" />
 			</button>
 		</div>
-		<ModalBox ref="boxUploadURL">
-			<div class="flex flex-col items-center justify-center gap-4 text-neutral">
-				<h3 class="text-lg font-bold">Insert URL</h3>
-				<p>Write down the URL you want the Cat to digest :</p>
-				<InputBox v-model.trim="insertedURL" placeholder="Enter url..." />
-				<button class="btn btn-primary btn-sm" @click="dispatchWebsite">Send</button>
-			</div>
-		</ModalBox>
-		<SidePanel ref="chatSettingsPanel" title="Prompt Settings">
-			<RouterView @close="chatSettingsPanel?.togglePanel()" />
-		</SidePanel>
+		<Teleport to="#modal">
+			<ModalBox ref="boxUploadURL">
+				<div class="flex flex-col items-center justify-center gap-4 text-neutral">
+					<h3 class="text-lg font-bold">Insert URL</h3>
+					<p>Write down the URL you want the Cat to digest :</p>
+					<InputBox v-model.trim="insertedURL" placeholder="Enter url..." />
+					<button class="btn btn-primary btn-sm" @click="dispatchWebsite">Send</button>
+				</div>
+			</ModalBox>
+		</Teleport>
 	</div>
 </template>

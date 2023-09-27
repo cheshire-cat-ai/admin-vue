@@ -14,6 +14,10 @@ const { shown, closable } = toRefs(props)
 
 const [isOpen, toggleModal] = useToggle(shown.value)
 
+watchEffect(() => {
+	isOpen.value = shown.value
+})
+
 const closeModal = () => {
 	if (closable.value) toggleModal()
 }
@@ -26,7 +30,7 @@ defineExpose({
 
 <template>
 	<TransitionRoot appear :show="isOpen" as="template">
-		<Dialog as="div" class="relative z-10" @close="closeModal">
+		<Dialog as="div" class="relative z-50" @close="closeModal">
 			<TransitionChild
 				as="template"
 				enter="duration-300 ease-out"
