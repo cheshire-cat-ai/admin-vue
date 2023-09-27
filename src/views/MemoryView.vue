@@ -86,7 +86,7 @@ const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[
 			const curr = c[1].length
 			return {
 				name: capitalize(c[0]),
-				data: matrix.slice(prev, prev + curr).map(m => ({
+				data: matrix.slice(prev, prev + curr).map((m: any) => ({
 					x: m[0],
 					y: m[1],
 				})),
@@ -132,7 +132,7 @@ const recallMemory = async () => {
 
 	plotOutput.value.push({
 		name: 'Query',
-		data: memoryPlot.matrix.slice(-1).map(v => ({
+		data: memoryPlot.matrix.slice(-1).map((v: any) => ({
 			x: v[0],
 			y: v[1],
 		})),

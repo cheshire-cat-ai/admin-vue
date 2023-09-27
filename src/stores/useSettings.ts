@@ -1,4 +1,5 @@
 import { apiClient, tryRequest } from '@/api'
+import type { Status } from 'ccat-api'
 
 interface Filter {
 	[k: string]: {
@@ -41,11 +42,10 @@ export const useSettings = defineStore('settings', () => {
 		return result.data
 	}
 
-	const { state: cat, isReady: isOkStatus } = useAsyncState(getStatus(), undefined)
+	const { state: cat } = useAsyncState(getStatus(), {} as Status)
 
 	watchEffect(() => {
-		const statusError = cat.value == undefined
-		isReadyAndAuth.value = !statusError && isOkStatus.value
+		isReadyAndAuth.value = cat.value != undefined
 	})
 
 	return {
