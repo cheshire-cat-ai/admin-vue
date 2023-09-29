@@ -20,7 +20,7 @@ export const usePlugins = defineStore('plugins', () => {
 	onActivated(() => fetchPlugins())
 
 	const { isReadyAndAuth } = storeToRefs(useSettings())
-
+	// TODO: Find a way to refresh calls without watching the boolean value (fix resetAllStores())
 	watch(isReadyAndAuth, () => {
 		fetchPlugins()
 		fetchSettings()

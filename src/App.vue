@@ -19,6 +19,7 @@ const authenticate = async () => {
 	if (!hasError.value) {
 		authBox.value?.toggleModal()
 		isReadyAndAuth.value = true
+		// TODO: Fix the composable
 		//resetAllStores()
 	}
 }

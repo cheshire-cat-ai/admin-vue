@@ -18,7 +18,7 @@ export const useMemory = defineStore('memory', () => {
 	} = useAsyncState(MemoryService.getCollections, undefined)
 
 	const { isReadyAndAuth } = storeToRefs(useSettings())
-
+	// TODO: Find a way to refresh calls without watching the boolean value (fix resetAllStores())
 	watch(isReadyAndAuth, () => {
 		fetchCollections()
 	})
