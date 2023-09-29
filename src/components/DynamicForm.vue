@@ -71,8 +71,9 @@ defineEmits<{
 					v-bind="attrs"
 					:disabled="disabled"
 					:class="{
+						'textarea block w-full overflow-auto bg-base-200 !outline-offset-0': attrs.as === 'textarea',
 						'select select-bordered select-sm mb-2 w-full !leading-4': attrs.as === 'select',
-						'input input-primary input-sm mb-2 w-full !transition-all': attrs.as != 'select',
+						'input input-primary input-sm mb-2 w-full !transition-all': attrs.as === 'input',
 					}">
 					<template v-if="children && children.length">
 						<component :is="'option'" v-for="({ text, ...childAttrs }, idx) in children" :key="idx" v-bind="childAttrs">

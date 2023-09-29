@@ -11,11 +11,23 @@ const getEnumValues = (property: Record<string, unknown>, definitions: Record<st
 	} else return undefined
 }
 
+const getComponentType = (value: any, definitions: Record<string, unknown>) => {
+	if (
+		value.extra &&
+		value.extra.type &&
+		typeof value.extra.type == 'string' &&
+		value.extra.type.toLowerCase() == 'textarea'
+	)
+		return 'textarea'
+	else if (getEnumValues(value, definitions)) return 'select'
+	else return 'input'
+}
+
 export const generateVeeObject = (properties: Record<string, any>, definitions: Record<string, unknown>) => {
 	return entries(properties).map<SchemaField>(([key, value]) => {
 		return {
 			name: key,
-			as: getEnumValues(value, definitions) ? 'select' : 'input',
+			as: getComponentType(value, definitions),
 			label: value.title ?? capitalize(key),
 			description: value.description,
 			type: value.format ?? (value.type ? InputType[value.type as keyof typeof InputType] : undefined),
