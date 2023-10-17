@@ -45,6 +45,7 @@ export interface SettingsConfigState extends AsyncState<SettingsResponse> {
 export interface MessagesState extends AsyncStateBase {
 	ready: boolean
 	messages: Message[]
+	tokens: string[]
 	defaultMessages: string[]
 }
 

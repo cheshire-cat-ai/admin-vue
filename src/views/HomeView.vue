@@ -193,10 +193,17 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 			<p v-if="messagesState.error" class="w-fit rounded-md bg-error p-4 font-semibold text-base-100">
 				{{ messagesState.error }}
 			</p>
+			<div v-else-if="messagesState.tokens.length > 0" class="mb-2 ml-2 flex items-center gap-2">
+				<span class="text-lg">😺</span>
+				<p class="flex max-w-[80%] items-center gap-2 text-base-content">
+					<span class="loading loading-dots loading-xs shrink-0" />
+					{{ messagesState.tokens.join('') }}
+				</p>
+			</div>
 			<div v-else-if="!messagesState.error && messagesState.loading" class="mb-2 ml-2 flex items-center gap-2">
 				<span class="text-lg">😺</span>
 				<p class="flex items-center gap-2">
-					<span class="loading loading-dots loading-xs" />
+					<span class="loading loading-dots loading-xs shrink-0" />
 					Cheshire cat is thinking...
 				</p>
 			</div>

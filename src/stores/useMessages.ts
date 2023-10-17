@@ -10,6 +10,7 @@ export const useMessages = defineStore('messages', () => {
 		ready: false,
 		loading: false,
 		messages: [],
+		tokens: [],
 		defaultMessages: [
 			"What's up?",
 			"Who's the Queen of Hearts?",
@@ -52,18 +53,27 @@ export const useMessages = defineStore('messages', () => {
 				currentState.ready = true
 			})
 			.onMessage(({ content, type, why }) => {
-				if (type === 'chat') {
-					addMessage({
-						text: content,
-						sender: 'bot',
-						timestamp: now(),
-						why,
-					})
-				} else if (type === 'notification') {
-					showNotification({
-						type: 'info',
-						text: content,
-					})
+				switch (type) {
+					case 'chat_token':
+						currentState.tokens.push(content)
+						break
+					case 'chat':
+						currentState.tokens = []
+						addMessage({
+							text: content,
+							sender: 'bot',
+							timestamp: now(),
+							why,
+						})
+						break
+					case 'notification':
+						showNotification({
+							type: 'info',
+							text: content,
+						})
+						break
+					default:
+						break
 				}
 			})
 			.onError(error => {
