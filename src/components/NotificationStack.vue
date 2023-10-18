@@ -17,7 +17,7 @@ const { getNotifications } = useNotifications()
 					'alert-error': notification.type === 'error',
 					'alert-success': notification.type === 'success',
 				}">
-				<span>{{ notification.text }}</span>
+				<span class="whitespace-pre-line">{{ notification.text }}</span>
 			</div>
 		</TransitionGroup>
 	</div>
