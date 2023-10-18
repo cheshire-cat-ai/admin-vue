@@ -57,7 +57,7 @@ defineEmits<{
 				<label v-if="label" class="label justify-start gap-1 text-neutral" :for="name">
 					<span v-if="attrs.default === undefined" class="font-bold text-error">*</span>
 					<span class="label-text font-medium">{{ label }}</span>
-					<div class="tooltip tooltip-right" :data-tip="description">
+					<div v-if="description" class="tooltip tooltip-right" :data-tip="description">
 						<ph-info class="h-4 w-4" />
 					</div>
 				</label>
