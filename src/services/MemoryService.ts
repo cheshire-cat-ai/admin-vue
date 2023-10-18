@@ -13,7 +13,7 @@ const MemoryService = Object.freeze({
 	},
 	deleteMemoryPoint: async (collection: string, memory: string) => {
 		return await tryRequest(
-			apiClient.api?.memory.deleteElementInMemory(collection, memory),
+			apiClient.api?.memory.deletePointInMemory(collection, memory),
 			'The selected memory point was wiped successfully',
 			'Unable to wipe the memory point',
 		)

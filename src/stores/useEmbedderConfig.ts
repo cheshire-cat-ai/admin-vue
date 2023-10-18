@@ -2,7 +2,6 @@ import type { JSONSettings } from '@models/JSONSchema'
 import EmbedderConfigService from '@services/EmbedderConfigService'
 import { useNotifications } from '@stores/useNotifications'
 import type { SettingsConfigState } from '@stores/types'
-import type { JsonSchema } from 'ccat-api'
 
 export const useEmbedderConfig = defineStore('embedder', () => {
 	const currentState = reactive<SettingsConfigState>({
@@ -18,7 +17,7 @@ export const useEmbedderConfig = defineStore('embedder', () => {
 		const settings = embedders.value?.data?.settings
 		const schemas = settings ? settings.map(s => s.schema) : []
 		if (schemas.length === 0) currentState.error = 'No embedders found'
-		return schemas as JsonSchema[]
+		return schemas as Record<string, any>[]
 	})
 
 	watchEffect(() => {

@@ -2,7 +2,6 @@ import type { SettingsConfigState } from '@stores/types'
 import LLMConfigService from '@services/LLMConfigService'
 import { useNotifications } from '@stores/useNotifications'
 import type { JSONSettings } from '@models/JSONSchema'
-import type { JsonSchema } from 'ccat-api'
 
 export const useLLMConfig = defineStore('llm', () => {
 	const currentState = reactive<SettingsConfigState>({
@@ -18,7 +17,7 @@ export const useLLMConfig = defineStore('llm', () => {
 		const settings = providers.value?.data?.settings
 		const schemas = settings ? settings.map(s => s.schema) : []
 		if (schemas.length === 0) currentState.error = 'No large language models found'
-		return schemas as JsonSchema[]
+		return schemas as Record<string, any>[]
 	})
 
 	watchEffect(() => {
