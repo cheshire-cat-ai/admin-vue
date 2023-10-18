@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { type JSONSettings, type SchemaField } from '@models/JSONSchema'
 import { useLLMConfig } from '@stores/useLLMConfig'
-import type { JsonSchema } from 'ccat-api'
 
 const storeLLM = useLLMConfig()
 const { getProviderSchema, setProviderSettings, getProviderSettings } = storeLLM
 const { currentState: llmState, getAvailableProviders } = storeToRefs(storeLLM)
 
 const selectedProvider = ref(llmState.value.selected)
-const currentSchema = ref<JsonSchema>()
+const currentSchema = ref<Record<string, any>>()
 const currentSettings = ref<JSONSettings>({})
 const currentFields = ref<SchemaField[]>([])
 
@@ -19,7 +18,7 @@ const emit = defineEmits<{
 const updateProperties = (selected = currentSchema.value?.title) => {
 	selectedProvider.value = selected
 	currentSchema.value = getProviderSchema(selected)
-	currentFields.value = generateVeeObject(currentSchema.value?.properties ?? {}, currentSchema.value?.definitions ?? {})
+	currentFields.value = generateVeeObject(currentSchema.value)
 	currentSettings.value = getProviderSettings(selected)
 }
 

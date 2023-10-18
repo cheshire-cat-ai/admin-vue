@@ -46,9 +46,8 @@ const deletePlugin = async () => {
 
 const openSettings = async (plugin: Plugin) => {
 	selectedPlugin.value = plugin
-	const pluginSchema = getSchema(plugin.id)
 	currentSettings.value = await getSettings(plugin.id)
-	currentFields.value = generateVeeObject(pluginSchema?.properties ?? {}, pluginSchema?.definitions ?? {})
+	currentFields.value = generateVeeObject(getSchema(plugin.id))
 	settingsPanel.value?.togglePanel()
 }
 

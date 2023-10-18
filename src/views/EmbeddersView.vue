@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { type JSONSettings, type SchemaField } from '@models/JSONSchema'
 import { useEmbedderConfig } from '@stores/useEmbedderConfig'
-import type { JsonSchema } from 'ccat-api'
 
 const storeEmbedder = useEmbedderConfig()
 const { getEmbedderSchema, getEmbedderSettings, setEmbedderSettings } = storeEmbedder
 const { currentState: embedderState, getAvailableEmbedders } = storeToRefs(storeEmbedder)
 
 const selectedEmbedder = ref(embedderState.value.selected)
-const currentSchema = ref<JsonSchema>()
+const currentSchema = ref<Record<string, any>>()
 const currentSettings = ref<JSONSettings>({})
 const currentFields = ref<SchemaField[]>([])
 
@@ -19,7 +18,7 @@ const emit = defineEmits<{
 const updateProperties = (selected = currentSchema.value?.title) => {
 	selectedEmbedder.value = selected
 	currentSchema.value = getEmbedderSchema(selected)
-	currentFields.value = generateVeeObject(currentSchema.value?.properties ?? {}, currentSchema.value?.definitions ?? {})
+	currentFields.value = generateVeeObject(currentSchema.value)
 	currentSettings.value = getEmbedderSettings(selected)
 }
 
