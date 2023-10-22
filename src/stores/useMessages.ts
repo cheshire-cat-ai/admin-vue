@@ -118,7 +118,7 @@ export const useMessages = defineStore('messages', () => {
 	 * Sends a message to the messages service and dispatches it to the store
 	 */
 	const dispatchMessage = (message: string) => {
-		apiClient.send(message, 'user')
+		apiClient.send(message)
 		addMessage({
 			text: message.trim(),
 			timestamp: now(),
