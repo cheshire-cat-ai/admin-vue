@@ -189,8 +189,8 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 				:disabled="Boolean(memoryState.error) || memoryState.loading"
 				@send="recallMemory()" />
 			<div class="form-control">
-				<label class="label">
-					<span class="label-text font-medium text-primary">K memories</span>
+				<label class="label px-0">
+					<span class="label-text font-semibold">K memories</span>
 				</label>
 				<input
 					v-model="kMems"

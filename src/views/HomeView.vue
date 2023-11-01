@@ -307,7 +307,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				</div>
 				<button
 					v-if="isSupported"
-					class="btn btn-circle btn-primary"
+					class="btn btn-circle btn-primary shadow-lg"
 					:class="[isListening ? 'glass btn-outline' : '']"
 					:disabled="inputDisabled"
 					@click="toggleListening">
