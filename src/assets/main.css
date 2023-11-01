@@ -50,6 +50,7 @@ body {
 	.btn-ghost {
 		@apply disabled:bg-transparent;
 	}
+	.btn-primary,
 	.btn-outline.btn-error:hover,
 	.btn-outline.btn-success:hover,
 	.btn-outline.btn-info:hover,
@@ -128,4 +129,9 @@ body {
 
 .apexcharts-menu > * {
 	@apply !py-1 !px-2 hover:bg-base-300 font-medium transition-colors;
+}
+
+.memory-page .join.join-vertical {
+	top: -164px;
+	left: 0;
 }

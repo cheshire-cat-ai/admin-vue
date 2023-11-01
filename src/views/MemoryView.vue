@@ -179,7 +179,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 </script>
 
 <template>
-	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
+	<div class="flex w-full flex-col gap-8 self-center md:w-3/4 memory-page">
 		<div class="flex gap-4">
 			<InputBox
 				v-model.trim="callText"
@@ -319,8 +319,9 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 		<div class="join w-fit self-center shadow-xl">
 			<button
 				:disabled="Boolean(memoryState.error) || memoryState.loading"
-				class="btn btn-error join-item"
+				class="btn btn-primary hover:bg-error hover:border-error join-item"
 				@click="boxWipe?.toggleModal()">
+				<heroicons-trash-solid class="h-4 w-4" />
 				Wipe
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100 p-1" :list="getSelectCollections" />
