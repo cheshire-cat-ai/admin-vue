@@ -27,7 +27,7 @@ body {
 
 @layer base {
 	html {
-		font-family: 'Ubuntu', system-ui, sans-serif;
+		font-family: 'IBM Plex Sans', system-ui, sans-serif;
 	}
 	input[type='number'] {
 		@apply !pr-0;
@@ -123,7 +123,7 @@ body {
 }
 
 .apexcharts-menu {
-	@apply !rounded-lg !min-w-0 !bg-base-200 !border-neutral !border-2 !p-0 !mt-1 !right-1 font-['Ubuntu'] overflow-hidden;
+	@apply !rounded-lg !min-w-0 !bg-base-200 !border-neutral !border-2 !p-0 !mt-1 !right-1 overflow-hidden;
 }
 
 .apexcharts-menu > * {

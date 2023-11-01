@@ -215,7 +215,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 				chart: {
 					offsetY: 8,
 					defaultLocale: 'en',
-					fontFamily: 'Ubuntu',
+					fontFamily: 'IBM Plex Sans',
 					background: 'transparent',
 					animations: {
 						speed: 300,
@@ -279,7 +279,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 					style: {
 						color: isDark ? '#F4F4F5' : '#383938',
 						fontSize: '2rem',
-						fontFamily: 'Ubuntu',
+						fontFamily: 'IBM Plex Sans',
 					},
 				},
 				grid: {
@@ -292,7 +292,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 				tooltip: {
 					theme: isDark ? 'dark' : 'light',
 					intersect: true,
-					style: { fontFamily: 'Ubuntu' },
+					style: { fontFamily: 'IBM Plex Sans' },
 					custom: ({ seriesIndex, dataPointIndex, w }: any) => {
 						const text = w.config.series[seriesIndex].meta[dataPointIndex].text
 						return `<div class=\'marker-tooltip flex flex-col p-1\'>
