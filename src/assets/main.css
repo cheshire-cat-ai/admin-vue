@@ -27,7 +27,7 @@ body {
 
 @layer base {
 	html {
-		font-family: 'IBM Plex Sans', system-ui, sans-serif;
+		font-family: 'Rubik', system-ui, sans-serif;
 	}
 	input[type='number'] {
 		@apply !pr-0;
