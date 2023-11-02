@@ -226,21 +226,21 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 							pan: false,
 							customIcons: [
 								{
-									icon: '<button class=\'btn-success btn btn-xs whitespace-nowrap\'>Import memories</button>',
+									icon: '<button class=\'btn-primary btn btn-xs rounded whitespace-nowrap\'>Import memories</button>',
 									index: 3,
 									title: 'Import some memories',
 									class: 'custom-icon',
 									click: () => uploadFile('memory'),
 								},
 								{
-									icon: '<button class=\'btn-info btn btn-xs whitespace-nowrap\'>Export memories</button>',
+									icon: '<button class=\'btn-primary btn btn-xs rounded whitespace-nowrap\'>Export memories</button>',
 									index: 3,
 									title: 'Export the recalled memories',
 									class: 'custom-icon',
 									click: () => downloadMemories(assign({ export_time: now() }, callOutput)),
 								},
 								{
-									icon: '<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>Details</button>',
+									icon: '<button class=\'btn-primary btn btn-xs rounded whitespace-nowrap\'>Details</button>',
 									index: 3,
 									title: 'Show the recalled memories details',
 									class: 'custom-icon',
