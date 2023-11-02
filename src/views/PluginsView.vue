@@ -146,9 +146,11 @@ watchEffect(() => {
 								</a>
 							</p>
 							<button v-if="item.url" class="btn btn-primary rounded-md btn-xs" @click="installRegistryPlugin(item.url)">
+								<heroicons-cloud-arrow-down-solid class="h-4 w-4" />
 								Install
 							</button>
-							<button v-else-if="item.id !== 'core_plugin'" class="btn btn-error rounded-md btn-xs" @click="openRemoveModal(item)">
+							<button v-else-if="item.id !== 'core_plugin'" class="btn btn-error text-white rounded-md btn-xs" @click="openRemoveModal(item)">
+								<heroicons-trash-solid class="h-3 w-3" />
 								Delete
 							</button>
 						</div>

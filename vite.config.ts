@@ -31,8 +31,8 @@ export default defineConfig({
 			custom: {
 				families: [
 					{
-						name: 'Ubuntu',
-						local: 'Ubuntu',
+						name: 'IBM Plex Sans',
+						local: 'IBM Plex Sans',
 						src: './src/assets/fonts/*.ttf',
 					},
 				],
