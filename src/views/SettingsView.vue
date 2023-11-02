@@ -49,7 +49,7 @@ const openSidePanel = (title: keyof typeof panelTitles) => {
 					<heroicons-speaker-wave-solid class="h-5 w-5 shrink-0 text-primary" />
 					<span>Toggle sounds on messages</span>
 				</p>
-				<input v-model="isAudioEnabled" type="checkbox" class="!toggle !toggle-success" />
+				<input v-model="isAudioEnabled" type="checkbox" class="!toggle !toggle-primary" />
 			</div>
 		</div>-->
 		<SidePanel ref="sidePanel" :title="panelTitle">
