@@ -71,7 +71,7 @@ const renderedText = computed(() =>
 		</div>
 		<SidePanel v-if="why" ref="whyPanel" title="Why this response">
 			<div class="flex flex-col gap-4">
-				<div class="overflow-x-auto rounded-md border-2 border-neutral">
+				<div v-if="why.intermediate_steps?.length > 0" class="overflow-x-auto rounded-md border-2 border-neutral">
 					<table class="table table-zebra table-sm text-center">
 						<thead class="bg-base-100 text-neutral">
 							<th>🧰 Tool</th>
