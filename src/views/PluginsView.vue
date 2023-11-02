@@ -91,10 +91,11 @@ watchEffect(() => {
 				:disabled="pluginsState.loading || Boolean(pluginsState.error)"
 				@send="queryPlugins()" />
 			<div class="flex flex-wrap justify-center gap-2">
+				<heroicons-adjustments-vertical class="h-6 w-6" />
 				<button
 					v-for="(v, k) of pluginsFilters"
 					:key="k"
-					class="btn btn-ghost btn-xs rounded-full !border-2 !border-primary"
+					class="btn btn-ghost btn-xs rounded-md hover:bg-base-100 !border-2 !border-primary"
 					@click="v.current = v.values[v.values.indexOf(v.current) + 1] ?? v.values[0]">
 					<span class="text-primary">{{ k }}:</span>
 					<span>{{ v.current }}</span>
@@ -106,8 +107,9 @@ watchEffect(() => {
 			<!--<SelectBox v-model="selectedPageSize" :list="[10, 25, 50, 100].map(p => ({ label: p.toString(), value: p }))" />-->
 			<button
 				:disabled="pluginsState.loading || Boolean(pluginsState.error)"
-				class="btn btn-primary btn-sm"
+				class="btn btn-primary btn-sm rounded-md hover:shadow-lg"
 				@click="uploadFile('plugin')">
+				<ph-export-bold class="h-4 w-4" />
 				Upload plugin
 			</button>
 		</div>
@@ -120,7 +122,7 @@ watchEffect(() => {
 				<div
 					v-for="item in list"
 					:key="item.url ?? item.id"
-					class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4">
+					class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4 shadow">
 					<UseImage :src="item.thumb" class="h-20 w-20 self-center object-contain">
 						<template #error>
 							<div class="avatar placeholder self-center">
@@ -138,15 +140,15 @@ watchEffect(() => {
 								<a
 									:href="item.author_url"
 									target="_blank"
-									class="link-primary link no-underline"
-									:class="{ 'pointer-events-none': item.author_url === '' }">
+									class="link"
+									:class="{ 'pointer-events-none no-underline': item.author_url === '' }">
 									{{ item.author_name }}
 								</a>
 							</p>
-							<button v-if="item.url" class="btn btn-success btn-xs" @click="installRegistryPlugin(item.url)">
+							<button v-if="item.url" class="btn btn-primary rounded-md btn-xs" @click="installRegistryPlugin(item.url)">
 								Install
 							</button>
-							<button v-else-if="item.id !== 'core_plugin'" class="btn btn-error btn-xs" @click="openRemoveModal(item)">
+							<button v-else-if="item.id !== 'core_plugin'" class="btn btn-error rounded-md btn-xs" @click="openRemoveModal(item)">
 								Delete
 							</button>
 						</div>
@@ -156,7 +158,7 @@ watchEffect(() => {
 								v-if="item.plugin_url"
 								:href="item.plugin_url"
 								target="_blank"
-								class="btn btn-circle btn-primary btn-xs">
+								class="btn btn-circle btn-xs">
 								<heroicons-link-20-solid class="h-4 w-4" />
 							</a>
 						</div>
@@ -182,8 +184,8 @@ watchEffect(() => {
 							</div>
 						</div>-->
 						<div class="flex h-8 items-center justify-between gap-4">
-							<div class="flex flex-wrap gap-2">
-								<div v-for="tag in item.tags.split(',')" :key="tag" class="badge badge-primary font-medium">
+							<div class="flex flex-wrap gap-1">
+								<div v-for="tag in item.tags.split(',')" :key="tag" class="badge border-neutral rounded-lg font-medium">
 									{{ tag.trim() }}
 								</div>
 							</div>
@@ -198,7 +200,7 @@ watchEffect(() => {
 									v-if="item.id !== 'core_plugin' && item.id"
 									v-model="item.active"
 									type="checkbox"
-									class="!toggle !toggle-success"
+									class="!toggle !toggle-primary"
 									@click="
 										async () => {
 											// TODO: Fix this workaround used to prevent checkbox switching when an error occurs
