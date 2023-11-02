@@ -56,7 +56,7 @@ const renderedText = computed(() =>
 		<div class="chat-image row-[1] text-lg">
 			{{ sender === 'bot' ? '😺' : '🙂' }}
 		</div>
-		<div class="chat-bubble row-[1] flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral">
+		<div class="chat-bubble row-[1] flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral shadow-md">
 			<div class="p-2 md:p-3">
 				<p class="text-ellipsis" v-html="renderedText" />
 				<div v-if="isLengthy" class="flex justify-end font-bold">
@@ -65,7 +65,7 @@ const renderedText = computed(() =>
 				</div>
 			</div>
 			<div v-if="why" class="divider divider-horizontal m-0 w-px before:bg-base-200 after:bg-base-200" />
-			<button v-if="why" class="btn btn-circle btn-primary btn-xs mx-2" @click="whyPanel?.togglePanel()">
+			<button v-if="why" class="btn btn-circle bg-neutral/20 text-neutral border-0 btn-xs mx-2" @click="whyPanel?.togglePanel()">
 				<p class="text-base">?</p>
 			</button>
 		</div>
