@@ -71,28 +71,23 @@ const renderedText = computed(() =>
 		</div>
 		<SidePanel v-if="why" ref="whyPanel" title="Why this response">
 			<div class="flex flex-col gap-4">
-				<div v-if="why.intermediate_steps?.length > 0" class="overflow-x-auto rounded-md border-2 border-neutral">
-					<table class="table table-zebra table-sm text-center">
-						<thead class="bg-base-100 text-neutral">
-							<th>🧰 Tool</th>
-							<th>⌨️ Input</th>
-							<th>💬 Output</th>
-						</thead>
-						<tbody v-if="why.intermediate_steps?.length > 0">
-							<tr v-for="data in why.intermediate_steps" :key="data[0]">
-								<td>{{ data[0][0] }}</td>
-								<td>{{ data[0][1] }}</td>
-								<td>{{ data[1] }}</td>
-							</tr>
-						</tbody>
-						<tbody v-else>
-							<tr class="font-medium">
-								<td />
-								<td>No tools were used.</td>
-								<td />
-							</tr>
-						</tbody>
-					</table>
+				<div v-if="why.intermediate_steps?.length > 0" class="overflow-x-auto rounded shadow bg-base-100">
+					<div v-for="data in why.intermediate_steps" :key="data[0]">
+						<div class="grid grid-cols-2 grid-rows-1 pt-2">
+							<div class="py-2 px-3">
+								<h2 class="font-bold text-sm flex items-center justify-center gap-2 pb-1"><ph-nut class="h-5 w-5" />Triggered Tool</h2>
+								<p class="text-sm flex items-center justify-center px-4 py-2 mx-1 my-2 rounded bg-base-200/30">{{ data[0][0] }}</p>
+							</div>
+							<div class="py-2 px-3">
+								<h2 class="font-bold text-sm flex items-center justify-center gap-2 pb-1"><ph-textbox class="h-5 w-5" />Tool Input</h2>
+								<p class="text-sm flex items-center justify-center px-4 py-2 mx-1 my-2 rounded bg-base-200/30">{{ data[0][1] }}</p>
+							</div>
+						</div>
+						<div class="py-2 px-3">
+							<h2 class="font-bold text-sm flex items-center justify-center gap-2 pb-1"><ph-chat-centered-dots class="h-5 w-5" />Tool Output</h2>
+							<p class="text-sm p-4 mx-1 my-2 rounded bg-base-200/30">{{ data[1] }}</p>
+						</div>
+					</div>
 				</div>
 				<MemorySelect :result="why.memory" />
 			</div>

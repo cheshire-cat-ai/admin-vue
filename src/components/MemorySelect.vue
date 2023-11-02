@@ -9,20 +9,21 @@ const selectedCollection = ref('episodic')
 </script>
 
 <template>
-	<div class="flex w-full flex-col gap-6 rounded bg-base-100 p-4">
+	<div class="flex w-full flex-col gap-6 rounded shadow bg-base-100 p-4">
 		<div class="flex flex-wrap justify-center gap-4">
 			<button
 				v-for="col in Object.keys(result)"
 				:key="col"
-				class="btn-ghost inline-flex items-center gap-2 btn-xs rounded-md font-semibold capitalize hover:bg-primary hover:text-base-100"
+				class="btn-ghost inline-flex items-center gap-2 btn-sm rounded font-semibold capitalize hover:bg-primary hover:text-base-100"
 				:class="[selectedCollection === col ? 'bg-primary text-base-100' : 'text-primary']"
 				@click="selectedCollection = col">
-				<ph-chat-dots-bold v-if="col == 'episodic'" class="h-4 w-4" />
-				<ph-file-bold v-if="col == 'declarative'" class="h-4 w-4" />
-				<ph-toolbox-bold v-if="col == 'procedural'" class="h-4 w-4" />
+				<ph-chats v-if="col == 'episodic'" class="h-5 w-5" />
+				<ph-files v-if="col == 'declarative'" class="h-5 w-5" />
+				<ph-toolbox v-if="col == 'procedural'" class="h-5 w-5" />
 				{{ col }}
 			</button>
 		</div>
+		<div class="divider !my-0" />
 		<template v-if="result[selectedCollection]?.length > 0">
 			<div
 				v-for="(item, value) in result[selectedCollection]"
