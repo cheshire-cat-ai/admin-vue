@@ -31,8 +31,8 @@ export default defineConfig({
 			custom: {
 				families: [
 					{
-						name: 'IBM Plex Sans',
-						local: 'IBM Plex Sans',
+						name: 'Rubik',
+						local: 'Rubik',
 						src: './src/assets/fonts/*.ttf',
 					},
 				],
