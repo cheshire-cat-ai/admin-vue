@@ -39,6 +39,14 @@ const MemoryService = Object.freeze({
 			'Unable to wipe the in-memory current conversation',
 		)
 	},
+	getConversation: async () => {
+		const result = await tryRequest(
+			apiClient.api?.memory.getConversationHistory(),
+			'Retrieved the conversation history',
+			'Unable to retrieve the in-memory conversation history',
+		)
+		return result.data?.history ?? []
+	},
 	callMemory: async (query: string, memories = 10, user = 'user') => {
 		const result = await tryRequest(
 			apiClient.api?.memory.recallMemoriesFromText(query, memories, user),
