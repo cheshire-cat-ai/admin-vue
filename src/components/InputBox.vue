@@ -34,8 +34,8 @@ defineEmits<{
 
 <template>
 	<div class="form-control w-full">
-		<label v-if="label" class="label">
-			<span class="label-text font-medium text-primary">{{ label }}</span>
+		<label v-if="label" class="label px-0">
+			<span class="label-text font-semibold">{{ label }}</span>
 		</label>
 		<div class="relative w-full">
 			<input
@@ -49,7 +49,7 @@ defineEmits<{
 				@input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" />
 			<button
 				v-if="search"
-				class="btn btn-square btn-primary btn-sm absolute right-0 top-0"
+				class="btn btn-square btn-ghost btn-sm absolute right-0 top-0"
 				:disabled="disabled"
 				@click="$emit('send')">
 				<heroicons-magnifying-glass-20-solid class="h-5 w-5" />

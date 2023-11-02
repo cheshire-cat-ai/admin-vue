@@ -87,11 +87,15 @@ defineEmits<{
 			</div>
 		</div>
 		<div class="mt-auto flex gap-2">
-			<button type="reset" class="btn btn-error btn-sm grow normal-case">Reset</button>
+			<button type="reset" class="btn btn-outline btn-sm grow normal-case">
+				<ph-arrow-counter-clockwise-bold class="h-4 w-4" />
+				Reset
+			</button>
 			<button
 				type="submit"
-				class="btn btn-success btn-sm grow normal-case"
+				class="btn btn-primary btn-sm grow normal-case"
 				:disabled="disabled || Object.keys(errors).length > 0">
+				<ph-floppy-disk-bold class="h-4 w-4" />
 				Save
 			</button>
 		</div>

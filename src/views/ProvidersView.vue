@@ -55,7 +55,7 @@ watchDeep(
 						v-if="currentSchema?.link"
 						:href="currentSchema.link"
 						target="_blank"
-						class="btn btn-circle btn-primary btn-xs">
+						class="btn btn-circle text-primary btn-xs">
 						<heroicons-link-20-solid class="h-4 w-4" />
 					</a>
 					<span>{{ currentSchema?.description }}</span>

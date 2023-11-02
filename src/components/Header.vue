@@ -22,22 +22,22 @@
 						as="ul"
 						class="menu menu-md absolute left-0 z-50 mt-4 w-min origin-top-left gap-2 whitespace-nowrap rounded-md bg-base-100 shadow-xl">
 						<MenuItem as="li">
-							<RouterLink to="/"> <heroicons-home-20-solid class="h-5 w-5" /> Home </RouterLink>
+							<RouterLink to="/"> <heroicons-home-20-solid class="h-4 w-4" /> Home </RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
-							<RouterLink to="/memory"> <ph-brain-fill class="h-5 w-5" /> Memory </RouterLink>
+							<RouterLink to="/memory"> <ph-brain-fill class="h-4 w-4" /> Memory </RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
-							<RouterLink to="/plugins"> <ph-plug-fill class="h-5 w-5" /> Plugins </RouterLink>
+							<RouterLink to="/plugins"> <ph-plug-fill class="h-4 w-4" /> Plugins </RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
 							<RouterLink to="/settings" :class="{ active: $route.path === '/settings' }">
-								<heroicons-cog-6-tooth-20-solid class="h-5 w-5" /> Settings
+								<heroicons-cog-6-tooth-20-solid class="h-4 w-4" /> Settings
 							</RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
 							<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">
-								<heroicons-document-text-solid class="h-5 w-5" /> Docs
+								<heroicons-document-text-solid class="h-4 w-4" /> Docs
 							</a>
 						</MenuItem>
 					</MenuItems>
@@ -50,22 +50,22 @@
 			</RouterLink>
 			<ul class="menu menu-horizontal menu-md hidden gap-4 p-0 md:flex">
 				<li>
-					<RouterLink to="/"> <heroicons-home-20-solid class="h-5 w-5" /> Home </RouterLink>
+					<RouterLink to="/"> <heroicons-home-20-solid class="h-4 w-4" /> Home </RouterLink>
 				</li>
 				<li>
-					<RouterLink to="/memory"> <ph-brain-fill class="h-5 w-5" /> Memory </RouterLink>
+					<RouterLink to="/memory"> <ph-brain-fill class="h-4 w-4" /> Memory </RouterLink>
 				</li>
 				<li>
-					<RouterLink to="/plugins"> <ph-plug-fill class="h-5 w-5" /> Plugins </RouterLink>
+					<RouterLink to="/plugins"> <ph-plug-fill class="h-4 w-4" /> Plugins </RouterLink>
 				</li>
 				<li>
 					<RouterLink to="/settings" :class="{ active: $route.path === '/settings' }">
-						<heroicons-cog-6-tooth-20-solid class="h-5 w-5" /> Settings
+						<heroicons-cog-6-tooth-20-solid class="h-4 w-4" /> Settings
 					</RouterLink>
 				</li>
 				<li>
 					<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">
-						<heroicons-document-text-solid class="h-5 w-5" /> Docs
+						<heroicons-document-text-solid class="h-4 w-4" /> Docs
 					</a>
 				</li>
 			</ul>
