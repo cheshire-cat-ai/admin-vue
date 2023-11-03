@@ -56,7 +56,7 @@ const renderedText = computed(() =>
 		<div class="chat-image row-[1] text-lg">
 			{{ sender === 'bot' ? '😺' : '🙂' }}
 		</div>
-		<div class="chat-bubble row-[1] flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral">
+		<div class="chat-bubble row-[1] flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral shadow-md">
 			<div class="p-2 md:p-3">
 				<p class="text-ellipsis" v-html="renderedText" />
 				<div v-if="isLengthy" class="flex justify-end font-bold">
@@ -65,34 +65,29 @@ const renderedText = computed(() =>
 				</div>
 			</div>
 			<div v-if="why" class="divider divider-horizontal m-0 w-px before:bg-base-200 after:bg-base-200" />
-			<button v-if="why" class="btn btn-circle btn-primary btn-xs mx-2" @click="whyPanel?.togglePanel()">
+			<button v-if="why" class="btn btn-circle bg-neutral/20 text-neutral border-0 btn-xs mx-2" @click="whyPanel?.togglePanel()">
 				<p class="text-base">?</p>
 			</button>
 		</div>
 		<SidePanel v-if="why" ref="whyPanel" title="Why this response">
 			<div class="flex flex-col gap-4">
-				<div class="overflow-x-auto rounded-md border-2 border-neutral">
-					<table class="table table-zebra table-sm text-center">
-						<thead class="bg-base-100 text-neutral">
-							<th>🧰 Tool</th>
-							<th>⌨️ Input</th>
-							<th>💬 Output</th>
-						</thead>
-						<tbody v-if="why.intermediate_steps?.length > 0">
-							<tr v-for="data in why.intermediate_steps" :key="data[0]">
-								<td>{{ data[0][0] }}</td>
-								<td>{{ data[0][1] }}</td>
-								<td>{{ data[1] }}</td>
-							</tr>
-						</tbody>
-						<tbody v-else>
-							<tr class="font-medium">
-								<td />
-								<td>No tools were used.</td>
-								<td />
-							</tr>
-						</tbody>
-					</table>
+				<div v-if="why.intermediate_steps?.length > 0" class="overflow-x-auto rounded shadow bg-base-100">
+					<div v-for="data in why.intermediate_steps" :key="data[0]">
+						<div class="grid grid-cols-2 grid-rows-1 pt-2">
+							<div class="py-2 px-3">
+								<h2 class="font-bold text-sm flex items-center justify-center gap-2 pb-1"><ph-nut class="h-5 w-5" />Triggered Tool</h2>
+								<p class="text-sm flex items-center justify-center px-4 py-2 mx-1 my-2 rounded bg-base-200/30">{{ data[0][0] }}</p>
+							</div>
+							<div class="py-2 px-3">
+								<h2 class="font-bold text-sm flex items-center justify-center gap-2 pb-1"><ph-textbox class="h-5 w-5" />Tool Input</h2>
+								<p class="text-sm flex items-center justify-center px-4 py-2 mx-1 my-2 rounded bg-base-200/30">{{ data[0][1] }}</p>
+							</div>
+						</div>
+						<div class="py-2 px-3">
+							<h2 class="font-bold text-sm flex items-center justify-center gap-2 pb-1"><ph-chat-centered-dots class="h-5 w-5" />Tool Output</h2>
+							<p class="text-sm p-4 mx-1 my-2 rounded bg-base-200/30">{{ data[1] }}</p>
+						</div>
+					</div>
 				</div>
 				<MemorySelect :result="why.memory" />
 			</div>

@@ -179,7 +179,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 </script>
 
 <template>
-	<div class="flex w-full flex-col gap-8 self-center md:w-3/4">
+	<div class="flex w-full flex-col gap-8 self-center md:w-3/4 memory-page">
 		<div class="flex gap-4">
 			<InputBox
 				v-model.trim="callText"
@@ -189,8 +189,8 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 				:disabled="Boolean(memoryState.error) || memoryState.loading"
 				@send="recallMemory()" />
 			<div class="form-control">
-				<label class="label">
-					<span class="label-text font-medium text-primary">K memories</span>
+				<label class="label px-0">
+					<span class="label-text font-semibold">K memories</span>
 				</label>
 				<input
 					v-model="kMems"
@@ -215,7 +215,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 				chart: {
 					offsetY: 8,
 					defaultLocale: 'en',
-					fontFamily: 'Ubuntu',
+					fontFamily: 'Rubik',
 					background: 'transparent',
 					animations: {
 						speed: 300,
@@ -226,21 +226,21 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 							pan: false,
 							customIcons: [
 								{
-									icon: '<button class=\'btn-success btn btn-xs whitespace-nowrap\'>Import memories</button>',
+									icon: '<button class=\'btn-primary btn btn-xs rounded whitespace-nowrap\'>Import memories</button>',
 									index: 3,
 									title: 'Import some memories',
 									class: 'custom-icon',
 									click: () => uploadFile('memory'),
 								},
 								{
-									icon: '<button class=\'btn-info btn btn-xs whitespace-nowrap\'>Export memories</button>',
+									icon: '<button class=\'btn-primary btn btn-xs rounded whitespace-nowrap\'>Export memories</button>',
 									index: 3,
 									title: 'Export the recalled memories',
 									class: 'custom-icon',
 									click: () => downloadMemories(assign({ export_time: now() }, callOutput)),
 								},
 								{
-									icon: '<button class=\'btn-warning btn btn-xs whitespace-nowrap\'>Details</button>',
+									icon: '<button class=\'btn-primary btn btn-xs rounded whitespace-nowrap\'>Details</button>',
 									index: 3,
 									title: 'Show the recalled memories details',
 									class: 'custom-icon',
@@ -279,7 +279,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 					style: {
 						color: isDark ? '#F4F4F5' : '#383938',
 						fontSize: '2rem',
-						fontFamily: 'Ubuntu',
+						fontFamily: 'Rubik',
 					},
 				},
 				grid: {
@@ -292,7 +292,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 				tooltip: {
 					theme: isDark ? 'dark' : 'light',
 					intersect: true,
-					style: { fontFamily: 'Ubuntu' },
+					style: { fontFamily: 'Rubik' },
 					custom: ({ seriesIndex, dataPointIndex, w }: any) => {
 						const text = w.config.series[seriesIndex].meta[dataPointIndex].text
 						return `<div class=\'marker-tooltip flex flex-col p-1\'>
@@ -319,8 +319,9 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 		<div class="join w-fit self-center shadow-xl">
 			<button
 				:disabled="Boolean(memoryState.error) || memoryState.loading"
-				class="btn btn-error join-item"
+				class="btn btn-primary hover:bg-error hover:border-error join-item"
 				@click="boxWipe?.toggleModal()">
+				<heroicons-trash-solid class="h-4 w-4" />
 				Wipe
 			</button>
 			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100 p-1" :list="getSelectCollections" />

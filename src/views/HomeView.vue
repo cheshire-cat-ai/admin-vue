@@ -294,10 +294,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									</button>
 								</li>
 								<li>
-									<button
-										:disabled="messagesState.messages.length === 0"
-										class="btn join-item w-full flex-nowrap px-2"
-										@click="wipeConversation()">
+									<button class="btn join-item w-full flex-nowrap px-2" @click="wipeConversation()">
 										<span class="grow normal-case">Clear conversation</span>
 										<span class="rounded-lg bg-error p-1 text-base-100">
 											<heroicons-trash-solid class="h-6 w-6" />
@@ -310,7 +307,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				</div>
 				<button
 					v-if="isSupported"
-					class="btn btn-circle btn-primary"
+					class="btn btn-circle btn-primary shadow-lg"
 					:class="[isListening ? 'glass btn-outline' : '']"
 					:disabled="inputDisabled"
 					@click="toggleListening">

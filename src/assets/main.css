@@ -27,7 +27,7 @@ body {
 
 @layer base {
 	html {
-		font-family: 'Ubuntu', system-ui, sans-serif;
+		font-family: 'Rubik', system-ui, sans-serif;
 	}
 	input[type='number'] {
 		@apply !pr-0;
@@ -50,6 +50,7 @@ body {
 	.btn-ghost {
 		@apply disabled:bg-transparent;
 	}
+	.btn-primary,
 	.btn-outline.btn-error:hover,
 	.btn-outline.btn-success:hover,
 	.btn-outline.btn-info:hover,
@@ -76,7 +77,7 @@ body {
 	.select,
 	.input,
 	.textarea {
-		@apply overflow-hidden outline outline-offset-2 bg-transparent outline-2 border-0 !ring-0 !transition-all !duration-75 focus:outline-primary;
+		@apply overflow-hidden outline bg-transparent outline-2 border-0 shadow-lg !ring-0 !transition-all !duration-75 focus:outline-primary;
 	}
 	.toggle {
 		@apply !bg-none !border-2;
@@ -123,9 +124,14 @@ body {
 }
 
 .apexcharts-menu {
-	@apply !rounded-lg !min-w-0 !bg-base-200 !border-neutral !border-2 !p-0 !mt-1 !right-1 font-['Ubuntu'] overflow-hidden;
+	@apply !rounded-lg !min-w-0 !bg-base-200 !border-neutral !border-2 !p-0 !mt-1 !right-1 overflow-hidden;
 }
 
 .apexcharts-menu > * {
 	@apply !py-1 !px-2 hover:bg-base-300 font-medium transition-colors;
+}
+
+.memory-page .join.join-vertical {
+	top: -164px;
+	left: 0;
 }

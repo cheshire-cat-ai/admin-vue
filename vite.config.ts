@@ -31,8 +31,8 @@ export default defineConfig({
 			custom: {
 				families: [
 					{
-						name: 'Ubuntu',
-						local: 'Ubuntu',
+						name: 'Rubik',
+						local: 'Rubik',
 						src: './src/assets/fonts/*.ttf',
 					},
 				],

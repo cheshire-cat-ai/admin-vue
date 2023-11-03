@@ -27,5 +27,5 @@ onMounted(() => {
 </script>
 
 <template>
-	<input ref="toggleEl" :checked="checked" type="checkbox" class="!toggle !toggle-success" @input="handleChange" />
+	<input ref="toggleEl" :checked="checked" type="checkbox" class="!toggle !toggle-primary" @input="handleChange" />
 </template>

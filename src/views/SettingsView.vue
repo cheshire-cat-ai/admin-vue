@@ -28,14 +28,14 @@ const openSidePanel = (title: keyof typeof panelTitles) => {
 				</span>
 			</p>
 		</div>
-		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 md:col-span-1">
+		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 md:col-span-1 shadow-md">
 			<p class="text-xl font-bold">Large Language Model</p>
 			<p class="text-center">Choose and configure your favourite LLM from a list of supported providers</p>
 			<RouterLink :to="{ name: 'providers' }" class="btn btn-primary btn-sm" @click="openSidePanel('llm')">
 				Configure
 			</RouterLink>
 		</div>
-		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 md:col-span-1">
+		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 md:col-span-1 shadow-md">
 			<p class="text-xl font-bold">Embedder</p>
 			<p class="text-center">Choose a language embedder to help the Cat remember conversations and documents</p>
 			<RouterLink :to="{ name: 'embedders' }" class="btn btn-primary btn-sm" @click="openSidePanel('embedder')">
@@ -49,7 +49,7 @@ const openSidePanel = (title: keyof typeof panelTitles) => {
 					<heroicons-speaker-wave-solid class="h-5 w-5 shrink-0 text-primary" />
 					<span>Toggle sounds on messages</span>
 				</p>
-				<input v-model="isAudioEnabled" type="checkbox" class="!toggle !toggle-success" />
+				<input v-model="isAudioEnabled" type="checkbox" class="!toggle !toggle-primary" />
 			</div>
 		</div>-->
 		<SidePanel ref="sidePanel" :title="panelTitle">

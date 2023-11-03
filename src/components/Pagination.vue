@@ -43,7 +43,7 @@ defineExpose({
 <template>
 	<div class="flex flex-col gap-4">
 		<slot :list="currentList" />
-		<div class="join self-center">
+		<div v-if="pageCount > 1" class="join self-center">
 			<button class="btn btn-square btn-neutral join-item btn-sm" :disabled="isFirstPage" @click="prev">
 				<ph-caret-left-fill class="h-5 w-5" />
 			</button>
