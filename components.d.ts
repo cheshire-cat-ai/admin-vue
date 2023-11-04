@@ -100,6 +100,8 @@ declare module 'vue' {
     PhToolbox: typeof import('~icons/ph/toolbox')['default']
     PhToolboxBold: typeof import('~icons/ph/toolbox-bold')['default']
     PhToolboxFill: typeof import('~icons/ph/toolbox-fill')['default']
+    PhTrashBold: typeof import('~icons/ph/trash-bold')['default']
+    PhTrashSolid: typeof import('~icons/ph/trash-solid')['default']
     PhWrench: typeof import('~icons/ph/wrench')['default']
     PhWrenchBold: typeof import('~icons/ph/wrench-bold')['default']
     Popover: typeof import('@headlessui/vue')['Popover']
