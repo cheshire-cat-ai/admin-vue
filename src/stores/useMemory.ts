@@ -45,7 +45,7 @@ export const useMemory = defineStore('memory', () => {
 
 	const wipeConversation = async () => {
 		const result = await MemoryService.wipeConversation()
-		if (result.status == 'success') messagesState.value.messages = []
+		messagesState.value.messages = []
 		return sendNotificationFromJSON(result)
 	}
 
