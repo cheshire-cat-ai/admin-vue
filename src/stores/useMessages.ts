@@ -4,6 +4,7 @@ import { now, uniqueId } from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
 import { apiClient } from '@/api'
 import { useSettings } from '@stores/useSettings'
+import MemoryService from '@services/MemoryService'
 
 export const useMessages = defineStore('messages', () => {
 	const currentState = reactive<MessagesState>({
@@ -34,6 +35,20 @@ export const useMessages = defineStore('messages', () => {
 			'How do I find my way to Wonderland?',
 			'Is Wonderland a real place?',
 		],
+	})
+
+	const { state: history } = useAsyncState(MemoryService.getConversation, [])
+
+	watchEffect(() => {
+		history.value.forEach(({ who, message }) => {
+			addMessage({
+				text: message,
+				timestamp: now(),
+				sender: who == 'AI' ? 'bot' : 'user',
+				why: undefined,
+			})
+		})
+		currentState.loading = false
 	})
 
 	const { isReadyAndAuth } = storeToRefs(useSettings())
