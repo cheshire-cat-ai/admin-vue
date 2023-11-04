@@ -28,11 +28,13 @@ const selectedCollection = ref('episodic')
 			<div
 				v-for="(item, value) in result[selectedCollection]"
 				:key="value"
-				class="indicator flex w-full flex-col gap-2 rounded bg-base-200/30 py-4 px-2">
-				<span class="indicator-center badge indicator-item badge-neutral font-medium text-base-100">
-					{{ item.score }}
-				</span>
-				<p class="mt-1 text-sm">
+				class="indicator flex w-full flex-col gap-2 rounded bg-base-200/50 pb-4 px-2">
+				<div class="tooltip before:rounded-lg before:font-medium before:text-base-100 indicator-center indicator-item" :data-tip="item.score">
+					<span class="badge cursor-pointer badge-neutral font-medium text-base-100">
+						{{ Math.floor(item.score * 1000) / 1000 }}
+					</span>
+				</div>
+				<p class="text-sm -mt-3">
 					{{ item.metadata.docstring ? `${item.metadata.docstring}` : item.page_content }}
 				</p>
 				<div class="flex justify-between gap-2 text-xs font-bold text-neutral/70">
