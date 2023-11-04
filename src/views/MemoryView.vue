@@ -293,11 +293,18 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 					theme: isDark ? 'dark' : 'light',
 					intersect: true,
 					style: { fontFamily: 'Rubik' },
+					fixed: {
+						enabled: false,
+						position: 'bottomLeft'
+					},
 					custom: ({ seriesIndex, dataPointIndex, w }: any) => {
 						const text = w.config.series[seriesIndex].meta[dataPointIndex].text
-						return `<div class=\'marker-tooltip flex flex-col p-1\'>
-							<i>${text.substring(0, 30).concat('...')}</i>
-							<b><i>*Click to show more*</i></b>
+						const source = w.config.series[seriesIndex].meta[dataPointIndex].source
+						const truncedText = text.length > 200 ? text.substring(0, 200) + '...' : text
+
+						return `<div class=\'marker-tooltip flex flex-col p-1 max-w-xs whitespace-normal\'>
+							<b>Source: ${source}</b>
+							<i>${truncedText}</i>
 						</div>`
 					},
 				},
