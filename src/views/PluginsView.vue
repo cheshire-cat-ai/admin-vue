@@ -28,7 +28,10 @@ const currentFields = ref<SchemaField[]>([])
 
 watchEffect(() => {
 	pluginsList.value = [
-		...new Set([...(pluginsState.value.data?.installed ?? []), ...(pluginsState.value.data?.registry ?? [])]),
+		...new Set([
+			...(pluginsState.value.data?.installed.sort((a, b) => Number(b.active) - Number(a.active)) ?? []),
+			...(pluginsState.value.data?.registry ?? []),
+		]),
 	]
 	filteredList.value = pluginsList.value
 })
@@ -95,7 +98,7 @@ watchEffect(() => {
 				<button
 					v-for="(v, k) of pluginsFilters"
 					:key="k"
-					class="btn btn-ghost btn-xs rounded-md hover:bg-base-100 !border-2 !border-primary"
+					class="btn btn-ghost btn-xs rounded-md !border-2 !border-primary hover:bg-base-100"
 					@click="v.current = v.values[v.values.indexOf(v.current) + 1] ?? v.values[0]">
 					<span class="text-primary">{{ k }}:</span>
 					<span>{{ v.current }}</span>
@@ -122,7 +125,7 @@ watchEffect(() => {
 				<div
 					v-for="item in list"
 					:key="item.url ?? item.id"
-					class="flex gap-2 rounded-xl bg-base-100 p-2 md:gap-4 md:p-4 shadow">
+					class="flex gap-2 rounded-xl bg-base-100 p-2 shadow md:gap-4 md:p-4">
 					<UseImage :src="item.thumb" class="h-20 w-20 self-center object-contain">
 						<template #error>
 							<div class="avatar placeholder self-center">
@@ -145,22 +148,24 @@ watchEffect(() => {
 									{{ item.author_name }}
 								</a>
 							</p>
-							<button v-if="item.url" class="btn btn-primary rounded-md btn-xs" @click="installRegistryPlugin(item.url)">
+							<button
+								v-if="item.url"
+								class="btn btn-primary btn-xs rounded-md"
+								@click="installRegistryPlugin(item.url)">
 								<heroicons-cloud-arrow-down-solid class="h-4 w-4" />
 								Install
 							</button>
-							<button v-else-if="item.id !== 'core_plugin'" class="btn btn-error text-white rounded-md btn-xs" @click="openRemoveModal(item)">
+							<button
+								v-else-if="item.id !== 'core_plugin'"
+								class="btn btn-error btn-xs rounded-md text-white"
+								@click="openRemoveModal(item)">
 								<heroicons-trash-solid class="h-3 w-3" />
 								Delete
 							</button>
 						</div>
 						<div class="flex h-6 items-center gap-1 text-sm font-medium text-neutral-focus">
 							<p>v{{ item.version }}</p>
-							<a
-								v-if="item.plugin_url"
-								:href="item.plugin_url"
-								target="_blank"
-								class="btn btn-circle btn-xs">
+							<a v-if="item.plugin_url" :href="item.plugin_url" target="_blank" class="btn btn-circle btn-xs">
 								<heroicons-link-20-solid class="h-4 w-4" />
 							</a>
 						</div>
@@ -187,7 +192,7 @@ watchEffect(() => {
 						</div>-->
 						<div class="flex h-8 items-center justify-between gap-4">
 							<div class="flex flex-wrap gap-1">
-								<div v-for="tag in item.tags.split(',')" :key="tag" class="badge border-neutral rounded-lg font-medium">
+								<div v-for="tag in item.tags.split(',')" :key="tag" class="badge rounded-lg border-neutral font-medium">
 									{{ tag.trim() }}
 								</div>
 							</div>

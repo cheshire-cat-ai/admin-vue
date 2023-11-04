@@ -158,6 +158,11 @@ const generatePlaceholder = (isLoading: boolean, isRecording: boolean, error?: s
 	return 'Ask the Cheshire Cat...'
 }
 
+const wipeHistory = async () => {
+	const res = await wipeConversation()
+	if (res) messagesState.value.messages = []
+}
+
 const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top: document.body.scrollHeight })
 </script>
 
@@ -294,7 +299,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									</button>
 								</li>
 								<li>
-									<button class="btn join-item w-full flex-nowrap px-2" @click="wipeConversation()">
+									<button class="btn join-item w-full flex-nowrap px-2" @click="wipeHistory()">
 										<span class="grow normal-case">Clear conversation</span>
 										<span class="rounded-lg bg-error p-1 text-base-100">
 											<heroicons-trash-solid class="h-6 w-6" />

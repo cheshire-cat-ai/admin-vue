@@ -40,12 +40,12 @@ export const useMessages = defineStore('messages', () => {
 	const { state: history } = useAsyncState(MemoryService.getConversation, [])
 
 	watchEffect(() => {
-		history.value.forEach(({ who, message }) => {
+		history.value.forEach(({ who, message, why }) => {
 			addMessage({
 				text: message,
 				timestamp: now(),
 				sender: who == 'AI' ? 'bot' : 'user',
-				why: undefined,
+				why,
 			})
 		})
 		currentState.loading = false

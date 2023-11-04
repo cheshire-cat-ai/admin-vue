@@ -1,5 +1,4 @@
 import MemoryService from '@services/MemoryService'
-import { useMessages } from '@stores/useMessages'
 import { useNotifications } from '@stores/useNotifications'
 import type { CollectionsState } from '@stores/types'
 import { remove } from 'lodash'
@@ -31,7 +30,6 @@ export const useMemory = defineStore('memory', () => {
 
 	onActivated(() => fetchCollections())
 
-	const { currentState: messagesState } = storeToRefs(useMessages())
 	const { sendNotificationFromJSON } = useNotifications()
 
 	const wipeAllCollections = async () => {
@@ -45,7 +43,6 @@ export const useMemory = defineStore('memory', () => {
 
 	const wipeConversation = async () => {
 		const result = await MemoryService.wipeConversation()
-		messagesState.value.messages = []
 		return sendNotificationFromJSON(result)
 	}
 

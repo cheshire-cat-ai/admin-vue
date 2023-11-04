@@ -153,8 +153,8 @@ const recallMemory = async () => {
 	toggleSpinner()
 }
 
-const getSelectCollections = computed(() => {
-	const data = memoryState.value.data ?? []
+const selectBoxCollections = computed(() => {
+	const data = (memoryState.value.data ?? []).filter(v => v.name != 'procedural')
 	const totalCollections = data.map(v => v.vectors_count).reduce((p, c) => p + c, 0)
 	return [
 		{ label: `All (${totalCollections})`, value: 'all' },
@@ -179,7 +179,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 </script>
 
 <template>
-	<div class="flex w-full flex-col gap-8 self-center md:w-3/4 memory-page">
+	<div class="memory-page flex w-full flex-col gap-8 self-center md:w-3/4">
 		<div class="flex gap-4">
 			<InputBox
 				v-model.trim="callText"
@@ -319,12 +319,12 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 		<div class="join w-fit self-center shadow-xl">
 			<button
 				:disabled="Boolean(memoryState.error) || memoryState.loading"
-				class="btn btn-primary hover:bg-error hover:border-error join-item"
+				class="btn btn-primary join-item hover:border-error hover:bg-error"
 				@click="boxWipe?.toggleModal()">
 				<heroicons-trash-solid class="h-4 w-4" />
 				Wipe
 			</button>
-			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100 p-1" :list="getSelectCollections" />
+			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100 p-1" :list="selectBoxCollections" />
 		</div>
 		<Teleport to="#modal">
 			<ModalBox ref="boxWipe">
