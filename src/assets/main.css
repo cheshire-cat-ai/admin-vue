@@ -131,6 +131,10 @@ body {
 	@apply !py-1 !px-2 hover:bg-base-300 font-medium transition-colors;
 }
 
+.apexcharts-series-scatter {
+	cursor: pointer;
+} 
+
 .memory-page .join.join-vertical {
 	top: -164px;
 	left: 0;
