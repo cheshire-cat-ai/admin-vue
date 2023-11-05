@@ -377,21 +377,33 @@ const dateFilter = ref(''),
 			</div>
 		</SidePanel>
 		<SidePanel ref="pointInfoPanel" title="Memory content">
-			<div v-if="clickedPoint" class="overflow-x-auto rounded-md shadow">
-				<table class="table table-zebra table-sm bg-base-100">
-					<tbody>
-						<tr v-for="(data, key) of clickedPoint" :key="key">
-							<td>{{ capitalize(key) }}</td>
-							<td>{{ data }}</td>
-						</tr>
-					</tbody>
-				</table>
+			<div v-if="clickedPoint" class="overflow-x-auto rounded shadow">
+				<div class="bg-base-100 px-6 py-2 divide-y-2 divide-dashed">
+					<div v-for="(data, key) of clickedPoint" :key="key" className="grid grid-cols-4 grid-rows-1 gap-2 text-sm">
+					    <div class="font-medium py-2">{{ capitalize(key) }}</div>
+					    <div v-if="key === 'collection'" class="col-span-3 py-2 inline-flex items-center gap-2">
+						    <ph-chats v-if="data === 'episodic'" class="h-5 w-5" />
+							<ph-files v-if="data === 'declarative'" class="h-5 w-5" />
+							<ph-toolbox v-if="data === 'procedural'" class="h-5 w-5" />
+							{{ capitalize(data) }}
+						</div>
+						<!-- START THE BUTTON FOR DELETING THE SOURCE - THIS IS JUST EXPERIMENTAL: TO FINALIZE  -->
+						<!-- <div v-else-if="!['procedural', 'query'].includes(clickedPoint.collection) && key === 'source'" class="col-span-3 py-2 inline-flex items-center justify-between gap-2">
+							{{ data }}
+							<button class="link link-error no-underline inline-flex items-center px-2 gap-1 hover:btn-error hover:rounded">
+								<heroicons-trash-solid class="w-3 h-3"/>
+								Delete source
+							</button>
+						</div> -->
+					    <div v-else class="col-span-3 py-2">{{ data }}</div>
+					</div>
+				</div>
 			</div>
 			<button
 				v-if="clickedPoint && !['procedural', 'query'].includes(clickedPoint.collection)"
 				class="btn btn-primary btn-sm mt-auto hover:btn-error"
 				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
-				<ph-trash-bold class="h-4 w-4" />
+				<heroicons-trash-solid class="h-4 w-4" />
 				Delete memory point
 			</button>
 		</SidePanel>

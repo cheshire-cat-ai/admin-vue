@@ -225,16 +225,16 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 			<div class="flex w-full max-w-screen-lg items-center gap-2 md:gap-4">
 				<div class="dropdown dropdown-top">
 					<button tabindex="0" :disabled="inputDisabled" class="btn btn-circle btn-primary shadow-lg">
-						<heroicons-bolt-solid class="h-6 w-6" />
+						<heroicons-bolt-solid class="h-5 w-5" />
 					</button>
-					<ul tabindex="0" class="dropdown-content join join-vertical !left-0 z-10 mb-6 w-52 p-0 [&>li>*]:bg-base-100">
+					<ul tabindex="0" class="dropdown-content join join-vertical !left-0 z-10 mb-6 w-48 p-0 [&>li>*]:bg-base-100">
 						<li>
 							<button
 								:disabled="messagesState.messages.length === 0"
-								class="btn join-item w-full flex-nowrap px-2 text-left"
+								class="btn join-item w-full flex-nowrap px-2 text-left font-normal"
 								@click="downloadConversation(messagesState.messages.reduce((p, c) => `${p}${capitalize(c.sender)}: ${c.text}\n`, ''))">
 								<span class="rounded-lg p-1 text-primary">
-									<ph-export-bold class="h-6 w-6" />
+									<ph-export-bold class="h-5 w-5" />
 								</span>
 								<span class="grow normal-case">Export conversation</span>
 							</button>
@@ -242,10 +242,10 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 						<li>
 							<button
 								:disabled="rabbitHoleState.loading"
-								class="btn join-item w-full flex-nowrap px-2 text-left"
+								class="btn join-item w-full flex-nowrap px-2 text-left font-normal"
 								@click="uploadFile('memory')">
 								<span class="rounded-lg p-1 text-success">
-									<ph-brain-fill class="h-6 w-6" />
+									<ph-brain-fill class="h-5 w-5" />
 								</span>
 								<span class="grow normal-case">Upload memories</span>
 							</button>
@@ -253,10 +253,10 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 						<li>
 							<button
 								:disabled="rabbitHoleState.loading"
-								class="btn join-item w-full flex-nowrap px-2 text-left"
+								class="btn join-item w-full flex-nowrap px-2 text-left font-normal"
 								@click="boxUploadURL?.toggleModal()">
 								<span class="rounded-lg p-1 text-info">
-									<heroicons-globe-alt class="h-6 w-6" />
+									<heroicons-globe-alt class="h-5 w-5" />
 								</span>
 								<span class="grow normal-case">Upload url</span>
 							</button>
@@ -264,18 +264,18 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 						<li>
 							<button
 								:disabled="rabbitHoleState.loading"
-								class="btn join-item w-full flex-nowrap px-2 text-left"
+								class="btn join-item w-full flex-nowrap px-2 text-left font-normal"
 								@click="uploadFile('content')">
 								<span class="rounded-lg p-1 text-warning">
-									<heroicons-document-text-solid class="h-6 w-6" />
+									<heroicons-document-text-solid class="h-5 w-5" />
 								</span>
 								<span class="grow normal-case">Upload file</span>
 							</button>
 						</li>
 						<li>
-							<button class="btn join-item w-full flex-nowrap px-2 text-left" @click="wipeHistory()">
+							<button class="btn join-item w-full flex-nowrap px-2 text-left font-normal" @click="wipeHistory()">
 								<span class="rounded-lg p-1 text-error">
-									<heroicons-trash-solid class="h-6 w-6" />
+									<heroicons-trash-solid class="h-5 w-5" />
 								</span>
 								<span class="grow normal-case">Clear conversation</span>
 							</button>
