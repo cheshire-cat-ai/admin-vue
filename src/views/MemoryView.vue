@@ -296,7 +296,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 					custom: ({ seriesIndex, dataPointIndex, w }: any) => {
 						const text = w.config.series[seriesIndex].meta[dataPointIndex].text
 						const source = w.config.series[seriesIndex].meta[dataPointIndex].source
-						const truncedText = text.length > 200 ? text.substring(0, 200) + '...' : text
+						const truncedText = text.length > 200 ? text.substring(0, 200).concat('...') : text
 
 						return `<div class=\'marker-tooltip flex flex-col p-1 max-w-xs whitespace-normal\'>
 							<b>Source: ${source}</b>
