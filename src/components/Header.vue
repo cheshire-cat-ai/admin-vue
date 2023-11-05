@@ -36,9 +36,7 @@
 							</RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
-							<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">
-								<heroicons-document-text-solid class="h-4 w-4" /> Docs
-							</a>
+							<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank"> <heroicons-document-text-solid class="h-4 w-4" /> Docs </a>
 						</MenuItem>
 					</MenuItems>
 				</Transition>
@@ -64,9 +62,7 @@
 					</RouterLink>
 				</li>
 				<li>
-					<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">
-						<heroicons-document-text-solid class="h-4 w-4" /> Docs
-					</a>
+					<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank"> <heroicons-document-text-solid class="h-4 w-4" /> Docs </a>
 				</li>
 			</ul>
 		</div>

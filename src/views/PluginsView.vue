@@ -8,8 +8,7 @@ import ModalBox from '@components/ModalBox.vue'
 import { type SchemaField, type JSONSettings } from '@models/JSONSchema'
 
 const store = usePlugins()
-const { togglePlugin, removePlugin, updateSettings, getSchema, getSettings, searchPlugin, installRegistryPlugin } =
-	store
+const { togglePlugin, removePlugin, updateSettings, getSchema, getSettings, searchPlugin, installRegistryPlugin } = store
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { pluginsFilters } = storeToRefs(useSettings())
@@ -116,16 +115,10 @@ watchEffect(() => {
 				Upload plugin
 			</button>
 		</div>
-		<ErrorBox
-			v-if="pluginsState.loading || pluginsState.error"
-			:load="pluginsState.loading"
-			:error="pluginsState.error" />
+		<ErrorBox v-if="pluginsState.loading || pluginsState.error" :load="pluginsState.loading" :error="pluginsState.error" />
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<Pagination v-slot="{ list }" :list="filteredList" :pageSize="selectedPageSize">
-				<div
-					v-for="item in list"
-					:key="item.url ?? item.id"
-					class="flex gap-2 rounded-xl bg-base-100 p-2 shadow md:gap-4 md:p-4">
+				<div v-for="item in list" :key="item.url ?? item.id" class="flex gap-2 rounded-xl bg-base-100 p-2 shadow md:gap-4 md:p-4">
 					<UseImage :src="item.thumb" class="h-20 w-20 self-center object-contain">
 						<template #error>
 							<div class="avatar placeholder self-center">
@@ -148,10 +141,7 @@ watchEffect(() => {
 									{{ item.author_name }}
 								</a>
 							</p>
-							<button
-								v-if="item.url"
-								class="btn btn-primary btn-xs rounded-md"
-								@click="installRegistryPlugin(item.url)">
+							<button v-if="item.url" class="btn btn-primary btn-xs rounded-md" @click="installRegistryPlugin(item.url)">
 								<heroicons-cloud-arrow-down-solid class="h-4 w-4" />
 								Install
 							</button>

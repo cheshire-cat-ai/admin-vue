@@ -27,10 +27,7 @@ export const useLLMConfig = defineStore('llm', () => {
 
 		if (currentState.data) {
 			currentState.selected = currentState.data.selected_configuration ?? currentState.data.settings[0].schema?.title
-			currentState.settings = currentState.data.settings.reduce(
-				(acc, { name, value }) => ({ ...acc, [name]: value }),
-				{},
-			)
+			currentState.settings = currentState.data.settings.reduce((acc, { name, value }) => ({ ...acc, [name]: value }), {})
 		}
 	})
 

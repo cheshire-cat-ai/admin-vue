@@ -47,23 +47,15 @@ defineExpose({
 			<button class="btn btn-square btn-neutral join-item btn-sm" :disabled="isFirstPage" @click="prev">
 				<ph-caret-left-fill class="h-5 w-5" />
 			</button>
-			<button
-				class="btn btn-square btn-neutral join-item btn-sm"
-				:class="{ '!btn-primary': currentPage == 1 }"
-				@click="currentPage = 1">
+			<button class="btn btn-square btn-neutral join-item btn-sm" :class="{ '!btn-primary': currentPage == 1 }" @click="currentPage = 1">
 				1
 			</button>
 			<template v-if="pageCount >= 2">
-				<button v-if="currentPage - 1 != 1 && !isLastPage" class="btn btn-square btn-neutral join-item btn-sm" disabled>
-					...
-				</button>
+				<button v-if="currentPage - 1 != 1 && !isLastPage" class="btn btn-square btn-neutral join-item btn-sm" disabled>...</button>
 				<button v-if="!isLastPage && !isFirstPage" class="btn btn-square btn-primary join-item btn-sm">
 					{{ currentPage }}
 				</button>
-				<button
-					v-if="currentPage + 1 != pageCount && !isFirstPage"
-					class="btn btn-square btn-neutral join-item btn-sm"
-					disabled>
+				<button v-if="currentPage + 1 != pageCount && !isFirstPage" class="btn btn-square btn-neutral join-item btn-sm" disabled>
 					...
 				</button>
 				<button

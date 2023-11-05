@@ -175,8 +175,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 			'pb-24 md:pb-28': isTwoLines,
 		}">
 		<div v-if="isOverDropZone" class="flex h-full w-full grow flex-col items-center justify-center py-4 md:pb-0">
-			<div
-				class="relative flex w-full grow items-center justify-center rounded-md border-2 border-dashed border-primary p-2 md:p-4">
+			<div class="relative flex w-full grow items-center justify-center rounded-md border-2 border-dashed border-primary p-2 md:p-4">
 				<p class="text-lg md:text-xl">
 					Drop
 					<span class="font-medium text-primary"> files </span>
@@ -234,9 +233,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 						:class="[isTwoLines ? 'pr-10' : 'pr-20']"
 						:placeholder="generatePlaceholder(messagesState.loading, isListening, messagesState.error)"
 						@keydown="preventSend" />
-					<div
-						:class="[isTwoLines ? 'flex-col-reverse' : '']"
-						class="absolute right-2 top-1/2 flex -translate-y-1/2 gap-1">
+					<div :class="[isTwoLines ? 'flex-col-reverse' : '']" class="absolute right-2 top-1/2 flex -translate-y-1/2 gap-1">
 						<button
 							:disabled="inputDisabled || userMessage.length === 0"
 							class="btn btn-circle btn-ghost btn-sm self-center"
@@ -247,18 +244,12 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 							<button tabindex="0" :disabled="inputDisabled" class="btn btn-circle btn-ghost btn-sm">
 								<heroicons-bolt-solid class="h-6 w-6" />
 							</button>
-							<ul
-								tabindex="0"
-								class="dropdown-content join join-vertical !-right-1/4 z-10 mb-5 p-0 [&>li>*]:bg-base-100">
+							<ul tabindex="0" class="dropdown-content join join-vertical !-right-1/4 z-10 mb-5 p-0 [&>li>*]:bg-base-100">
 								<li>
 									<button
 										:disabled="messagesState.messages.length === 0"
 										class="btn join-item w-full flex-nowrap px-2"
-										@click="
-											downloadConversation(
-												messagesState.messages.reduce((p, c) => `${p}${capitalize(c.sender)}: ${c.text}\n`, ''),
-											)
-										">
+										@click="downloadConversation(messagesState.messages.reduce((p, c) => `${p}${capitalize(c.sender)}: ${c.text}\n`, ''))">
 										<span class="grow normal-case">Export conversation</span>
 										<span class="rounded-lg bg-primary p-1 text-base-100">
 											<ph-export-bold class="h-6 w-6" />
@@ -266,10 +257,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									</button>
 								</li>
 								<li>
-									<button
-										:disabled="rabbitHoleState.loading"
-										class="btn join-item w-full flex-nowrap px-2"
-										@click="uploadFile('memory')">
+									<button :disabled="rabbitHoleState.loading" class="btn join-item w-full flex-nowrap px-2" @click="uploadFile('memory')">
 										<span class="grow normal-case">Upload memories</span>
 										<span class="rounded-lg bg-success p-1 text-base-100">
 											<ph-brain-fill class="h-6 w-6" />
@@ -288,10 +276,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 									</button>
 								</li>
 								<li>
-									<button
-										:disabled="rabbitHoleState.loading"
-										class="btn join-item w-full flex-nowrap px-2"
-										@click="uploadFile('content')">
+									<button :disabled="rabbitHoleState.loading" class="btn join-item w-full flex-nowrap px-2" @click="uploadFile('content')">
 										<span class="grow normal-case">Upload file</span>
 										<span class="rounded-lg bg-warning p-1 text-base-100">
 											<heroicons-document-text-solid class="h-6 w-6" />

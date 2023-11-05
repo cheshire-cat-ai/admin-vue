@@ -47,11 +47,7 @@ defineEmits<{
 				class="input input-primary input-sm w-full !transition-all"
 				@keyup.enter="$emit('send')"
 				@input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" />
-			<button
-				v-if="search"
-				class="btn btn-square btn-ghost btn-sm absolute right-0 top-0"
-				:disabled="disabled"
-				@click="$emit('send')">
+			<button v-if="search" class="btn btn-square btn-ghost btn-sm absolute right-0 top-0" :disabled="disabled" @click="$emit('send')">
 				<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
 			</button>
 		</div>

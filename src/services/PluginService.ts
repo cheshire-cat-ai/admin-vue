@@ -21,11 +21,7 @@ const PluginService = Object.freeze({
 		)
 	},
 	getPluginsSettings: async () => {
-		return await tryRequest(
-			apiClient.api?.plugins.getPluginsSettings(),
-			`Getting plugins settings`,
-			`Unable to get plugins settings`,
-		)
+		return await tryRequest(apiClient.api?.plugins.getPluginsSettings(), `Getting plugins settings`, `Unable to get plugins settings`)
 	},
 	getSinglePluginSettings: async (id: string) => {
 		const result = await tryRequest(
@@ -36,11 +32,7 @@ const PluginService = Object.freeze({
 		return result.data
 	},
 	togglePlugin: async (id: string) => {
-		return await tryRequest(
-			apiClient.api?.plugins.togglePlugin(id),
-			`Toggle plugin ${id}`,
-			`Unable to toggle plugin ${id}`,
-		)
+		return await tryRequest(apiClient.api?.plugins.togglePlugin(id), `Toggle plugin ${id}`, `Unable to toggle plugin ${id}`)
 	},
 	searchPlugin: async (query: string) => {
 		return await tryRequest(
@@ -57,11 +49,7 @@ const PluginService = Object.freeze({
 		)
 	},
 	deletePlugin: async (id: string) => {
-		return await tryRequest(
-			apiClient.api?.plugins.deletePlugin(id),
-			`Deleted plugin ${id}`,
-			`Unable to delete plugin ${id}`,
-		)
+		return await tryRequest(apiClient.api?.plugins.deletePlugin(id), `Deleted plugin ${id}`, `Unable to delete plugin ${id}`)
 	},
 	sendFile: async (file: File) => {
 		return await tryRequest(

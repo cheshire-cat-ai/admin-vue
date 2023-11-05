@@ -356,7 +356,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 		</Teleport>
 		<SidePanel ref="memoryDetailsPanel" title="Memory details">
 			<div v-if="callOutput" class="flex w-full flex-col">
-				<p class="self-start rounded-t-md bg-base-100 px-2 py-1 font-medium text-neutral z-10">
+				<p class="z-10 self-start rounded-t-md bg-base-100 px-2 py-1 font-medium text-neutral">
 					{{ callOutput.embedder }}
 				</p>
 				<MemorySelect class="rounded-tl-none" :result="callOutput.collections" />
@@ -377,7 +377,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 				v-if="clickedPoint && !['procedural', 'query'].includes(clickedPoint.collection)"
 				class="btn btn-primary btn-sm mt-auto hover:btn-error"
 				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
-				<ph-trash-bold class="w-4 h-4" />
+				<ph-trash-bold class="h-4 w-4" />
 				Delete memory point
 			</button>
 		</SidePanel>

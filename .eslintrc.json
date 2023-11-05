@@ -12,10 +12,7 @@
 		"plugin:prettier/recommended"
 	],
 	"ignorePatterns": ["**/*.config.js"],
-	"plugins": [
-		"@typescript-eslint",
-		"prettier"
-	],
+	"plugins": ["@typescript-eslint", "prettier"],
 	"parser": "vue-eslint-parser",
 	"parserOptions": {
 		"ecmaVersion": "latest",
