@@ -293,10 +293,6 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 					theme: isDark ? 'dark' : 'light',
 					intersect: true,
 					style: { fontFamily: 'Rubik' },
-					fixed: {
-						enabled: false,
-						position: 'bottomLeft'
-					},
 					custom: ({ seriesIndex, dataPointIndex, w }: any) => {
 						const text = w.config.series[seriesIndex].meta[dataPointIndex].text
 						const source = w.config.series[seriesIndex].meta[dataPointIndex].source
