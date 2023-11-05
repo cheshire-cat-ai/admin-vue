@@ -295,9 +295,12 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 					style: { fontFamily: 'Rubik' },
 					custom: ({ seriesIndex, dataPointIndex, w }: any) => {
 						const text = w.config.series[seriesIndex].meta[dataPointIndex].text
-						return `<div class=\'marker-tooltip flex flex-col p-1\'>
-							<i>${text.substring(0, 30).concat('...')}</i>
-							<b><i>*Click to show more*</i></b>
+						const source = w.config.series[seriesIndex].meta[dataPointIndex].source
+						const truncedText = text.length > 200 ? text.substring(0, 200).concat('...') : text
+
+						return `<div class=\'marker-tooltip flex flex-col p-1 max-w-xs whitespace-normal\'>
+							<b>Source: ${source}</b>
+							<i>${truncedText}</i>
 						</div>`
 					},
 				},
@@ -353,14 +356,14 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 		</Teleport>
 		<SidePanel ref="memoryDetailsPanel" title="Memory details">
 			<div v-if="callOutput" class="flex w-full flex-col">
-				<p class="self-start rounded-t-md bg-primary px-2 py-1 font-medium text-base-100">
+				<p class="self-start rounded-t-md bg-base-100 px-2 py-1 font-medium text-neutral z-10">
 					{{ callOutput.embedder }}
 				</p>
 				<MemorySelect class="rounded-tl-none" :result="callOutput.collections" />
 			</div>
 		</SidePanel>
 		<SidePanel ref="pointInfoPanel" title="Memory content">
-			<div v-if="clickedPoint" class="overflow-x-auto rounded-md border-2 border-neutral">
+			<div v-if="clickedPoint" class="overflow-x-auto rounded-md shadow">
 				<table class="table table-zebra table-sm bg-base-100">
 					<tbody>
 						<tr v-for="(data, key) of clickedPoint" :key="key">
@@ -372,8 +375,9 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 			</div>
 			<button
 				v-if="clickedPoint && !['procedural', 'query'].includes(clickedPoint.collection)"
-				class="btn btn-error btn-sm mt-auto"
+				class="btn btn-primary btn-sm mt-auto hover:btn-error"
 				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
+				<ph-trash-bold class="w-4 h-4" />
 				Delete memory point
 			</button>
 		</SidePanel>
