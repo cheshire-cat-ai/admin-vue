@@ -385,6 +385,7 @@ const dateFilter = ref(''),
 						    <ph-chats v-if="data === 'episodic'" class="h-5 w-5" />
 							<ph-files v-if="data === 'declarative'" class="h-5 w-5" />
 							<ph-toolbox v-if="data === 'procedural'" class="h-5 w-5" />
+							<ph-list-magnifying-glass v-if="data === 'query'" class="h-5 w-5" />
 							{{ capitalize(data) }}
 						</div>
 						<!-- START THE BUTTON FOR DELETING THE SOURCE - THIS IS JUST EXPERIMENTAL: TO FINALIZE  -->
