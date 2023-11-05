@@ -223,76 +223,81 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 		</div>
 		<div class="fixed bottom-0 left-0 flex w-full items-center justify-center bg-gradient-to-t from-base-200 px-2 py-4">
 			<div class="flex w-full max-w-screen-lg items-center gap-2 md:gap-4">
+				<div class="dropdown dropdown-top">
+					<button tabindex="0" :disabled="inputDisabled" class="btn btn-circle btn-primary shadow-lg">
+						<heroicons-bolt-solid class="h-6 w-6" />
+					</button>
+					<ul tabindex="0" class="dropdown-content join join-vertical !left-0 z-10 mb-6 w-52 p-0 [&>li>*]:bg-base-100">
+						<li>
+							<button
+								:disabled="messagesState.messages.length === 0"
+								class="btn join-item w-full flex-nowrap px-2 text-left"
+								@click="downloadConversation(messagesState.messages.reduce((p, c) => `${p}${capitalize(c.sender)}: ${c.text}\n`, ''))">
+								<span class="rounded-lg p-1 text-primary">
+									<ph-export-bold class="h-6 w-6" />
+								</span>
+								<span class="grow normal-case">Export conversation</span>
+							</button>
+						</li>
+						<li>
+							<button
+								:disabled="rabbitHoleState.loading"
+								class="btn join-item w-full flex-nowrap px-2 text-left"
+								@click="uploadFile('memory')">
+								<span class="rounded-lg p-1 text-success">
+									<ph-brain-fill class="h-6 w-6" />
+								</span>
+								<span class="grow normal-case">Upload memories</span>
+							</button>
+						</li>
+						<li>
+							<button
+								:disabled="rabbitHoleState.loading"
+								class="btn join-item w-full flex-nowrap px-2 text-left"
+								@click="boxUploadURL?.toggleModal()">
+								<span class="rounded-lg p-1 text-info">
+									<heroicons-globe-alt class="h-6 w-6" />
+								</span>
+								<span class="grow normal-case">Upload url</span>
+							</button>
+						</li>
+						<li>
+							<button
+								:disabled="rabbitHoleState.loading"
+								class="btn join-item w-full flex-nowrap px-2 text-left"
+								@click="uploadFile('content')">
+								<span class="rounded-lg p-1 text-warning">
+									<heroicons-document-text-solid class="h-6 w-6" />
+								</span>
+								<span class="grow normal-case">Upload file</span>
+							</button>
+						</li>
+						<li>
+							<button class="btn join-item w-full flex-nowrap px-2 text-left" @click="wipeHistory()">
+								<span class="rounded-lg p-1 text-error">
+									<heroicons-trash-solid class="h-6 w-6" />
+								</span>
+								<span class="grow normal-case">Clear conversation</span>
+							</button>
+						</li>
+					</ul>
+				</div>
 				<div class="relative w-full">
 					<textarea
 						ref="textArea"
 						v-model.trim="userMessage"
 						:disabled="inputDisabled"
 						autofocus
-						class="textarea block max-h-20 w-full resize-none overflow-auto bg-base-200 !outline-offset-0"
-						:class="[isTwoLines ? 'pr-10' : 'pr-20']"
+						:class="'textarea block max-h-20 w-full resize-none overflow-auto bg-base-200 pr-10 !outline-offset-0'"
 						:placeholder="generatePlaceholder(messagesState.loading, isListening, messagesState.error)"
 						@keydown="preventSend" />
-					<div :class="[isTwoLines ? 'flex-col-reverse' : '']" class="absolute right-2 top-1/2 flex -translate-y-1/2 gap-1">
+					<div class="absolute right-2 top-1/2 -translate-y-1/2">
 						<button
 							:disabled="inputDisabled || userMessage.length === 0"
 							class="btn btn-circle btn-ghost btn-sm self-center"
 							@click="sendMessage(userMessage)">
 							<heroicons-paper-airplane-solid class="h-6 w-6" />
 						</button>
-						<div class="dropdown dropdown-end dropdown-top self-center">
-							<button tabindex="0" :disabled="inputDisabled" class="btn btn-circle btn-ghost btn-sm">
-								<heroicons-bolt-solid class="h-6 w-6" />
-							</button>
-							<ul tabindex="0" class="dropdown-content join join-vertical !-right-1/4 z-10 mb-5 p-0 [&>li>*]:bg-base-100">
-								<li>
-									<button
-										:disabled="messagesState.messages.length === 0"
-										class="btn join-item w-full flex-nowrap px-2"
-										@click="downloadConversation(messagesState.messages.reduce((p, c) => `${p}${capitalize(c.sender)}: ${c.text}\n`, ''))">
-										<span class="grow normal-case">Export conversation</span>
-										<span class="rounded-lg bg-primary p-1 text-base-100">
-											<ph-export-bold class="h-6 w-6" />
-										</span>
-									</button>
-								</li>
-								<li>
-									<button :disabled="rabbitHoleState.loading" class="btn join-item w-full flex-nowrap px-2" @click="uploadFile('memory')">
-										<span class="grow normal-case">Upload memories</span>
-										<span class="rounded-lg bg-success p-1 text-base-100">
-											<ph-brain-fill class="h-6 w-6" />
-										</span>
-									</button>
-								</li>
-								<li>
-									<button
-										:disabled="rabbitHoleState.loading"
-										class="btn join-item w-full flex-nowrap px-2"
-										@click="boxUploadURL?.toggleModal()">
-										<span class="grow normal-case">Upload url</span>
-										<span class="rounded-lg bg-info p-1 text-base-100">
-											<heroicons-globe-alt class="h-6 w-6" />
-										</span>
-									</button>
-								</li>
-								<li>
-									<button :disabled="rabbitHoleState.loading" class="btn join-item w-full flex-nowrap px-2" @click="uploadFile('content')">
-										<span class="grow normal-case">Upload file</span>
-										<span class="rounded-lg bg-warning p-1 text-base-100">
-											<heroicons-document-text-solid class="h-6 w-6" />
-										</span>
-									</button>
-								</li>
-								<li>
-									<button class="btn join-item w-full flex-nowrap px-2" @click="wipeHistory()">
-										<span class="grow normal-case">Clear conversation</span>
-										<span class="rounded-lg bg-error p-1 text-base-100">
-											<heroicons-trash-solid class="h-6 w-6" />
-										</span>
-									</button>
-								</li>
-							</ul>
-						</div>
 					</div>
 				</div>
 				<button
