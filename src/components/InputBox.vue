@@ -44,6 +44,7 @@ defineEmits<{
 				type="text"
 				:placeholder="placeholder"
 				:disabled="disabled"
+				:autofocus="autofocus"
 				class="input input-primary input-sm w-full !transition-all"
 				@keyup.enter="$emit('send')"
 				@input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" />

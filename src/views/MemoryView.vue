@@ -176,28 +176,38 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 	clickedPoint.value = w.config.series[seriesIndex].meta[dataPointIndex]
 	pointInfoPanel.value?.togglePanel()
 }
+
+const dateFilter = ref(''),
+	sourceFilter = ref('')
 </script>
 
 <template>
 	<div class="memory-page flex w-full flex-col gap-8 self-center md:w-3/4">
-		<div class="flex gap-4">
-			<InputBox
-				v-model.trim="callText"
-				placeholder="Enter a text..."
-				label="Search similar memories"
-				search
-				:disabled="Boolean(memoryState.error) || memoryState.loading"
-				@send="recallMemory()" />
-			<div class="form-control">
-				<label class="label px-0">
-					<span class="label-text font-semibold">K memories</span>
-				</label>
-				<input
-					v-model="kMems"
+		<div class="flex flex-col gap-4">
+			<div class="flex gap-4">
+				<InputBox
+					v-model.trim="callText"
+					placeholder="Enter a text..."
+					label="Search similar memories"
+					search
 					:disabled="Boolean(memoryState.error) || memoryState.loading"
-					type="number"
-					min="1"
-					class="input input-primary input-sm w-24" />
+					@send="recallMemory()" />
+				<div class="form-control">
+					<label class="label px-0">
+						<span class="label-text font-semibold">K memories</span>
+					</label>
+					<input
+						v-model="kMems"
+						:disabled="Boolean(memoryState.error) || memoryState.loading"
+						type="number"
+						min="1"
+						class="input input-primary input-sm w-24" />
+				</div>
+			</div>
+			<div class="flex flex-wrap justify-center gap-2">
+				<heroicons-adjustments-vertical class="h-6 w-6" />
+				<input v-model="dateFilter" type="date" class="input input-primary input-xs w-32" />
+				<input v-model="sourceFilter" type="text" placeholder="Source" class="input input-primary input-xs w-32" />
 			</div>
 		</div>
 		<ErrorBox
@@ -327,7 +337,11 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 				<heroicons-trash-solid class="h-4 w-4" />
 				Wipe
 			</button>
-			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100 p-1" :list="selectBoxCollections" />
+			<SelectBox
+				ref="selectCollection"
+				color="bg-base-100 bottom-16"
+				class="join-item min-w-fit bg-base-100 p-1"
+				:list="selectBoxCollections" />
 		</div>
 		<Teleport to="#modal">
 			<ModalBox ref="boxWipe">

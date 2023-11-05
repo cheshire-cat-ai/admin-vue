@@ -77,7 +77,7 @@ body {
 	.select,
 	.input,
 	.textarea {
-		@apply overflow-hidden outline bg-transparent outline-2 border-0 shadow-lg !ring-0 !transition-all !duration-75 focus:outline-primary;
+		@apply overflow-hidden outline bg-transparent outline-2 focus:outline-offset-0 border-0 shadow-lg !ring-0 !transition-all !duration-75 focus:outline-primary;
 	}
 	.toggle {
 		@apply !bg-none !border-2;
@@ -133,9 +133,4 @@ body {
 
 .apexcharts-series-scatter {
 	cursor: pointer;
-}
-
-.memory-page .join.join-vertical {
-	top: -164px;
-	left: 0;
 }
