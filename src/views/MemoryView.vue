@@ -201,7 +201,7 @@ const dateFilter = ref(''),
 						:disabled="Boolean(memoryState.error) || memoryState.loading"
 						type="number"
 						min="1"
-						class="input input-primary input-sm w-24" />
+						class="input input-primary input-sm !outline-2 shadow-lg w-24" />
 				</div>
 			</div>
 			<div class="flex flex-wrap justify-center gap-2">

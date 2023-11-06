@@ -288,7 +288,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 						v-model.trim="userMessage"
 						:disabled="inputDisabled"
 						autofocus
-						:class="'textarea block max-h-20 w-full resize-none overflow-auto bg-base-200 pr-10 !outline-offset-0'"
+						:class="'textarea block max-h-20 w-full resize-none overflow-auto bg-base-200 pr-10 !outline-2 shadow-lg !outline-offset-0'"
 						:placeholder="generatePlaceholder(messagesState.loading, isListening, messagesState.error)"
 						@keydown="preventSend" />
 					<div class="absolute right-2 top-1/2 -translate-y-1/2">
