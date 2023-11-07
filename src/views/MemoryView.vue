@@ -386,7 +386,7 @@ const dateFilter = ref(''),
 							<ph-files v-if="data === 'declarative'" class="h-5 w-5" />
 							<ph-toolbox v-if="data === 'procedural'" class="h-5 w-5" />
 							<ph-list-magnifying-glass v-if="data === 'query'" class="h-5 w-5" />
-							{{ capitalize(data) }}
+							{{ capitalize(data ?? '') }}
 						</div>
 						<!-- START THE BUTTON FOR DELETING THE SOURCE - THIS IS JUST EXPERIMENTAL: TO FINALIZE  -->
 						<!-- <div v-else-if="!['procedural', 'query'].includes(clickedPoint.collection) && key === 'source'" class="col-span-3 py-2 inline-flex items-center justify-between gap-2">
