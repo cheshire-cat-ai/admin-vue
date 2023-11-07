@@ -381,12 +381,12 @@ const dateFilter = ref(''),
 				<div class="bg-base-100 px-6 py-2 divide-y-2 divide-dashed">
 					<div v-for="(data, key) of clickedPoint" :key="key" className="grid grid-cols-4 grid-rows-1 gap-2 text-sm">
 					    <div class="font-medium py-2">{{ capitalize(key) }}</div>
-					    <div v-if="key === 'collection'" class="col-span-3 py-2 inline-flex items-center gap-2">
+					    <div v-if="key === 'collection' && typeof data == 'string'" class="col-span-3 py-2 inline-flex items-center gap-2">
 						    <ph-chats v-if="data === 'episodic'" class="h-5 w-5" />
 							<ph-files v-if="data === 'declarative'" class="h-5 w-5" />
 							<ph-toolbox v-if="data === 'procedural'" class="h-5 w-5" />
 							<ph-list-magnifying-glass v-if="data === 'query'" class="h-5 w-5" />
-							{{ capitalize(data ?? '') }}
+							{{ capitalize(data) }}
 						</div>
 						<!-- START THE BUTTON FOR DELETING THE SOURCE - THIS IS JUST EXPERIMENTAL: TO FINALIZE  -->
 						<!-- <div v-else-if="!['procedural', 'query'].includes(clickedPoint.collection) && key === 'source'" class="col-span-3 py-2 inline-flex items-center justify-between gap-2">
