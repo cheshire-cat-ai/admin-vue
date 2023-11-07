@@ -46,7 +46,7 @@ defineEmits<{
 		:validateOnMount="true"
 		:keepValues="false"
 		@submit="$emit('submit', $event)">
-		<div class="form-control w-full">
+		<div class="form-control w-full bg-base-100 px-4 pt-2 pb-4 rounded shadow">
 			<div
 				v-for="{ name, label, children, description, ...attrs } in fields"
 				:key="name"
