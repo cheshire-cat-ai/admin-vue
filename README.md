@@ -96,6 +96,13 @@ Runs the build and serves the built app on port `3000` (default)
         </a>
     </td>
     <td align="center">
+        <a href="https://github.com/EugenioPetulla">
+            <img src="https://avatars.githubusercontent.com/u/3589467?v=4" width="80;" alt="EugenioPetulla"/>
+            <br />
+            <sub><b>EugenioPetulla</b></sub>
+        </a>
+    </td>
+    <td align="center">
         <a href="https://github.com/PaperBackPear3">
             <img src="https://avatars.githubusercontent.com/u/44753919?v=4" width="80;" alt="PaperBackPear3"/>
             <br />
@@ -115,20 +122,13 @@ Runs the build and serves the built app on port `3000` (default)
             <br />
             <sub><b>AngyDev</b></sub>
         </a>
-    </td>
+    </td></tr>
+<tr>
     <td align="center">
         <a href="https://github.com/fedestyla">
             <img src="https://avatars.githubusercontent.com/u/6248817?v=4" width="80;" alt="fedestyla"/>
             <br />
             <sub><b>fedestyla</b></sub>
-        </a>
-    </td></tr>
-<tr>
-    <td align="center">
-        <a href="https://github.com/EugenioPetulla">
-            <img src="https://avatars.githubusercontent.com/u/3589467?v=4" width="80;" alt="EugenioPetulla"/>
-            <br />
-            <sub><b>EugenioPetulla</b></sub>
         </a>
     </td>
     <td align="center">
