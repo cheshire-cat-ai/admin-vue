@@ -44,9 +44,17 @@ const showReadMore = ref(true)
 
 const maxLength = 3000
 
-const isLengthy = computed(() => text.value.length >= maxLength)
+const isUserSender = computed(() => props.sender === 'user')
+const isLengthy = computed(() => text.value.length > maxLength && isUserSender.value)
 
-const renderedText = computed(() => (isLengthy.value ? markdown.render(text.value.slice(0, maxLength)) : markdown.render(text.value)))
+const renderedText = computed(() => {
+  if (isLengthy.value) {
+    return markdown.render(text.value.slice(0, maxLength))
+  } else {
+    return markdown.render(text.value)
+  }
+})
+
 </script>
 
 <template>
