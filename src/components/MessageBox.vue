@@ -48,11 +48,13 @@ const isUserSender = computed(() => props.sender === 'user')
 const isLengthy = computed(() => text.value.length > maxLength && isUserSender.value)
 
 const renderedText = computed(() => {
-  if (isLengthy.value) {
-    return markdown.render(text.value.slice(0, maxLength))
-  } else {
-    return markdown.render(text.value)
-  }
+	if (isLengthy.value && showReadMore.value) {
+		return markdown.render(text.value)
+	} else if (isLengthy.value) {
+		return markdown.render(text.value.slice(0, maxLength))
+	} else {
+		return markdown.render(text.value)
+	}
 })
 
 </script>
@@ -65,9 +67,11 @@ const renderedText = computed(() => {
 		<div class="chat-bubble row-[1] flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral shadow-md">
 			<div class="p-2 md:p-3">
 				<p class="text-ellipsis" v-html="renderedText" />
-				<div v-if="isLengthy" class="flex justify-end font-bold">
-					<a v-if="showReadMore" @click="showReadMore = false">Read more</a>
-					<a v-else @click="showReadMore = true">Hide content</a>
+				<div v-if="isLengthy && !showReadMore" class="flex justify-end font-bold">
+					<a @click="showReadMore = true">Read more</a>
+				</div>
+				<div v-else-if="isLengthy && showReadMore" class="flex justify-end font-bold">
+					<a @click="showReadMore = false">Hide content</a>
 				</div>
 			</div>
 			<div v-if="why" class="divider divider-horizontal m-0 w-px before:bg-base-200 after:bg-base-200" />
