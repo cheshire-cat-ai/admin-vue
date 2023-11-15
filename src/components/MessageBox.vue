@@ -38,15 +38,16 @@ const props = defineProps<{
 	why: any
 }>()
 
-const { text } = toRefs(props)
+const { text, sender } = toRefs(props)
 
 const showReadMore = ref(true)
 
 const maxLength = 3000
 
-const isLengthy = computed(() => text.value.length >= maxLength)
-
-const renderedText = computed(() => (isLengthy.value ? markdown.render(text.value.slice(0, maxLength)) : markdown.render(text.value)))
+const isLengthy = computed(() => text.value.length > maxLength && sender.value === 'user')
+const renderedText = computed(() => {
+	return isLengthy.value && !showReadMore.value ? markdown.render(text.value.slice(0, maxLength)) : markdown.render(text.value)
+})
 </script>
 
 <template>
@@ -57,9 +58,11 @@ const renderedText = computed(() => (isLengthy.value ? markdown.render(text.valu
 		<div class="chat-bubble row-[1] flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral shadow-md">
 			<div class="p-2 md:p-3">
 				<p class="text-ellipsis" v-html="renderedText" />
-				<div v-if="isLengthy" class="flex justify-end font-bold">
-					<a v-if="showReadMore" @click="showReadMore = false">Read more</a>
-					<a v-else @click="showReadMore = true">Hide content</a>
+				<div v-if="isLengthy && !showReadMore" class="flex justify-end font-bold">
+					<a @click="showReadMore = true">Read more</a>
+				</div>
+				<div v-else-if="isLengthy && showReadMore" class="flex justify-end font-bold">
+					<a @click="showReadMore = false">Hide content</a>
 				</div>
 			</div>
 			<div v-if="why" class="divider divider-horizontal m-0 w-px before:bg-base-200 after:bg-base-200" />
