@@ -35,10 +35,11 @@ markdown.block.ruler.enable(['footnote', 'deflist'])
 const props = defineProps<{
 	sender: 'bot' | 'user'
 	text: string
+	file?: File
 	why: any
 }>()
 
-const { text, sender } = toRefs(props)
+const { text, sender, file } = toRefs(props)
 
 const showReadMore = ref(true)
 
@@ -47,6 +48,21 @@ const maxLength = 3000
 const isLengthy = computed(() => text.value.length > maxLength && sender.value === 'user')
 const renderedText = computed(() => {
 	return isLengthy.value && !showReadMore.value ? markdown.render(text.value.slice(0, maxLength)) : markdown.render(text.value)
+})
+
+const fileTypeSize = computed(() => {
+	if (!file?.value) return ''
+	const size = file.value.size
+	const type = file.value.name.substring(file.value.name.lastIndexOf('.') + 1).toUpperCase()
+	if (size < 1000) return `${type} | ${size} B`
+	if (size < 1000000) return `${type} | ${(size / 1000).toFixed(2)} KB`
+	if (size < 1000000000) return `${type} | ${(size / 1000000).toFixed(2)} MB`
+	return `${type} | ${(size / 1000000000).toFixed(2)} GB`
+})
+
+const fileUrl = computed(() => {
+	if (!file?.value) return ''
+	return URL.createObjectURL(file.value)
 })
 </script>
 
@@ -63,6 +79,27 @@ const renderedText = computed(() => {
 				</div>
 				<div v-else-if="isLengthy && showReadMore" class="flex justify-end font-bold">
 					<a @click="showReadMore = false">Hide content</a>
+				</div>
+				<img v-if="file?.type.startsWith('image/')" :src="fileUrl" width="512" height="512" class="rounded-lg border-2 border-primary" />
+				<audio
+					v-else-if="file?.type.startsWith('audio/')"
+					:src="fileUrl"
+					controls
+					:type="file.type"
+					controlslist="nodownload noplaybackrate" />
+				<video v-else-if="file?.type.startsWith('video/')" controls disablepictureinpicture controlslist="nodownload noplaybackrate">
+					<source :src="fileUrl" :type="file.type" />
+					<p>
+						Your browser doesn't support HTML video. Here is a
+						<a :href="fileUrl">link to the video</a> instead.
+					</p>
+				</video>
+				<div v-else-if="file" class="flex items-center justify-center gap-2 rounded-lg border-2 border-primary bg-base-200 p-2">
+					<ph-file-fill class="h-6 w-6" />
+					<div class="flex flex-col gap-1">
+						<p class="font-bold">{{ file.name.substring(0, file.name.lastIndexOf('.')) }}</p>
+						<p class="text-xs">{{ fileTypeSize }}</p>
+					</div>
 				</div>
 			</div>
 			<div v-if="why" class="divider divider-horizontal m-0 w-px before:bg-base-200 after:bg-base-200" />

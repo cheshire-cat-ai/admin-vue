@@ -201,7 +201,7 @@ const dateFilter = ref(''),
 						:disabled="Boolean(memoryState.error) || memoryState.loading"
 						type="number"
 						min="1"
-						class="input input-primary input-sm !outline-2 shadow-lg w-24" />
+						class="input input-primary input-sm w-24 shadow-lg !outline-2" />
 				</div>
 			</div>
 			<div class="flex flex-wrap justify-center gap-2">
@@ -378,11 +378,11 @@ const dateFilter = ref(''),
 		</SidePanel>
 		<SidePanel ref="pointInfoPanel" title="Memory content">
 			<div v-if="clickedPoint" class="overflow-x-auto rounded shadow">
-				<div class="bg-base-100 px-6 py-2 divide-y-2 divide-dashed">
+				<div class="divide-y-2 divide-dashed bg-base-100 px-6 py-2">
 					<div v-for="(data, key) of clickedPoint" :key="key" className="grid grid-cols-4 grid-rows-1 gap-2 text-sm">
-					    <div class="font-medium py-2">{{ capitalize(key) }}</div>
-					    <div v-if="key === 'collection' && typeof data == 'string'" class="col-span-3 py-2 inline-flex items-center gap-2">
-						    <ph-chats v-if="data === 'episodic'" class="h-5 w-5" />
+						<div class="py-2 font-medium">{{ capitalize(key) }}</div>
+						<div v-if="key === 'collection' && typeof data == 'string'" class="col-span-3 inline-flex items-center gap-2 py-2">
+							<ph-chats v-if="data === 'episodic'" class="h-5 w-5" />
 							<ph-files v-if="data === 'declarative'" class="h-5 w-5" />
 							<ph-toolbox v-if="data === 'procedural'" class="h-5 w-5" />
 							<ph-list-magnifying-glass v-if="data === 'query'" class="h-5 w-5" />
@@ -396,7 +396,7 @@ const dateFilter = ref(''),
 								Delete source
 							</button>
 						</div> -->
-					    <div v-else class="col-span-3 py-2">{{ data }}</div>
+						<div v-else class="col-span-3 py-2">{{ data }}</div>
 					</div>
 				</div>
 			</div>

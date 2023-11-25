@@ -14,7 +14,7 @@
 		"unit": "vitest --run",
 		"unit:ui": "vitest --ui",
 		"lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-		"format": "prettier .  --write",
+		"format": "prettier . --write",
 		"fix": "run-p lint format"
 	},
 	"dependencies": {

@@ -193,6 +193,7 @@ const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top:
 				:key="msg.id"
 				:sender="msg.sender"
 				:text="msg.text"
+				:file="msg.sender === 'user' ? msg.file : undefined"
 				:why="msg.sender === 'bot' ? msg.why : ''" />
 			<p v-if="messagesState.error" class="w-fit rounded-md bg-error p-4 font-semibold text-base-100">
 				{{ messagesState.error }}

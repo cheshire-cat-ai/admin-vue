@@ -53,6 +53,7 @@ declare module 'vue' {
     PhChatCenteredDots: typeof import('~icons/ph/chat-centered-dots')['default']
     PhChats: typeof import('~icons/ph/chats')['default']
     PhExportBold: typeof import('~icons/ph/export-bold')['default']
+    PhFileFill: typeof import('~icons/ph/file-fill')['default']
     PhFiles: typeof import('~icons/ph/files')['default']
     PhFloppyDiskBold: typeof import('~icons/ph/floppy-disk-bold')['default']
     PhInfo: typeof import('~icons/ph/info')['default']
