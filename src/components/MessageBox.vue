@@ -80,7 +80,7 @@ const fileUrl = computed(() => {
 				<div v-else-if="isLengthy && showReadMore" class="flex justify-end font-bold">
 					<a @click="showReadMore = false">Hide content</a>
 				</div>
-				<img v-if="file?.type.startsWith('image/')" :src="fileUrl" width="512" height="512" class="rounded-lg border-2 border-primary" />
+				<img v-if="file?.type.startsWith('image/')" :src="fileUrl" width="512" height="512" class="rounded-lg shadow-xl" />
 				<audio
 					v-else-if="file?.type.startsWith('audio/')"
 					:src="fileUrl"
@@ -94,7 +94,7 @@ const fileUrl = computed(() => {
 						<a :href="fileUrl">link to the video</a> instead.
 					</p>
 				</video>
-				<div v-else-if="file" class="flex items-center justify-center gap-2 rounded-lg border-2 border-primary bg-base-200 p-2">
+				<div v-else-if="file" class="flex items-center justify-center gap-2 rounded-lg bg-base-200 p-2 shadow-xl">
 					<ph-file-fill class="h-6 w-6" />
 					<div class="flex flex-col gap-1">
 						<p class="font-bold">{{ file.name.substring(0, file.name.lastIndexOf('.')) }}</p>
