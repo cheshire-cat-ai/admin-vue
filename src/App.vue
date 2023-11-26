@@ -2,7 +2,10 @@
 import { useSettings } from '@stores/useSettings'
 import ModalBox from '@components/ModalBox.vue'
 import { updateAuthKey } from '@/api'
+import storeRouteMapping from '@/utils/storeRouteMapping'
+import vLock from '@/directives/vLock'
 
+const route = useRoute()
 const settings = useSettings()
 const { getStatus } = settings
 const { isReadyAndAuth } = storeToRefs(settings)
@@ -23,6 +26,15 @@ const authenticate = async () => {
 		//resetAllStores()
 	}
 }
+
+const currentComponentLoading = computed(() => {
+	const routeName = route.name?.toString()
+	let store
+	if (routeName !== undefined) {
+		store = storeRouteMapping[routeName]
+	}
+	return store && store.currentState.loading
+})
 </script>
 
 <template>
@@ -45,14 +57,16 @@ const authenticate = async () => {
 		<NotificationStack />
 		<RouterView v-slot="{ Component }" class="grow p-2 md:p-4">
 			<template v-if="Component">
-				<Transition
-					mode="out-in"
-					enterActiveClass="animate__animated animate__fadeIn animate__fastest"
-					leaveActiveClass="animate__animated animate__fadeOut animate__fastest">
-					<KeepAlive>
-						<component :is="Component" />
-					</KeepAlive>
-				</Transition>
+				<div v-lock="currentComponentLoading">
+					<Transition
+						mode="out-in"
+						enterActiveClass="animate__animated animate__fadeIn animate__fastest"
+						leaveActiveClass="animate__animated animate__fadeOut animate__fastest">
+						<KeepAlive>
+							<component :is="Component" />
+						</KeepAlive>
+					</Transition>
+				</div>
 			</template>
 		</RouterView>
 	</div>

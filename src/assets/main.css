@@ -164,3 +164,8 @@ body {
 .apexcharts-series-scatter {
 	cursor: pointer;
 }
+
+.v-lock {
+	/* Add styles for a locked UI, e.g., overlay, loading spinner, etc. */
+	pointer-events: none; /* Disable user interactions */
+  }

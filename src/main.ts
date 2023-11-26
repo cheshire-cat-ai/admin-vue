@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { defineRule } from 'vee-validate'
 import AllRules from '@vee-validate/rules'
+import vLock from '@/directives/vLock'
 
 Object.keys(AllRules).forEach(rule => {
 	defineRule(rule, AllRules[rule])
@@ -28,3 +29,4 @@ app.use(pinia)
 app.use(router)
 
 app.mount('#app')
+app.directive('vLock', vLock)
