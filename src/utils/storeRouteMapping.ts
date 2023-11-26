@@ -3,11 +3,18 @@ import { useLLMConfig } from '@/stores/useLLMConfig'
 import { useMemory } from '@/stores/useMemory'
 import { usePlugins } from '@/stores/usePlugins'
 
-const storeMapping: { [id: string]:  any } = {
-  'embedders': useEmbedderConfig(),
-  'providers': useLLMConfig(),
-  'memory': useMemory(),
-  'plugins': usePlugins(),
-}
+export default function useStoreMapping() {
+  const storeEmbedder = useEmbedderConfig()
+  const storeLLM = useLLMConfig()
+  const storePlugins = usePlugins()
+  const storeMemory = useMemory()
 
-export default storeMapping
+  const storeMapping : Record<string, typeof storeEmbedder | typeof storeLLM | typeof storeMemory | typeof storePlugins> = {
+    'embedders': storeEmbedder,
+    'providers': storeLLM,
+    'memory': storeMemory,
+    'plugins': storePlugins,
+  };
+
+  return { storeMapping }
+}

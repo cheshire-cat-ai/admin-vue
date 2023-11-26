@@ -24,9 +24,8 @@ pinia.use(({ store }) => {
 	const state = cloneDeep(store.$state)
 	store.$reset = () => store.$patch(state)
 })
-
 app.use(pinia)
 app.use(router)
+app.directive('vLock', vLock)
 
 app.mount('#app')
-app.directive('vLock', vLock)

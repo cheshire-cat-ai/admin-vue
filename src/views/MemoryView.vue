@@ -39,6 +39,7 @@ const wipeMemory = async () => {
 	if (selectCollection.value) {
 		const selected = selectCollection.value.selected?.value
 		if (!selected) return
+		if (boxWipe.value?.isOpen) boxWipe.value?.closeModal()
 		if (selected === 'all') await wipeAllCollections()
 		else await wipeCollection(selected)
 		if (boxWipe.value?.isOpen) boxWipe.value?.toggleModal()
@@ -210,10 +211,51 @@ const dateFilter = ref(''),
 				<input v-model="sourceFilter" type="text" placeholder="Source" class="input input-primary input-xs w-32" />
 			</div>
 		</div>
+		<div class="divider !my-0" />
+		<div class="join w-fit self-center shadow-xl">
+			<button
+				:disabled="Boolean(memoryState.error) || memoryState.loading"
+				class="btn btn-primary join-item hover:border-error hover:bg-error"
+				@click="boxWipe?.toggleModal()">
+				<heroicons-trash-solid class="h-4 w-4" />
+				Wipe
+			</button>
+			<SelectBox
+				ref="selectCollection"
+				color="bg-base-100 bottom-16"
+				class="join-item min-w-fit bg-base-100 p-1"
+				:list="selectBoxCollections" />
+		</div>
+		<Teleport to="#modal">
+			<ModalBox ref="boxWipe">
+				<div class="flex flex-col items-center justify-center gap-4 text-neutral">
+					<h3 class="text-lg font-bold text-primary">Wipe collection</h3>
+					<p v-if="selectCollection?.selected.label.startsWith('All')">
+						Are you sure you want to wipe
+						<span class="font-bold">
+							{{ selectCollection?.selected.label.toLowerCase() }}
+						</span>
+						the collections?
+					</p>
+					<p v-else>
+						Are you sure you want to wipe the
+						<span class="font-bold">
+							{{ selectCollection?.selected.label.toLowerCase() }}
+						</span>
+						collection?
+					</p>
+					<div class="flex items-center justify-center gap-2">
+						<button class="btn btn-outline btn-sm" @click="boxWipe?.toggleModal()">No</button>
+						<button class="btn btn-error btn-sm" @click="wipeMemory()">Yes</button>
+					</div>
+				</div>
+			</ModalBox>
+		</Teleport>
 		<ErrorBox
 			v-if="showSpinner || memoryState.loading || memoryState.error"
 			:load="showSpinner || memoryState.loading"
-			:error="memoryState.error" />
+			:error="memoryState.error"
+			:text="`Doing some magic...`"/>
 		<ApexChart
 			v-else-if="plotOutput && callOutput"
 			v-memo="[callOutput, plotOutput]"
@@ -328,46 +370,6 @@ const dateFilter = ref(''),
 			}"
 			:series="plotOutput"
 			@markerClick="onMarkerClick" />
-		<div class="divider !my-0" />
-		<div class="join w-fit self-center shadow-xl">
-			<button
-				:disabled="Boolean(memoryState.error) || memoryState.loading"
-				class="btn btn-primary join-item hover:border-error hover:bg-error"
-				@click="boxWipe?.toggleModal()">
-				<heroicons-trash-solid class="h-4 w-4" />
-				Wipe
-			</button>
-			<SelectBox
-				ref="selectCollection"
-				color="bg-base-100 bottom-16"
-				class="join-item min-w-fit bg-base-100 p-1"
-				:list="selectBoxCollections" />
-		</div>
-		<Teleport to="#modal">
-			<ModalBox ref="boxWipe">
-				<div class="flex flex-col items-center justify-center gap-4 text-neutral">
-					<h3 class="text-lg font-bold text-primary">Wipe collection</h3>
-					<p v-if="selectCollection?.selected.label.startsWith('All')">
-						Are you sure you want to wipe
-						<span class="font-bold">
-							{{ selectCollection?.selected.label.toLowerCase() }}
-						</span>
-						the collections?
-					</p>
-					<p v-else>
-						Are you sure you want to wipe the
-						<span class="font-bold">
-							{{ selectCollection?.selected.label.toLowerCase() }}
-						</span>
-						collection?
-					</p>
-					<div class="flex items-center justify-center gap-2">
-						<button class="btn btn-outline btn-sm" @click="boxWipe?.toggleModal()">No</button>
-						<button class="btn btn-error btn-sm" @click="wipeMemory()">Yes</button>
-					</div>
-				</div>
-			</ModalBox>
-		</Teleport>
 		<SidePanel ref="memoryDetailsPanel" title="Memory details">
 			<div v-if="callOutput" class="flex w-full flex-col">
 				<p class="z-10 self-start rounded-t-md bg-base-100 px-2 py-1 font-medium text-neutral">
