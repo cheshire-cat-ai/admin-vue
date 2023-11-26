@@ -41,7 +41,7 @@ const wipeMemory = async () => {
 		if (!selected) return
 		if (selected === 'all') await wipeAllCollections()
 		else await wipeCollection(selected)
-		boxWipe.value?.toggleModal()
+		if (boxWipe.value?.isOpen) boxWipe.value?.toggleModal()
 	}
 }
 
