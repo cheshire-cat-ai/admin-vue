@@ -9,12 +9,12 @@ const selectedCollection = ref('episodic')
 </script>
 
 <template>
-	<div class="flex w-full flex-col gap-6 rounded shadow bg-base-100 p-4">
+	<div class="flex w-full flex-col gap-6 rounded bg-base-100 p-4 shadow">
 		<div class="flex flex-wrap justify-center gap-4">
 			<button
 				v-for="col in Object.keys(result)"
 				:key="col"
-				class="btn-ghost inline-flex items-center gap-2 btn-sm rounded font-semibold capitalize hover:bg-primary hover:text-base-100"
+				class="btn-ghost btn-sm inline-flex items-center gap-2 rounded font-semibold capitalize hover:bg-primary hover:text-base-100"
 				:class="[selectedCollection === col ? 'bg-primary text-base-100' : 'text-primary']"
 				@click="selectedCollection = col">
 				<ph-chats v-if="col == 'episodic'" class="h-5 w-5" />
@@ -28,11 +28,15 @@ const selectedCollection = ref('episodic')
 			<div
 				v-for="(item, value) in result[selectedCollection]"
 				:key="value"
-				class="indicator flex w-full flex-col gap-2 rounded bg-base-200/30 py-4 px-2">
-				<span class="indicator-center badge indicator-item badge-neutral font-medium text-base-100">
-					{{ item.score }}
-				</span>
-				<p class="mt-1 text-sm">
+				class="indicator flex w-full flex-col gap-2 rounded bg-base-200/50 px-2 pb-4">
+				<div
+					class="indicator-center indicator-item tooltip before:rounded-lg before:font-medium before:text-base-100"
+					:data-tip="item.score">
+					<span class="badge badge-neutral cursor-pointer font-medium text-base-100">
+						{{ Math.floor(item.score * 1000) / 1000 }}
+					</span>
+				</div>
+				<p class="-mt-3 text-sm">
 					{{ item.metadata.docstring ? `${item.metadata.docstring}` : item.page_content }}
 				</p>
 				<div class="flex justify-between gap-2 text-xs font-bold text-neutral/70">
@@ -41,7 +45,7 @@ const selectedCollection = ref('episodic')
 				</div>
 			</div>
 		</template>
-		<p v-else class="text-center font-medium text-sm">
+		<p v-else class="text-center text-sm font-medium">
 			No <span class="font-bold">{{ selectedCollection }}</span> memories were used.
 		</p>
 	</div>

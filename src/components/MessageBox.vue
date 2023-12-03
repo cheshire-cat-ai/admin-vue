@@ -35,20 +35,35 @@ markdown.block.ruler.enable(['footnote', 'deflist'])
 const props = defineProps<{
 	sender: 'bot' | 'user'
 	text: string
+	file?: File
 	why: any
 }>()
 
-const { text } = toRefs(props)
+const { text, sender, file } = toRefs(props)
 
 const showReadMore = ref(true)
 
 const maxLength = 3000
 
-const isLengthy = computed(() => text.value.length >= maxLength)
+const isLengthy = computed(() => text.value.length > maxLength && sender.value === 'user')
+const renderedText = computed(() => {
+	return isLengthy.value && !showReadMore.value ? markdown.render(text.value.slice(0, maxLength)) : markdown.render(text.value)
+})
 
-const renderedText = computed(() =>
-	isLengthy.value ? markdown.render(text.value.slice(0, maxLength)) : markdown.render(text.value),
-)
+const fileTypeSize = computed(() => {
+	if (!file?.value) return ''
+	const size = file.value.size
+	const type = file.value.name.substring(file.value.name.lastIndexOf('.') + 1).toUpperCase()
+	if (size < 1000) return `${type} | ${size} B`
+	if (size < 1000000) return `${type} | ${(size / 1000).toFixed(2)} KB`
+	if (size < 1000000000) return `${type} | ${(size / 1000000).toFixed(2)} MB`
+	return `${type} | ${(size / 1000000000).toFixed(2)} GB`
+})
+
+const fileUrl = computed(() => {
+	if (!file?.value) return ''
+	return URL.createObjectURL(file.value)
+})
 </script>
 
 <template>
@@ -59,33 +74,58 @@ const renderedText = computed(() =>
 		<div class="chat-bubble row-[1] flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral shadow-md">
 			<div class="p-2 md:p-3">
 				<p class="text-ellipsis" v-html="renderedText" />
-				<div v-if="isLengthy" class="flex justify-end font-bold">
-					<a v-if="showReadMore" @click="showReadMore = false">Read more</a>
-					<a v-else @click="showReadMore = true">Hide content</a>
+				<div v-if="isLengthy && !showReadMore" class="flex justify-end font-bold">
+					<a @click="showReadMore = true">Read more</a>
+				</div>
+				<div v-else-if="isLengthy && showReadMore" class="flex justify-end font-bold">
+					<a @click="showReadMore = false">Hide content</a>
+				</div>
+				<img v-if="file?.type.startsWith('image/')" :src="fileUrl" width="512" height="512" class="rounded-lg shadow-xl" />
+				<audio
+					v-else-if="file?.type.startsWith('audio/')"
+					:src="fileUrl"
+					controls
+					:type="file.type"
+					controlslist="nodownload noplaybackrate" />
+				<video v-else-if="file?.type.startsWith('video/')" controls disablepictureinpicture controlslist="nodownload noplaybackrate">
+					<source :src="fileUrl" :type="file.type" />
+					<p>
+						Your browser doesn't support HTML video. Here is a
+						<a :href="fileUrl">link to the video</a> instead.
+					</p>
+				</video>
+				<div v-else-if="file" class="flex items-center justify-center gap-2 rounded-lg bg-base-200 p-2 shadow-xl">
+					<ph-file-fill class="h-6 w-6" />
+					<div class="flex flex-col gap-1">
+						<p class="font-bold">{{ file.name.substring(0, file.name.lastIndexOf('.')) }}</p>
+						<p class="text-xs">{{ fileTypeSize }}</p>
+					</div>
 				</div>
 			</div>
 			<div v-if="why" class="divider divider-horizontal m-0 w-px before:bg-base-200 after:bg-base-200" />
-			<button v-if="why" class="btn btn-circle bg-neutral/20 text-neutral border-0 btn-xs mx-2" @click="whyPanel?.togglePanel()">
+			<button v-if="why" class="btn btn-circle btn-xs mx-2 border-0 bg-neutral/20 text-neutral" @click="whyPanel?.togglePanel()">
 				<p class="text-base">?</p>
 			</button>
 		</div>
 		<SidePanel v-if="why" ref="whyPanel" title="Why this response">
 			<div class="flex flex-col gap-4">
-				<div v-if="why.intermediate_steps?.length > 0" class="overflow-x-auto rounded shadow bg-base-100">
+				<div v-if="why.intermediate_steps?.length > 0" class="overflow-x-auto rounded bg-base-100 shadow">
 					<div v-for="data in why.intermediate_steps" :key="data[0]">
 						<div class="grid grid-cols-2 grid-rows-1 pt-2">
-							<div class="py-2 px-3">
-								<h2 class="font-bold text-sm flex items-center justify-center gap-2 pb-1"><ph-nut class="h-5 w-5" />Triggered Tool</h2>
-								<p class="text-sm flex items-center justify-center px-4 py-2 mx-1 my-2 rounded bg-base-200/30">{{ data[0][0] }}</p>
+							<div class="px-3 py-2">
+								<h2 class="flex items-center justify-center gap-2 pb-1 text-sm font-bold"><ph-nut class="h-5 w-5" />Triggered Tool</h2>
+								<p class="mx-1 my-2 flex items-center justify-center rounded bg-base-200/50 px-4 py-2 text-sm">{{ data[0][0] }}</p>
 							</div>
-							<div class="py-2 px-3">
-								<h2 class="font-bold text-sm flex items-center justify-center gap-2 pb-1"><ph-textbox class="h-5 w-5" />Tool Input</h2>
-								<p class="text-sm flex items-center justify-center px-4 py-2 mx-1 my-2 rounded bg-base-200/30">{{ data[0][1] }}</p>
+							<div class="px-3 py-2">
+								<h2 class="flex items-center justify-center gap-2 pb-1 text-sm font-bold"><ph-textbox class="h-5 w-5" />Tool Input</h2>
+								<p class="mx-1 my-2 flex items-center justify-center rounded bg-base-200/50 px-4 py-2 text-sm">{{ data[0][1] }}</p>
 							</div>
 						</div>
-						<div class="py-2 px-3">
-							<h2 class="font-bold text-sm flex items-center justify-center gap-2 pb-1"><ph-chat-centered-dots class="h-5 w-5" />Tool Output</h2>
-							<p class="text-sm p-4 mx-1 my-2 rounded bg-base-200/30">{{ data[1] }}</p>
+						<div class="px-3 py-2">
+							<h2 class="flex items-center justify-center gap-2 pb-1 text-sm font-bold">
+								<ph-chat-centered-dots class="h-5 w-5" />Tool Output
+							</h2>
+							<p class="mx-1 my-2 rounded bg-base-200/50 p-4 text-sm">{{ data[1] }}</p>
 						</div>
 					</div>
 				</div>

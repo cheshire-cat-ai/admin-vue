@@ -40,12 +40,12 @@ export const useMessages = defineStore('messages', () => {
 	const { state: history } = useAsyncState(MemoryService.getConversation, [])
 
 	watchEffect(() => {
-		history.value.forEach(({ who, message }) => {
+		history.value.forEach(({ who, message, why }) => {
 			addMessage({
 				text: message,
 				timestamp: now(),
 				sender: who == 'AI' ? 'bot' : 'user',
-				why: undefined,
+				why,
 			})
 		})
 		currentState.loading = false
@@ -117,7 +117,7 @@ export const useMessages = defineStore('messages', () => {
 			...message,
 		}
 		currentState.messages.push(msg)
-		currentState.loading = msg.sender === 'user'
+		if (!(message as UserMessage)?.file) currentState.loading = msg.sender === 'user'
 	}
 
 	/**
@@ -132,13 +132,22 @@ export const useMessages = defineStore('messages', () => {
 	/**
 	 * Sends a message to the messages service and dispatches it to the store
 	 */
-	const dispatchMessage = (message: string) => {
-		apiClient.send(message)
-		addMessage({
-			text: message.trim(),
-			timestamp: now(),
-			sender: 'user',
-		})
+	const dispatchMessage = (message: string | File) => {
+		if (typeof message === 'string') {
+			apiClient.send(message)
+			addMessage({
+				text: message.trim(),
+				timestamp: now(),
+				sender: 'user',
+			})
+		} else {
+			addMessage({
+				text: '',
+				timestamp: now(),
+				sender: 'user',
+				file: message,
+			})
+		}
 	}
 
 	return {

@@ -25,20 +25,18 @@
 							<RouterLink to="/"> <heroicons-home-20-solid class="h-4 w-4" /> Home </RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
-							<RouterLink to="/memory"> <ph-brain-fill class="h-4 w-4" /> Memory </RouterLink>
+							<RouterLink :key="$route.fullPath" :to="{ path: '/memory' }"> <ph-brain-fill class="h-4 w-4" /> Memory </RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
-							<RouterLink to="/plugins"> <ph-plug-fill class="h-4 w-4" /> Plugins </RouterLink>
+							<RouterLink :key="$route.fullPath" :to="{ path: '/plugins' }"> <ph-plug-fill class="h-4 w-4" /> Plugins </RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
-							<RouterLink to="/settings" :class="{ active: $route.path === '/settings' }">
+							<RouterLink :key="$route.fullPath" :to="{ path: '/settings' }" :class="{ active: $route.path === '/settings' }">
 								<heroicons-cog-6-tooth-20-solid class="h-4 w-4" /> Settings
 							</RouterLink>
 						</MenuItem>
 						<MenuItem as="li">
-							<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">
-								<heroicons-document-text-solid class="h-4 w-4" /> Docs
-							</a>
+							<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank"> <heroicons-document-text-solid class="h-4 w-4" /> Docs </a>
 						</MenuItem>
 					</MenuItems>
 				</Transition>
@@ -53,20 +51,18 @@
 					<RouterLink to="/"> <heroicons-home-20-solid class="h-4 w-4" /> Home </RouterLink>
 				</li>
 				<li>
-					<RouterLink to="/memory"> <ph-brain-fill class="h-4 w-4" /> Memory </RouterLink>
+					<RouterLink :key="$route.fullPath" :to="{ path: '/memory' }"> <ph-brain-fill class="h-4 w-4" /> Memory </RouterLink>
 				</li>
 				<li>
-					<RouterLink to="/plugins"> <ph-plug-fill class="h-4 w-4" /> Plugins </RouterLink>
+					<RouterLink :key="$route.fullPath" :to="{ path: '/plugins' }"> <ph-plug-fill class="h-4 w-4" /> Plugins </RouterLink>
 				</li>
 				<li>
-					<RouterLink to="/settings" :class="{ active: $route.path === '/settings' }">
+					<RouterLink :key="$route.fullPath" :to="{ path: '/settings' }" :class="{ active: $route.path === '/settings' }">
 						<heroicons-cog-6-tooth-20-solid class="h-4 w-4" /> Settings
 					</RouterLink>
 				</li>
 				<li>
-					<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank">
-						<heroicons-document-text-solid class="h-4 w-4" /> Docs
-					</a>
+					<a href="https://cheshire-cat-ai.github.io/docs/" target="_blank"> <heroicons-document-text-solid class="h-4 w-4" /> Docs </a>
 				</li>
 			</ul>
 		</div>

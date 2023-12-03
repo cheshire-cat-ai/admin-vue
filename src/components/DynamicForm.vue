@@ -46,7 +46,7 @@ defineEmits<{
 		:validateOnMount="true"
 		:keepValues="false"
 		@submit="$emit('submit', $event)">
-		<div class="form-control w-full">
+		<div class="form-control w-full rounded bg-base-100 px-4 pb-4 pt-2 shadow">
 			<div
 				v-for="{ name, label, children, description, ...attrs } in fields"
 				:key="name"
@@ -61,11 +61,7 @@ defineEmits<{
 						<ph-info class="h-4 w-4" />
 					</div>
 				</label>
-				<CheckBox
-					v-if="attrs.type === 'checkbox'"
-					:indeterminate="attrs.default == undefined"
-					:name="name"
-					:rules="attrs.rules" />
+				<CheckBox v-if="attrs.type === 'checkbox'" :indeterminate="attrs.default == undefined" :name="name" :rules="attrs.rules" />
 				<Field
 					v-else
 					:id="name"
@@ -91,10 +87,7 @@ defineEmits<{
 				<ph-arrow-counter-clockwise-bold class="h-4 w-4" />
 				Reset
 			</button>
-			<button
-				type="submit"
-				class="btn btn-primary btn-sm grow normal-case"
-				:disabled="disabled || Object.keys(errors).length > 0">
+			<button type="submit" class="btn btn-primary btn-sm grow normal-case" :disabled="disabled || Object.keys(errors).length > 0">
 				<ph-floppy-disk-bold class="h-4 w-4" />
 				Save
 			</button>

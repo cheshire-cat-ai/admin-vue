@@ -41,7 +41,7 @@ const wipeMemory = async () => {
 		if (!selected) return
 		if (selected === 'all') await wipeAllCollections()
 		else await wipeCollection(selected)
-		boxWipe.value?.toggleModal()
+		if (boxWipe.value?.isOpen) boxWipe.value?.toggleModal()
 	}
 }
 
@@ -68,11 +68,11 @@ const reduceTo2d = (options: ConstructorParameters<typeof TSNE>['1'], iterations
 const showMemoryPlot = (jsonResult: VectorsData['collections'], ...mats: number[][]) => {
 	const collectionsLengths = reduce(jsonResult, (a, v, k) => ({ ...a, [k]: v.length }), {}) as Record<string, number>
 
-	const maxPerplexity = reduce(values(collectionsLengths), (p, c) => p + c, 0)
+	const maxPoints = reduce(values(collectionsLengths), (p, c) => p + c, 0)
 
 	const matrix = reduceTo2d(
 		{
-			perplexity: Math.min(Math.max(kMems.value, 2), maxPerplexity),
+			perplexity: Math.min(Math.max(kMems.value, 2), maxPoints),
 		},
 		1000,
 		...map(jsonResult, v => map(v, c => c.vector)),
@@ -153,8 +153,8 @@ const recallMemory = async () => {
 	toggleSpinner()
 }
 
-const getSelectCollections = computed(() => {
-	const data = memoryState.value.data ?? []
+const selectBoxCollections = computed(() => {
+	const data = (memoryState.value.data ?? []).filter(v => v.name != 'procedural')
 	const totalCollections = data.map(v => v.vectors_count).reduce((p, c) => p + c, 0)
 	return [
 		{ label: `All (${totalCollections})`, value: 'all' },
@@ -176,28 +176,38 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 	clickedPoint.value = w.config.series[seriesIndex].meta[dataPointIndex]
 	pointInfoPanel.value?.togglePanel()
 }
+
+const dateFilter = ref(''),
+	sourceFilter = ref('')
 </script>
 
 <template>
-	<div class="flex w-full flex-col gap-8 self-center md:w-3/4 memory-page">
-		<div class="flex gap-4">
-			<InputBox
-				v-model.trim="callText"
-				placeholder="Enter a text..."
-				label="Search similar memories"
-				search
-				:disabled="Boolean(memoryState.error) || memoryState.loading"
-				@send="recallMemory()" />
-			<div class="form-control">
-				<label class="label px-0">
-					<span class="label-text font-semibold">K memories</span>
-				</label>
-				<input
-					v-model="kMems"
+	<div class="memory-page flex w-full flex-col gap-8 self-center md:w-3/4">
+		<div class="flex flex-col gap-4">
+			<div class="flex gap-4">
+				<InputBox
+					v-model.trim="callText"
+					placeholder="Enter a text..."
+					label="Search similar memories"
+					search
 					:disabled="Boolean(memoryState.error) || memoryState.loading"
-					type="number"
-					min="1"
-					class="input input-primary input-sm w-24" />
+					@send="recallMemory()" />
+				<div class="form-control">
+					<label class="label px-0">
+						<span class="label-text font-semibold">K memories</span>
+					</label>
+					<input
+						v-model="kMems"
+						:disabled="Boolean(memoryState.error) || memoryState.loading"
+						type="number"
+						min="1"
+						class="input input-primary input-sm w-24 shadow-lg !outline-2" />
+				</div>
+			</div>
+			<div class="flex flex-wrap justify-center gap-2">
+				<heroicons-adjustments-vertical class="h-6 w-6" />
+				<input v-model="dateFilter" type="date" class="input input-primary input-xs w-32" />
+				<input v-model="sourceFilter" type="text" placeholder="Source" class="input input-primary input-xs w-32" />
 			</div>
 		</div>
 		<ErrorBox
@@ -295,9 +305,12 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 					style: { fontFamily: 'Rubik' },
 					custom: ({ seriesIndex, dataPointIndex, w }: any) => {
 						const text = w.config.series[seriesIndex].meta[dataPointIndex].text
-						return `<div class=\'marker-tooltip flex flex-col p-1\'>
-							<i>${text.substring(0, 30).concat('...')}</i>
-							<b><i>*Click to show more*</i></b>
+						const source = w.config.series[seriesIndex].meta[dataPointIndex].source
+						const truncedText = text.length > 200 ? text.substring(0, 200).concat('...') : text
+
+						return `<div class=\'marker-tooltip flex flex-col p-1 max-w-xs whitespace-normal\'>
+							<b>Source: ${source}</b>
+							<i>${truncedText}</i>
 						</div>`
 					},
 				},
@@ -319,12 +332,16 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 		<div class="join w-fit self-center shadow-xl">
 			<button
 				:disabled="Boolean(memoryState.error) || memoryState.loading"
-				class="btn btn-primary hover:bg-error hover:border-error join-item"
+				class="btn btn-primary join-item hover:border-error hover:bg-error"
 				@click="boxWipe?.toggleModal()">
 				<heroicons-trash-solid class="h-4 w-4" />
 				Wipe
 			</button>
-			<SelectBox ref="selectCollection" class="join-item min-w-fit bg-base-100 p-1" :list="getSelectCollections" />
+			<SelectBox
+				ref="selectCollection"
+				color="bg-base-100 bottom-16"
+				class="join-item min-w-fit bg-base-100 p-1"
+				:list="selectBoxCollections" />
 		</div>
 		<Teleport to="#modal">
 			<ModalBox ref="boxWipe">
@@ -353,27 +370,41 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 		</Teleport>
 		<SidePanel ref="memoryDetailsPanel" title="Memory details">
 			<div v-if="callOutput" class="flex w-full flex-col">
-				<p class="self-start rounded-t-md bg-primary px-2 py-1 font-medium text-base-100">
+				<p class="z-10 self-start rounded-t-md bg-base-100 px-2 py-1 font-medium text-neutral">
 					{{ callOutput.embedder }}
 				</p>
 				<MemorySelect class="rounded-tl-none" :result="callOutput.collections" />
 			</div>
 		</SidePanel>
 		<SidePanel ref="pointInfoPanel" title="Memory content">
-			<div v-if="clickedPoint" class="overflow-x-auto rounded-md border-2 border-neutral">
-				<table class="table table-zebra table-sm bg-base-100">
-					<tbody>
-						<tr v-for="(data, key) of clickedPoint" :key="key">
-							<td>{{ capitalize(key) }}</td>
-							<td>{{ data }}</td>
-						</tr>
-					</tbody>
-				</table>
+			<div v-if="clickedPoint" class="overflow-x-auto rounded shadow">
+				<div class="divide-y-2 divide-dashed bg-base-100 px-6 py-2">
+					<div v-for="(data, key) of clickedPoint" :key="key" className="grid grid-cols-4 grid-rows-1 gap-2 text-sm">
+						<div class="py-2 font-medium">{{ capitalize(key) }}</div>
+						<div v-if="key === 'collection' && typeof data == 'string'" class="col-span-3 inline-flex items-center gap-2 py-2">
+							<ph-chats v-if="data === 'episodic'" class="h-5 w-5" />
+							<ph-files v-if="data === 'declarative'" class="h-5 w-5" />
+							<ph-toolbox v-if="data === 'procedural'" class="h-5 w-5" />
+							<ph-list-magnifying-glass v-if="data === 'query'" class="h-5 w-5" />
+							{{ capitalize(data) }}
+						</div>
+						<!-- START THE BUTTON FOR DELETING THE SOURCE - THIS IS JUST EXPERIMENTAL: TO FINALIZE  -->
+						<!-- <div v-else-if="!['procedural', 'query'].includes(clickedPoint.collection) && key === 'source'" class="col-span-3 py-2 inline-flex items-center justify-between gap-2">
+							{{ data }}
+							<button class="link link-error no-underline inline-flex items-center px-2 gap-1 hover:btn-error hover:rounded">
+								<heroicons-trash-solid class="w-3 h-3"/>
+								Delete source
+							</button>
+						</div> -->
+						<div v-else class="col-span-3 py-2">{{ data }}</div>
+					</div>
+				</div>
 			</div>
 			<button
 				v-if="clickedPoint && !['procedural', 'query'].includes(clickedPoint.collection)"
-				class="btn btn-error btn-sm mt-auto"
+				class="btn btn-primary btn-sm mt-auto hover:btn-error"
 				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
+				<heroicons-trash-solid class="h-4 w-4" />
 				Delete memory point
 			</button>
 		</SidePanel>

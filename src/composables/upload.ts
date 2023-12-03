@@ -31,8 +31,7 @@ export function uploadContent() {
 
 		if (category == 'web' && typeof data == 'string') sendWebsite(data)
 		else if (data instanceof File && allowedMimetypes.includes(data.type)) sendContent(data)
-		else if (category != 'web' && typeof data == 'string')
-			sendContent(new File([new Blob([data])], category, { type: 'text/plain' }))
+		else if (category != 'web' && typeof data == 'string') sendContent(new File([new Blob([data])], category, { type: 'text/plain' }))
 		else openDialog({ accept: allowedMimetypes.join(',') })
 	}
 

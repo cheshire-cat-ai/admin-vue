@@ -22,6 +22,7 @@ export interface BotMessage extends MessageBase {
  */
 export interface UserMessage extends MessageBase {
 	readonly sender: 'user'
+	readonly file?: File
 }
 
 /**

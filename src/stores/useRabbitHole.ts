@@ -1,5 +1,6 @@
 import type { FileUploaderState } from '@stores/types'
 import { useNotifications } from '@stores/useNotifications'
+import { useMessages } from '@stores/useMessages'
 import RabbitHoleService from '@services/RabbitHoleService'
 
 export const useRabbitHole = defineStore('rabbitHole', () => {
@@ -8,12 +9,14 @@ export const useRabbitHole = defineStore('rabbitHole', () => {
 	})
 
 	const { sendNotificationFromJSON } = useNotifications()
+	const { dispatchMessage } = useMessages()
 
 	const sendFile = async (file: File) => {
 		currentState.loading = true
 		const res = await RabbitHoleService.sendFile(file)
 		currentState.loading = false
 		currentState.data = res.data
+		if (res.data && res.status == 'success') dispatchMessage(file)
 		sendNotificationFromJSON(res)
 	}
 

@@ -47,9 +47,9 @@ const MemoryService = Object.freeze({
 		)
 		return result.data?.history ?? []
 	},
-	callMemory: async (query: string, memories = 10, user = 'user') => {
+	callMemory: async (query: string, memories = 10) => {
 		const result = await tryRequest(
-			apiClient.api?.memory.recallMemoriesFromText(query, memories, user),
+			apiClient.api?.memory.recallMemoriesFromText(query, memories),
 			`Recalling ${memories} memories with ${query} as query`,
 			'Unable to recall memory',
 			`Recalling ${memories} memories from the cat with "${query}"`,

@@ -1,5 +1,4 @@
 import MemoryService from '@services/MemoryService'
-import { useMessages } from '@stores/useMessages'
 import { useNotifications } from '@stores/useNotifications'
 import type { CollectionsState } from '@stores/types'
 import { remove } from 'lodash'
@@ -11,11 +10,7 @@ export const useMemory = defineStore('memory', () => {
 		data: [],
 	})
 
-	const {
-		state: collections,
-		isLoading,
-		execute: fetchCollections,
-	} = useAsyncState(MemoryService.getCollections, undefined)
+	const { state: collections, isLoading, execute: fetchCollections } = useAsyncState(MemoryService.getCollections, undefined)
 
 	const { isReadyAndAuth } = storeToRefs(useSettings())
 	// TODO: Find a way to refresh calls without watching the boolean value (fix resetAllStores())
@@ -31,7 +26,6 @@ export const useMemory = defineStore('memory', () => {
 
 	onActivated(() => fetchCollections())
 
-	const { currentState: messagesState } = storeToRefs(useMessages())
 	const { sendNotificationFromJSON } = useNotifications()
 
 	const wipeAllCollections = async () => {
@@ -45,7 +39,6 @@ export const useMemory = defineStore('memory', () => {
 
 	const wipeConversation = async () => {
 		const result = await MemoryService.wipeConversation()
-		if (result.status == 'success') messagesState.value.messages = []
 		return sendNotificationFromJSON(result)
 	}
 

@@ -12,12 +12,7 @@ const getEnumValues = (property: Record<string, unknown>, definitions: Record<st
 }
 
 const getComponentType = (value: any, definitions: Record<string, unknown>) => {
-	if (
-		value.extra &&
-		value.extra.type &&
-		typeof value.extra.type == 'string' &&
-		value.extra.type.toLowerCase() == 'textarea'
-	)
+	if (value.extra && value.extra.type && typeof value.extra.type == 'string' && value.extra.type.toLowerCase() == 'textarea')
 		return 'textarea'
 	else if (getEnumValues(value, definitions)) return 'select'
 	else return 'input'
