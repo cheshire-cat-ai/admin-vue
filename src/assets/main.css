@@ -164,7 +164,3 @@ body {
 .apexcharts-series-scatter {
 	cursor: pointer;
 }
-
-.vlock {
-	pointer-events: none;
-}

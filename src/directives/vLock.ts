@@ -3,16 +3,16 @@ import type { Directive } from 'vue'
 export const vLock: Directive<HTMLElement, boolean> = {
 	mounted(el, binding) {
 		if (binding.value) {
-			el.classList.add('vlock')
+			el.style.pointerEvents = 'none'
 		} else {
-			el.classList.remove('vlock')
+			el.style.pointerEvents = 'initial'
 		}
 	},
 	updated(el, binding) {
 		if (binding.value) {
-			el.classList.add('vlock')
+			el.style.pointerEvents = 'none'
 		} else {
-			el.classList.remove('vlock')
+			el.style.pointerEvents = 'initial'
 		}
 	},
 }
