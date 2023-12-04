@@ -3,7 +3,6 @@ import { useSettings } from '@stores/useSettings'
 import ModalBox from '@components/ModalBox.vue'
 import { updateAuthKey } from '@/api'
 import useStoreMapping from '@/utils/storeRouteMapping'
-import vLock from '@/directives/vLock'
 
 const routesToExclude = ['home', 'settings']
 const route = useRoute()
@@ -35,7 +34,7 @@ const currentComponentLoading = computed(() => {
 	if (routeName !== undefined && !routesToExclude.includes(routeName)) {
 		store = storeMapping[routeName]
 		const { currentState } = storeToRefs(store)
-		return (store && currentState.value.loading)
+		return store && currentState.value.loading
 	}
 	return false
 })
@@ -66,7 +65,7 @@ const currentComponentLoading = computed(() => {
 					enterActiveClass="animate__animated animate__fadeIn animate__fastest"
 					leaveActiveClass="animate__animated animate__fadeOut animate__fastest">
 					<KeepAlive>
-						<component :is="Component" v-lock="currentComponentLoading" :currentComponentLoading="currentComponentLoading"/>
+						<component :is="Component" v-lock="currentComponentLoading" :currentComponentLoading="currentComponentLoading" />
 					</KeepAlive>
 				</Transition>
 			</template>

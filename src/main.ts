@@ -26,6 +26,6 @@ pinia.use(({ store }) => {
 })
 app.use(pinia)
 app.use(router)
-app.directive('vLock', vLock)
+app.directive('lock', vLock)
 
 app.mount('#app')
