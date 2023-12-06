@@ -17,11 +17,12 @@ const closePanel = () => {
 
 defineExpose({
 	togglePanel,
+	closePanel,
 	isOpen,
 })
 
 const closeIfCurrentComponentNotLoading = () => {
-	if(!props.currentComponentLoading) isOpen.value = false
+	if (!props.currentComponentLoading) isOpen.value = false
 }
 </script>
 
@@ -48,8 +49,7 @@ const closeIfCurrentComponentNotLoading = () => {
 							enter-to="translate-x-0"
 							leave="transform transition ease-in-out duration-500"
 							leave-from="translate-x-0"
-							leave-to="translate-x-full"
-							>
+							leave-to="translate-x-full">
 							<DialogPanel class="pointer-events-auto relative w-screen md:max-w-xl">
 								<div class="flex h-full flex-col overflow-y-auto bg-base-200 text-neutral">
 									<div class="flex items-center justify-between gap-2 p-2 md:p-4">

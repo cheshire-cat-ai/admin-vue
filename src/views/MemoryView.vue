@@ -255,7 +255,7 @@ const dateFilter = ref(''),
 			v-if="showSpinner || memoryState.loading || memoryState.error"
 			:load="showSpinner || memoryState.loading"
 			:error="memoryState.error"
-			:text="`Doing some magic...`"/>
+			:text="`Doing some magic...`" />
 		<ApexChart
 			v-else-if="plotOutput && callOutput"
 			v-memo="[callOutput, plotOutput]"
