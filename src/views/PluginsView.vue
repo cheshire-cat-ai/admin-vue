@@ -107,13 +107,22 @@ watchEffect(() => {
 		<div class="flex flex-wrap items-end justify-between gap-2">
 			<p class="font-medium">Installed plugins: {{ pluginsState.data?.installed?.length ?? 0 }}</p>
 			<!--<SelectBox v-model="selectedPageSize" :list="[10, 25, 50, 100].map(p => ({ label: p.toString(), value: p }))" />-->
-			<button
-				:disabled="pluginsState.loading || Boolean(pluginsState.error)"
-				class="btn btn-primary btn-sm rounded-md hover:shadow-lg"
-				@click="uploadFile('plugin')">
-				<ph-export-bold class="h-4 w-4" />
-				Upload plugin
-			</button>
+			<div class="flex flex-wrap items-end justify-between gap-2">
+				<a
+					href="https://cheshire-cat-ai.github.io/docs/plugins-registry/plugin-from-template/"
+					target="_blank"
+					class="btn btn-primary btn-outline btn-sm rounded-md hover:shadow-lg">
+					<ph-lightbulb-filament-fill class="h-4 w-4" />
+					Create plugin
+				</a>
+				<button
+					:disabled="pluginsState.loading || Boolean(pluginsState.error)"
+					class="btn btn-primary btn-sm rounded-md hover:shadow-lg"
+					@click="uploadFile('plugin')">
+					<ph-export-bold class="h-4 w-4" />
+					Upload plugin
+				</button>
+			</div>
 		</div>
 		<ErrorBox v-if="pluginsState.loading || pluginsState.error" :load="pluginsState.loading" :error="pluginsState.error" />
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">

@@ -57,6 +57,7 @@ declare module 'vue' {
     PhFiles: typeof import('~icons/ph/files')['default']
     PhFloppyDiskBold: typeof import('~icons/ph/floppy-disk-bold')['default']
     PhInfo: typeof import('~icons/ph/info')['default']
+    PhLightbulbFilamentFill: typeof import('~icons/ph/lightbulb-filament-fill')['default']
     PhListMagnifyingGlass: typeof import('~icons/ph/list-magnifying-glass')['default']
     PhMagnifyingGlass: typeof import('~icons/ph/magnifying-glass')['default']
     PhNut: typeof import('~icons/ph/nut')['default']
