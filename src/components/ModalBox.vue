@@ -25,6 +25,7 @@ const closeModal = () => {
 defineExpose({
 	toggleModal,
 	isOpen,
+	closeModal,
 })
 </script>
 

@@ -115,6 +115,7 @@ declare global {
   const shallowReactive: typeof import('vue')['shallowReactive']
   const shallowReadonly: typeof import('vue')['shallowReadonly']
   const shallowRef: typeof import('vue')['shallowRef']
+  const storeRouteMapping: typeof import('./src/utils/storeRouteMapping')['default']
   const storeToRefs: typeof import('pinia')['storeToRefs']
   const suite: typeof import('vitest')['suite']
   const syncRef: typeof import('@vueuse/core')['syncRef']
