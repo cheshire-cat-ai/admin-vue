@@ -7,7 +7,6 @@
 		".eslintrc.json",
 		"components.d.ts",
 		"auto-imports.d.ts",
-		"globals.d.ts",
 		"unit/**/*.test.ts",
 		"e2e/**/*.spec.ts"
 	],

@@ -39,6 +39,7 @@ export const usePlugins = defineStore('plugins', () => {
 	const getSettings = async (id: Plugin['id']) => (await PluginService.getSinglePluginSettings(id))?.value
 
 	const togglePlugin = async (id: Plugin['id'], name: Plugin['name'], active: boolean) => {
+		currentState.loading = true
 		const res = await PluginService.togglePlugin(id)
 		if (res.status == 'success') {
 			showNotification({
@@ -46,7 +47,9 @@ export const usePlugins = defineStore('plugins', () => {
 				type: 'info',
 			})
 		} else sendNotificationFromJSON(res)
+		fetchSettings()
 		fetchPlugins()
+		currentState.loading = false
 		return res.status != 'error'
 	}
 
@@ -69,9 +72,10 @@ export const usePlugins = defineStore('plugins', () => {
 	const installPlugin = async (file: File) => {
 		currentState.loading = true
 		const res = await PluginService.sendFile(file)
+		await fetchSettings()
+		await fetchPlugins()
 		currentState.loading = false
 		sendNotificationFromJSON(res)
-		fetchPlugins()
 	}
 
 	const searchPlugin = async (query: string) => {
@@ -86,6 +90,8 @@ export const usePlugins = defineStore('plugins', () => {
 		currentState.loading = true
 		const res = await PluginService.installFromRegistry(url)
 		if (res.status == 'error') sendNotificationFromJSON(res)
+		fetchSettings()
+		fetchPlugins()
 		currentState.loading = false
 		return res.data
 	}

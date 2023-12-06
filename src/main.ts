@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { defineRule } from 'vee-validate'
 import AllRules from '@vee-validate/rules'
+import vLock from '@/directives/vLock'
 
 Object.keys(AllRules).forEach(rule => {
 	defineRule(rule, AllRules[rule])
@@ -23,8 +24,8 @@ pinia.use(({ store }) => {
 	const state = cloneDeep(store.$state)
 	store.$reset = () => store.$patch(state)
 })
-
 app.use(pinia)
 app.use(router)
+app.directive('lock', vLock)
 
 app.mount('#app')
