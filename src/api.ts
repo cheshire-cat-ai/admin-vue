@@ -2,20 +2,20 @@ import type { JSONResponse } from '@models/JSONSchema'
 import LogService from '@services/LogService'
 import { CatClient, type CancelablePromise } from 'ccat-api'
 
-const { CORE_HOST, CORE_PORT, CORE_USE_SECURE_PROTOCOLS } = window.catCoreConfig
+const { DEV } = import.meta.env
 
 /**
  * API client to make requests to the endpoints and passing the API_KEY for authentication.
  */
 export const apiClient = new CatClient({
-	baseUrl: CORE_HOST,
-	port: CORE_PORT ? parseInt(CORE_PORT) : undefined,
-	secure: CORE_USE_SECURE_PROTOCOLS,
-	timeout: 10000,
+	baseUrl: window.location.hostname,
+	port: parseInt((DEV ? '1865' : window.location.port) ?? '80'),
+	secure: window.location.protocol === 'https:',
+	timeout: 15000,
 	ws: {
 		path: 'ws',
 		retries: 3,
-		delay: 2500,
+		delay: 3000,
 		onFailed: () => {
 			console.error('Failed to connect WebSocket after 3 retries.')
 		},

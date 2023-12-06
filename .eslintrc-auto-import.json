@@ -321,7 +321,7 @@
     "ExtractPublicPropTypes": true,
     "WritableComputedRef": true,
     "injectLocal": true,
-    "storeRouteMapping": true,
-    "provideLocal": true
+    "provideLocal": true,
+    "storeRouteMapping": true
   }
 }
