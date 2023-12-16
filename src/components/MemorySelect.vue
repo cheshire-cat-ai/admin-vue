@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { capitalize } from 'lodash'
-
 defineProps<{
-	result: any
+	result: Record<string, any>
 }>()
 
 const selectedCollection = ref('episodic')
@@ -40,7 +38,7 @@ const selectedCollection = ref('episodic')
 					{{ item.metadata.docstring ? `${item.metadata.docstring}` : item.page_content }}
 				</p>
 				<div class="flex justify-between gap-2 text-xs font-bold text-neutral/70">
-					<p>{{ capitalize(item.metadata.source) }} {{ item.metadata.name ? `(${item.metadata.name})` : '' }}</p>
+					<p class="truncate">{{ item.metadata.source }} {{ item.metadata.name ? `(${item.metadata.name})` : '' }}</p>
 					<p>{{ new Date(item.metadata.when * 1000).toLocaleString() }}</p>
 				</div>
 			</div>
