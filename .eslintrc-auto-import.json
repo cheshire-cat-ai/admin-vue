@@ -322,6 +322,7 @@
     "WritableComputedRef": true,
     "injectLocal": true,
     "provideLocal": true,
-    "storeRouteMapping": true
+    "storeRouteMapping": true,
+    "useClipboardItems": true
   }
 }

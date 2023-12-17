@@ -97,7 +97,7 @@ watchEffect(() => {
 				<button
 					v-for="(v, k) of pluginsFilters"
 					:key="k"
-					class="btn btn-ghost btn-xs rounded-md !border-2 !border-primary hover:bg-base-100"
+					class="btn btn-ghost btn-xs rounded-md !border-2 !border-primary uppercase hover:bg-base-100"
 					@click="v.current = v.values[v.values.indexOf(v.current) + 1] ?? v.values[0]">
 					<span class="text-primary">{{ k }}:</span>
 					<span>{{ v.current }}</span>
@@ -111,7 +111,7 @@ watchEffect(() => {
 				<a
 					href="https://cheshire-cat-ai.github.io/docs/plugins-registry/plugin-from-template/"
 					target="_blank"
-					class="btn btn-primary btn-outline btn-sm rounded-md hover:shadow-lg">
+					class="btn btn-outline btn-primary btn-sm rounded-md hover:shadow-lg">
 					<ph-lightbulb-filament-fill class="h-4 w-4" />
 					Create plugin
 				</a>
@@ -139,7 +139,7 @@ watchEffect(() => {
 					</UseImage>
 					<div class="flex grow flex-col">
 						<div class="flex justify-between">
-							<p class="text-sm font-medium text-neutral-focus">
+							<p class="text-sm font-medium text-neutral">
 								<span class="text-xl font-bold text-neutral">{{ item.name }}</span>
 								by
 								<a
@@ -150,19 +150,19 @@ watchEffect(() => {
 									{{ item.author_name }}
 								</a>
 							</p>
-							<button v-if="item.url" class="btn btn-primary btn-xs rounded-md" @click="installRegistryPlugin(item.url)">
+							<button v-if="item.url" class="btn btn-primary btn-xs rounded-md uppercase" @click="installRegistryPlugin(item.url)">
 								<heroicons-cloud-arrow-down-solid class="h-4 w-4" />
 								Install
 							</button>
 							<button
 								v-else-if="item.id !== 'core_plugin'"
-								class="btn btn-error btn-xs rounded-md text-white"
+								class="btn btn-error btn-xs rounded-md uppercase text-base-100"
 								@click="openRemoveModal(item)">
 								<heroicons-trash-solid class="h-3 w-3" />
 								Delete
 							</button>
 						</div>
-						<div class="flex h-6 items-center gap-1 text-sm font-medium text-neutral-focus">
+						<div class="flex h-6 items-center gap-1 text-sm font-medium text-neutral">
 							<p>v{{ item.version }}</p>
 							<a v-if="item.plugin_url" :href="item.plugin_url" target="_blank" class="btn btn-circle btn-xs">
 								<heroicons-link-20-solid class="h-4 w-4" />

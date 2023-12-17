@@ -117,13 +117,20 @@ Runs the build and serves the built app on port `3000` (default)
         </a>
     </td>
     <td align="center">
+        <a href="https://github.com/kodaline">
+            <img src="https://avatars.githubusercontent.com/u/9247877?v=4" width="80;" alt="kodaline"/>
+            <br />
+            <sub><b>kodaline</b></sub>
+        </a>
+    </td></tr>
+<tr>
+    <td align="center">
         <a href="https://github.com/AngyDev">
             <img src="https://avatars.githubusercontent.com/u/44018650?v=4" width="80;" alt="AngyDev"/>
             <br />
             <sub><b>AngyDev</b></sub>
         </a>
-    </td></tr>
-<tr>
+    </td>
     <td align="center">
         <a href="https://github.com/fedestyla">
             <img src="https://avatars.githubusercontent.com/u/6248817?v=4" width="80;" alt="fedestyla"/>
@@ -158,15 +165,15 @@ Runs the build and serves the built app on port `3000` (default)
             <br />
             <sub><b>DShKMG</b></sub>
         </a>
-    </td>
+    </td></tr>
+<tr>
     <td align="center">
         <a href="https://github.com/zioproto">
             <img src="https://avatars.githubusercontent.com/u/789701?v=4" width="80;" alt="zioproto"/>
             <br />
             <sub><b>zioproto</b></sub>
         </a>
-    </td></tr>
-<tr>
+    </td>
     <td align="center">
         <a href="https://github.com/Steve707-AE">
             <img src="https://avatars.githubusercontent.com/u/72551650?v=4" width="80;" alt="Steve707-AE"/>
@@ -201,15 +208,15 @@ Runs the build and serves the built app on port `3000` (default)
             <br />
             <sub><b>elio1fiore</b></sub>
         </a>
-    </td>
+    </td></tr>
+<tr>
     <td align="center">
         <a href="https://github.com/lorenzopalloni">
             <img src="https://avatars.githubusercontent.com/u/43707531?v=4" width="80;" alt="lorenzopalloni"/>
             <br />
             <sub><b>lorenzopalloni</b></sub>
         </a>
-    </td></tr>
-<tr>
+    </td>
     <td align="center">
         <a href="https://github.com/salvog7">
             <img src="https://avatars.githubusercontent.com/u/126958773?v=4" width="80;" alt="salvog7"/>
