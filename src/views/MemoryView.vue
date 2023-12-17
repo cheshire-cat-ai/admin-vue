@@ -211,21 +211,6 @@ const dateFilter = ref(''),
 				<input v-model="sourceFilter" type="text" placeholder="Source" class="input input-primary input-xs w-32" />
 			</div>-->
 		</div>
-		<div class="divider !my-0" />
-		<div class="join w-fit self-center shadow-xl">
-			<button
-				:disabled="Boolean(memoryState.error) || memoryState.loading"
-				class="btn btn-primary join-item hover:border-error hover:bg-error"
-				@click="boxWipe?.toggleModal()">
-				<heroicons-trash-solid class="h-4 w-4" />
-				Wipe
-			</button>
-			<SelectBox
-				ref="selectCollection"
-				color="bg-base-100 bottom-16"
-				class="join-item min-w-fit bg-base-100 p-1"
-				:list="selectBoxCollections" />
-		</div>
 		<Teleport to="#modal">
 			<ModalBox ref="boxWipe">
 				<div class="flex flex-col items-center justify-center gap-4 text-neutral">
@@ -370,6 +355,21 @@ const dateFilter = ref(''),
 			}"
 			:series="plotOutput"
 			@markerClick="onMarkerClick" />
+		<div class="divider !my-0" />
+		<div class="join w-fit self-center shadow-xl">
+			<button
+				:disabled="Boolean(memoryState.error) || memoryState.loading"
+				class="btn btn-primary join-item hover:border-error hover:bg-error"
+				@click="boxWipe?.toggleModal()">
+				<heroicons-trash-solid class="h-4 w-4" />
+				Wipe
+			</button>
+			<SelectBox
+				ref="selectCollection"
+				color="bg-base-100 bottom-16"
+				class="join-item min-w-fit bg-base-100 p-1"
+				:list="selectBoxCollections" />
+		</div>
 		<SidePanel ref="memoryDetailsPanel" title="Memory details">
 			<div v-if="callOutput" class="flex w-full flex-col">
 				<p class="z-10 self-start rounded-t-md bg-base-100 px-2 py-1 font-medium text-neutral">
