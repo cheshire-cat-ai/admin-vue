@@ -26,7 +26,7 @@ const selectedCollection = ref('episodic')
 			<div
 				v-for="(item, value) in result[selectedCollection]"
 				:key="value"
-				class="indicator flex w-full flex-col gap-2 rounded bg-base-200/50 px-2 pb-4">
+				class="indicator flex w-full flex-col gap-2 rounded bg-base-200 px-2 pb-2">
 				<div
 					class="indicator-item indicator-center tooltip before:rounded-lg before:font-medium before:text-base-100"
 					:data-tip="item.score">
@@ -37,9 +37,9 @@ const selectedCollection = ref('episodic')
 				<p class="-mt-3 text-sm">
 					{{ item.metadata.docstring ? `${item.metadata.docstring}` : item.page_content }}
 				</p>
-				<div class="flex justify-between gap-2 text-xs font-bold text-neutral/70">
+				<div class="flex items-end justify-between gap-2 text-xs font-bold text-neutral/70">
 					<p class="truncate">{{ item.metadata.source }} {{ item.metadata.name ? `(${item.metadata.name})` : '' }}</p>
-					<p>{{ new Date(item.metadata.when * 1000).toLocaleString() }}</p>
+					<p class="whitespace-nowrap">{{ new Date(item.metadata.when * 1000).toLocaleString() }}</p>
 				</div>
 			</div>
 		</template>
