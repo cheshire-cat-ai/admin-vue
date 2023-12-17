@@ -38,10 +38,5 @@
 			"@services/*": ["src/services/*"],
 			"@utils/*": ["src/utils/*"]
 		}
-	},
-	"references": [
-		{
-			"path": "./tsconfig.node.json"
-		}
-	]
+	}
 }
