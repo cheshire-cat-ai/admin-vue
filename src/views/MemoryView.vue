@@ -205,11 +205,11 @@ const dateFilter = ref(''),
 						class="input input-primary input-sm w-24 shadow-lg !outline-2" />
 				</div>
 			</div>
-			<div class="flex flex-wrap justify-center gap-2">
+			<!--<div class="flex flex-wrap justify-center gap-2">
 				<heroicons-adjustments-vertical class="h-6 w-6" />
 				<input v-model="dateFilter" type="date" class="input input-primary input-xs w-32" />
 				<input v-model="sourceFilter" type="text" placeholder="Source" class="input input-primary input-xs w-32" />
-			</div>
+			</div>-->
 		</div>
 		<div class="divider !my-0" />
 		<div class="join w-fit self-center shadow-xl">

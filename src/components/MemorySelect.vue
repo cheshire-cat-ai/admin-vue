@@ -28,7 +28,7 @@ const selectedCollection = ref('episodic')
 				:key="value"
 				class="indicator flex w-full flex-col gap-2 rounded bg-base-200/50 px-2 pb-4">
 				<div
-					class="indicator-center indicator-item tooltip before:rounded-lg before:font-medium before:text-base-100"
+					class="indicator-item indicator-center tooltip before:rounded-lg before:font-medium before:text-base-100"
 					:data-tip="item.score">
 					<span class="badge badge-neutral cursor-pointer font-medium text-base-100">
 						{{ Math.floor(item.score * 1000) / 1000 }}

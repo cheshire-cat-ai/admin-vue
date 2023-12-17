@@ -7,7 +7,7 @@ const { getProviderSchema, setProviderSettings, getProviderSettings } = storeLLM
 const { currentState: llmState, getAvailableProviders } = storeToRefs(storeLLM)
 
 const selectedProvider = ref(llmState.value.selected)
-const currentSchema = ref<Record<string, any>>()
+const currentSchema = ref<JSONSettings>()
 const currentSettings = ref<JSONSettings>({})
 const currentFields = ref<SchemaField[]>([])
 

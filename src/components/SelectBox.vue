@@ -72,7 +72,7 @@ defineExpose({
 						<li
 							:class="[
 								activeEl ? 'bg-primary !text-base-100' : '',
-								selectedEl ? 'bg-primary-focus font-semibold text-base-100' : 'text-neutral',
+								selectedEl ? 'bg-primary font-semibold text-base-100' : 'text-neutral',
 								'join-item relative cursor-default select-none px-3 py-2',
 							]">
 							<span class="block truncate">{{ element.label }}</span>

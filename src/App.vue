@@ -42,7 +42,7 @@ const currentComponentLoading = computed(() => {
 
 <template>
 	<div
-		class="flex min-h-screen flex-col scroll-smooth bg-base-200 text-sm text-neutral transition-colors selection:bg-primary md:text-base">
+		class="flex min-h-screen flex-col scroll-smooth bg-base-300 text-sm text-neutral transition-colors selection:bg-primary md:text-base">
 		<Teleport to="#modal">
 			<ModalBox ref="authBox" :shown="!isReadyAndAuth" :closable="false">
 				<div class="flex flex-col items-center justify-center gap-4 p-2 text-neutral">

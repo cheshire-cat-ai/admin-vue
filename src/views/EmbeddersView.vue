@@ -7,7 +7,7 @@ const { getEmbedderSchema, getEmbedderSettings, setEmbedderSettings } = storeEmb
 const { currentState: embedderState, getAvailableEmbedders } = storeToRefs(storeEmbedder)
 
 const selectedEmbedder = ref(embedderState.value.selected)
-const currentSchema = ref<Record<string, any>>()
+const currentSchema = ref<JSONSettings>()
 const currentSettings = ref<JSONSettings>({})
 const currentFields = ref<SchemaField[]>([])
 

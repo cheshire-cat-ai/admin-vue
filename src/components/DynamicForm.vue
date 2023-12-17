@@ -46,7 +46,7 @@ defineEmits<{
 		:validateOnMount="true"
 		:keepValues="false"
 		@submit="$emit('submit', $event)">
-		<div class="form-control w-full rounded bg-base-100 px-4 pb-4 pt-2 shadow">
+		<div v-if="fields.length > 0" class="form-control w-full rounded bg-base-100 px-4 pb-4 pt-2 shadow">
 			<div
 				v-for="{ name, label, children, description, ...attrs } in fields"
 				:key="name"
