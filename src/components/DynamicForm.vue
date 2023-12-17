@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { JSONSettings, SchemaField } from '@models/JSONSchema'
 import { merge } from 'lodash'
-import { Form, Field } from 'vee-validate'
+import { Form, Field, ErrorMessage } from 'vee-validate'
 
 // FEATURE: Improve form to allow any type of input based on json schema
 // Can also totally replace the current library used for dynamic form
@@ -80,6 +80,7 @@ defineEmits<{
 						</component>
 					</template>
 				</Field>
+				<ErrorMessage :name="name" class="text-xs text-error" />
 			</div>
 		</div>
 		<div class="mt-auto flex gap-2">
