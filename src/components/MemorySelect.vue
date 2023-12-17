@@ -12,7 +12,7 @@ const selectedCollection = ref('episodic')
 			<button
 				v-for="col in Object.keys(result)"
 				:key="col"
-				class="btn-ghost btn-sm inline-flex items-center gap-2 rounded font-semibold capitalize hover:bg-primary hover:text-base-100"
+				class="btn-ghost btn-sm inline-flex items-center gap-2 rounded font-semibold capitalize transition-colors hover:bg-primary hover:text-base-100"
 				:class="[selectedCollection === col ? 'bg-primary text-base-100' : 'text-primary']"
 				@click="selectedCollection = col">
 				<ph-chats v-if="col == 'episodic'" class="h-5 w-5" />
