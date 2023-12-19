@@ -28,10 +28,6 @@ const saveEmbedder = async (payload: JSONSettings) => {
 	if (res) emit('close')
 }
 
-onMounted(() => {
-	storeEmbedder.refreshSettings()
-})
-
 watchDeep(
 	embedderState,
 	() => {
