@@ -65,7 +65,7 @@ const currentComponentLoading = computed(() => {
 					enterActiveClass="animate__animated animate__fadeIn animate__fastest"
 					leaveActiveClass="animate__animated animate__fadeOut animate__fastest">
 					<KeepAlive>
-						<component :is="Component" v-lock="currentComponentLoading" :currentComponentLoading="currentComponentLoading" />
+						<component :is="Component" v-lock="currentComponentLoading" :loading="currentComponentLoading" />
 					</KeepAlive>
 				</Transition>
 			</template>

@@ -28,6 +28,10 @@ const saveProvider = async (payload: JSONSettings) => {
 	if (res) emit('close')
 }
 
+onMounted(() => {
+	storeLLM.refreshSettings()
+})
+
 watchDeep(
 	llmState,
 	() => {

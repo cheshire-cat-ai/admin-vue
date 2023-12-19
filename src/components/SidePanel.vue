@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
 	title: string
-	currentComponentLoading?: boolean
+	loading?: boolean
 }>()
 
 const [isOpen, togglePanel] = useToggle(false)
@@ -21,14 +21,14 @@ defineExpose({
 	isOpen,
 })
 
-const closeIfCurrentComponentNotLoading = () => {
-	if (!props.currentComponentLoading) isOpen.value = false
+const closeIfNotLoading = () => {
+	if (!props.loading) isOpen.value = false
 }
 </script>
 
 <template>
 	<TransitionRoot as="template" :show="isOpen">
-		<Dialog as="div" class="relative z-40" @close="closeIfCurrentComponentNotLoading()">
+		<Dialog as="div" class="relative z-40" @close="closeIfNotLoading()">
 			<TransitionChild
 				as="template"
 				enter="ease-in-out duration-300"
@@ -56,7 +56,7 @@ const closeIfCurrentComponentNotLoading = () => {
 										<DialogTitle class="text-lg font-semibold">
 											{{ title }}
 										</DialogTitle>
-										<button class="btn btn-circle btn-sm" @click="closeIfCurrentComponentNotLoading()">
+										<button class="btn btn-circle btn-sm" @click="closeIfNotLoading()">
 											<span class="sr-only">Close panel</span>
 											<heroicons-x-mark-20-solid class="h-6 w-6" />
 										</button>
