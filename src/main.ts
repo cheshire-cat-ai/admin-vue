@@ -1,11 +1,11 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { defineRule } from 'vee-validate'
-import * as AllRules from '@vee-validate/rules'
+import AllRules from '@vee-validate/rules'
 import vLock from '@/directives/vLock'
 
 Object.keys(AllRules).forEach(rule => {
-	defineRule(rule, (AllRules as Record<string, any>)[rule])
+	defineRule(rule, AllRules[rule])
 })
 
 import App from '@/App.vue'

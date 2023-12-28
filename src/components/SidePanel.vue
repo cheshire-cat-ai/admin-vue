@@ -51,7 +51,7 @@ const closeIfNotLoading = () => {
 							leave-from="translate-x-0"
 							leave-to="translate-x-full">
 							<DialogPanel class="pointer-events-auto relative w-screen md:max-w-xl">
-								<div class="flex h-full flex-col overflow-y-auto bg-base-300 text-neutral">
+								<div class="flex h-full flex-col bg-base-300 text-neutral">
 									<div class="flex items-center justify-between gap-2 p-2 md:p-4">
 										<DialogTitle class="text-lg font-semibold">
 											{{ title }}
@@ -61,7 +61,7 @@ const closeIfNotLoading = () => {
 											<heroicons-x-mark-20-solid class="h-6 w-6" />
 										</button>
 									</div>
-									<div class="relative flex flex-1 flex-col p-2 md:p-4">
+									<div class="relative flex flex-1 flex-col overflow-y-auto p-2 md:p-4">
 										<slot />
 									</div>
 								</div>
