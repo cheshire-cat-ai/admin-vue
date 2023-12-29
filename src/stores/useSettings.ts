@@ -38,7 +38,7 @@ export const useSettings = defineStore('settings', () => {
 		return result.data ?? result.message
 	}
 
-	const { state: cat } = useAsyncState(getStatus, {} as Status)
+	const { state: cat, execute } = useAsyncState(getStatus, {} as Status)
 
 	watchEffect(() => {
 		isReadyAndAuth.value = cat.value != 'Invalid API Key'
@@ -50,6 +50,7 @@ export const useSettings = defineStore('settings', () => {
 		toggleDark,
 		cat,
 		getStatus,
+		refreshStatus: execute,
 		isReadyAndAuth,
 	}
 })

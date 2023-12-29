@@ -8,7 +8,7 @@ const routesToExclude = ['home', 'settings']
 const route = useRoute()
 const { storeMapping } = useStoreMapping()
 const settings = useSettings()
-const { getStatus } = settings
+const { getStatus, refreshStatus } = settings
 const { isReadyAndAuth } = storeToRefs(settings)
 
 const authBox = ref<InstanceType<typeof ModalBox>>()
@@ -23,6 +23,7 @@ const authenticate = async () => {
 	if (!hasError.value) {
 		authBox.value?.toggleModal()
 		isReadyAndAuth.value = true
+		refreshStatus()
 		// TODO: Fix the composable
 		//resetAllStores()
 	}
