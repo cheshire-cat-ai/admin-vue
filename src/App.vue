@@ -19,7 +19,7 @@ const authenticate = async () => {
 	hasError.value = false
 	updateAuthKey(authKey.value)
 	const status = await getStatus()
-	hasError.value = status == undefined
+	hasError.value = status == 'Invalid API Key'
 	if (!hasError.value) {
 		authBox.value?.toggleModal()
 		isReadyAndAuth.value = true
@@ -32,7 +32,7 @@ const currentComponentLoading = computed(() => {
 	const routeName = route.name?.toString()
 	let store
 	if (routeName !== undefined && !routesToExclude.includes(routeName)) {
-		store = storeMapping[routeName]
+		store = storeMapping[routeName as keyof typeof storeMapping]
 		const { currentState } = storeToRefs(store)
 		return store && currentState.value.loading
 	}

@@ -35,13 +35,13 @@ export const useSettings = defineStore('settings', () => {
 
 	const getStatus = async () => {
 		const result = await tryRequest(apiClient.api?.status.home(), 'Getting Cheshire Cat status', 'Unable to fetch Cheshire Cat status')
-		return result.data
+		return result.data ?? result.message
 	}
 
 	const { state: cat } = useAsyncState(getStatus, {} as Status)
 
 	watchEffect(() => {
-		isReadyAndAuth.value = cat.value != undefined
+		isReadyAndAuth.value = cat.value != 'Invalid API Key'
 	})
 
 	return {

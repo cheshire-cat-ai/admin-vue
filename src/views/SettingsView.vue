@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SidePanel from '@components/SidePanel.vue'
 import { useSettings } from '@stores/useSettings'
+
 defineProps<{
 	loading: boolean
 }>()
@@ -27,7 +28,7 @@ const openSidePanel = (title: keyof typeof panelTitles) => {
 			<p class="text-lg font-bold">
 				Cheshire Cat AI - Version
 				<span class="text-primary">
-					{{ cat?.version ?? 'unknown' }}
+					{{ typeof cat == 'string' ? 'unknown' : cat.version }}
 				</span>
 			</p>
 		</div>

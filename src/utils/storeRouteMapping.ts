@@ -9,7 +9,7 @@ export default function useStoreMapping() {
 	const storePlugins = usePlugins()
 	const storeMemory = useMemory()
 
-	const storeMapping: Record<string, typeof storeEmbedder | typeof storeLLM | typeof storeMemory | typeof storePlugins> = {
+	const storeMapping = {
 		embedders: storeEmbedder,
 		providers: storeLLM,
 		memory: storeMemory,
