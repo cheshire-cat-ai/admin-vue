@@ -3,7 +3,7 @@ import { type JSONSettings, type SchemaField } from '@models/JSONSchema'
 import { useEmbedderConfig } from '@stores/useEmbedderConfig'
 
 const storeEmbedder = useEmbedderConfig()
-const { getEmbedderSchema, getEmbedderSettings, setEmbedderSettings } = storeEmbedder
+const { getEmbedderSchema, getEmbedderSettings, setEmbedderSettings, refreshSettings } = storeEmbedder
 const { currentState: embedderState, getAvailableEmbedders } = storeToRefs(storeEmbedder)
 
 const selectedEmbedder = ref(embedderState.value.selected)
@@ -14,6 +14,10 @@ const currentFields = ref<SchemaField[]>([])
 const emit = defineEmits<{
 	(e: 'close'): void
 }>()
+
+onMounted(() => {
+	refreshSettings()
+})
 
 const updateProperties = (selected = currentSchema.value?.title) => {
 	selectedEmbedder.value = selected

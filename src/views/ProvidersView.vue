@@ -3,7 +3,7 @@ import { type JSONSettings, type SchemaField } from '@models/JSONSchema'
 import { useLLMConfig } from '@stores/useLLMConfig'
 
 const storeLLM = useLLMConfig()
-const { getProviderSchema, setProviderSettings, getProviderSettings } = storeLLM
+const { getProviderSchema, setProviderSettings, getProviderSettings, refreshSettings } = storeLLM
 const { currentState: llmState, getAvailableProviders } = storeToRefs(storeLLM)
 
 const selectedProvider = ref(llmState.value.selected)
@@ -14,6 +14,10 @@ const currentFields = ref<SchemaField[]>([])
 const emit = defineEmits<{
 	(e: 'close'): void
 }>()
+
+onMounted(() => {
+	refreshSettings()
+})
 
 const updateProperties = (selected = currentSchema.value?.title) => {
 	selectedProvider.value = selected
