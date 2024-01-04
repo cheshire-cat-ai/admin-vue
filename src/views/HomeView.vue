@@ -163,7 +163,9 @@ const wipeHistory = async () => {
 	if (res) messagesState.value.messages = []
 }
 
-const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top: document.body.scrollHeight })
+const scrollToBottom = () => {
+	if (useRoute().path === '/') window.scrollTo({ behavior: 'smooth', left: 0, top: document.body.scrollHeight })
+}
 </script>
 
 <template>
