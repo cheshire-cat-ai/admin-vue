@@ -6,6 +6,7 @@ import ModalBox from '@components/ModalBox.vue'
 import { capitalize } from 'lodash'
 
 const messagesStore = useMessages()
+const route = useRoute()
 const { dispatchMessage, selectRandomDefaultMessages } = messagesStore
 const { currentState: messagesState } = storeToRefs(messagesStore)
 
@@ -163,7 +164,10 @@ const wipeHistory = async () => {
 	if (res) messagesState.value.messages = []
 }
 
-const scrollToBottom = () => window.scrollTo({ behavior: 'smooth', left: 0, top: document.body.scrollHeight })
+const scrollToBottom = () => {
+	const routePath = route.path?.toString()
+	if (routePath === '/') window.scrollTo({ behavior: 'smooth', left: 0, top: document.body.scrollHeight })
+}
 </script>
 
 <template>
