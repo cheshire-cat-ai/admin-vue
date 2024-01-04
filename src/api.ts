@@ -4,12 +4,18 @@ import { CatClient, type CancelablePromise } from 'ccat-api'
 
 const { DEV } = import.meta.env
 
+const getPort = () => {
+	if (DEV) return 1865
+	if (window.location.port == '443' || window.location.port == '80') return undefined
+	return parseInt(window.location.port)
+}
+
 /**
  * API client to make requests to the endpoints and passing the API_KEY for authentication.
  */
 export const apiClient = new CatClient({
 	baseUrl: window.location.hostname,
-	port: parseInt((DEV ? '1865' : window.location.port) ?? '80'),
+	port: getPort(),
 	secure: window.location.protocol === 'https:',
 	timeout: 15000,
 	ws: {
