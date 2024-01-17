@@ -3,8 +3,9 @@ import { useSettings } from '@stores/useSettings'
 import ModalBox from '@components/ModalBox.vue'
 import { updateAuthKey } from '@/api'
 import useStoreMapping from '@/utils/storeRouteMapping'
+import type { RouteRecordName } from 'vue-router'
 
-const routesToExclude = ['home', 'settings']
+const routesToExclude: RouteRecordName[] = ['home', 'settings']
 const route = useRoute()
 const { storeMapping } = useStoreMapping()
 const settings = useSettings()
@@ -30,10 +31,8 @@ const authenticate = async () => {
 }
 
 const currentComponentLoading = computed(() => {
-	const routeName = route.name?.toString()
-	let store
-	if (routeName !== undefined && !routesToExclude.includes(routeName)) {
-		store = storeMapping[routeName as keyof typeof storeMapping]
+	if (route.name !== undefined && !routesToExclude.includes(route.name ?? '')) {
+		const store = storeMapping[route.name as keyof typeof storeMapping]
 		const { currentState } = storeToRefs(store)
 		return store && currentState.value.loading
 	}
