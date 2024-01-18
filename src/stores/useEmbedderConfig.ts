@@ -11,7 +11,13 @@ export const useEmbedderConfig = defineStore('embedder', () => {
 
 	const { sendNotificationFromJSON } = useNotifications()
 
-	const { state: embedders, isLoading, execute } = useAsyncState(EmbedderConfigService.getEmbedders, undefined)
+	const {
+		state: embedders,
+		isLoading,
+		execute,
+	} = useAsyncState(EmbedderConfigService.getEmbedders, undefined, {
+		resetOnExecute: false,
+	})
 
 	const getAvailableEmbedders = computed(() => {
 		const settings = embedders.value?.data?.settings
