@@ -138,51 +138,62 @@ watchEffect(() => {
 						</template>
 					</UseImage>
 					<div class="flex grow flex-col">
-						<div class="flex justify-between">
-							<p class="text-sm font-medium text-neutral">
+						<div class="flex justify-between items-center">
+							<p class="flex items-baseline gap-1 text-sm font-medium text-neutral">
 								<span class="text-xl font-bold text-neutral">{{ item.name }}</span>
-								by
 								<a
-									:href="item.author_url"
+									:href="item.plugin_url"
 									target="_blank"
 									class="link"
-									:class="{ 'pointer-events-none no-underline': item.author_url === '' }">
-									{{ item.author_name }}
+									:class="{ 'pointer-events-none no-underline': item.plugin_url === '' }">
+									<span>v{{ item.version }}</span>
+									<span v-if="item.upgrade">➡ {{ item.upgrade }}</span>
 								</a>
 							</p>
-							<button v-if="item.url" class="btn btn-primary btn-xs rounded-md uppercase" @click="installRegistryPlugin(item.url)">
-								<heroicons-cloud-arrow-down-solid class="h-4 w-4" />
-								Install
-							</button>
-							<button
-								v-else-if="item.id !== 'core_plugin'"
-								class="btn btn-error btn-xs rounded-md uppercase text-base-100"
-								@click="openRemoveModal(item)">
-								<heroicons-trash-solid class="h-3 w-3" />
-								Delete
-							</button>
+							<div class="flex gap-2">
+								<button v-if="item.id !== 'core_plugin' && item.upgrade && item.plugin_url" 
+									class="btn btn-primary btn-xs rounded-md uppercase" @click="installRegistryPlugin(item.plugin_url)">
+									<ph-export-bold class="h-4 w-4" />
+									Upgrade
+								</button>
+								<button v-if="item.url" class="btn btn-primary btn-xs rounded-md uppercase" @click="installRegistryPlugin(item.url)">
+									<heroicons-cloud-arrow-down-solid class="h-4 w-4" />
+									Install
+								</button>
+								<button
+									v-else-if="item.id !== 'core_plugin'"
+									class="btn btn-error btn-xs rounded-md uppercase text-base-100"
+									@click="openRemoveModal(item)">
+									<heroicons-trash-solid class="h-3 w-3" />
+									Delete
+								</button>
+							</div>
 						</div>
 						<div class="flex h-6 items-center gap-1 text-sm font-medium text-neutral">
-							<p>v{{ item.version }}</p>
-							<a v-if="item.plugin_url" :href="item.plugin_url" target="_blank" class="btn btn-circle btn-xs">
-								<heroicons-link-20-solid class="h-4 w-4" />
+							<span>by</span>
+							<a
+								:href="item.author_url"
+								target="_blank"
+								class="link"
+								:class="{ 'pointer-events-none no-underline': item.author_url === '' }">
+								{{ item.author_name }}
 							</a>
 						</div>
 						<p class="my-2 text-sm">
 							{{ item.description }}
 						</p>
 						<!--<div v-if="item.hooks && item.tools" class="mb-2 flex items-center gap-2 text-xs">
-							<div v-if="item.hooks.length > 0" class="dropdown-hover dropdown">
+							<div v-if="item.hooks.length > 0" class="dropdown dropdown-hover">
 								<label tabindex="0" class="btn btn-square btn-ghost btn-outline btn-xs hover:bg-base-200">🪝</label>
 								<ul tabindex="0" class="dropdown-content z-10 mt-1 w-max rounded-md bg-base-200 p-2 shadow">
-									<div v-for="(hook, index) of groupBy(item.hooks, p => p.priority)" :key="index">
+									<div v-for="(hook, index) of groupBy(item.hooks, h => h.priority)" :key="index">
 										<span class="font-medium text-primary">Priority {{ index }} :</span>
-										<br/>
+										<br />
 										<p v-for="{ name } in hook" :key="name">- {{ name }}</p>
 									</div>
 								</ul>
 							</div>
-							<div v-if="item.tools.length > 0" class="dropdown-hover dropdown">
+							<div v-if="item.tools.length > 0" class="dropdown dropdown-hover">
 								<label tabindex="0" class="btn btn-square btn-ghost btn-outline btn-xs hover:bg-base-200">🛠️</label>
 								<ul tabindex="0" class="dropdown-content z-10 mt-1 w-max rounded-md bg-base-200 p-2 shadow">
 									<p v-for="{ name } in item.tools" :key="name">- {{ name }}</p>
