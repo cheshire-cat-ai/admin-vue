@@ -56,7 +56,7 @@ watchDeep(
 			<div class="flex grow flex-col gap-4">
 				<div class="flex items-center gap-1 font-medium">
 					<a v-if="currentSchema?.link" :href="currentSchema.link" target="_blank" class="btn btn-circle btn-primary btn-xs">
-						<heroicons-link-20-solid class="h-4 w-4" />
+						<heroicons-link-20-solid class="size-4" />
 					</a>
 					<span>{{ currentSchema?.description }}</span>
 				</div>

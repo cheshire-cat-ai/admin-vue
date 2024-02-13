@@ -95,7 +95,7 @@ const fileUrl = computed(() => {
 					</p>
 				</video>
 				<div v-else-if="file" class="flex items-center justify-center gap-2 rounded-lg bg-base-200 p-2 shadow-xl">
-					<ph-file-fill class="h-6 w-6" />
+					<ph-file-fill class="size-6" />
 					<div class="flex flex-col gap-1">
 						<p class="font-bold">{{ file.name.substring(0, file.name.lastIndexOf('.')) }}</p>
 						<p class="text-xs">{{ fileTypeSize }}</p>
@@ -113,17 +113,17 @@ const fileUrl = computed(() => {
 					<div v-for="data in why.intermediate_steps" :key="data[0]">
 						<div class="grid grid-cols-2 grid-rows-1 pt-2">
 							<div class="px-3 py-2">
-								<h2 class="flex items-center justify-center gap-2 pb-1 text-sm font-bold"><ph-nut class="h-5 w-5" />Triggered Tool</h2>
+								<h2 class="flex items-center justify-center gap-2 pb-1 text-sm font-bold"><ph-nut class="size-5" />Triggered Tool</h2>
 								<p class="mx-1 my-2 flex items-center justify-center rounded bg-base-200 px-4 py-2 text-sm">{{ data[0][0] }}</p>
 							</div>
 							<div class="px-3 py-2">
-								<h2 class="flex items-center justify-center gap-2 pb-1 text-sm font-bold"><ph-textbox class="h-5 w-5" />Tool Input</h2>
+								<h2 class="flex items-center justify-center gap-2 pb-1 text-sm font-bold"><ph-textbox class="size-5" />Tool Input</h2>
 								<p class="mx-1 my-2 flex items-center justify-center rounded bg-base-200 px-4 py-2 text-sm">{{ data[0][1] }}</p>
 							</div>
 						</div>
 						<div class="px-3 py-2">
 							<h2 class="flex items-center justify-center gap-2 pb-1 text-sm font-bold">
-								<ph-chat-centered-dots class="h-5 w-5" />Tool Output
+								<ph-chat-centered-dots class="size-5" />Tool Output
 							</h2>
 							<p class="mx-1 my-2 rounded bg-base-200 p-4 text-sm">{{ data[1] }}</p>
 						</div>

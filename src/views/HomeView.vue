@@ -177,7 +177,7 @@ const scrollToBottom = () => {
 			'pb-16 md:pb-20': !isTwoLines,
 			'pb-24 md:pb-28': isTwoLines,
 		}">
-		<div v-if="isOverDropZone" class="flex h-full w-full grow flex-col items-center justify-center py-4 md:pb-0">
+		<div v-if="isOverDropZone" class="flex size-full grow flex-col items-center justify-center py-4 md:pb-0">
 			<div class="relative flex w-full grow items-center justify-center rounded-md border-2 border-dashed border-primary p-2 md:p-4">
 				<p class="text-lg md:text-xl">
 					Drop
@@ -185,7 +185,7 @@ const scrollToBottom = () => {
 					to send to the Cheshire Cat, meow!
 				</p>
 				<button class="btn btn-circle btn-error btn-sm absolute right-2 top-2" @click="isOverDropZone = false">
-					<heroicons-x-mark-20-solid class="h-6 w-6" />
+					<heroicons-x-mark-20-solid class="size-6" />
 				</button>
 			</div>
 		</div>
@@ -229,7 +229,7 @@ const scrollToBottom = () => {
 			<div class="flex w-full max-w-screen-lg items-center gap-2 md:gap-4">
 				<div class="dropdown dropdown-top">
 					<button tabindex="0" :disabled="inputDisabled" class="btn btn-circle btn-primary shadow-lg">
-						<heroicons-bolt-solid class="h-5 w-5" />
+						<heroicons-bolt-solid class="size-5" />
 					</button>
 					<ul tabindex="0" class="dropdown-content join join-vertical !left-0 z-10 mb-6 w-48 p-0 [&>li>*]:bg-base-100">
 						<li>
@@ -238,7 +238,7 @@ const scrollToBottom = () => {
 								class="btn join-item w-full flex-nowrap px-2 text-left font-medium"
 								@click="downloadConversation(messagesState.messages.reduce((p, c) => `${p}${capitalize(c.sender)}: ${c.text}\n`, ''))">
 								<span class="rounded-lg p-1 text-primary">
-									<ph-export-bold class="h-5 w-5" />
+									<ph-export-bold class="size-5" />
 								</span>
 								<span class="grow">Export conversation</span>
 							</button>
@@ -249,7 +249,7 @@ const scrollToBottom = () => {
 								class="btn join-item w-full flex-nowrap px-2 text-left font-medium"
 								@click="uploadFile('memory')">
 								<span class="rounded-lg p-1 text-success">
-									<ph-brain-fill class="h-5 w-5" />
+									<ph-brain-fill class="size-5" />
 								</span>
 								<span class="grow">Upload memories</span>
 							</button>
@@ -260,7 +260,7 @@ const scrollToBottom = () => {
 								class="btn join-item w-full flex-nowrap px-2 text-left font-medium"
 								@click="boxUploadURL?.toggleModal()">
 								<span class="rounded-lg p-1 text-info">
-									<heroicons-globe-alt class="h-5 w-5" />
+									<heroicons-globe-alt class="size-5" />
 								</span>
 								<span class="grow">Upload url</span>
 							</button>
@@ -271,7 +271,7 @@ const scrollToBottom = () => {
 								class="btn join-item w-full flex-nowrap px-2 text-left font-medium"
 								@click="uploadFile('content')">
 								<span class="rounded-lg p-1 text-warning">
-									<heroicons-document-text-solid class="h-5 w-5" />
+									<heroicons-document-text-solid class="size-5" />
 								</span>
 								<span class="grow">Upload file</span>
 							</button>
@@ -279,7 +279,7 @@ const scrollToBottom = () => {
 						<li>
 							<button class="btn join-item w-full flex-nowrap px-2 text-left font-medium" @click="wipeHistory()">
 								<span class="rounded-lg p-1 text-error">
-									<heroicons-trash-solid class="h-5 w-5" />
+									<heroicons-trash-solid class="size-5" />
 								</span>
 								<span class="grow">Clear conversation</span>
 							</button>
@@ -300,7 +300,7 @@ const scrollToBottom = () => {
 							:disabled="inputDisabled || userMessage.length === 0"
 							class="btn btn-circle btn-ghost btn-sm self-center"
 							@click="sendMessage(userMessage)">
-							<heroicons-paper-airplane-solid class="h-6 w-6" />
+							<heroicons-paper-airplane-solid class="size-6" />
 						</button>
 					</div>
 				</div>
@@ -310,14 +310,14 @@ const scrollToBottom = () => {
 					:class="[isListening ? 'glass btn-outline' : '']"
 					:disabled="inputDisabled"
 					@click="toggleListening">
-					<heroicons-microphone-solid class="h-6 w-6" />
+					<heroicons-microphone-solid class="size-6" />
 				</button>
 			</div>
 			<button
 				v-if="isScrollable"
 				class="btn btn-circle btn-outline btn-primary btn-sm absolute bottom-28 right-4 bg-base-100"
 				@click="scrollToBottom">
-				<heroicons-arrow-down-20-solid class="h-5 w-5" />
+				<heroicons-arrow-down-20-solid class="size-5" />
 			</button>
 		</div>
 		<Teleport to="#modal">

@@ -45,7 +45,7 @@ defineExpose({
 		<slot :list="currentList" />
 		<div v-if="pageCount > 1" class="join self-center">
 			<button class="btn btn-square join-item btn-neutral btn-sm" :disabled="isFirstPage" @click="prev">
-				<ph-caret-left-fill class="h-5 w-5" />
+				<ph-caret-left-fill class="size-5" />
 			</button>
 			<button class="btn btn-square join-item btn-neutral btn-sm" :class="{ '!btn-primary': currentPage == 1 }" @click="currentPage = 1">
 				1
@@ -66,7 +66,7 @@ defineExpose({
 				</button>
 			</template>
 			<button class="btn btn-square join-item btn-neutral btn-sm" :disabled="isLastPage" @click="next">
-				<ph-caret-right-fill class="h-5 w-5" />
+				<ph-caret-right-fill class="size-5" />
 			</button>
 		</div>
 	</div>

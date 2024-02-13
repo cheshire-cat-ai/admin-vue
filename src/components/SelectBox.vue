@@ -51,7 +51,7 @@ defineExpose({
 				:class="[color, padding]"
 				class="flex w-full cursor-default items-center justify-between gap-1 rounded-md text-left text-sm">
 				<span class="block truncate font-semibold">{{ selected.label }}</span>
-				<heroicons-chevron-up-down-20-solid class="h-6 w-6" />
+				<heroicons-chevron-up-down-20-solid class="size-6" />
 			</ListboxButton>
 			<Transition
 				enterActiveClass="transition duration-200 ease-out"

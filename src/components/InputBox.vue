@@ -45,11 +45,11 @@ defineEmits<{
 				:placeholder="placeholder"
 				:disabled="disabled"
 				:autofocus="autofocus"
-				class="input input-primary input-sm w-full shadow-lg !outline-2 !transition-all"
+				class="input input-sm input-primary w-full shadow-lg !outline-2 !transition-all"
 				@keyup.enter="$emit('send')"
 				@input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" />
 			<button v-if="search" class="btn btn-square btn-ghost btn-sm absolute right-0 top-0" :disabled="disabled" @click="$emit('send')">
-				<heroicons-magnifying-glass-20-solid class="h-5 w-5" />
+				<heroicons-magnifying-glass-20-solid class="size-5" />
 			</button>
 		</div>
 		<label v-if="error" class="label">

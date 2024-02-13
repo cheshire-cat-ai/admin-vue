@@ -1,20 +1,4 @@
 @tailwind base;
-
-body {
-	scrollbar-width: 10px;
-	scrollbar-color: hsl(var(--b1)) hsl(var(--n));
-}
-
-::-webkit-scrollbar {
-	width: 10px;
-	height: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-	background: hsl(var(--n));
-	border-radius: 10px;
-}
-
 @tailwind components;
 @tailwind utilities;
 
@@ -28,6 +12,18 @@ body {
 @layer base {
 	html {
 		font-family: 'Rubik', system-ui, sans-serif;
+	}
+	body {
+		scrollbar-width: 10px;
+		scrollbar-color: theme(backgroundColor.base-100) theme(backgroundColor.neutral);
+	}
+	::-webkit-scrollbar {
+		width: 10px;
+		height: 10px;
+	}
+	::-webkit-scrollbar-thumb {
+		background: theme(backgroundColor.neutral);
+		border-radius: 10px;
 	}
 	input[type='number'] {
 		@apply !pr-0;

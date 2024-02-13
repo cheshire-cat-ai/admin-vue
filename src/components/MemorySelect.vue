@@ -15,9 +15,9 @@ const selectedCollection = ref('episodic')
 				class="btn-ghost btn-sm inline-flex items-center gap-2 rounded font-semibold capitalize transition-colors hover:bg-primary hover:text-base-100"
 				:class="[selectedCollection === col ? 'bg-primary text-base-100' : 'text-primary']"
 				@click="selectedCollection = col">
-				<ph-chats v-if="col == 'episodic'" class="h-5 w-5" />
-				<ph-files v-if="col == 'declarative'" class="h-5 w-5" />
-				<ph-toolbox v-if="col == 'procedural'" class="h-5 w-5" />
+				<ph-chats v-if="col == 'episodic'" class="size-5" />
+				<ph-files v-if="col == 'declarative'" class="size-5" />
+				<ph-toolbox v-if="col == 'procedural'" class="size-5" />
 				{{ col }}
 			</button>
 		</div>
