@@ -202,7 +202,7 @@ const dateFilter = ref(''),
 						:disabled="Boolean(memoryState.error) || memoryState.loading"
 						type="number"
 						min="1"
-						class="input input-primary input-sm w-24 shadow-lg !outline-2" />
+						class="input input-sm input-primary w-24 shadow-lg !outline-2" />
 				</div>
 			</div>
 			<!--<div class="flex flex-wrap justify-center gap-2">
@@ -361,7 +361,7 @@ const dateFilter = ref(''),
 				:disabled="Boolean(memoryState.error) || memoryState.loading"
 				class="btn btn-primary join-item hover:border-error hover:bg-error"
 				@click="boxWipe?.toggleModal()">
-				<heroicons-trash-solid class="h-4 w-4" />
+				<heroicons-trash-solid class="size-4" />
 				Wipe
 			</button>
 			<SelectBox
@@ -384,10 +384,10 @@ const dateFilter = ref(''),
 					<div v-for="(data, key) of clickedPoint" :key="key" className="grid grid-cols-4 grid-rows-1 gap-2 text-sm">
 						<div class="py-2 font-medium">{{ capitalize(key) }}</div>
 						<div v-if="key === 'collection' && typeof data == 'string'" class="col-span-3 inline-flex items-center gap-2 py-2">
-							<ph-chats v-if="data === 'episodic'" class="h-5 w-5" />
-							<ph-files v-if="data === 'declarative'" class="h-5 w-5" />
-							<ph-toolbox v-if="data === 'procedural'" class="h-5 w-5" />
-							<ph-list-magnifying-glass v-if="data === 'query'" class="h-5 w-5" />
+							<ph-chats v-if="data === 'episodic'" class="size-5" />
+							<ph-files v-if="data === 'declarative'" class="size-5" />
+							<ph-toolbox v-if="data === 'procedural'" class="size-5" />
+							<ph-list-magnifying-glass v-if="data === 'query'" class="size-5" />
 							{{ capitalize(data) }}
 						</div>
 						<!-- START THE BUTTON FOR DELETING THE SOURCE - THIS IS JUST EXPERIMENTAL: TO FINALIZE  -->
@@ -406,7 +406,7 @@ const dateFilter = ref(''),
 				v-if="clickedPoint && !['procedural', 'query'].includes(clickedPoint.collection)"
 				class="btn btn-primary btn-sm mt-auto hover:btn-error"
 				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
-				<heroicons-trash-solid class="h-4 w-4" />
+				<heroicons-trash-solid class="size-4" />
 				Delete memory point
 			</button>
 		</SidePanel>

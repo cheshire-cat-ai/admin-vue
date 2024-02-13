@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { upperFirst, isEmpty } from 'lodash'
+import { upperFirst, isEmpty, groupBy } from 'lodash'
 import { type Plugin } from 'ccat-api'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
@@ -17,6 +17,7 @@ const { upload: uploadFile } = uploadContent()
 
 const boxRemove = ref<InstanceType<typeof ModalBox>>()
 const settingsPanel = ref<InstanceType<typeof SidePanel>>()
+const infoPanel = ref<InstanceType<typeof SidePanel>>()
 const selectedPageSize = ref(25)
 const searchText = ref('')
 const pluginsList = ref<Plugin[]>([])
@@ -44,6 +45,11 @@ const deletePlugin = async () => {
 	if (!selectedPlugin.value) return
 	await removePlugin(selectedPlugin.value.id)
 	boxRemove.value?.toggleModal()
+}
+
+const openInfo = (plugin: Plugin) => {
+	selectedPlugin.value = plugin
+	infoPanel.value?.togglePanel()
 }
 
 const openSettings = async (plugin: Plugin) => {
@@ -93,7 +99,7 @@ watchEffect(() => {
 				:disabled="pluginsState.loading || Boolean(pluginsState.error)"
 				@send="queryPlugins()" />
 			<div class="flex flex-wrap justify-center gap-2">
-				<heroicons-adjustments-vertical class="h-6 w-6" />
+				<heroicons-adjustments-vertical class="size-6" />
 				<button
 					v-for="(v, k) of pluginsFilters"
 					:key="k"
@@ -112,14 +118,14 @@ watchEffect(() => {
 					href="https://cheshire-cat-ai.github.io/docs/plugins-registry/plugin-from-template/"
 					target="_blank"
 					class="btn btn-outline btn-primary btn-sm rounded-md hover:shadow-lg">
-					<ph-lightbulb-filament-fill class="h-4 w-4" />
+					<ph-lightbulb-filament-fill class="size-4" />
 					Create plugin
 				</a>
 				<button
 					:disabled="pluginsState.loading || Boolean(pluginsState.error)"
 					class="btn btn-primary btn-sm rounded-md hover:shadow-lg"
 					@click="uploadFile('plugin')">
-					<ph-export-bold class="h-4 w-4" />
+					<ph-export-bold class="size-4" />
 					Upload plugin
 				</button>
 			</div>
@@ -128,17 +134,17 @@ watchEffect(() => {
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<Pagination v-slot="{ list }" :list="filteredList" :pageSize="selectedPageSize">
 				<div v-for="item in list" :key="item.url ?? item.id" class="flex gap-2 rounded-xl bg-base-100 p-2 shadow md:gap-4 md:p-4">
-					<UseImage :src="item.thumb" class="h-20 w-20 self-center object-contain">
+					<UseImage :src="item.thumb" class="size-20 self-center object-contain">
 						<template #error>
 							<div class="avatar placeholder self-center">
-								<div class="h-20 w-20 rounded-lg bg-gradient-to-b from-accent to-primary text-base-100">
+								<div class="size-20 rounded-lg bg-gradient-to-b from-accent to-primary text-base-100">
 									<span class="text-5xl font-bold leading-3">{{ upperFirst(item.name)[0] }}</span>
 								</div>
 							</div>
 						</template>
 					</UseImage>
 					<div class="flex grow flex-col">
-						<div class="flex justify-between items-center">
+						<div class="flex items-center justify-between">
 							<p class="flex items-baseline gap-1 text-sm font-medium text-neutral">
 								<span class="text-xl font-bold text-neutral">{{ item.name }}</span>
 								<a
@@ -151,20 +157,22 @@ watchEffect(() => {
 								</a>
 							</p>
 							<div class="flex gap-2">
-								<button v-if="item.id !== 'core_plugin' && item.upgrade && item.plugin_url" 
-									class="btn btn-primary btn-xs rounded-md uppercase" @click="installRegistryPlugin(item.plugin_url)">
-									<ph-export-bold class="h-4 w-4" />
+								<button
+									v-if="item.id !== 'core_plugin' && item.upgrade && item.plugin_url"
+									class="btn btn-primary btn-xs rounded-md uppercase"
+									@click="installRegistryPlugin(item.plugin_url)">
+									<ph-export-bold class="size-4" />
 									Upgrade
 								</button>
 								<button v-if="item.url" class="btn btn-primary btn-xs rounded-md uppercase" @click="installRegistryPlugin(item.url)">
-									<heroicons-cloud-arrow-down-solid class="h-4 w-4" />
+									<heroicons-cloud-arrow-down-solid class="size-4" />
 									Install
 								</button>
 								<button
 									v-else-if="item.id !== 'core_plugin'"
 									class="btn btn-error btn-xs rounded-md uppercase text-base-100"
 									@click="openRemoveModal(item)">
-									<heroicons-trash-solid class="h-3 w-3" />
+									<heroicons-trash-solid class="size-3" />
 									Delete
 								</button>
 							</div>
@@ -182,24 +190,6 @@ watchEffect(() => {
 						<p class="my-2 text-sm">
 							{{ item.description }}
 						</p>
-						<!--<div v-if="item.hooks && item.tools" class="mb-2 flex items-center gap-2 text-xs">
-							<div v-if="item.hooks.length > 0" class="dropdown dropdown-hover">
-								<label tabindex="0" class="btn btn-square btn-ghost btn-outline btn-xs hover:bg-base-200">🪝</label>
-								<ul tabindex="0" class="dropdown-content z-10 mt-1 w-max rounded-md bg-base-200 p-2 shadow">
-									<div v-for="(hook, index) of groupBy(item.hooks, h => h.priority)" :key="index">
-										<span class="font-medium text-primary">Priority {{ index }} :</span>
-										<br />
-										<p v-for="{ name } in hook" :key="name">- {{ name }}</p>
-									</div>
-								</ul>
-							</div>
-							<div v-if="item.tools.length > 0" class="dropdown dropdown-hover">
-								<label tabindex="0" class="btn btn-square btn-ghost btn-outline btn-xs hover:bg-base-200">🛠️</label>
-								<ul tabindex="0" class="dropdown-content z-10 mt-1 w-max rounded-md bg-base-200 p-2 shadow">
-									<p v-for="{ name } in item.tools" :key="name">- {{ name }}</p>
-								</ul>
-							</div>
-						</div>-->
 						<div class="flex h-8 items-center justify-between gap-4">
 							<div class="flex flex-wrap gap-1">
 								<div v-for="tag in item.tags.split(',')" :key="tag" class="badge rounded-lg border-neutral font-medium">
@@ -211,7 +201,13 @@ watchEffect(() => {
 									v-if="item.id && !isEmpty(getSchema(item.id)) && item.active"
 									class="btn btn-circle btn-ghost btn-sm"
 									@click="openSettings(item)">
-									<heroicons-cog-6-tooth-20-solid class="h-5 w-5" />
+									<heroicons-cog-6-tooth-20-solid class="size-5" />
+								</button>
+								<button
+									v-if="(item.hooks && item.hooks.length > 0) || (item.tools && item.tools.length > 0)"
+									class="btn btn-circle btn-ghost btn-sm"
+									@click="openInfo(item)">
+									<heroicons-information-circle-solid class="size-5" />
 								</button>
 								<input
 									v-if="item.id !== 'core_plugin' && item.id"
@@ -234,6 +230,22 @@ watchEffect(() => {
 		<div v-else class="flex grow items-center justify-center">
 			<p class="rounded-lg bg-base-200 p-4 text-lg font-medium md:text-xl">No plugins found with this name.</p>
 		</div>
+		<SidePanel v-if="selectedPlugin" ref="infoPanel" title="Plugin Info">
+			<div class="flex flex-col items-center gap-2">
+				<div v-if="selectedPlugin.hooks && selectedPlugin.hooks.length > 0" class="w-full rounded-md bg-base-200 p-4">
+					<h3 class="text-lg font-bold">🪝 Hooks</h3>
+					<div v-for="(hook, index) of groupBy(selectedPlugin.hooks, h => h.priority)" :key="index">
+						<span class="font-medium text-primary">Priority {{ index }} :</span>
+						<br />
+						<p v-for="{ name } in hook" :key="name">- {{ name }}</p>
+					</div>
+				</div>
+				<div v-if="selectedPlugin.tools && selectedPlugin.tools.length > 0" class="w-full rounded-md bg-base-200 p-4">
+					<h3 class="text-lg font-bold">🛠️ Tools</h3>
+					<p v-for="{ name } in selectedPlugin.tools" :key="name">- {{ name }}</p>
+				</div>
+			</div>
+		</SidePanel>
 		<SidePanel ref="settingsPanel" title="Plugin Settings">
 			<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="savePluginSettings" />
 		</SidePanel>

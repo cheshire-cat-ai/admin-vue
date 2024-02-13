@@ -17,7 +17,7 @@ watchEffect(() => {
 <template>
 	<button class="btn btn-circle btn-ghost swap" @click="toggleDark()">
 		<input v-model="isDark" type="checkbox" class="modal-toggle" />
-		<heroicons-sun-solid class="swap-on h-6 w-6" />
-		<heroicons-moon-solid class="swap-off h-6 w-6" />
+		<heroicons-sun-solid class="swap-on size-6" />
+		<heroicons-moon-solid class="swap-off size-6" />
 	</button>
 </template>

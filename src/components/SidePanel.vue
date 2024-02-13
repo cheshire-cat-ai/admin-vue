@@ -58,7 +58,7 @@ const closeIfNotLoading = () => {
 										</DialogTitle>
 										<button class="btn btn-circle btn-sm" @click="closeIfNotLoading()">
 											<span class="sr-only">Close panel</span>
-											<heroicons-x-mark-20-solid class="h-6 w-6" />
+											<heroicons-x-mark-20-solid class="size-6" />
 										</button>
 									</div>
 									<div class="relative flex flex-1 flex-col overflow-y-auto p-2 md:p-4">

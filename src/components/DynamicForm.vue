@@ -58,7 +58,7 @@ defineEmits<{
 					<span v-if="attrs.default === undefined" class="font-bold text-error">*</span>
 					<span class="label-text font-medium">{{ label }}</span>
 					<div v-if="description" class="tooltip tooltip-right" :data-tip="description">
-						<ph-info class="h-4 w-4" />
+						<ph-info class="size-4" />
 					</div>
 				</label>
 				<CheckBox v-if="attrs.type === 'checkbox'" :indeterminate="attrs.default == undefined" :name="name" :rules="attrs.rules" />
@@ -72,7 +72,7 @@ defineEmits<{
 					:class="{
 						'textarea block w-full overflow-auto bg-base-200 !outline-offset-0': attrs.as === 'textarea',
 						'select select-bordered select-sm mb-2 w-full !leading-4': attrs.as === 'select',
-						'input input-primary input-sm mb-2 w-full !transition-all': attrs.as === 'input',
+						'input input-sm input-primary mb-2 w-full !transition-all': attrs.as === 'input',
 					}">
 					<template v-if="children && children.length">
 						<component :is="'option'" v-for="({ text, ...childAttrs }, idx) in children" :key="idx" v-bind="childAttrs">
@@ -85,11 +85,11 @@ defineEmits<{
 		</div>
 		<div class="mt-auto flex gap-2">
 			<button type="reset" class="btn btn-outline btn-sm grow normal-case">
-				<ph-arrow-counter-clockwise-bold class="h-4 w-4" />
+				<ph-arrow-counter-clockwise-bold class="size-4" />
 				Reset
 			</button>
 			<button type="submit" class="btn btn-primary btn-sm grow normal-case" :disabled="disabled || Object.keys(errors).length > 0">
-				<ph-floppy-disk-bold class="h-4 w-4" />
+				<ph-floppy-disk-bold class="size-4" />
 				Save
 			</button>
 		</div>

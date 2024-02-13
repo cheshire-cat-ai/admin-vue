@@ -25,6 +25,7 @@ declare module 'vue' {
     HeroiconsDocumentTextSolid: typeof import('~icons/heroicons/document-text-solid')['default']
     HeroiconsGlobeAlt: typeof import('~icons/heroicons/globe-alt')['default']
     HeroiconsHome20Solid: typeof import('~icons/heroicons/home20-solid')['default']
+    HeroiconsInformationCircleSolid: typeof import('~icons/heroicons/information-circle-solid')['default']
     HeroiconsLink20Solid: typeof import('~icons/heroicons/link20-solid')['default']
     HeroiconsMagnifyingGlass20Solid: typeof import('~icons/heroicons/magnifying-glass20-solid')['default']
     HeroiconsMicrophoneSolid: typeof import('~icons/heroicons/microphone-solid')['default']
