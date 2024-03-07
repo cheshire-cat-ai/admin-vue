@@ -19,7 +19,6 @@ export const apiClient = new CatClient({
 	secure: window.location.protocol === 'https:',
 	timeout: 15000,
 	ws: {
-		path: 'ws',
 		retries: 3,
 		delay: 3000,
 		onFailed: () => {
