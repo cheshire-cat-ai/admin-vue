@@ -22,8 +22,8 @@ jobs:
     timeout-minutes: 120
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 16
       - name: Install dependencies
@@ -31,14 +31,14 @@ jobs:
       - name: Build static files
         run: npm run build --if-present
       - name: Zip Release
-        uses: TheDoctor0/zip-release@0.7.1
+        uses: TheDoctor0/zip-release@0.7.6
         with:
           type: 'zip'
           filename: 'develop.zip'
           directory: './dist'
           path: '.'
       - name: Upload Release
-        uses: ncipollo/release-action@v1.12.0
+        uses: ncipollo/release-action@v1.14.0
         with:
           tag: 'Admin'
           artifacts: './dist/develop.zip'
