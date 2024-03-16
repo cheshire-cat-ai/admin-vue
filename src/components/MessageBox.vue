@@ -36,10 +36,15 @@ const props = defineProps<{
 	sender: 'bot' | 'user'
 	text: string
 	file?: File
-	why: any
+	why?: Record<string, any>
+	when: Date
 }>()
 
-const { text, sender, file } = toRefs(props)
+defineEmits<{
+	regenerate: []
+}>()
+
+const { text, sender, file, when } = toRefs(props)
 
 const showReadMore = ref(true)
 
@@ -48,6 +53,18 @@ const maxLength = 3000
 const isLengthy = computed(() => text.value.length > maxLength && sender.value === 'user')
 const renderedText = computed(() => {
 	return isLengthy.value && !showReadMore.value ? markdown.render(text.value.slice(0, maxLength)) : markdown.render(text.value)
+})
+
+const { copy } = useClipboard({ source: text })
+
+const timestamp = computed(() => {
+	const current = new Date()
+	const old = when.value
+	const isSameDay =
+		current.getFullYear() === old.getFullYear() && current.getMonth() === old.getMonth() && current.getDate() === old.getDate()
+	const time = useDateFormat(when, 'DD/MM/YYYY HH:mm').value
+	if (isSameDay) return time.split(' ')[1]
+	return time
 })
 
 const fileTypeSize = computed(() => {
@@ -67,13 +84,18 @@ const fileUrl = computed(() => {
 </script>
 
 <template>
-	<div class="chat my-2 gap-x-3" :class="[sender === 'bot' ? 'chat-start' : 'chat-end']">
-		<div class="chat-image row-[1] text-lg">
+	<div class="chat gap-x-3" :class="[sender === 'bot' ? 'chat-start' : 'chat-end']">
+		<div class="chat-image text-lg">
 			{{ sender === 'bot' ? '😺' : '🙂' }}
 		</div>
-		<div class="chat-bubble row-[1] flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral shadow-md">
+		<div class="chat-header">
+			{{ sender === 'bot' ? 'Cheshire Cat' : 'You' }}
+			<time class="text-xs opacity-50">{{ timestamp }}</time>
+		</div>
+		<div class="chat-bubble flex min-h-fit items-center break-words rounded-lg bg-base-100 p-0 text-neutral shadow-md">
 			<div class="p-2 md:p-3">
-				<p class="text-ellipsis" v-html="renderedText" />
+				<p v-if="text" class="text-ellipsis" v-html="renderedText" />
+				<p v-else class="text-ellipsis font-medium italic opacity-75">Cheshire Cat is thinking...</p>
 				<div v-if="isLengthy && !showReadMore" class="flex justify-end font-bold">
 					<a @click="showReadMore = true">Read more</a>
 				</div>
@@ -106,6 +128,14 @@ const fileUrl = computed(() => {
 			<button v-if="why" class="btn btn-circle btn-xs mx-2 border-0 bg-neutral/20 text-neutral" @click="whyPanel?.togglePanel()">
 				<p class="text-base">?</p>
 			</button>
+		</div>
+		<div v-if="sender === 'bot'" class="chat-footer mt-1 flex gap-1">
+			<div class="tooltip tooltip-bottom" data-tip="Copy">
+				<button class="btn btn-square btn-ghost btn-xs" @click="copy()"><heroicons-clipboard class="size-4" /></button>
+			</div>
+			<div class="tooltip tooltip-bottom" data-tip="Regenerate">
+				<button class="btn btn-square btn-ghost btn-xs" @click="$emit('regenerate')"><heroicons-arrow-path class="size-4" /></button>
+			</div>
 		</div>
 		<SidePanel v-if="why" ref="whyPanel" title="Why this response">
 			<div class="flex flex-col gap-4">

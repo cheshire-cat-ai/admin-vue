@@ -1,6 +1,6 @@
 import type { MessagesState } from '@stores/types'
 import type { BotMessage, UserMessage } from '@models/Message'
-import { now, uniqueId } from 'lodash'
+import { uniqueId } from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
 import { apiClient } from '@/api'
 import { useSettings } from '@stores/useSettings'
@@ -11,7 +11,6 @@ export const useMessages = defineStore('messages', () => {
 		ready: false,
 		loading: false,
 		messages: [],
-		tokens: [],
 		defaultMessages: [
 			"What's up?",
 			"Who's the Queen of Hearts?",
@@ -40,11 +39,11 @@ export const useMessages = defineStore('messages', () => {
 	const { state: history } = useAsyncState(MemoryService.getConversation, [])
 
 	watchEffect(() => {
-		history.value.forEach(({ who, message, why }) => {
+		history.value.forEach(({ who, message, why, when }) => {
 			addMessage({
 				text: message,
-				timestamp: now(),
 				sender: who == 'AI' ? 'bot' : 'user',
+				when: new Date(when * 1000),
 				why,
 			})
 		})
@@ -69,18 +68,36 @@ export const useMessages = defineStore('messages', () => {
 			})
 			.onMessage(({ content, type, why }) => {
 				switch (type) {
-					case 'chat_token':
-						currentState.tokens.push(content)
+					case 'chat_token': {
+						if (currentState.generating == undefined) {
+							const id = addMessage({
+								text: content,
+								sender: 'bot',
+								when: new Date(),
+								why,
+							})
+							currentState.generating = id
+						} else {
+							const index = currentState.messages.findIndex(m => m.id === currentState.generating)
+							if (index !== -1) currentState.messages[index].text += content
+						}
 						break
-					case 'chat':
-						currentState.tokens = []
-						addMessage({
-							text: content,
-							sender: 'bot',
-							timestamp: now(),
-							why,
-						})
+					}
+					case 'chat': {
+						if (currentState.generating) {
+							const index = currentState.messages.findIndex(m => m.id === currentState.generating)
+							currentState.messages[index].text = content
+							currentState.generating = undefined
+						} else {
+							addMessage({
+								text: content,
+								sender: 'bot',
+								when: new Date(),
+								why,
+							})
+						}
 						break
+					}
 					case 'notification':
 						showNotification({
 							type: 'info',
@@ -112,12 +129,14 @@ export const useMessages = defineStore('messages', () => {
 	 */
 	const addMessage = (message: Omit<BotMessage, 'id'> | Omit<UserMessage, 'id'>) => {
 		currentState.error = undefined
+		const id = uniqueId('m_')
 		const msg = {
-			id: uniqueId('m_'),
+			id,
 			...message,
 		}
 		currentState.messages.push(msg)
 		if (!(message as UserMessage)?.file) currentState.loading = msg.sender === 'user'
+		return id
 	}
 
 	/**
@@ -132,21 +151,23 @@ export const useMessages = defineStore('messages', () => {
 	/**
 	 * Sends a message to the messages service and dispatches it to the store
 	 */
-	const dispatchMessage = (message: string | File) => {
+	const dispatchMessage = (message: string | File, store = true) => {
 		if (typeof message === 'string') {
 			apiClient.send(message)
-			addMessage({
-				text: message.trim(),
-				timestamp: now(),
-				sender: 'user',
-			})
+			if (store)
+				addMessage({
+					text: message.trim(),
+					when: new Date(),
+					sender: 'user',
+				})
 		} else {
-			addMessage({
-				text: '',
-				timestamp: now(),
-				sender: 'user',
-				file: message,
-			})
+			if (store)
+				addMessage({
+					text: '',
+					when: new Date(),
+					sender: 'user',
+					file: message,
+				})
 		}
 	}
 

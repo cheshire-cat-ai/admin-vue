@@ -152,6 +152,15 @@ const preventSend = (e: KeyboardEvent) => {
 	}
 }
 
+const regenerateResponse = (msgId: string) => {
+	const index = messagesState.value.messages.findIndex(m => m.id === msgId)
+	if (index === -1) return
+	const message = messagesState.value.messages[index - 1]
+	messagesState.value.generating = msgId
+	messagesState.value.messages[index].text = ''
+	dispatchMessage(message.text, false)
+}
+
 const generatePlaceholder = (isLoading: boolean, isRecording: boolean, error?: string) => {
 	if (error) return 'Well, well, well, looks like something has gone amiss'
 	if (isLoading) return 'The enigmatic Cheshire cat is pondering...'
@@ -172,7 +181,7 @@ const scrollToBottom = () => {
 <template>
 	<div
 		ref="dropContentZone"
-		class="relative flex w-full max-w-screen-lg flex-col justify-center gap-4 self-center overflow-hidden !pt-0 text-sm"
+		class="relative flex w-full max-w-screen-xl flex-col justify-center gap-4 self-center overflow-hidden !pt-0 text-sm"
 		:class="{
 			'pb-16 md:pb-20': !isTwoLines,
 			'pb-24 md:pb-28': isTwoLines,
@@ -190,29 +199,24 @@ const scrollToBottom = () => {
 			</div>
 		</div>
 		<ErrorBox v-if="!messagesState.ready" :load="messagesState.loading" :error="messagesState.error" />
-		<div v-else-if="messagesState.messages.length > 0" class="flex grow flex-col overflow-y-auto">
+		<div v-else-if="messagesState.messages.length > 0" class="flex grow flex-col">
 			<MessageBox
 				v-for="msg in messagesState.messages"
 				:key="msg.id"
 				:sender="msg.sender"
 				:text="msg.text"
+				:when="msg.when"
 				:file="msg.sender === 'user' ? msg.file : undefined"
-				:why="msg.sender === 'bot' ? msg.why : ''" />
+				:why="msg.sender === 'bot' ? msg.why : undefined"
+				@regenerate="regenerateResponse(msg.id)" />
 			<p v-if="messagesState.error" class="w-fit rounded-md bg-error p-4 font-semibold text-base-100">
 				{{ messagesState.error }}
 			</p>
-			<div v-else-if="messagesState.tokens.length > 0" class="mb-2 ml-2 flex items-center gap-2">
-				<span class="text-lg">😺</span>
-				<p class="flex max-w-[80%] items-center gap-2 text-base-content">
-					<span class="loading loading-dots loading-xs shrink-0" />
-					{{ messagesState.tokens.join('') }}
-				</p>
-			</div>
-			<div v-else-if="!messagesState.error && messagesState.loading" class="mb-2 ml-2 flex items-center gap-2">
+			<div v-else-if="!messagesState.error && messagesState.loading && !messagesState.generating" class="mb-2 ml-2 flex items-center gap-2">
 				<span class="text-lg">😺</span>
 				<p class="flex items-center gap-2">
 					<span class="loading loading-dots loading-xs shrink-0" />
-					Cheshire cat is thinking...
+					Cheshire Cat is thinking...
 				</p>
 			</div>
 		</div>
@@ -226,7 +230,7 @@ const scrollToBottom = () => {
 			</div>
 		</div>
 		<div class="fixed bottom-0 left-0 flex w-full items-center justify-center bg-gradient-to-t from-base-200 px-2 py-4">
-			<div class="flex w-full max-w-screen-lg items-center gap-2 md:gap-4">
+			<div class="flex w-full max-w-screen-xl items-center gap-2 md:gap-4">
 				<div class="dropdown dropdown-top">
 					<button tabindex="0" :disabled="inputDisabled" class="btn btn-circle btn-primary shadow-lg">
 						<heroicons-bolt-solid class="size-5" />
