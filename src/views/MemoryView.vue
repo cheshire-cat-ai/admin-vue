@@ -178,8 +178,7 @@ const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex
 	pointInfoPanel.value?.togglePanel()
 }
 
-const dateFilter = ref(''),
-	sourceFilter = ref('')
+/*const dateFilter = ref(''), sourceFilter = ref('')*/
 </script>
 
 <template>

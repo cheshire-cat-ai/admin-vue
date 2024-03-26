@@ -4,7 +4,6 @@ import { useField } from 'vee-validate'
 const props = defineProps<{
 	name: string
 	indeterminate: boolean
-	modelValue?: boolean
 	rules?: string
 }>()
 

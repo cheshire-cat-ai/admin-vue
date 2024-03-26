@@ -33,7 +33,7 @@ watchImmediate(props, () => {
 })
 
 defineEmits<{
-	(e: 'submit', payload: JSONSettings): void
+	submit: [payload: JSONSettings]
 }>()
 </script>
 

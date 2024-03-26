@@ -1,42 +1,40 @@
 <script setup lang="ts">
-// TODO: Use generics when https://github.com/vuejs/core/issues/8373 is fixed
 interface SelectItem {
 	label: string
-	value: any
+	value: string
 }
 
 const props = withDefaults(
 	defineProps<{
 		list: SelectItem[]
-		modelValue?: SelectItem['value']
 		color?: string
 		padding?: string
 		disabled?: boolean
 	}>(),
 	{
-		modelValue: (p: { list: SelectItem[] }) => p.list[0].value, // TODO: Fix this (why it doesn't infer the type of props?)
 		color: 'bg-base-100',
 		padding: 'p-2',
 		disabled: false,
 	},
 )
 
-const { list, modelValue } = toRefs(props)
+const model = defineModel<string>()
+
+const { list } = toRefs(props)
 
 const selected = ref(list.value[0])
 
 watchImmediate(list, () => {
-	selected.value = list.value.find(v => v.value == modelValue.value) ?? list.value[0]
+	selected.value = list.value.find(v => v.value == model.value) ?? list.value[0]
 })
 
 const emit = defineEmits<{
-	(e: 'update:modelValue', payload: unknown): void
-	(e: 'update', payload: SelectItem): void
+	update: [payload: SelectItem]
 }>()
 
 const updateSelect = (value: SelectItem) => {
-	emit('update:modelValue', value.value)
 	emit('update', value)
+	selected.value = value
 }
 
 defineExpose({

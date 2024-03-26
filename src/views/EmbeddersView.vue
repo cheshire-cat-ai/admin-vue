@@ -12,7 +12,7 @@ const currentSettings = ref<JSONSettings>({})
 const currentFields = ref<SchemaField[]>([])
 
 const emit = defineEmits<{
-	(e: 'close'): void
+	close: []
 }>()
 
 onMounted(() => {

@@ -7,7 +7,7 @@ const props = defineProps<{
 const [isOpen, togglePanel] = useToggle(false)
 
 const emit = defineEmits<{
-	(e: 'close'): void
+	close: []
 }>()
 
 const closePanel = () => {
