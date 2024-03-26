@@ -48,7 +48,7 @@ watchDeep(
 			<SelectBox
 				v-model="selectedProvider"
 				:list="getAvailableProviders.map(p => ({ label: p.humanReadableName ?? p.title, value: p.title }))"
-				@update="e => updateProperties(e.value)" />
+				@update="(e: any) => updateProperties(e.value)" />
 			<div class="flex grow flex-col gap-4">
 				<div class="flex items-center gap-1 font-medium">
 					<a v-if="currentSchema?.link" :href="currentSchema.link" target="_blank" class="btn btn-circle btn-xs text-primary">
