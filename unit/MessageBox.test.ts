@@ -8,7 +8,7 @@ describe('MessageBox', () => {
 			props: {
 				sender: 'user',
 				text: 'Hello dear cat!',
-				when: Date.now(),
+				when: new Date(),
 			},
 		})
 
@@ -25,6 +25,7 @@ describe('MessageBox', () => {
 			props: {
 				sender: 'bot',
 				text: 'Hello dear human!',
+				when: new Date(),
 				why: {},
 			},
 		})
