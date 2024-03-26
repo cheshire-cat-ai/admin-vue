@@ -43,7 +43,7 @@ export const useMessages = defineStore('messages', () => {
 			addMessage({
 				text: message,
 				sender: who == 'AI' ? 'bot' : 'user',
-				when: new Date(when * 1000),
+				when: when ? new Date(when * 1000) : new Date(),
 				why,
 			})
 		})
