@@ -14,7 +14,7 @@ export interface MessageBase {
  */
 export interface BotMessage extends MessageBase {
 	readonly sender: 'bot'
-	readonly why: any
+	why: any
 }
 
 /**

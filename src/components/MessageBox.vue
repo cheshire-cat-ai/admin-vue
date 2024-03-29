@@ -124,10 +124,12 @@ const fileUrl = computed(() => {
 					</div>
 				</div>
 			</div>
-			<div v-if="why" class="divider divider-horizontal m-0 w-px before:bg-base-200 after:bg-base-200" />
-			<button v-if="why" class="btn btn-circle btn-xs mx-2 border-0 bg-neutral/20 text-neutral" @click="whyPanel?.togglePanel()">
-				<p class="text-base">?</p>
-			</button>
+			<template v-if="why">
+				<div class="divider divider-horizontal m-0 w-px before:bg-base-200 after:bg-base-200" />
+				<button class="btn btn-circle btn-xs mx-2 border-0 bg-neutral/20 text-neutral" @click="whyPanel?.togglePanel()">
+					<p class="text-base">?</p>
+				</button>
+			</template>
 		</div>
 		<div v-if="sender === 'bot'" class="chat-footer mt-1 flex gap-1">
 			<div class="tooltip tooltip-bottom" data-tip="Copy">

@@ -170,7 +170,10 @@ const generatePlaceholder = (isLoading: boolean, isRecording: boolean, error?: s
 
 const wipeHistory = async () => {
 	const res = await wipeConversation()
-	if (res) messagesState.value.messages = []
+	if (res) {
+		messagesState.value.messages = []
+		messagesStore.history = []
+	}
 }
 
 const scrollToBottom = () => {
