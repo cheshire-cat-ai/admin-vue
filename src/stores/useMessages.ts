@@ -87,7 +87,7 @@ export const useMessages = defineStore('messages', () => {
 						if (currentState.generating) {
 							const index = currentState.messages.findIndex(m => m.id === currentState.generating)
 							currentState.messages[index].text = content
-							if (currentState.messages[index].sender === 'bot') currentState.messages[index].why = why
+							;(currentState.messages[index] as BotMessage).why = why
 							currentState.generating = undefined
 						} else {
 							addMessage({
