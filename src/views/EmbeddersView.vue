@@ -60,7 +60,7 @@ watchDeep(
 					</a>
 					<span>{{ currentSchema?.description }}</span>
 				</div>
-				<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="saveEmbedder" />
+				<DynamicForm v-model="currentSettings" :fields="currentFields" @submit="saveEmbedder" />
 			</div>
 		</div>
 	</div>

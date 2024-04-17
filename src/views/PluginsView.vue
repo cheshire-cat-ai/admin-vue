@@ -246,8 +246,8 @@ watchEffect(() => {
 				</div>
 			</div>
 		</SidePanel>
-		<SidePanel ref="settingsPanel" title="Plugin Settings">
-			<DynamicForm :fields="currentFields" :initial="currentSettings" @submit="savePluginSettings" />
+		<SidePanel v-if="currentSettings" ref="settingsPanel" title="Plugin Settings">
+			<DynamicForm v-model="currentSettings" :fields="currentFields" @submit="savePluginSettings" />
 		</SidePanel>
 		<Teleport to="#modal">
 			<ModalBox ref="boxRemove">

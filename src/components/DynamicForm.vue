@@ -9,26 +9,25 @@ import { Form, Field, ErrorMessage } from 'vee-validate'
 const props = withDefaults(
 	defineProps<{
 		fields: SchemaField[]
-		initial?: JSONSettings
 		disabled?: boolean
 	}>(),
 	{
-		initial: () => ({}),
 		disabled: false,
 	},
 )
 
+const initValues = defineModel<JSONSettings>({ required: true })
+
 const dynamicForm = ref<InstanceType<typeof Form>>()
-const initValues = ref<JSONSettings>()
 
 watchImmediate(props, () => {
-	initValues.value = props.fields.reduce((p, c) => {
+	const model = props.fields.reduce((p, c) => {
 		return {
 			...p,
 			[c.name]: c.default,
 		}
 	}, {})
-	initValues.value = merge(initValues.value, props.initial)
+	initValues.value = merge(model, initValues.value)
 	dynamicForm.value?.resetForm()
 })
 
