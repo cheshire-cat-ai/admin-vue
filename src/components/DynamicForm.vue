@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { JSONSettings, SchemaField } from '@models/JSONSchema'
-import { merge } from 'lodash'
 import { Form, Field, ErrorMessage } from 'vee-validate'
 
 // FEATURE: Improve form to allow any type of input based on json schema
@@ -9,33 +8,35 @@ import { Form, Field, ErrorMessage } from 'vee-validate'
 const props = withDefaults(
 	defineProps<{
 		fields: SchemaField[]
+		values?: JSONSettings
 		disabled?: boolean
 	}>(),
 	{
 		disabled: false,
+		values: () => ({}),
 	},
 )
 
-const { fields } = toRefs(props)
-
-const initValues = defineModel<JSONSettings>()
+const { fields, values } = toRefs(props)
 
 const dynamicForm = ref<InstanceType<typeof Form>>()
 
 watchImmediate(
-	fields,
+	values,
 	() => {
-		const model = props.fields.reduce((p, c) => {
-			return {
-				...p,
-				[c.name]: c.default,
-			}
-		}, {})
-		initValues.value = merge(model, initValues.value)
-		dynamicForm.value?.resetForm()
+		dynamicForm.value?.setValues(values.value)
 	},
 	{ deep: true },
 )
+
+const initial = computed(() => {
+	return fields.value.reduce((p, c) => {
+		return {
+			...p,
+			[c.name]: c.default,
+		}
+	}, {}) as JSONSettings
+})
 
 defineEmits<{
 	submit: [payload: JSONSettings]
@@ -47,7 +48,7 @@ defineEmits<{
 		v-slot="{ errors }"
 		ref="dynamicForm"
 		class="flex h-full flex-col gap-4"
-		:initialValues="initValues"
+		:initialValues="initial"
 		:validateOnMount="true"
 		:keepValues="false"
 		@submit="$emit('submit', $event)">
