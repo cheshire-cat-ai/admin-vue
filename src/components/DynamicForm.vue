@@ -24,7 +24,7 @@ const dynamicForm = ref<InstanceType<typeof Form>>()
 watchImmediate(
 	values,
 	() => {
-		dynamicForm.value?.setValues(values.value)
+		dynamicForm.value?.resetForm(values.value)
 	},
 	{ deep: true },
 )
@@ -50,7 +50,7 @@ defineEmits<{
 		class="flex h-full flex-col gap-4"
 		:initialValues="initial"
 		:validateOnMount="true"
-		:keepValues="false"
+		:keepValues="true"
 		@submit="$emit('submit', $event)">
 		<div v-if="fields.length > 0" class="form-control w-full rounded bg-base-100 p-4 shadow">
 			<div
