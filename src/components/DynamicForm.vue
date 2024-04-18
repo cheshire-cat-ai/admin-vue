@@ -20,15 +20,6 @@ const props = withDefaults(
 const { fields, values } = toRefs(props)
 
 const dynamicForm = ref<InstanceType<typeof Form>>()
-
-watchImmediate(
-	values,
-	() => {
-		dynamicForm.value?.resetForm(values.value)
-	},
-	{ deep: true },
-)
-
 const initial = computed(() => {
 	return fields.value.reduce((p, c) => {
 		return {
@@ -36,6 +27,10 @@ const initial = computed(() => {
 			[c.name]: c.default,
 		}
 	}, {}) as JSONSettings
+})
+
+watchEffect(() => {
+	dynamicForm.value?.setValues(values.value)
 })
 
 defineEmits<{
@@ -50,7 +45,7 @@ defineEmits<{
 		class="flex h-full flex-col gap-4"
 		:initialValues="initial"
 		:validateOnMount="true"
-		:keepValues="true"
+		:keepValues="false"
 		@submit="$emit('submit', $event)">
 		<div v-if="fields.length > 0" class="form-control w-full rounded bg-base-100 p-4 shadow">
 			<div
