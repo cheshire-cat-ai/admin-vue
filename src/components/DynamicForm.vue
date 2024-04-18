@@ -16,20 +16,26 @@ const props = withDefaults(
 	},
 )
 
-const initValues = defineModel<JSONSettings>({ required: true })
+const { fields } = toRefs(props)
+
+const initValues = defineModel<JSONSettings>()
 
 const dynamicForm = ref<InstanceType<typeof Form>>()
 
-watchImmediate(props, () => {
-	const model = props.fields.reduce((p, c) => {
-		return {
-			...p,
-			[c.name]: c.default,
-		}
-	}, {})
-	initValues.value = merge(model, initValues.value)
-	dynamicForm.value?.resetForm()
-})
+watchImmediate(
+	fields,
+	() => {
+		const model = props.fields.reduce((p, c) => {
+			return {
+				...p,
+				[c.name]: c.default,
+			}
+		}, {})
+		initValues.value = merge(model, initValues.value)
+		dynamicForm.value?.resetForm()
+	},
+	{ deep: true },
+)
 
 defineEmits<{
 	submit: [payload: JSONSettings]
