@@ -29,10 +29,15 @@ const initial = computed(() => {
 	}, {}) as JSONSettings
 })
 
-watchEffect(() => {
-	dynamicForm.value?.setValues(values.value)
-	console.log('Form values', dynamicForm.value?.values)
-})
+watchImmediate(
+	values,
+	() => {
+		console.warn('Initial values', values.value)
+		dynamicForm.value?.resetForm(values.value)
+		console.log('Form values', dynamicForm.value?.values)
+	},
+	{ deep: true },
+)
 
 defineEmits<{
 	submit: [payload: JSONSettings]
