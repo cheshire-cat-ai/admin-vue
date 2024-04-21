@@ -31,6 +31,7 @@ const initial = computed(() => {
 
 watchEffect(() => {
 	dynamicForm.value?.setValues(values.value)
+	console.log('Form values', dynamicForm.value?.values)
 })
 
 defineEmits<{
