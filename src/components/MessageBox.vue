@@ -124,12 +124,6 @@ const fileUrl = computed(() => {
 					</div>
 				</div>
 			</div>
-			<template v-if="why">
-				<div class="divider divider-horizontal m-0 w-px before:bg-base-200 after:bg-base-200" />
-				<button class="btn btn-circle btn-xs mx-2 border-0 bg-neutral/20 text-neutral" @click="whyPanel?.togglePanel()">
-					<p class="text-base">?</p>
-				</button>
-			</template>
 		</div>
 		<div v-if="sender === 'bot'" class="chat-footer mt-1 flex gap-1">
 			<div class="tooltip tooltip-bottom" data-tip="Copy">
@@ -137,6 +131,9 @@ const fileUrl = computed(() => {
 			</div>
 			<div class="tooltip tooltip-bottom" data-tip="Regenerate">
 				<button class="btn btn-square btn-ghost btn-xs" @click="$emit('regenerate')"><heroicons-arrow-path class="size-4" /></button>
+			</div>
+			<div v-if="why" class="tooltip tooltip-bottom" data-tip="Why this response">
+				<button class="btn btn-square btn-ghost btn-xs" @click="whyPanel?.togglePanel()"><ph-question-mark class="size-4" /></button>
 			</div>
 		</div>
 		<SidePanel v-if="why" ref="whyPanel" title="Why this response">

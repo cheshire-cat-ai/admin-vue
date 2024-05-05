@@ -64,6 +64,7 @@ declare module 'vue' {
     PhListMagnifyingGlass: typeof import('~icons/ph/list-magnifying-glass')['default']
     PhNut: typeof import('~icons/ph/nut')['default']
     PhPlugFill: typeof import('~icons/ph/plug-fill')['default']
+    PhQuestionMark: typeof import('~icons/ph/question-mark')['default']
     PhTextbox: typeof import('~icons/ph/textbox')['default']
     PhToolbox: typeof import('~icons/ph/toolbox')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

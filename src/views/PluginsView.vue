@@ -230,9 +230,9 @@ watchEffect(() => {
 		<div v-else class="flex grow items-center justify-center">
 			<p class="rounded-lg bg-base-200 p-4 text-lg font-medium md:text-xl">No plugins found with this name.</p>
 		</div>
-		<SidePanel v-if="selectedPlugin" ref="infoPanel" title="Plugin Info">
+		<SidePanel ref="infoPanel" title="Plugin Info">
 			<div class="flex flex-col items-center gap-2">
-				<div v-if="selectedPlugin.hooks && selectedPlugin.hooks.length > 0" class="w-full rounded-md bg-base-200 p-4">
+				<div v-if="selectedPlugin?.hooks && selectedPlugin.hooks.length > 0" class="w-full rounded-md bg-base-200 p-4">
 					<h3 class="text-lg font-bold">🪝 Hooks</h3>
 					<div v-for="(hook, index) of groupBy(selectedPlugin.hooks, h => h.priority)" :key="index">
 						<span class="font-medium text-primary">Priority {{ index }} :</span>
@@ -240,7 +240,7 @@ watchEffect(() => {
 						<p v-for="{ name } in hook" :key="name">- {{ name }}</p>
 					</div>
 				</div>
-				<div v-if="selectedPlugin.tools && selectedPlugin.tools.length > 0" class="w-full rounded-md bg-base-200 p-4">
+				<div v-if="selectedPlugin?.tools && selectedPlugin.tools.length > 0" class="w-full rounded-md bg-base-200 p-4">
 					<h3 class="text-lg font-bold">🛠️ Tools</h3>
 					<p v-for="{ name } in selectedPlugin.tools" :key="name">- {{ name }}</p>
 				</div>
