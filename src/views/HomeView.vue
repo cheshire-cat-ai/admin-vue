@@ -105,14 +105,14 @@ const toggleListening = async () => {
  * When a new message arrives, the chat will be scrolled to bottom and the input box will be focussed.
  * If audio is enabled, a pop sound will be played.
  */
-watchDeep(
+watchThrottled(
 	messagesState,
-	() => {
+	val => {
 		isScrollable.value = document.documentElement.scrollHeight > document.documentElement.clientHeight
 		scrollToBottom()
-		textArea.value.focus()
+		if (!val.generating) textArea.value.focus()
 	},
-	{ flush: 'post' },
+	{ flush: 'post', throttle: 500, deep: true },
 )
 
 onActivated(() => {
@@ -316,14 +316,14 @@ const scrollToBottom = () => {
 					class="btn btn-circle btn-primary shadow-lg"
 					:class="[isListening ? 'glass btn-outline' : '']"
 					:disabled="inputDisabled"
-					@click="toggleListening">
+					@click="toggleListening()">
 					<heroicons-microphone-solid class="size-6" />
 				</button>
 			</div>
 			<button
 				v-if="isScrollable"
 				class="btn btn-circle btn-outline btn-primary btn-sm absolute bottom-28 right-4 bg-base-100"
-				@click="scrollToBottom">
+				@click="scrollToBottom()">
 				<heroicons-arrow-down-20-solid class="size-5" />
 			</button>
 		</div>
