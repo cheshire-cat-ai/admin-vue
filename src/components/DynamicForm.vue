@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { JSONSettings, SchemaField } from '@models/JSONSchema'
 import { Form, Field, ErrorMessage } from 'vee-validate'
-import { merge } from 'lodash';
+import { merge } from 'lodash'
 
 // FEATURE: Improve form to allow any type of input based on json schema
 // Can also totally replace the current library used for dynamic form
@@ -34,7 +34,7 @@ watchImmediate(
 	[initial, values],
 	() => {
 		const mergedValues = merge(initial.value, values.value)
-		dynamicForm.value?.resetForm({values: mergedValues}, {force: true})
+		dynamicForm.value?.resetForm({ values: mergedValues }, { force: true })
 	},
 	{ deep: true },
 )

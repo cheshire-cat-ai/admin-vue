@@ -27,24 +27,10 @@ const [showSpinner, toggleSpinner] = useToggle(false)
 
 const memoryStore = useMemory()
 const { currentState: memoryState } = storeToRefs(memoryStore)
-const { wipeAllCollections, wipeCollection, callMemory, deleteMemoryPoint } = memoryStore
+const { fetchCollections, wipeAllCollections, wipeCollection, callMemory, deleteMemoryPoint } = memoryStore
 
 const { download: downloadMemories } = downloadContent('Recalled_Memories')
 const { upload: uploadFile } = uploadContent()
-
-/**
- * If "all", wipes all the collections in memory, otherwise only the selected one
- */
-const wipeMemory = async () => {
-	if (selectCollection.value) {
-		const selected = selectCollection.value.selected?.value
-		if (!selected) return
-		if (boxWipe.value?.isOpen) boxWipe.value?.closeModal()
-		if (selected === 'all') await wipeAllCollections()
-		else await wipeCollection(selected)
-		if (boxWipe.value?.isOpen) boxWipe.value?.toggleModal()
-	}
-}
 
 /**
  * Merges and reduces the matrices to a new matrix that can be plotted in a 2d graph
@@ -159,7 +145,7 @@ const selectBoxCollections = computed(() => {
 	const totalCollections = data.map(v => v.vectors_count).reduce((p, c) => p + c, 0)
 	return [
 		{ label: `All (${totalCollections})`, value: 'all' },
-		...data.map(v => ({ label: `${capitalize(v.name)} (${v.vectors_count})`, value: v.name })),
+		...data.map(v => ({ label: `${capitalize(v.name)} (${v.vectors_count ?? 0})`, value: v.name })),
 	]
 })
 
@@ -176,6 +162,22 @@ const deleteMemoryMarker = async (collection: string, memory: string) => {
 const onMarkerClick = (_e: MouseEvent, _c: object, { seriesIndex, dataPointIndex, w }: any) => {
 	clickedPoint.value = w.config.series[seriesIndex].meta[dataPointIndex]
 	pointInfoPanel.value?.togglePanel()
+}
+
+/**
+ * If "all", wipes all the collections in memory, otherwise only the selected one
+ */
+const wipeMemory = async () => {
+	if (selectCollection.value) {
+		const selected = selectCollection.value.selected?.value
+		if (!selected) return
+		if (boxWipe.value?.isOpen) boxWipe.value?.closeModal()
+		if (selected === 'all') await wipeAllCollections()
+		else await wipeCollection(selected)
+		if (boxWipe.value?.isOpen) boxWipe.value?.toggleModal()
+		await fetchCollections()
+		await recallMemory()
+	}
 }
 
 /*const dateFilter = ref(''), sourceFilter = ref('')*/
