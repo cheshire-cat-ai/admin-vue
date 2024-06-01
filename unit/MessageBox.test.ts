@@ -16,7 +16,7 @@ describe('MessageBox', () => {
 
 		expect(wrapper.find('.chat-bubble p').html()).toContain('<p>Hello dear cat!</p>')
 
-		expect(wrapper.find('.chat-bubble button').exists()).toBe(false)
+		expect(wrapper.find('.chat-footer button').exists()).toBe(false)
 
 		expect(wrapper.findComponent({ name: 'SidePanel' }).exists()).toBe(false)
 	})
@@ -34,7 +34,7 @@ describe('MessageBox', () => {
 
 		expect(wrapper.find('.chat-bubble p').html()).toContain('<p>Hello dear human!</p>')
 
-		expect(wrapper.find('.chat-bubble button').exists()).toBe(true)
+		expect(wrapper.find('.chat-footer button').exists()).toBe(true)
 
 		expect(wrapper.findComponent({ name: 'SidePanel' }).exists()).toBe(true)
 	})
