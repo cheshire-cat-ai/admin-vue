@@ -1,36 +1,8 @@
 <script setup lang="ts">
-import hljs from 'highlight.js'
-import { Remarkable } from 'remarkable'
-import { linkify } from 'remarkable/linkify'
+import md from '@utils/markdown'
 import SidePanel from '@components/SidePanel.vue'
 
 const whyPanel = ref<InstanceType<typeof SidePanel>>()
-
-const markdown = new Remarkable({
-	html: true,
-	breaks: true,
-	xhtmlOut: true,
-	typographer: true,
-	highlight: (str, lang) => {
-		if (lang && hljs.getLanguage(lang)) {
-			try {
-				return hljs.highlight(str, { language: lang }).value
-			} catch (_) {
-				console.log(_)
-			}
-		}
-		try {
-			return hljs.highlightAuto(str).value
-		} catch (_) {
-			console.log(_)
-		}
-		return '' // use external default escaping
-	},
-}).use(linkify)
-
-markdown.inline.ruler.enable(['sup', 'sub'])
-markdown.core.ruler.enable(['abbr'])
-markdown.block.ruler.enable(['footnote', 'deflist'])
 
 const props = defineProps<{
 	sender: 'bot' | 'user'
@@ -52,7 +24,7 @@ const maxLength = 3000
 
 const isLengthy = computed(() => text.value.length > maxLength && sender.value === 'user')
 const renderedText = computed(() => {
-	return isLengthy.value && !showReadMore.value ? markdown.render(text.value.slice(0, maxLength)) : markdown.render(text.value)
+	return isLengthy.value && !showReadMore.value ? md.render(text.value.slice(0, maxLength)) : md.render(text.value)
 })
 
 const { copy } = useClipboard({ source: text })

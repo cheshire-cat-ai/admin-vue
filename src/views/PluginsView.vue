@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { upperFirst, isEmpty, groupBy } from 'lodash'
 import { type Plugin } from 'ccat-api'
+import md from '@utils/markdown'
 import { usePlugins } from '@stores/usePlugins'
 import { useSettings } from '@stores/useSettings'
 import SidePanel from '@components/SidePanel.vue'
@@ -187,9 +188,7 @@ watchEffect(() => {
 								{{ item.author_name }}
 							</a>
 						</div>
-						<p class="my-2 text-sm">
-							{{ item.description }}
-						</p>
+						<p class="my-2 text-sm" v-html="md.render(item.description)" />
 						<div class="flex h-8 items-center justify-between gap-4">
 							<div class="flex flex-wrap gap-1">
 								<div v-for="tag in item.tags.split(',')" :key="tag" class="badge rounded-lg border-neutral font-medium">
