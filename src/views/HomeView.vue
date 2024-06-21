@@ -108,7 +108,6 @@ const toggleListening = async () => {
 watchThrottled(
 	messagesState,
 	val => {
-		isScrollable.value = document.documentElement.scrollHeight > document.documentElement.clientHeight
 		scrollToBottom()
 		if (!val.generating) textArea.value.focus()
 	},
@@ -117,6 +116,11 @@ watchThrottled(
 
 onActivated(() => {
 	textArea.value.focus()
+})
+
+useEventListener(document, 'scroll', () => {
+	const doc = document.documentElement
+	isScrollable.value = doc.scrollHeight > doc.clientHeight + doc.scrollTop
 })
 
 /**
