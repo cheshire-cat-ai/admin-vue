@@ -101,7 +101,7 @@ const fileUrl = computed(() => {
 				<button class="btn btn-square btn-ghost btn-xs" @click="$emit('regenerate')"><heroicons-arrow-path class="size-4" /></button>
 			</div>
 			<div v-if="why" class="tooltip tooltip-bottom" data-tip="Why this response">
-				<button class="btn btn-square btn-outline btn-primary btn-xs" @click="whyPanel?.togglePanel()">
+				<button class="btn btn-square btn-ghost btn-xs" @click="whyPanel?.togglePanel()">
 					<ph-question-mark class="size-4" />
 				</button>
 			</div>
