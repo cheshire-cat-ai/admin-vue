@@ -39,6 +39,29 @@ export default defineConfig({
 			},
 		}),
 		tsconfigPaths(),
+		{
+			name: 'configure-token',
+			configureServer(server) {
+				return () => {
+					server.middlewares.use(async (_, res, next) => {
+						const output = await (
+							await fetch('http://localhost:1865/auth/token', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								body: JSON.stringify({
+									username: 'admin',
+									password: 'admin',
+								}),
+							})
+						).json()
+						res.setHeader('Set-Cookie', `ccat_user_token=${output.access_token}`)
+						next()
+					})
+				}
+			},
+		},
 	],
 	test: {
 		environment: 'jsdom',
@@ -49,10 +72,6 @@ export default defineConfig({
 		port: 3000,
 		open: false,
 		host: true,
-		headers: {
-			'set-cookie':
-				'ccat_user_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0OTZlZGJmNS1jNzIyLTQ3N2ItOTEzMi04ZDQyYmJiZjY2ZTkiLCJ1c2VybmFtZSI6ImFkbWluIiwicGVybWlzc2lvbnMiOnsiU1RBVFVTIjpbIldSSVRFIiwiRURJVCIsIkxJU1QiLCJSRUFEIiwiREVMRVRFIl0sIk1FTU9SWSI6WyJXUklURSIsIkVESVQiLCJMSVNUIiwiUkVBRCIsIkRFTEVURSJdLCJDT05WRVJTQVRJT04iOlsiV1JJVEUiLCJFRElUIiwiTElTVCIsIlJFQUQiLCJERUxFVEUiXSwiU0VUVElOR1MiOlsiV1JJVEUiLCJFRElUIiwiTElTVCIsIlJFQUQiLCJERUxFVEUiXSwiTExNIjpbIldSSVRFIiwiRURJVCIsIkxJU1QiLCJSRUFEIiwiREVMRVRFIl0sIkVNQkVEREVSIjpbIldSSVRFIiwiRURJVCIsIkxJU1QiLCJSRUFEIiwiREVMRVRFIl0sIkFVVEhfSEFORExFUiI6WyJXUklURSIsIkVESVQiLCJMSVNUIiwiUkVBRCIsIkRFTEVURSJdLCJVU0VSUyI6WyJXUklURSIsIkVESVQiLCJMSVNUIiwiUkVBRCIsIkRFTEVURSJdLCJVUExPQUQiOlsiV1JJVEUiLCJFRElUIiwiTElTVCIsIlJFQUQiLCJERUxFVEUiXSwiUExVR0lOUyI6WyJXUklURSIsIkVESVQiLCJMSVNUIiwiUkVBRCIsIkRFTEVURSJdLCJBRE1JTiI6WyJXUklURSIsIkVESVQiLCJMSVNUIiwiUkVBRCIsIkRFTEVURSJdLCJTVEFUSUMiOlsiV1JJVEUiLCJFRElUIiwiTElTVCIsIlJFQUQiLCJERUxFVEUiXX0sImV4cCI6MTcyMDUzMTI4OX0.iyVc9Emh9ddf8bzVnofp2NLWS-4wmcyQuYAaY-_6FQg',
-		},
 	},
 	build: {
 		outDir: 'dist',
