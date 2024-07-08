@@ -33,7 +33,7 @@ jobs:
           cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - name: Build static files
-        run: pnpm run build --if-present
+        run: pnpm run build
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.7.6
         with:

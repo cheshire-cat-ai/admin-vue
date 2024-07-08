@@ -39,7 +39,7 @@ jobs:
           IDENTIFIERS: '[{"name": "FEATURE", "labels": ["enhancement"]}, {"name": "BUG", "labels": ["bug"]}]'
           ISSUE_TEMPLATE: '**Describe the reason of this issue**\n{{ body }}\n\nThe issue is present here:\n\n{{ snippet }}'
       - name: Build static files
-        run: pnpm run build --if-present
+        run: pnpm run build
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.7.6
         with:
