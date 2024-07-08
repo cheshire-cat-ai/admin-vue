@@ -36,7 +36,7 @@ export const useMessages = defineStore('messages', () => {
 		],
 	})
 
-	const { state: history } = useAsyncState(MemoryService.getConversation, [])
+	const { state: history } = useAsyncState(MemoryService.getConversation, [], { resetOnExecute: false })
 
 	watchEffect(() => {
 		history.value.forEach(({ who, message, why, when }) => {

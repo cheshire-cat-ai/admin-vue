@@ -1,4 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useSettings } from '@stores/useSettings'
+import { updateCredential } from './api'
+
+const { cookie } = storeToRefs(useSettings())
+
+onBeforeMount(() => {
+	updateCredential(cookie.value)
+})
+</script>
 
 <template>
 	<div

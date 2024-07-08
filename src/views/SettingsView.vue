@@ -1,8 +1,14 @@
 <script setup lang="ts">
+import { apiClient, tryRequest } from '@/api'
 import SidePanel from '@components/SidePanel.vue'
-import { useSettings } from '@stores/useSettings'
+import type { Status } from 'ccat-api'
 
-const { cat } = storeToRefs(useSettings())
+const getStatus = async () => {
+	const result = await tryRequest(apiClient.api?.status.home(), 'Getting Cheshire Cat status', 'Unable to fetch Cheshire Cat status')
+	return result.data
+}
+
+const { state: cat } = useAsyncState(getStatus, {} as Status, { resetOnExecute: false })
 
 const panelTitles = {
 	embedder: 'Configure the Embedder',
@@ -24,7 +30,7 @@ const openSidePanel = (title: keyof typeof panelTitles) => {
 			<p class="text-lg font-bold">
 				Cheshire Cat AI - Version
 				<span class="text-primary">
-					{{ typeof cat == 'string' ? 'unknown' : cat.version }}
+					{{ cat ? cat.version : 'unknown' }}
 				</span>
 			</p>
 		</div>

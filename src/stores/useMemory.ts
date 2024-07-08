@@ -9,7 +9,11 @@ export const useMemory = defineStore('memory', () => {
 		data: [],
 	})
 
-	const { state: collections, isLoading, execute: fetchCollections } = useAsyncState(MemoryService.getCollections, undefined)
+	const {
+		state: collections,
+		isLoading,
+		execute: fetchCollections,
+	} = useAsyncState(MemoryService.getCollections, undefined, { resetOnExecute: false })
 
 	watchEffect(() => {
 		currentState.loading = isLoading.value

@@ -3,18 +3,16 @@ import { createPinia } from 'pinia'
 import { defineRule } from 'vee-validate'
 import { all as AllRules } from '@vee-validate/rules'
 import vLock from '@/directives/vLock'
-
-Object.keys(AllRules).forEach(rule => {
-	defineRule(rule, AllRules[rule])
-})
-
 import App from '@/App.vue'
 import router from '@/router'
-
 import 'unfonts.css'
 import 'animate.css'
 import '@assets/main.css'
 import { cloneDeep } from 'lodash'
+
+Object.keys(AllRules).forEach(rule => {
+	defineRule(rule, AllRules[rule])
+})
 
 const app = createApp(App)
 

@@ -1,7 +1,6 @@
-import { apiClient, tryRequest } from '@/api'
 import { useJwt } from '@vueuse/integrations/useJwt'
 import { useCookies } from '@vueuse/integrations/useCookies'
-import type { Status, AuthPermission, AuthResource } from 'ccat-api'
+import type { AuthPermission, AuthResource } from 'ccat-api'
 import type { JwtPayload } from 'jwt-decode'
 
 interface Filter {
@@ -49,22 +48,12 @@ export const useSettings = defineStore('settings', () => {
 		},
 	})
 
-	const getStatus = async () => {
-		const result = await tryRequest(apiClient.api?.status.home(), 'Getting Cheshire Cat status', 'Unable to fetch Cheshire Cat status')
-		return result.data ?? result.message
-	}
-
-	const { state: cat, execute } = useAsyncState(getStatus, {} as Status)
-
 	return {
 		isDark,
 		pluginsFilters,
 		toggleDark,
-		cat,
 		cookie,
 		jwt,
-		getStatus,
-		refreshStatus: execute,
 	}
 })
 

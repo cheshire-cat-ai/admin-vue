@@ -13,8 +13,8 @@ export const usePlugins = defineStore('plugins', () => {
 		},
 	})
 
-	const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins, undefined)
-	const { state: settings, execute: fetchSettings } = useAsyncState(PluginService.getPluginsSettings, undefined)
+	const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins, undefined, { resetOnExecute: false })
+	const { state: settings, execute: fetchSettings } = useAsyncState(PluginService.getPluginsSettings, undefined, { resetOnExecute: false })
 
 	const { showNotification, sendNotificationFromJSON } = useNotifications()
 
