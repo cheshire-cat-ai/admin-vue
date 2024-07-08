@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { defineRule } from 'vee-validate'
-import AllRules from '@vee-validate/rules'
+import { all as AllRules } from '@vee-validate/rules'
 import vLock from '@/directives/vLock'
 
 Object.keys(AllRules).forEach(rule => {

@@ -27,7 +27,7 @@ export const apiClient = new CatClient({
 	},
 })
 
-export const updateAuthKey = (key: string) => (apiClient.authKey = key)
+export const updateCredential = (cred: string | undefined) => (apiClient.credential = cred)
 
 /**
  * A function that wraps the promise request into a try/catch block

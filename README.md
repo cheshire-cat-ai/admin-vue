@@ -42,10 +42,16 @@ Make sure you have the following installed on your machine:
 
 ### Installation
 
-Chose your preferred package manager and install the dependencies
+This project uses `pnpm` as the package manager. You can install it by running:
 
 ```bash
-  npm install
+  npm install -g pnpm
+```
+
+Then, install the dependencies:
+
+```bash
+  pnpm install
 ```
 
 ### Scripts
@@ -57,7 +63,7 @@ Here's a list of scripts that you can run to get the app up and running
 Run the app in dev mode with hot-reloading enabled and the browser automatically opening on port `3000` (default)
 
 ```bash
-  npm run dev
+  pnpm run dev
 ```
 
 #### Build
@@ -65,7 +71,7 @@ Run the app in dev mode with hot-reloading enabled and the browser automatically
 Build the app for production
 
 ```bash
-  npm run build
+  pnpm run build
 ```
 
 #### Start the app
@@ -73,5 +79,5 @@ Build the app for production
 Runs the build and serves the built app on port `3000` (default)
 
 ```bash
-  npm run preview
+  pnpm run preview
 ```

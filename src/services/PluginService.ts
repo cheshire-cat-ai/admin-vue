@@ -13,11 +13,11 @@ const PluginService = Object.freeze({
 			'Unable to install the plugin from this url',
 		)
 	},
-	getPlugins: async () => {
+	getPlugins: async (query?: string) => {
 		return await tryRequest(
-			apiClient.api?.plugins.listAvailablePlugins(),
-			'Getting all the available plugins',
-			'Unable to fetch the plugins',
+			apiClient.api?.plugins.listAvailablePlugins(query),
+			query ? `Searching plugins with query: ${query}` : 'Getting all the available plugins',
+			query ? `Unable to search plugins with query: ${query}` : 'Unable to fetch the plugins',
 		)
 	},
 	getPluginsSettings: async () => {
@@ -33,13 +33,6 @@ const PluginService = Object.freeze({
 	},
 	togglePlugin: async (id: string) => {
 		return await tryRequest(apiClient.api?.plugins.togglePlugin(id), `Toggle plugin ${id}`, `Unable to toggle plugin ${id}`)
-	},
-	searchPlugin: async (query: string) => {
-		return await tryRequest(
-			apiClient.api?.plugins.listAvailablePlugins(query),
-			`Searching plugins with query: ${query}`,
-			`Unable to search plugins with query: ${query}`,
-		)
 	},
 	updateSettings: async (id: string, settings: JSONSettings) => {
 		return await tryRequest(

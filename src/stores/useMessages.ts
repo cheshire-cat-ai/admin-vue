@@ -2,9 +2,9 @@ import type { MessagesState } from '@stores/types'
 import type { BotMessage, UserMessage } from '@models/Message'
 import { uniqueId } from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
-import { apiClient } from '@/api'
-import { useSettings } from '@stores/useSettings'
+import { apiClient, updateCredential } from '@/api'
 import MemoryService from '@services/MemoryService'
+import { useSettings } from './useSettings'
 
 export const useMessages = defineStore('messages', () => {
 	const currentState = reactive<MessagesState>({
@@ -50,8 +50,8 @@ export const useMessages = defineStore('messages', () => {
 		currentState.loading = false
 	})
 
-	const { isReadyAndAuth } = storeToRefs(useSettings())
 	const { showNotification } = useNotifications()
+	const { cookie } = storeToRefs(useSettings())
 
 	watchEffect(() => {
 		/**
@@ -59,9 +59,6 @@ export const useMessages = defineStore('messages', () => {
 		 * and dispatches the received messages to the store.
 		 * It also dispatches the error to the store if an error occurs.
 		 */
-		currentState.loading = !isReadyAndAuth.value
-		currentState.ready = isReadyAndAuth.value
-
 		apiClient
 			.onConnected(() => {
 				currentState.ready = true
@@ -116,6 +113,8 @@ export const useMessages = defineStore('messages', () => {
 			.onDisconnected(() => {
 				currentState.ready = false
 			})
+
+		updateCredential(cookie.value)
 	})
 
 	tryOnUnmounted(() => {

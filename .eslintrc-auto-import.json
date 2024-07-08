@@ -106,7 +106,6 @@
     "refDefault": true,
     "refThrottled": true,
     "refWithControl": true,
-    "resetAllStores": true,
     "resolveComponent": true,
     "resolveRef": true,
     "resolveUnref": true,

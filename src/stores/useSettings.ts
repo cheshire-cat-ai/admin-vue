@@ -1,5 +1,8 @@
 import { apiClient, tryRequest } from '@/api'
-import type { Status } from 'ccat-api'
+import { useJwt } from '@vueuse/integrations/useJwt'
+import { useCookies } from '@vueuse/integrations/useCookies'
+import type { Status, AuthPermission, AuthResource } from 'ccat-api'
+import type { JwtPayload } from 'jwt-decode'
 
 interface Filter {
 	[k: string]: {
@@ -8,8 +11,21 @@ interface Filter {
 	}
 }
 
+type AuthToken = JwtPayload & {
+	username: string
+	permissions: Record<AuthResource, AuthPermission[]>
+}
+
 export const useSettings = defineStore('settings', () => {
-	const isReadyAndAuth = ref(true)
+	const cookies = useCookies(['ccat_user_token'], { doNotParse: true, autoUpdateDependencies: true })
+
+	const cookie = computed(() => cookies.get<string | undefined>('ccat_user_token'))
+
+	const jwt = computed(() => {
+		if (!cookie.value) return null
+		const { payload } = useJwt<AuthToken>(cookie.value)
+		return payload.value
+	})
 
 	const isDark = useDark({
 		storageKey: 'currentTheme',
@@ -40,18 +56,15 @@ export const useSettings = defineStore('settings', () => {
 
 	const { state: cat, execute } = useAsyncState(getStatus, {} as Status)
 
-	watchEffect(() => {
-		isReadyAndAuth.value = cat.value != 'Invalid API Key'
-	})
-
 	return {
 		isDark,
 		pluginsFilters,
 		toggleDark,
 		cat,
+		cookie,
+		jwt,
 		getStatus,
 		refreshStatus: execute,
-		isReadyAndAuth,
 	}
 })
 

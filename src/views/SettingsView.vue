@@ -2,10 +2,6 @@
 import SidePanel from '@components/SidePanel.vue'
 import { useSettings } from '@stores/useSettings'
 
-defineProps<{
-	loading: boolean
-}>()
-
 const { cat } = storeToRefs(useSettings())
 
 const panelTitles = {
@@ -42,7 +38,7 @@ const openSidePanel = (title: keyof typeof panelTitles) => {
 			<p class="text-center">Choose a language embedder to help the Cat remember conversations and documents</p>
 			<RouterLink :to="{ name: 'embedders' }" class="btn btn-primary btn-sm" @click="openSidePanel('embedder')"> Configure </RouterLink>
 		</div>
-		<SidePanel ref="sidePanel" :title="panelTitle" :loading="loading">
+		<SidePanel ref="sidePanel" :title="panelTitle">
 			<RouterView @close="sidePanel?.togglePanel()" />
 		</SidePanel>
 	</div>
