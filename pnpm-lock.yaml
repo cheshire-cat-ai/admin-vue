@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@casl/ability':
+        specifier: ^6.7.1
+        version: 6.7.1
+      '@casl/vue':
+        specifier: ^2.2.2
+        version: 2.2.2(@casl/ability@6.7.1)(vue@3.4.31(typescript@5.4.5))
       '@headlessui/vue':
         specifier: ^1.7.22
         version: 1.7.22(vue@3.4.31(typescript@5.4.5))
       '@saehrimnir/druidjs':
-        specifier: github:saehm/DruidJS#ts
-        version: https://codeload.github.com/saehm/DruidJS/tar.gz/470b74e304ef5cf272ff8e4510a40fc04c4556aa
+        specifier: ^0.7.3
+        version: 0.7.3
       '@tailwindcss/forms':
         specifier: ^0.5.7
         version: 0.5.7(tailwindcss@3.4.4)
@@ -219,6 +225,15 @@ packages:
   '@babel/types@7.24.7':
     resolution: {integrity: sha512-XEFXSlxiG5td2EJRe8vOmRbaXVgfcBlszKujvVmWIK/UpywWljQCfzAv3RQCGujWQ1RD4YYWEAqDXfuJiy8f5Q==}
     engines: {node: '>=6.9.0'}
+
+  '@casl/ability@6.7.1':
+    resolution: {integrity: sha512-e+Vgrehd1/lzOSwSqKHtmJ6kmIuZbGBlM2LBS5IuYGGKmVHuhUuyh3XgTn1VIw9+TO4gqU+uptvxfIRBUEdJuw==}
+
+  '@casl/vue@2.2.2':
+    resolution: {integrity: sha512-xWy4i5+3+WuBgENVesPalRTKpSJZ2cEMXtbqjWjqj7FDvoeso7jT1pBVk9ujKlIRhgfVWGdCRb7XzeISi2VLcA==}
+    peerDependencies:
+      '@casl/ability': ^2.0.0 || ^3.0.0 || ^4.0.0 || ^5.1.0 || ^6.0.0
+      vue: ^3.0.0
 
   '@esbuild/aix-ppc64@0.21.5':
     resolution: {integrity: sha512-1SDgH6ZSPTlggy1yI6+Dbkiz8xzpHJEVAlF/AM1tHPLsf5STom9rwtjE4hKAF20FfXXNTFqEYXyJNWh1GiZedQ==}
@@ -565,9 +580,8 @@ packages:
   '@rushstack/eslint-patch@1.10.3':
     resolution: {integrity: sha512-qC/xYId4NMebE6w/V33Fh9gWxLgURiNYgVNObbJl2LZv0GUUItCcCqC5axQSwRaAgaxl2mELq1rMzlswaQ0Zxg==}
 
-  '@saehrimnir/druidjs@https://codeload.github.com/saehm/DruidJS/tar.gz/470b74e304ef5cf272ff8e4510a40fc04c4556aa':
-    resolution: {tarball: https://codeload.github.com/saehm/DruidJS/tar.gz/470b74e304ef5cf272ff8e4510a40fc04c4556aa}
-    version: 0.5.1
+  '@saehrimnir/druidjs@0.7.3':
+    resolution: {integrity: sha512-ROrGB3VqU2ombyJz9XlvDvMCHstuJ25+lPzV1HXYaP0Pp4uOkcaHZUMJlA0YNB/SM0s/Toc9n4gJFCs7LPclDQ==}
     engines: {node: '>=14'}
 
   '@sinclair/typebox@0.27.8':
@@ -673,6 +687,18 @@ packages:
   '@typescript-eslint/visitor-keys@7.15.0':
     resolution: {integrity: sha512-Hqgy/ETgpt2L5xueA/zHHIl4fJI2O4XUE9l4+OIfbJIRSnTJb/QscncdqqZzofQegIJugRIF57OJea1khw2SDw==}
     engines: {node: ^18.18.0 || >=20.0.0}
+
+  '@ucast/core@1.10.2':
+    resolution: {integrity: sha512-ons5CwXZ/51wrUPfoduC+cO7AS1/wRb0ybpQJ9RrssossDxVy4t49QxWoWgfBDvVKsz9VXzBk9z0wqTdZ+Cq8g==}
+
+  '@ucast/js@3.0.4':
+    resolution: {integrity: sha512-TgG1aIaCMdcaEyckOZKQozn1hazE0w90SVdlpIJ/er8xVumE11gYAtSbw/LBeUnA4fFnFWTcw3t6reqseeH/4Q==}
+
+  '@ucast/mongo2js@1.3.4':
+    resolution: {integrity: sha512-ahazOr1HtelA5AC1KZ9x0UwPMqqimvfmtSm/PRRSeKKeE5G2SCqTgwiNzO7i9jS8zA3dzXpKVPpXMkcYLnyItA==}
+
+  '@ucast/mongo@2.4.3':
+    resolution: {integrity: sha512-XcI8LclrHWP83H+7H2anGCEeDq0n+12FU2mXCTz6/Tva9/9ddK/iacvvhCyW6cijAAOILmt0tWplRyRhVyZLsA==}
 
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
@@ -2819,6 +2845,15 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
 
+  '@casl/ability@6.7.1':
+    dependencies:
+      '@ucast/mongo2js': 1.3.4
+
+  '@casl/vue@2.2.2(@casl/ability@6.7.1)(vue@3.4.31(typescript@5.4.5))':
+    dependencies:
+      '@casl/ability': 6.7.1
+      vue: 3.4.31(typescript@5.4.5)
+
   '@esbuild/aix-ppc64@0.21.5':
     optional: true
 
@@ -3078,7 +3113,7 @@ snapshots:
 
   '@rushstack/eslint-patch@1.10.3': {}
 
-  '@saehrimnir/druidjs@https://codeload.github.com/saehm/DruidJS/tar.gz/470b74e304ef5cf272ff8e4510a40fc04c4556aa': {}
+  '@saehrimnir/druidjs@0.7.3': {}
 
   '@sinclair/typebox@0.27.8': {}
 
@@ -3202,6 +3237,22 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 7.15.0
       eslint-visitor-keys: 3.4.3
+
+  '@ucast/core@1.10.2': {}
+
+  '@ucast/js@3.0.4':
+    dependencies:
+      '@ucast/core': 1.10.2
+
+  '@ucast/mongo2js@1.3.4':
+    dependencies:
+      '@ucast/core': 1.10.2
+      '@ucast/js': 3.0.4
+      '@ucast/mongo': 2.4.3
+
+  '@ucast/mongo@2.4.3':
+    dependencies:
+      '@ucast/core': 1.10.2
 
   '@ungap/structured-clone@1.2.0': {}
 

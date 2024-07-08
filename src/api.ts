@@ -1,6 +1,7 @@
 import type { JSONResponse } from '@models/JSONSchema'
 import LogService from '@services/LogService'
-import { CatClient, type CancelablePromise } from 'ccat-api'
+import { CatClient, type CancelablePromise, type AuthPermission, type AuthResource } from 'ccat-api'
+import type { PureAbility as Ability } from '@casl/ability'
 
 const { DEV } = import.meta.env
 
@@ -67,5 +68,15 @@ export const tryRequest = async <T>(
 			status: 'error',
 			message: msg,
 		} as JSONResponse<T>
+	}
+}
+
+export type AppAbility = Ability<[AuthPermission, AuthResource]>
+
+// TODO: Fix why this is not working
+declare module 'vue' {
+	export interface ComponentCustomProperties {
+		$ability: AppAbility
+		$can(this: this, ...args: Parameters<this['$ability']['can']>): boolean
 	}
 }

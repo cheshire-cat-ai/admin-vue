@@ -323,6 +323,7 @@
     "provideLocal": true,
     "storeRouteMapping": true,
     "useClipboardItems": true,
-    "markdown": true
+    "markdown": true,
+    "usePerms": true
   }
 }

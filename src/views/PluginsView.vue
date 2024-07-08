@@ -13,7 +13,6 @@ const { togglePlugin, removePlugin, updateSettings, getSchema, getSettings, sear
 const { currentState: pluginsState } = storeToRefs(store)
 
 const { pluginsFilters } = storeToRefs(useSettings())
-
 const { upload: uploadFile } = uploadContent()
 
 const boxRemove = ref<InstanceType<typeof ModalBox>>()
@@ -135,7 +134,7 @@ watchEffect(() => {
 		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
 			<Pagination v-slot="{ list }" :list="filteredList" :pageSize="selectedPageSize">
 				<div v-for="item in list" :key="item.url ?? item.id" class="flex gap-2 rounded-xl bg-base-100 p-2 shadow md:gap-4 md:p-4">
-					<UseImage :src="item.thumb" class="size-20 self-center object-contain">
+					<UseImage :src="item.thumb" class="size-20 self-center rounded-lg object-contain">
 						<template #error>
 							<div class="avatar placeholder self-center">
 								<div class="size-20 rounded-lg bg-gradient-to-b from-accent to-primary text-base-100">

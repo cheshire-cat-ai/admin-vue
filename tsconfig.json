@@ -1,7 +1,7 @@
 {
 	"extends": "@vue/tsconfig/tsconfig.dom.json",
 	"include": [
-		"env.d.ts",
+		"src/globals.d.ts",
 		"src/**/*",
 		"src/**/*.vue",
 		".eslintrc.json",

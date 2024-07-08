@@ -19,8 +19,10 @@
 		"fix": "run-p lint format"
 	},
 	"dependencies": {
+		"@casl/ability": "^6.7.1",
+		"@casl/vue": "^2.2.2",
 		"@headlessui/vue": "^1.7.22",
-		"@saehrimnir/druidjs": "github:saehm/DruidJS#ts",
+		"@saehrimnir/druidjs": "^0.7.3",
 		"@tailwindcss/forms": "^0.5.7",
 		"@types/lodash": "^4.17.6",
 		"@vee-validate/rules": "^4.11.6",
