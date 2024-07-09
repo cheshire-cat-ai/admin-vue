@@ -1,7 +1,7 @@
 import type { Message } from '@models/Message'
 import type { Notification } from '@models/Notification'
 import type { JSONSettings } from '@models/JSONSchema'
-import type { CollectionsList, SettingsResponse, PluginsList } from 'ccat-api'
+import type { CollectionsList, SettingsResponse, PluginsList, UserResponse } from 'ccat-api'
 import type { FileResponse, WebResponse } from 'ccat-api'
 
 /**
@@ -68,3 +68,9 @@ export type PluginsState = AsyncState<Omit<PluginsList, 'filters'>>
  * This state contains information about the available collections.
  */
 export type CollectionsState = AsyncState<CollectionsList['collections']>
+
+/**
+ * Defines the structure of the 'users' state.
+ * This state contains information about the available users.
+ */
+export type UsersListState = AsyncState<Array<UserResponse>>

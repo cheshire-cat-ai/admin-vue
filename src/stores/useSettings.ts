@@ -52,6 +52,7 @@ export const useSettings = defineStore('settings', () => {
 		isDark,
 		pluginsFilters,
 		toggleDark,
+		cookies,
 		cookie,
 		jwt,
 	}
