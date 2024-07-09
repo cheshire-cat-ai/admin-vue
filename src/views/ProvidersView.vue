@@ -5,7 +5,7 @@ import { useLLMConfig } from '@stores/useLLMConfig'
 const storeLLM = useLLMConfig()
 const { getProviderSchema, setProviderSettings, getProviderSettings, refreshSettings } = storeLLM
 const { currentState: llmState, getAvailableProviders } = storeToRefs(storeLLM)
-
+const { cannot } = usePerms()
 const selectedProvider = ref(llmState.value.selected)
 const currentSchema = ref<JSONSettings>()
 const currentSettings = ref<JSONSettings>({})
@@ -48,6 +48,7 @@ watchDeep(
 			<SelectBox
 				v-model="selectedProvider"
 				:list="getAvailableProviders.map(p => ({ label: p.humanReadableName ?? p.title, value: p.title }))"
+				:disabled="cannot('LIST', 'LLM')"
 				@update="(e: any) => updateProperties(e.value)" />
 			<div class="flex grow flex-col gap-4">
 				<div class="flex items-center gap-1 font-medium">

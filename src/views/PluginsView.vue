@@ -11,7 +11,7 @@ import { type SchemaField, type JSONSettings } from '@models/JSONSchema'
 const store = usePlugins()
 const { togglePlugin, removePlugin, updateSettings, getSchema, getSettings, searchPlugin, installRegistryPlugin } = store
 const { currentState: pluginsState } = storeToRefs(store)
-
+const { can, cannot } = usePerms()
 const { pluginsFilters } = storeToRefs(useSettings())
 const { upload: uploadFile } = uploadContent()
 
@@ -122,7 +122,7 @@ watchEffect(() => {
 					Create plugin
 				</a>
 				<button
-					:disabled="pluginsState.loading || Boolean(pluginsState.error)"
+					:disabled="pluginsState.loading || Boolean(pluginsState.error) || cannot('WRITE', 'PLUGINS')"
 					class="btn btn-primary btn-sm rounded-md hover:shadow-lg"
 					@click="uploadFile('plugin')">
 					<ph-export-bold class="size-4" />
@@ -131,7 +131,7 @@ watchEffect(() => {
 			</div>
 		</div>
 		<ErrorBox v-if="pluginsState.loading || pluginsState.error" :load="pluginsState.loading" :error="pluginsState.error" />
-		<div v-else-if="filteredList.length > 0" class="flex flex-col gap-4">
+		<div v-else-if="filteredList.length > 0 || can('LIST', 'PLUGINS')" class="flex flex-col gap-4">
 			<Pagination v-slot="{ list }" :list="filteredList" :pageSize="selectedPageSize">
 				<div v-for="item in list" :key="item.url ?? item.id" class="flex gap-2 rounded-xl bg-base-100 p-2 shadow md:gap-4 md:p-4">
 					<UseImage :src="item.thumb" class="size-20 self-center rounded-lg object-contain">
@@ -160,17 +160,23 @@ watchEffect(() => {
 								<button
 									v-if="item.id !== 'core_plugin' && item.upgrade && item.plugin_url"
 									class="btn btn-primary btn-xs rounded-md uppercase"
+									:disabled="cannot('WRITE', 'PLUGINS')"
 									@click="installRegistryPlugin(item.plugin_url)">
 									<ph-export-bold class="size-4" />
 									Upgrade
 								</button>
-								<button v-if="item.url" class="btn btn-primary btn-xs rounded-md uppercase" @click="installRegistryPlugin(item.url)">
+								<button
+									v-if="item.url"
+									class="btn btn-primary btn-xs rounded-md uppercase"
+									:disabled="cannot('WRITE', 'PLUGINS')"
+									@click="installRegistryPlugin(item.url)">
 									<heroicons-cloud-arrow-down-solid class="size-4" />
 									Install
 								</button>
 								<button
 									v-else-if="item.id !== 'core_plugin'"
 									class="btn btn-error btn-xs rounded-md uppercase text-base-100"
+									:disabled="cannot('DELETE', 'PLUGINS')"
 									@click="openRemoveModal(item)">
 									<heroicons-trash-solid class="size-3" />
 									Delete
@@ -198,12 +204,14 @@ watchEffect(() => {
 								<button
 									v-if="item.id && !isEmpty(getSchema(item.id)) && item.active"
 									class="btn btn-circle btn-ghost btn-sm"
+									:disabled="cannot('READ', 'PLUGINS')"
 									@click="openSettings(item)">
 									<heroicons-cog-6-tooth-20-solid class="size-5" />
 								</button>
 								<button
 									v-if="(item.hooks && item.hooks.length > 0) || (item.tools && item.tools.length > 0)"
 									class="btn btn-circle btn-ghost btn-sm"
+									:disabled="cannot('READ', 'PLUGINS')"
 									@click="openInfo(item)">
 									<heroicons-information-circle-solid class="size-5" />
 								</button>
@@ -212,6 +220,7 @@ watchEffect(() => {
 									v-model="item.active"
 									type="checkbox"
 									class="!toggle !toggle-primary"
+									:disabled="cannot('WRITE', 'PLUGINS')"
 									@click="
 										async () => {
 											// TODO: Fix this workaround used to prevent checkbox switching when an error occurs

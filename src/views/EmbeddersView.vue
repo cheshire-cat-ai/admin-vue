@@ -5,7 +5,7 @@ import { useEmbedderConfig } from '@stores/useEmbedderConfig'
 const storeEmbedder = useEmbedderConfig()
 const { getEmbedderSchema, getEmbedderSettings, setEmbedderSettings, refreshSettings } = storeEmbedder
 const { currentState: embedderState, getAvailableEmbedders } = storeToRefs(storeEmbedder)
-
+const { cannot } = usePerms()
 const selectedEmbedder = ref(embedderState.value.selected)
 const currentSchema = ref<JSONSettings>()
 const currentSettings = ref<JSONSettings>({})
@@ -52,6 +52,7 @@ watchDeep(
 			<SelectBox
 				v-model="selectedEmbedder"
 				:list="getAvailableEmbedders.map(p => ({ label: p.humanReadableName ?? p.title, value: p.title }))"
+				:disabled="cannot('LIST', 'EMBEDDER')"
 				@update="(e: any) => updateProperties(e.value)" />
 			<div class="flex grow flex-col gap-4">
 				<div class="flex items-center gap-1 font-medium">
