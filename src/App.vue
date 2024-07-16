@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { createMongoAbility } from '@casl/ability'
-import { useSettings } from '@stores/useSettings'
-import { apiClient, jwt } from './api'
+import { jwt } from './api'
 import { useAbility } from '@casl/vue'
 import LogService from '@services/LogService'
 
