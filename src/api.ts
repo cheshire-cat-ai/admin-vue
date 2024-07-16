@@ -2,6 +2,9 @@ import type { JSONResponse } from '@models/JSONSchema'
 import LogService from '@services/LogService'
 import { CatClient, type CancelablePromise, type AuthPermission, type AuthResource } from 'ccat-api'
 import type { PureAbility as Ability } from '@casl/ability'
+import { useCookies } from '@vueuse/integrations/useCookies'
+import { useJwt } from '@vueuse/integrations/useJwt'
+import type { JwtPayload } from 'jwt-decode'
 
 const { DEV } = import.meta.env
 
@@ -12,14 +15,17 @@ const getPort = () => {
 }
 
 /**
- * API client to make requests to the endpoints and passing the API_KEY for authentication.
+ * API client to make requests to the endpoints and passing the JWT for authentication.
  */
-export const apiClient = new CatClient({
+const cookies = useCookies(['ccat_user_token'], { doNotParse: true, autoUpdateDependencies: true })
+const cookie = computed(() => cookies.get<string | undefined>('ccat_user_token'))
+const apiClient = new CatClient({
 	baseUrl: window.location.hostname,
 	port: getPort(),
 	secure: window.location.protocol === 'https:',
+	credential: cookie.value,
 	timeout: 15000,
-	instant: false,
+	instant: true,
 	ws: {
 		retries: 3,
 		delay: 3000,
@@ -28,8 +34,20 @@ export const apiClient = new CatClient({
 		},
 	},
 })
+export { apiClient }
 
-export const updateCredential = (cred: string | undefined) => (apiClient.credential = cred)
+/**
+ * get jwt content from the cookie
+ */
+type AuthToken = JwtPayload & {
+	username: string
+	permissions: Record<AuthResource, AuthPermission[]>
+}
+export const jwt = computed(() => {
+	if (!cookie.value) return null
+	const { payload } = useJwt<AuthToken>(cookie.value)
+	return payload.value
+})
 
 /**
  * A function that wraps the promise request into a try/catch block

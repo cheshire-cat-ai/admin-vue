@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { createMongoAbility } from '@casl/ability'
 import { useSettings } from '@stores/useSettings'
-import { updateCredential } from './api'
+import { apiClient, jwt } from './api'
 import { useAbility } from '@casl/vue'
 import LogService from '@services/LogService'
 
-const { cookie, jwt } = storeToRefs(useSettings())
 const perms = useAbility()
 
 onBeforeMount(() => {
+
+	// TODO: can this stuff be moved in api.ts or in perms.ts?
 	const payload = jwt.value
-	updateCredential(cookie.value)
 	perms.update(
 		createMongoAbility(
 			payload === null
