@@ -27,7 +27,7 @@ const apiClient = new CatClient({
 	timeout: 15000,
 	instant: true,
 	ws: {
-		retries: 3,
+		retries: 10,
 		delay: 3000,
 		onFailed: () => {
 			console.error('Failed to connect WebSocket after 3 retries.')

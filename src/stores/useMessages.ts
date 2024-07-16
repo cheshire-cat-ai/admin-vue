@@ -8,7 +8,7 @@ import { useSettings } from './useSettings'
 
 export const useMessages = defineStore('messages', () => {
 	const currentState = reactive<MessagesState>({
-		ready: false,
+		ready: true,
 		loading: false,
 		messages: [],
 		defaultMessages: [
@@ -60,6 +60,7 @@ export const useMessages = defineStore('messages', () => {
 		 */
 		apiClient
 			.onConnected(() => {
+				console.warn("Websocket is connected")
 				currentState.ready = true
 			})
 			.onMessage(({ content, type, why }) => {
