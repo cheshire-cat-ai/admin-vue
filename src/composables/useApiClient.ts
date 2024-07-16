@@ -73,6 +73,11 @@ const apiClient = new CatClient({
     },
 })
 
+type AuthToken = JwtPayload & {
+    username: string
+    permissions: Record<AuthResource, AuthPermission[]>
+}
+
 /**
  * Composable to feed all services with the api client and the jwt token.
  * Should react to cookie changes and update the api client accordingly.
@@ -81,27 +86,26 @@ export const useApiClient = () => {
     
     
     /**
-     * API client to make requests to the endpoints and passing the JWT for authentication.
-    */
+     * React to cookie changes
+     */
    const cookies = useCookies(['ccat_user_token'], { doNotParse: true, autoUpdateDependencies: true })
    const cookie = computed(() => cookies.get<string | undefined>('ccat_user_token'))
    
    /**
     * get jwt content from the cookie
-     */
-    type AuthToken = JwtPayload & {
-        username: string
-        permissions: Record<AuthResource, AuthPermission[]>
-    }
+    */
     const jwt = computed(() => {
         if (!cookie.value) return null
         const { payload } = useJwt<AuthToken>(cookie.value)
         return payload.value
     })
     
+    /**
+     * Update the api client with the new credential
+     */
     if(apiClient.config.credential !== cookie.value) {
         apiClient.config.credential = cookie.value
-        apiClient.init()
+        apiClient.init() // manual init (used `instant: false` in the config)
     }
     
     return {
