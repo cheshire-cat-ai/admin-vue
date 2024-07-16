@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { createMongoAbility } from '@casl/ability'
-import { jwt } from './api'
-import { useAbility } from '@casl/vue'
+import { useApiClient } from './composables/useApiClient'
 import LogService from '@services/LogService'
+import { useAbility } from '@casl/vue'
 
 const perms = useAbility()
+const { jwt } = useApiClient()
 
 onBeforeMount(() => {
 

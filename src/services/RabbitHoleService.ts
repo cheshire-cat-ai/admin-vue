@@ -1,4 +1,7 @@
-import { apiClient, tryRequest } from '@/api'
+
+import { useApiClient } from '../composables/useApiClient'
+
+const { apiClient, tryRequest } = useApiClient()
 
 /*
  * This service is used to send files down to the rabbit hole.

@@ -1,4 +1,5 @@
-import { apiClient, tryRequest } from '@/api'
+import { useApiClient } from '../composables/useApiClient'
+const { apiClient, tryRequest } = useApiClient()
 
 /*
  * This is a service that is used to manage the memory of the Cheshire Cat.

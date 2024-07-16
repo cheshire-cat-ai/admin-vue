@@ -2,12 +2,16 @@ import type { MessagesState } from '@stores/types'
 import type { BotMessage, UserMessage } from '@models/Message'
 import { uniqueId } from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
-import { apiClient } from '@/api'
 import MemoryService from '@services/MemoryService'
 import { useSettings } from './useSettings'
 import LogService from '@/services/LogService'
+import { useApiClient } from '../composables/useApiClient'
+
 
 export const useMessages = defineStore('messages', () => {
+
+	const { apiClient } = useApiClient()
+
 	const currentState = reactive<MessagesState>({
 		error: undefined,
 		ready: false,
@@ -56,8 +60,10 @@ export const useMessages = defineStore('messages', () => {
 
 	watchEffect(() => {
 
-		// Check if the websocket is open and set the ready state to true
-		// (this happens because apiClient initializes before the callbacks are added)
+		/**
+		 * Check if the websocket is open and set the ready state to true
+		 * (this happens because apiClient initializes before the callbacks are added)
+		 */
 		if (apiClient.ws.readyState === WebSocket.OPEN) {
 			currentState.ready = true
 		}
@@ -123,6 +129,7 @@ export const useMessages = defineStore('messages', () => {
 			.onDisconnected(() => {
 				currentState.ready = false
 			})
+		
 	})
 
 	tryOnUnmounted(() => {

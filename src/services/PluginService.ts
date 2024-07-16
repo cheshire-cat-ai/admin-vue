@@ -1,5 +1,8 @@
-import { apiClient, tryRequest } from '@/api'
+
 import type { JSONSettings } from '@models/JSONSchema'
+import { useApiClient } from '../composables/useApiClient'
+
+const { apiClient, tryRequest } = useApiClient()
 
 /*
  * This is a service that is used to get the list of plugins active on the Cheshire Cat.
