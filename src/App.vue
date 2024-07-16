@@ -9,7 +9,8 @@ const { jwt } = useApiClient()
 
 onBeforeMount(() => {
 
-	// TODO: can this stuff be moved in api.ts or in perms.ts?
+	// TODO: can this stuff be moved in useApiclient?
+	// Tried to do it but got an error on injection
 	const payload = jwt.value
 	perms.update(
 		createMongoAbility(
