@@ -5,10 +5,12 @@ import { useNotifications } from '@stores/useNotifications'
 import { apiClient } from '@/api'
 import MemoryService from '@services/MemoryService'
 import { useSettings } from './useSettings'
+import LogService from '@/services/LogService'
 
 export const useMessages = defineStore('messages', () => {
 	const currentState = reactive<MessagesState>({
-		ready: true,
+		error: undefined,
+		ready: false,
 		loading: false,
 		messages: [],
 		defaultMessages: [
@@ -53,15 +55,23 @@ export const useMessages = defineStore('messages', () => {
 	const { showNotification } = useNotifications()
 
 	watchEffect(() => {
+
+		// Check if the websocket is open and set the ready state to true
+		// (this happens because apiClient initializes before the callbacks are added)
+		if (apiClient.ws.readyState === WebSocket.OPEN) {
+			currentState.ready = true
+		}
+
 		/**
 		 * Subscribes to the messages service on component mount
 		 * and dispatches the received messages to the store.
 		 * It also dispatches the error to the store if an error occurs.
-		 */
+		*/
 		apiClient
 			.onConnected(() => {
 				console.warn("Websocket is connected")
 				currentState.ready = true
+				currentState.error = undefined // otherwise user textarea remains disabled
 			})
 			.onMessage(({ content, type, why }) => {
 				switch (type) {
@@ -84,7 +94,7 @@ export const useMessages = defineStore('messages', () => {
 						if (currentState.generating) {
 							const index = currentState.messages.findIndex(m => m.id === currentState.generating)
 							currentState.messages[index].text = content
-							;(currentState.messages[index] as BotMessage).why = why
+								; (currentState.messages[index] as BotMessage).why = why
 							currentState.generating = undefined
 						} else {
 							addMessage({
@@ -118,13 +128,13 @@ export const useMessages = defineStore('messages', () => {
 	tryOnUnmounted(() => {
 		/**
 		 * Unsubscribes to the messages service on component unmount
-		 */
+		*/
 		apiClient.close()
 	})
 
 	/**
 	 * Adds a message to the list of messages
-	 */
+	*/
 	const addMessage = (message: Omit<BotMessage, 'id'> | Omit<UserMessage, 'id'>) => {
 		currentState.error = undefined
 		const id = uniqueId('m_')

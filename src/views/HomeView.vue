@@ -33,8 +33,6 @@ const { currentState: rabbitHoleState } = storeToRefs(useRabbitHole())
 const { wipeConversation } = useMemory()
 
 const inputDisabled = computed(() => {
-	console.log(messagesState.value)
-	console.log(messagesState.value.loading, !messagesState.value.ready, Boolean(messagesState.value.error), cannot('WRITE', 'CONVERSATION'))
 	return messagesState.value.loading || !messagesState.value.ready || Boolean(messagesState.value.error) || cannot('WRITE', 'CONVERSATION')
 })
 
