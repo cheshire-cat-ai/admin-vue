@@ -3,7 +3,7 @@ import { useNotifications } from '@stores/useNotifications'
 import type { UsersListState } from '@stores/types'
 import { remove } from 'lodash'
 import type { UserCreate, UserUpdate } from 'ccat-api'
-import { useSettings } from './useSettings'
+import { useMainStore } from './useMainStore'
 
 export const useUsers = defineStore('users', () => {
 	const currentState = reactive<UsersListState>({
@@ -23,7 +23,7 @@ export const useUsers = defineStore('users', () => {
 	})
 
 	const { sendNotificationFromJSON } = useNotifications()
-	const { cookies } = useSettings()
+	const { cookies } = useMainStore()
 
 	const deleteUser = async (id: string) => {
 		currentState.loading = true

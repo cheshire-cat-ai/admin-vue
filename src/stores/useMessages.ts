@@ -4,7 +4,7 @@ import { uniqueId } from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
 import { apiClient } from '@services/ApiService'
 import MemoryService from '@services/MemoryService'
-import { useSettings } from './useSettings'
+import { useMainStore } from './useMainStore'
 
 export const useMessages = defineStore('messages', () => {
 	const currentState = reactive<MessagesState>({
