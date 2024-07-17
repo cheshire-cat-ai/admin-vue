@@ -9,22 +9,23 @@ import { useCookies } from '@vueuse/integrations/useCookies'
 import type { AuthPermission, AuthResource } from 'ccat-api'
 import type { JwtPayload } from 'jwt-decode'
 
-const perms = useAbility()
 
 type AuthToken = JwtPayload & {
 	username: string
 	permissions: Record<AuthResource, AuthPermission[]>
 }
 
+const perms = useAbility()
+const cookies = useCookies(['ccat_user_token'], { doNotParse: true, autoUpdateDependencies: true })
+const cookie = computed(() => cookies.get<string | undefined>('ccat_user_token'))
+const jwt = computed(() => {
+	if (!cookie.value) return null
+	const { payload } = useJwt<AuthToken>(cookie.value)
+	return payload.value
+})
+
 onBeforeMount(() => {
 
-	const cookies = useCookies(['ccat_user_token'], { doNotParse: true, autoUpdateDependencies: true })
-	const cookie = computed(() => cookies.get<string | undefined>('ccat_user_token'))
-	const jwt = computed(() => {
-		if (!cookie.value) return null
-		const { payload } = useJwt<AuthToken>(cookie.value)
-		return payload.value
-	})
 	const payload = jwt.value
 	if (payload) instantiateApiClient(cookie.value)
 	perms.update(
