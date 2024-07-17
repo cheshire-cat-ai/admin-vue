@@ -1,4 +1,4 @@
-import { apiClient, tryRequest } from '@/api'
+import { apiClient, tryRequest } from '@services/ApiService'
 import type { JSONSettings } from '@models/JSONSchema'
 
 /*

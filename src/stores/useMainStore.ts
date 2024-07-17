@@ -2,6 +2,10 @@ import type { AuthPermission, AuthResource } from 'ccat-api'
 import type { JwtPayload } from 'jwt-decode'
 import { useJwt } from '@vueuse/integrations/useJwt'
 import { useCookies } from '@vueuse/integrations/useCookies'
+import { useAbility } from '@casl/vue'
+import { createMongoAbility } from '@casl/ability'
+
+import { instantiateApiClient } from '@services/ApiService'
 import LogService from '@services/LogService'
 
 
@@ -34,6 +38,26 @@ export const useMainStore = defineStore('main', () => {
 	})
 	
 	/**
+	 * User permissions
+	 */
+	const perms = useAbility()
+	if (jwtPayload.value){
+		instantiateApiClient(cookie.value)
+		
+		perms.update(
+			createMongoAbility(
+				jwtPayload.value === null
+					? []
+					: Object.entries(jwtPayload.value.permissions).map(([subject, action]) => ({
+							subject,
+							action,
+						})),
+			).rules,
+		)
+		LogService.success(`Authenticated as ${jwtPayload.value.username}`)
+	
+	}
+	/**
 	 * Dark theme
 	 */
 	const isDark = useDark({
@@ -65,7 +89,8 @@ export const useMainStore = defineStore('main', () => {
 		pluginsFilters,
 		toggleDark,
 		cookie,
-		jwtPayload
+		jwtPayload,
+		perms
 	}
 })
 

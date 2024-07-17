@@ -1,31 +1,4 @@
 <script setup lang="ts">
-import { createMongoAbility } from '@casl/ability'
-import { useMainStore } from '@stores/useMainStore'
-import { instantiateApiClient } from '@services/ApiService'
-import { useAbility } from '@casl/vue'
-import LogService from '@services/LogService'
-
-const { jwtPayload, cookie } = useMainStore()
-const perms = useAbility()
-console.log("App.vue", jwtPayload)
-
-if (jwtPayload){
-	instantiateApiClient(cookie)
-	
-	perms.update(
-		createMongoAbility(
-			jwtPayload === null
-				? []
-				: Object.entries(jwtPayload.permissions).map(([subject, action]) => ({
-						subject,
-						action,
-					})),
-		).rules,
-	)
-	LogService.success(`Authenticated as ${jwtPayload.username}`)
-
-}
-
 </script>
 
 <template>

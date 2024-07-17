@@ -51,8 +51,8 @@ export default defineConfig({
 									'Content-Type': 'application/json',
 								},
 								body: JSON.stringify({
-									username: 'admin',
-									password: 'admin',
+									username: 'user',
+									password: 'user',
 								}),
 							})
 						).json()

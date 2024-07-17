@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUsers } from '@stores/useUsers'
 import { startCase, lowerCase, cloneDeep } from 'lodash'
-import { apiClient, tryRequest } from '@/api'
+import { apiClient, tryRequest } from '@services/ApiService'
 import ModalBox from '@components/ModalBox.vue'
 import SidePanel from '@components/SidePanel.vue'
 import type { Status, UserResponse } from 'ccat-api'
