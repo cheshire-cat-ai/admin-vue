@@ -67,7 +67,9 @@ export const useMessages = defineStore('messages', () => {
 		 * and dispatches the received messages to the store.
 		 * It also dispatches the error to the store if an error occurs.
 		*/
-		if(apiClient==undefined) return
+		if(apiClient == undefined) {
+			return
+		}
 		apiClient
 			.onConnected(() => {
 				currentState.ready = true
