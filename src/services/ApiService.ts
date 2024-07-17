@@ -15,7 +15,7 @@ const getPort = () => {
  * API client to make requests to the endpoints and passing the JWT for authentication.
  * Start as null and is initialized by App.vue
  */
-let apiClient: CatClient | null = null
+let apiClient: CatClient | undefined = undefined
 export { apiClient }
 
 
