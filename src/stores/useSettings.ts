@@ -1,7 +1,3 @@
-import { useJwt } from '@vueuse/integrations/useJwt'
-import { useCookies } from '@vueuse/integrations/useCookies'
-import type { AuthPermission, AuthResource } from 'ccat-api'
-import type { JwtPayload } from 'jwt-decode'
 
 interface Filter {
 	[k: string]: {
@@ -10,21 +6,8 @@ interface Filter {
 	}
 }
 
-type AuthToken = JwtPayload & {
-	username: string
-	permissions: Record<AuthResource, AuthPermission[]>
-}
-
 export const useSettings = defineStore('settings', () => {
-	const cookies = useCookies(['ccat_user_token'], { doNotParse: true, autoUpdateDependencies: true })
-
-	const cookie = computed(() => cookies.get<string | undefined>('ccat_user_token'))
-
-	const jwt = computed(() => {
-		if (!cookie.value) return null
-		const { payload } = useJwt<AuthToken>(cookie.value)
-		return payload.value
-	})
+	
 
 	const isDark = useDark({
 		storageKey: 'currentTheme',
@@ -51,10 +34,7 @@ export const useSettings = defineStore('settings', () => {
 	return {
 		isDark,
 		pluginsFilters,
-		toggleDark,
-		cookies,
-		cookie,
-		jwt,
+		toggleDark
 	}
 })
 

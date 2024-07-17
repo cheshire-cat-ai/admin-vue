@@ -1,16 +1,32 @@
 <script setup lang="ts">
 import { createMongoAbility } from '@casl/ability'
 import { useSettings } from '@stores/useSettings'
-import { updateCredential } from './api'
+import { instantiateApiClient } from '@services/ApiService'
 import { useAbility } from '@casl/vue'
 import LogService from '@services/LogService'
+import { useJwt } from '@vueuse/integrations/useJwt'
+import { useCookies } from '@vueuse/integrations/useCookies'
+import type { AuthPermission, AuthResource } from 'ccat-api'
+import type { JwtPayload } from 'jwt-decode'
 
-const { cookie, jwt } = storeToRefs(useSettings())
 const perms = useAbility()
 
+type AuthToken = JwtPayload & {
+	username: string
+	permissions: Record<AuthResource, AuthPermission[]>
+}
+
 onBeforeMount(() => {
+
+	const cookies = useCookies(['ccat_user_token'], { doNotParse: true, autoUpdateDependencies: true })
+	const cookie = computed(() => cookies.get<string | undefined>('ccat_user_token'))
+	const jwt = computed(() => {
+		if (!cookie.value) return null
+		const { payload } = useJwt<AuthToken>(cookie.value)
+		return payload.value
+	})
 	const payload = jwt.value
-	updateCredential(cookie.value)
+	if (payload) instantiateApiClient(cookie.value)
 	perms.update(
 		createMongoAbility(
 			payload === null
