@@ -7,7 +7,7 @@ import SidePanel from '@components/SidePanel.vue'
 import type { Status, UserResponse } from 'ccat-api'
 
 const getStatus = async () => {
-	const result = await tryRequest(apiClient.api?.status.home(), 'Getting Cheshire Cat status', 'Unable to fetch Cheshire Cat status')
+	const result = await tryRequest(apiClient?.api?.status.home(), 'Getting Cheshire Cat status', 'Unable to fetch Cheshire Cat status')
 	return result.data
 }
 

@@ -15,10 +15,12 @@ const getPort = () => {
  * API client to make requests to the endpoints and passing the JWT for authentication.
  * Start as null and is initialized by App.vue
  */
-let apiClient: CatClient | undefined = undefined
-export { apiClient }
+export let apiClient: CatClient | undefined = undefined
 
-
+/**
+ * Function to instantiate the API client with the JWT token
+ * @param credential The JWT token to pass to the API client
+ */
 export const instantiateApiClient = (credential: string | undefined) => {
 	apiClient = new CatClient({
 		baseUrl: window.location.hostname,
@@ -28,7 +30,7 @@ export const instantiateApiClient = (credential: string | undefined) => {
 		timeout: 15000,
 		instant: true,
 		ws: {
-			retries: 1000, // big number here because the count is cumulative (`retries` is not reset on connection)
+			retries: 5,
 			delay: 2000,
 			onFailed: () => {
 				console.error('Failed to connect WebSocket after several retries.')

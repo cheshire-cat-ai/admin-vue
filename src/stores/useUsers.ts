@@ -23,7 +23,7 @@ export const useUsers = defineStore('users', () => {
 	})
 
 	const { sendNotificationFromJSON } = useNotifications()
-	const { cookies } = useMainStore()
+	const { cookie } = storeToRefs(useMainStore())
 
 	const deleteUser = async (id: string) => {
 		currentState.loading = true
@@ -39,9 +39,7 @@ export const useUsers = defineStore('users', () => {
 	const impersonateUser = async (username: string, password: string) => {
 		currentState.loading = true
 		const result = await UserService.impersonateUser({ username, password })
-		if (result.status == 'success' && result.data) {
-			cookies.set('ccat_user_token', result.data.access_token)
-		}
+		if (result.status == 'success' && result.data) cookie.value = result.data.access_token
 		currentState.loading = false
 		return sendNotificationFromJSON(result)
 	}

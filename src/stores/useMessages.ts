@@ -4,7 +4,6 @@ import { uniqueId } from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
 import { apiClient } from '@services/ApiService'
 import MemoryService from '@services/MemoryService'
-import { useMainStore } from './useMainStore'
 
 export const useMessages = defineStore('messages', () => {
 	const currentState = reactive<MessagesState>({
@@ -61,13 +60,13 @@ export const useMessages = defineStore('messages', () => {
 		if (apiClient?.socketState === WebSocket.OPEN) {
 			currentState.ready = true
 		}
-		
+
 		/**
 		 * Subscribes to the messages service on component mount
 		 * and dispatches the received messages to the store.
 		 * It also dispatches the error to the store if an error occurs.
-		*/
-		if(apiClient == undefined) {
+		 */
+		if (apiClient == undefined) {
 			return
 		}
 		apiClient

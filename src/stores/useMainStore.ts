@@ -8,7 +8,6 @@ import { createMongoAbility } from '@casl/ability'
 import { instantiateApiClient } from '@services/ApiService'
 import LogService from '@services/LogService'
 
-
 interface Filter {
 	[k: string]: {
 		values: string[]
@@ -25,38 +24,38 @@ type AuthToken = JwtPayload & {
  * App wide store, containing info used in multiple views and components
  */
 export const useMainStore = defineStore('main', () => {
-
 	/**
 	 * Extract cookie from headers and JWT payload from it
 	 */
 	const cookies = useCookies(['ccat_user_token'], { doNotParse: true, autoUpdateDependencies: true })
-	const cookie = computed(() => cookies.get<string | undefined>('ccat_user_token'))
+	const cookie = computed({
+		get: () => cookies.get<string | undefined>('ccat_user_token'),
+		set: value => cookies.set('ccat_user_token', value),
+	})
 	const jwtPayload = computed(() => {
 		if (!cookie.value) return null
 		const { payload } = useJwt<AuthToken>(cookie.value)
 		return payload.value
 	})
-	
-	/**
-	 * User permissions
-	 */
 	const perms = useAbility()
-	if (jwtPayload.value){
-		instantiateApiClient(cookie.value)
-		
-		perms.update(
-			createMongoAbility(
-				jwtPayload.value === null
-					? []
-					: Object.entries(jwtPayload.value.permissions).map(([subject, action]) => ({
-							subject,
-							action,
-						})),
-			).rules,
-		)
-		LogService.success(`Authenticated as ${jwtPayload.value.username}`)
-	
-	}
+
+	tryOnBeforeMount(() => {
+		if (jwtPayload.value) {
+			instantiateApiClient(cookie.value)
+			perms.update(
+				createMongoAbility(
+					jwtPayload.value === null
+						? []
+						: Object.entries(jwtPayload.value.permissions).map(([subject, action]) => ({
+								subject,
+								action,
+							})),
+				).rules,
+			)
+			LogService.success(`Authenticated as ${jwtPayload.value.username}`)
+		}
+	})
+
 	/**
 	 * Dark theme
 	 */
@@ -90,7 +89,6 @@ export const useMainStore = defineStore('main', () => {
 		toggleDark,
 		cookie,
 		jwtPayload,
-		perms
 	}
 })
 
