@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { map, omitBy, reduce, values, isEmpty, capitalize, entries, assign, remove, pull } from 'lodash'
 import { useMemory } from '@stores/useMemory'
-import { useSettings } from '@stores/useSettings'
+import { useMainStore } from '@stores/useMainStore'
 import SelectBox from '@components/SelectBox.vue'
 import { now } from 'lodash'
 import ApexChart from 'vue3-apexcharts'
@@ -11,7 +11,7 @@ import ModalBox from '@components/ModalBox.vue'
 import type { VectorsData } from 'ccat-api'
 import type { MarkerData, PlotData } from '@models/Plot'
 
-const { isDark } = storeToRefs(useSettings())
+const { isDark } = storeToRefs(useMainStore())
 const { cannot } = usePerms()
 const callText = ref(''),
 	callOutput = ref<VectorsData>(),

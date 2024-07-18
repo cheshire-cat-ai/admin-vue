@@ -31,10 +31,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18.x
-          cache: "pnpm"
+          cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - name: 'TODO to Issue'
-        uses: 'alstr/todo-to-issue-action@v4'
+        uses: alstr/todo-to-issue-action@v4
         with:
           IDENTIFIERS: '[{"name": "FEATURE", "labels": ["enhancement"]}, {"name": "BUG", "labels": ["bug"]}]'
           ISSUE_TEMPLATE: '**Describe the reason of this issue**\n{{ body }}\n\nThe issue is present here:\n\n{{ snippet }}'

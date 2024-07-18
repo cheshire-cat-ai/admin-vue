@@ -3,7 +3,7 @@ import { upperFirst, isEmpty, groupBy } from 'lodash'
 import { type Plugin } from 'ccat-api'
 import md from '@utils/markdown'
 import { usePlugins } from '@stores/usePlugins'
-import { useSettings } from '@stores/useSettings'
+import { useMainStore } from '@stores/useMainStore'
 import SidePanel from '@components/SidePanel.vue'
 import ModalBox from '@components/ModalBox.vue'
 import { type SchemaField, type JSONSettings } from '@models/JSONSchema'
@@ -12,7 +12,7 @@ const store = usePlugins()
 const { togglePlugin, removePlugin, updateSettings, getSchema, getSettings, searchPlugin, installRegistryPlugin } = store
 const { currentState: pluginsState } = storeToRefs(store)
 const { can, cannot } = usePerms()
-const { pluginsFilters } = storeToRefs(useSettings())
+const { pluginsFilters } = storeToRefs(useMainStore())
 const { upload: uploadFile } = uploadContent()
 
 const boxRemove = ref<InstanceType<typeof ModalBox>>()

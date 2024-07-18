@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useUsers } from '@stores/useUsers'
 import { startCase, lowerCase, cloneDeep } from 'lodash'
-import { apiClient, tryRequest } from '@/api'
+import { apiClient, tryRequest } from '@services/ApiService'
 import ModalBox from '@components/ModalBox.vue'
 import SidePanel from '@components/SidePanel.vue'
 import type { Status, UserResponse } from 'ccat-api'
 
 const getStatus = async () => {
-	const result = await tryRequest(apiClient.api?.status.home(), 'Getting Cheshire Cat status', 'Unable to fetch Cheshire Cat status')
+	const result = await tryRequest(apiClient?.api?.status.home(), 'Getting Cheshire Cat status', 'Unable to fetch Cheshire Cat status')
 	return result.data
 }
 

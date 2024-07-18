@@ -1,29 +1,4 @@
-<script setup lang="ts">
-import { createMongoAbility } from '@casl/ability'
-import { useSettings } from '@stores/useSettings'
-import { updateCredential } from './api'
-import { useAbility } from '@casl/vue'
-import LogService from '@services/LogService'
-
-const { cookie, jwt } = storeToRefs(useSettings())
-const perms = useAbility()
-
-onBeforeMount(() => {
-	const payload = jwt.value
-	updateCredential(cookie.value)
-	perms.update(
-		createMongoAbility(
-			payload === null
-				? []
-				: Object.entries(payload.permissions).map(([subject, action]) => ({
-						subject,
-						action,
-					})),
-		).rules,
-	)
-	if (payload) LogService.success(`Authenticated as ${payload.username}`)
-})
-</script>
+<script setup lang="ts"></script>
 
 <template>
 	<div
