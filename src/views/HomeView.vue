@@ -9,7 +9,7 @@ const route = useRoute()
 const messagesStore = useMessages()
 const { dispatchMessage, selectRandomDefaultMessages } = messagesStore
 const { currentState: messagesState } = storeToRefs(messagesStore)
-
+const { can, cannot } = usePerms()
 const userMessage = ref(''),
 	insertedURL = ref(''),
 	isScrollable = ref(false),
@@ -33,7 +33,7 @@ const { currentState: rabbitHoleState } = storeToRefs(useRabbitHole())
 const { wipeConversation } = useMemory()
 
 const inputDisabled = computed(() => {
-	return messagesState.value.loading || !messagesState.value.ready || Boolean(messagesState.value.error)
+	return messagesState.value.loading || !messagesState.value.ready || Boolean(messagesState.value.error) || cannot('WRITE', 'CONVERSATION')
 })
 
 const randomDefaultMessages = selectRandomDefaultMessages()
@@ -227,7 +227,7 @@ const scrollToBottom = () => {
 				</p>
 			</div>
 		</div>
-		<div v-else class="flex grow cursor-pointer flex-col items-center justify-center gap-4 p-4">
+		<div v-else-if="can('WRITE', 'CONVERSATION')" class="flex grow cursor-pointer flex-col items-center justify-center gap-4 p-4">
 			<div
 				v-for="(msg, index) in randomDefaultMessages"
 				:key="index"
@@ -236,6 +236,7 @@ const scrollToBottom = () => {
 				{{ msg }}
 			</div>
 		</div>
+		<div v-else class="grow" />
 		<div class="fixed bottom-0 left-0 flex w-full items-center justify-center bg-gradient-to-t from-base-200 px-2 py-4">
 			<div class="flex w-full max-w-screen-xl items-center gap-2 md:gap-4">
 				<div class="dropdown dropdown-top">

@@ -1,4 +1,18 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const { can } = usePerms()
+
+const showSettings = computed(
+	() =>
+		can('READ', 'LLM') ||
+		can('READ', 'USERS') ||
+		can('READ', 'EMBEDDER') ||
+		can('READ', 'STATUS') ||
+		can('LIST', 'LLM') ||
+		can('LIST', 'USERS') ||
+		can('LIST', 'EMBEDDER') ||
+		can('LIST', 'STATUS'),
+)
+</script>
 
 <template>
 	<div class="navbar sticky top-0 z-30 min-h-fit bg-base-100 font-medium shadow-md md:px-[5%] lg:px-[10%]">
@@ -21,16 +35,16 @@
 					<MenuItems
 						as="ul"
 						class="menu menu-md absolute left-0 z-50 mt-4 w-min origin-top-left gap-2 whitespace-nowrap rounded-md bg-base-100 shadow-xl">
-						<MenuItem as="li">
+						<MenuItem v-if="can('READ', 'CONVERSATION') || can('LIST', 'CONVERSATION')" as="li">
 							<RouterLink to="/"> <heroicons-home-20-solid class="size-4" /> Home </RouterLink>
 						</MenuItem>
-						<MenuItem as="li">
+						<MenuItem v-if="can('READ', 'MEMORY') || can('LIST', 'MEMORY')" as="li">
 							<RouterLink :key="$route.fullPath" :to="{ path: '/memory' }"> <ph-brain-fill class="size-4" /> Memory </RouterLink>
 						</MenuItem>
-						<MenuItem as="li">
+						<MenuItem v-if="can('READ', 'PLUGINS') || can('LIST', 'PLUGINS')" as="li">
 							<RouterLink :key="$route.fullPath" :to="{ path: '/plugins' }"> <ph-plug-fill class="size-4" /> Plugins </RouterLink>
 						</MenuItem>
-						<MenuItem as="li">
+						<MenuItem v-if="showSettings" as="li">
 							<RouterLink :key="$route.fullPath" :to="{ path: '/settings' }" :class="{ active: $route.path === '/settings' }">
 								<heroicons-cog-6-tooth-20-solid class="size-4" /> Settings
 							</RouterLink>
@@ -47,16 +61,16 @@
 				<img src="@assets/logo.svg" class="size-12 cursor-pointer dark:brightness-0 dark:invert md:hidden" />
 			</RouterLink>
 			<ul class="menu menu-horizontal menu-md hidden gap-4 p-0 md:flex">
-				<li>
+				<li v-if="can('READ', 'CONVERSATION') || can('LIST', 'CONVERSATION')">
 					<RouterLink to="/"> <heroicons-home-20-solid class="size-4" /> Home </RouterLink>
 				</li>
-				<li>
+				<li v-if="can('READ', 'MEMORY') || can('LIST', 'MEMORY')">
 					<RouterLink :key="$route.fullPath" :to="{ path: '/memory' }"> <ph-brain-fill class="size-4" /> Memory </RouterLink>
 				</li>
-				<li>
+				<li v-if="can('READ', 'PLUGINS') || can('LIST', 'PLUGINS')">
 					<RouterLink :key="$route.fullPath" :to="{ path: '/plugins' }"> <ph-plug-fill class="size-4" /> Plugins </RouterLink>
 				</li>
-				<li>
+				<li v-if="showSettings">
 					<RouterLink :key="$route.fullPath" :to="{ path: '/settings' }" :class="{ active: $route.path === '/settings' }">
 						<heroicons-cog-6-tooth-20-solid class="size-4" /> Settings
 					</RouterLink>

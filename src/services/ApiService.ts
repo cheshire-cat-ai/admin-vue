@@ -1,6 +1,7 @@
 import type { JSONResponse } from '@models/JSONSchema'
 import LogService from '@services/LogService'
-import { CatClient, type CancelablePromise } from 'ccat-api'
+import { CatClient, type CancelablePromise, type AuthPermission, type AuthResource } from 'ccat-api'
+import type { PureAbility as Ability } from '@casl/ability'
 
 const { DEV } = import.meta.env
 
@@ -11,23 +12,32 @@ const getPort = () => {
 }
 
 /**
- * API client to make requests to the endpoints and passing the API_KEY for authentication.
+ * API client to make requests to the endpoints and passing the JWT for authentication.
+ * Start as null and is initialized by App.vue
  */
-export const apiClient = new CatClient({
-	baseUrl: window.location.hostname,
-	port: getPort(),
-	secure: window.location.protocol === 'https:',
-	timeout: 15000,
-	ws: {
-		retries: 3,
-		delay: 3000,
-		onFailed: () => {
-			console.error('Failed to connect WebSocket after 3 retries.')
-		},
-	},
-})
+export let apiClient: CatClient | undefined = undefined
 
-export const updateAuthKey = (key: string) => (apiClient.authKey = key)
+/**
+ * Function to instantiate the API client with the JWT token
+ * @param credential The JWT token to pass to the API client
+ */
+export const instantiateApiClient = (credential: string | undefined) => {
+	apiClient = new CatClient({
+		baseUrl: window.location.hostname,
+		port: getPort(),
+		secure: window.location.protocol === 'https:',
+		credential: credential,
+		timeout: 15000,
+		instant: true,
+		ws: {
+			retries: 5,
+			delay: 2000,
+			onFailed: () => {
+				console.error('Failed to connect WebSocket after several retries.')
+			},
+		},
+	})
+}
 
 /**
  * A function that wraps the promise request into a try/catch block
@@ -66,5 +76,15 @@ export const tryRequest = async <T>(
 			status: 'error',
 			message: msg,
 		} as JSONResponse<T>
+	}
+}
+
+export type AppAbility = Ability<[AuthPermission, AuthResource]>
+
+// TODO: Fix why this is not working
+declare module 'vue' {
+	export interface ComponentCustomProperties {
+		$ability: AppAbility
+		$can(this: this, ...args: Parameters<this['$ability']['can']>): boolean
 	}
 }

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useSettings } from '@stores/useSettings'
+import { useMainStore } from '@stores/useMainStore'
 import githubLight from 'highlight.js/styles/github.css?raw'
 import githubDark from 'highlight.js/styles/github-dark.css?raw'
 
-const store = useSettings()
+const store = useMainStore()
 const { toggleDark } = store
 const { isDark } = storeToRefs(store)
 

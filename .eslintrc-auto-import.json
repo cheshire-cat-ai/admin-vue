@@ -106,7 +106,6 @@
     "refDefault": true,
     "refThrottled": true,
     "refWithControl": true,
-    "resetAllStores": true,
     "resolveComponent": true,
     "resolveRef": true,
     "resolveUnref": true,
@@ -324,6 +323,7 @@
     "provideLocal": true,
     "storeRouteMapping": true,
     "useClipboardItems": true,
-    "markdown": true
+    "markdown": true,
+    "usePerms": true
   }
 }

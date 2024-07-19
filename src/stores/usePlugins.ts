@@ -3,7 +3,6 @@ import type { Plugin } from 'ccat-api'
 import { useNotifications } from '@stores/useNotifications'
 import PluginService from '@services/PluginService'
 import type { JSONSettings } from '@models/JSONSchema'
-import { useSettings } from '@stores/useSettings'
 
 export const usePlugins = defineStore('plugins', () => {
 	const currentState = reactive<PluginsState>({
@@ -14,17 +13,8 @@ export const usePlugins = defineStore('plugins', () => {
 		},
 	})
 
-	const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins, undefined)
-	const { state: settings, execute: fetchSettings } = useAsyncState(PluginService.getPluginsSettings, undefined)
-
-	onActivated(() => fetchPlugins())
-
-	const { isReadyAndAuth } = storeToRefs(useSettings())
-	// TODO: Find a way to refresh calls without watching the boolean value (fix resetAllStores())
-	watch(isReadyAndAuth, () => {
-		fetchPlugins()
-		fetchSettings()
-	})
+	const { state: plugins, isLoading, execute: fetchPlugins } = useAsyncState(PluginService.getPlugins, undefined, { resetOnExecute: false })
+	const { state: settings, execute: fetchSettings } = useAsyncState(PluginService.getPluginsSettings, undefined, { resetOnExecute: false })
 
 	const { showNotification, sendNotificationFromJSON } = useNotifications()
 
@@ -80,7 +70,7 @@ export const usePlugins = defineStore('plugins', () => {
 
 	const searchPlugin = async (query: string) => {
 		currentState.loading = true
-		const res = await PluginService.searchPlugin(query)
+		const res = await PluginService.getPlugins(query)
 		if (res.status == 'error') sendNotificationFromJSON(res)
 		currentState.loading = false
 		return res.data

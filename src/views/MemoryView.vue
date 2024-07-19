@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { map, omitBy, reduce, values, isEmpty, capitalize, entries, assign, remove, pull } from 'lodash'
 import { useMemory } from '@stores/useMemory'
-import { useSettings } from '@stores/useSettings'
+import { useMainStore } from '@stores/useMainStore'
 import SelectBox from '@components/SelectBox.vue'
 import { now } from 'lodash'
 import ApexChart from 'vue3-apexcharts'
@@ -11,8 +11,8 @@ import ModalBox from '@components/ModalBox.vue'
 import type { VectorsData } from 'ccat-api'
 import type { MarkerData, PlotData } from '@models/Plot'
 
-const { isDark } = storeToRefs(useSettings())
-
+const { isDark } = storeToRefs(useMainStore())
+const { cannot } = usePerms()
 const callText = ref(''),
 	callOutput = ref<VectorsData>(),
 	kMems = ref(10)
@@ -192,7 +192,7 @@ const wipeMemory = async () => {
 					placeholder="Enter a text..."
 					label="Search similar memories"
 					search
-					:disabled="Boolean(memoryState.error) || memoryState.loading"
+					:disabled="Boolean(memoryState.error) || memoryState.loading || cannot('READ', 'MEMORY')"
 					@send="recallMemory()" />
 				<div class="form-control">
 					<label class="label px-0">
@@ -359,7 +359,7 @@ const wipeMemory = async () => {
 		<div class="divider !my-0" />
 		<div class="join w-fit self-center shadow-xl">
 			<button
-				:disabled="Boolean(memoryState.error) || memoryState.loading"
+				:disabled="Boolean(memoryState.error) || memoryState.loading || cannot('WRITE', 'MEMORY')"
 				class="btn btn-primary join-item hover:border-error hover:bg-error"
 				@click="boxWipe?.toggleModal()">
 				<heroicons-trash-solid class="size-4" />
@@ -406,6 +406,7 @@ const wipeMemory = async () => {
 			<button
 				v-if="clickedPoint && !['procedural', 'query'].includes(clickedPoint.collection)"
 				class="btn btn-primary btn-sm mt-auto hover:btn-error"
+				:disabled="cannot('DELETE', 'MEMORY')"
 				@click="deleteMemoryMarker(clickedPoint.collection, clickedPoint.id)">
 				<heroicons-trash-solid class="size-4" />
 				Delete memory point

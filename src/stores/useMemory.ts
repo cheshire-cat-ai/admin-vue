@@ -2,7 +2,6 @@ import MemoryService from '@services/MemoryService'
 import { useNotifications } from '@stores/useNotifications'
 import type { CollectionsState } from '@stores/types'
 import { remove } from 'lodash'
-import { useSettings } from '@stores/useSettings'
 
 export const useMemory = defineStore('memory', () => {
 	const currentState = reactive<CollectionsState>({
@@ -10,21 +9,17 @@ export const useMemory = defineStore('memory', () => {
 		data: [],
 	})
 
-	const { state: collections, isLoading, execute: fetchCollections } = useAsyncState(MemoryService.getCollections, undefined)
-
-	const { isReadyAndAuth } = storeToRefs(useSettings())
-	// TODO: Find a way to refresh calls without watching the boolean value (fix resetAllStores())
-	watch(isReadyAndAuth, () => {
-		fetchCollections()
-	})
+	const {
+		state: collections,
+		isLoading,
+		execute: fetchCollections,
+	} = useAsyncState(MemoryService.getCollections, undefined, { resetOnExecute: false })
 
 	watchEffect(() => {
 		currentState.loading = isLoading.value
 		currentState.data = collections.value?.data?.collections
 		currentState.error = collections.value?.status === 'error' ? collections.value.message : undefined
 	})
-
-	onActivated(() => fetchCollections())
 
 	const { sendNotificationFromJSON } = useNotifications()
 

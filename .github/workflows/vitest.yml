@@ -22,10 +22,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: pnpm/action-setup@v4
         with:
-          node-version: 16
+          version: 9
       - name: Install dependencies
-        run: npm ci
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
       - name: Run Vitest tests
-        run: npm run unit
+        run: pnpm run unit

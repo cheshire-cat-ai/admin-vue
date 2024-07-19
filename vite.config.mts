@@ -39,6 +39,29 @@ export default defineConfig({
 			},
 		}),
 		tsconfigPaths(),
+		{
+			name: 'configure-token',
+			configureServer(server) {
+				return () => {
+					server.middlewares.use(async (_, res, next) => {
+						const output = await (
+							await fetch('http://localhost:1865/auth/token', {
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								body: JSON.stringify({
+									username: 'admin',
+									password: 'admin',
+								}),
+							})
+						).json()
+						res.setHeader('Set-Cookie', `ccat_user_token=${output.access_token}`)
+						next()
+					})
+				}
+			},
+		},
 	],
 	test: {
 		environment: 'jsdom',
