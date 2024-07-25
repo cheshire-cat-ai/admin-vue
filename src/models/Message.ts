@@ -1,3 +1,5 @@
+import type { SocketResponse } from 'ccat-api'
+
 /**
  * The base interface for all message types.
  * It defines the structure of a basic message.
@@ -14,7 +16,7 @@ export interface MessageBase {
  */
 export interface BotMessage extends MessageBase {
 	readonly sender: 'bot'
-	why: any
+	why: Required<SocketResponse['why']>
 }
 
 /**

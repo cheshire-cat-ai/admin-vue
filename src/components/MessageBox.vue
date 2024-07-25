@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import md from '@utils/markdown'
 import SidePanel from '@components/SidePanel.vue'
+import type { MessageWhy } from 'ccat-api'
 
 const whyPanel = ref<InstanceType<typeof SidePanel>>()
 
@@ -8,7 +9,7 @@ const props = defineProps<{
 	sender: 'bot' | 'user'
 	text: string
 	file?: File
-	why?: Record<string, any>
+	why?: MessageWhy
 	when: Date
 }>()
 

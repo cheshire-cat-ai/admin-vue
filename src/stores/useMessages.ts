@@ -4,6 +4,7 @@ import { uniqueId } from 'lodash'
 import { useNotifications } from '@stores/useNotifications'
 import { apiClient } from '@services/ApiService'
 import MemoryService from '@services/MemoryService'
+import type { SocketResponse } from 'ccat-api'
 
 export const useMessages = defineStore('messages', () => {
 	const currentState = reactive<MessagesState>({
@@ -44,7 +45,7 @@ export const useMessages = defineStore('messages', () => {
 				text: message,
 				sender: who == 'AI' ? 'bot' : 'user',
 				when: when ? new Date(when * 1000) : new Date(),
-				why,
+				why: why as SocketResponse['why'],
 			})
 		})
 		currentState.loading = false
