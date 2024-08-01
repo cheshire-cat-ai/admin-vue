@@ -145,7 +145,7 @@ const canSave = computed(() => {
 								</div>
 								<div class="tooltip tooltip-left" data-tip="Delete">
 									<button
-										:disabled="item.username === 'admin' || cannot('DELETE', 'USERS')"
+										:disabled="cannot('DELETE', 'USERS')"
 										class="btn btn-square btn-error btn-xs"
 										@click="
 											() => {
@@ -188,14 +188,14 @@ const canSave = computed(() => {
 						placeholder="Type a username..."
 						class="input input-sm input-bordered w-full" />
 				</label>
-				<label v-if="!currentUser!.id" class="form-control w-full">
+				<label class="form-control w-full">
 					<div class="label">
 						<span class="label-text">Password</span>
 					</div>
 					<input
 						v-model="currentUser!.password"
 						type="text"
-						placeholder="Type a password..."
+						placeholder="New password..."
 						class="input input-sm input-bordered w-full" />
 				</label>
 				<div class="flex flex-col gap-2">
@@ -241,8 +241,9 @@ const canSave = computed(() => {
 							() => {
 								if (currentUser?.id) {
 									updateUser(currentUser!.id, {
-										permissions: currentUser!.permissions ?? {},
 										username: currentUser!.username,
+										permissions: currentUser!.permissions ?? {},
+										password: currentUser!.password ?? undefined,
 									})
 								} else {
 									createUser({
