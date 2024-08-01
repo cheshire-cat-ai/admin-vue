@@ -32,7 +32,7 @@
 		"animate.css": "^4.1.1",
 		"apexcharts": "^3.50.0",
 		"axios": "^1.7.2",
-		"ccat-api": "^0.11.0",
+		"ccat-api": "github:cheshire-cat-ai/api-client-ts#develop",
 		"daisyui": "^4.12.10",
 		"highlight.js": "^11.10.0",
 		"jwt-decode": "^3.1.2",

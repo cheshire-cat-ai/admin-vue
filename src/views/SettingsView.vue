@@ -4,7 +4,7 @@ import { startCase, lowerCase, cloneDeep } from 'lodash'
 import { apiClient, tryRequest } from '@services/ApiService'
 import ModalBox from '@components/ModalBox.vue'
 import SidePanel from '@components/SidePanel.vue'
-import type { Status, UserResponse } from 'ccat-api'
+import type { Status, UserCreate, UserResponse, UserUpdate } from 'ccat-api'
 
 const getStatus = async () => {
 	const result = await tryRequest(apiClient?.api?.status.home(), 'Getting Cheshire Cat status', 'Unable to fetch Cheshire Cat status')
@@ -16,7 +16,7 @@ const userStore = useUsers()
 const { can, cannot } = usePerms()
 const { deleteUser, updateUser, createUser } = userStore
 const { currentState, availablePerms } = storeToRefs(userStore)
-const currentUser = ref<UserResponse & { password?: string }>()
+const currentUser = ref<UserResponse & (UserCreate | UserUpdate)>()
 
 const panelTitles = {
 	embedder: 'Configure the Embedder',
@@ -44,11 +44,23 @@ const canSave = computed(() => {
 		Object.values(user.permissions).reduce((acc, val) => acc + val.length, 0) > 0
 	)
 })
+
+const createOrUpdateUser = () => {
+	const userInfo: UserUpdate = {
+		username: currentUser.value!.username,
+		permissions: currentUser.value!.permissions ?? {},
+		password: currentUser.value!.password,
+	}
+	if (currentUser.value?.id) updateUser(currentUser.value!.id, userInfo)
+	else createUser(userInfo as UserCreate)
+	editPanel.value?.togglePanel()
+}
 </script>
 
 <template>
 	<div class="grid w-full auto-rows-min gap-8 self-center md:w-3/4 md:grid-cols-2">
-		<div v-if="can('READ', 'STATUS')" class="col-span-2 flex flex-col items-center justify-center gap-2 rounded-md p-4">
+		<div v-if="can('READ', 'STATUS')"
+			class="col-span-2 flex flex-col items-center justify-center gap-2 rounded-md p-4">
 			<p class="text-lg font-bold">
 				Cheshire Cat AI - Version
 				<span class="text-primary">
@@ -57,25 +69,21 @@ const canSave = computed(() => {
 			</p>
 			<span v-if="cat">{{ cat.status }}</span>
 		</div>
-		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-1">
+		<div
+			class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-1">
 			<p class="text-xl font-bold">Large Language Model</p>
 			<p class="text-center">Choose and configure your favourite LLM from a list of supported providers</p>
-			<RouterLink
-				:to="{ name: 'providers' }"
-				class="btn btn-primary btn-sm"
-				:class="{ 'btn-disabled': cannot('WRITE', 'LLM') }"
-				@click="openSidePanel('llm')">
+			<RouterLink :to="{ name: 'providers' }" class="btn btn-primary btn-sm"
+				:class="{ 'btn-disabled': cannot('WRITE', 'LLM') }" @click="openSidePanel('llm')">
 				Configure
 			</RouterLink>
 		</div>
-		<div class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-1">
+		<div
+			class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-1">
 			<p class="text-xl font-bold">Embedder</p>
 			<p class="text-center">Choose a language embedder to help the Cat remember conversations and documents</p>
-			<RouterLink
-				:to="{ name: 'embedders' }"
-				class="btn btn-primary btn-sm"
-				:class="{ 'btn-disabled': cannot('WRITE', 'EMBEDDER') }"
-				@click="openSidePanel('embedder')">
+			<RouterLink :to="{ name: 'embedders' }" class="btn btn-primary btn-sm"
+				:class="{ 'btn-disabled': cannot('WRITE', 'EMBEDDER') }" @click="openSidePanel('embedder')">
 				Configure
 			</RouterLink>
 		</div>
@@ -83,19 +91,15 @@ const canSave = computed(() => {
 			<div class="flex items-center justify-between gap-4">
 				<div class="w-36" />
 				<p class="text-center text-lg font-bold">Users Management</p>
-				<button
-					class="btn btn-primary btn-sm rounded-md hover:shadow-lg"
-					:disabled="cannot('WRITE', 'USERS')"
-					@click="
-						() => {
-							currentUser = {
-								id: '',
-								username: '',
-								permissions: {},
-							}
-							editPanel?.togglePanel()
+				<button class="btn btn-primary btn-sm rounded-md hover:shadow-lg" :disabled="cannot('WRITE', 'USERS')"
+					@click="() => {
+						currentUser = {
+							id: '',
+							username: '',
+							permissions: {},
 						}
-					">
+						editPanel?.togglePanel()
+					}">
 					<ph-plus class="size-4" />
 					Add new user
 				</button>
@@ -131,28 +135,18 @@ const canSave = computed(() => {
 									</button>
 								</div>-->
 								<div class="tooltip tooltip-left" data-tip="Edit">
-									<button
-										class="btn btn-square btn-info btn-xs"
-										:disabled="cannot('EDIT', 'USERS')"
-										@click="
-											() => {
-												currentUser = cloneDeep(item)
-												editPanel?.togglePanel()
-											}
-										">
+									<button class="btn btn-square btn-info btn-xs" :disabled="cannot('EDIT', 'USERS')" @click="() => {
+										currentUser = cloneDeep(item)
+										editPanel?.togglePanel()
+									}">
 										<ph-pencil-fill class="size-4" />
 									</button>
 								</div>
 								<div class="tooltip tooltip-left" data-tip="Delete">
-									<button
-										:disabled="cannot('DELETE', 'USERS')"
-										class="btn btn-square btn-error btn-xs"
-										@click="
-											() => {
-												currentUser = cloneDeep(item)
-												deleteModal?.toggleModal()
-											}
-										">
+									<button :disabled="cannot('DELETE', 'USERS')" class="btn btn-square btn-error btn-xs" @click="() => {
+										currentUser = cloneDeep(item)
+										deleteModal?.toggleModal()
+									}">
 										<ph-trash-fill class="size-4" />
 									</button>
 								</div>
@@ -182,20 +176,14 @@ const canSave = computed(() => {
 					<div class="label">
 						<span class="label-text">Username</span>
 					</div>
-					<input
-						v-model="currentUser!.username"
-						type="text"
-						placeholder="Type a username..."
+					<input v-model="currentUser!.username" type="text" placeholder="Type a new username..."
 						class="input input-sm input-bordered w-full" />
 				</label>
 				<label class="form-control w-full">
 					<div class="label">
 						<span class="label-text">Password</span>
 					</div>
-					<input
-						v-model="currentUser!.password"
-						type="text"
-						placeholder="New password..."
+					<input v-model="currentUser!.password" type="text" placeholder="Type a new password..."
 						class="input input-sm input-bordered w-full" />
 				</label>
 				<div class="flex flex-col gap-2">
@@ -207,12 +195,8 @@ const canSave = computed(() => {
 						<div class="flex items-center gap-2">
 							<div v-for="p in l" :key="p" class="form-control">
 								<label class="label cursor-pointer gap-2 py-1">
-									<input
-										:checked="currentUser?.permissions?.[r]?.includes(p)"
-										type="checkbox"
-										class="checkbox-primary checkbox checkbox-xs rounded"
-										@click="
-											() => {
+									<input :checked="currentUser?.permissions?.[r]?.includes(p)" type="checkbox"
+										class="checkbox-primary checkbox checkbox-xs rounded" @click="() => {
 												if (currentUser?.permissions?.[r]?.includes(p)) {
 													currentUser.permissions[r] = currentUser.permissions[r].filter((perm: string) => perm !== p)
 												} else if (currentUser?.permissions?.[r]) {
@@ -220,8 +204,7 @@ const canSave = computed(() => {
 												} else {
 													currentUser!.permissions![r] = [p]
 												}
-											}
-										" />
+											}" />
 									<span class="label-text">{{ p }}</span>
 								</label>
 							</div>
@@ -233,28 +216,8 @@ const canSave = computed(() => {
 						<heroicons-x-mark-20-solid class="size-4" />
 						Cancel
 					</button>
-					<button
-						type="submit"
-						class="btn btn-primary btn-sm grow normal-case"
-						:disabled="!canSave"
-						@click="
-							() => {
-								if (currentUser?.id) {
-									updateUser(currentUser!.id, {
-										username: currentUser!.username,
-										permissions: currentUser!.permissions ?? {},
-										password: currentUser!.password ?? undefined,
-									})
-								} else {
-									createUser({
-										username: currentUser!.username,
-										permissions: currentUser!.permissions ?? {},
-										password: currentUser!.password!,
-									})
-								}
-								editPanel?.togglePanel()
-							}
-						">
+					<button type="submit" class="btn btn-primary btn-sm grow normal-case" :disabled="!canSave"
+						@click="createOrUpdateUser()">
 						<ph-floppy-disk-bold class="size-4" />
 						{{ currentUser?.id ? 'Save' : 'Create' }}
 					</button>
