@@ -26,7 +26,11 @@ describe('MessageBox', () => {
 				sender: 'bot',
 				text: 'Hello dear human!',
 				when: new Date(),
-				why: {},
+				why: {
+					input: 'Hello dear human!',
+					intermediate_steps: [],
+					memory: {},
+				},
 			},
 		})
 

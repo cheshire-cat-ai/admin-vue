@@ -49,7 +49,7 @@ importers:
         version: 1.7.2
       ccat-api:
         specifier: github:cheshire-cat-ai/api-client-ts#develop
-        version: https://codeload.github.com/cheshire-cat-ai/api-client-ts/tar.gz/b97d70feb5c9de3a1c5ab18b200f0853203b3932
+        version: https://codeload.github.com/cheshire-cat-ai/api-client-ts/tar.gz/d26b730d87734904bec2fc06e496e0bc6d2c3b9a
       daisyui:
         specifier: ^4.12.10
         version: 4.12.10(postcss@8.4.39)
@@ -627,8 +627,8 @@ packages:
   '@types/web-bluetooth@0.0.20':
     resolution: {integrity: sha512-g9gZnnXVq7gM7v3tJCWV/qw7w+KeOlSHAhgF9RytFyifW6AF61hdT2ucrYhPq9hLs5JIryeupHV3qGk95dH9ow==}
 
-  '@types/ws@8.5.11':
-    resolution: {integrity: sha512-4+q7P5h3SpJxaBft0Dzpbr6lmMaqh0Jr2tbhJZ/luAwvD7ohSCniYkwz/pLxuT2h0EOa6QADgJj1Ko+TzRfZ+w==}
+  '@types/ws@8.5.12':
+    resolution: {integrity: sha512-3tPRkv1EtkDpzlgyKyI8pGsGZAGPEaXeu0DOj5DI25Ja91bdAYddYHbADRYVrZMRbfW+1l5YwXVDKohDJNQxkQ==}
 
   '@typescript-eslint/eslint-plugin@7.15.0':
     resolution: {integrity: sha512-uiNHpyjZtFrLwLDpHnzaDlP3Tt6sGMqTCiqmxaN4n4RP0EfYZDODJyddiFDF44Hjwxr5xAcaYxVKm9QKQFJFLA==}
@@ -1005,9 +1005,9 @@ packages:
   caniuse-lite@1.0.30001640:
     resolution: {integrity: sha512-lA4VMpW0PSUrFnkmVuEKBUovSWKhj7puyCg8StBChgu298N1AtuF1sKWEvfDuimSEDbhlb/KqPKC3fs1HbuQUA==}
 
-  ccat-api@https://codeload.github.com/cheshire-cat-ai/api-client-ts/tar.gz/b97d70feb5c9de3a1c5ab18b200f0853203b3932:
-    resolution: {tarball: https://codeload.github.com/cheshire-cat-ai/api-client-ts/tar.gz/b97d70feb5c9de3a1c5ab18b200f0853203b3932}
-    version: 0.10.6
+  ccat-api@https://codeload.github.com/cheshire-cat-ai/api-client-ts/tar.gz/d26b730d87734904bec2fc06e496e0bc6d2c3b9a:
+    resolution: {tarball: https://codeload.github.com/cheshire-cat-ai/api-client-ts/tar.gz/d26b730d87734904bec2fc06e496e0bc6d2c3b9a}
+    version: 0.11.0
 
   chai@5.1.1:
     resolution: {integrity: sha512-pT1ZgP8rPNqUgieVaEY+ryQr6Q4HXNg8Ei9UnLUrjN4IA7dvQC5JB+/kxVcPNDHyBcc/26CXPkbNzq3qwrOEKA==}
@@ -3153,7 +3153,7 @@ snapshots:
 
   '@types/web-bluetooth@0.0.20': {}
 
-  '@types/ws@8.5.11':
+  '@types/ws@8.5.12':
     dependencies:
       '@types/node': 20.14.10
 
@@ -3608,9 +3608,9 @@ snapshots:
 
   caniuse-lite@1.0.30001640: {}
 
-  ccat-api@https://codeload.github.com/cheshire-cat-ai/api-client-ts/tar.gz/b97d70feb5c9de3a1c5ab18b200f0853203b3932:
+  ccat-api@https://codeload.github.com/cheshire-cat-ai/api-client-ts/tar.gz/d26b730d87734904bec2fc06e496e0bc6d2c3b9a:
     dependencies:
-      '@types/ws': 8.5.11
+      '@types/ws': 8.5.12
       axios: 1.7.2
       form-data: 4.0.0
       isomorphic-ws: 5.0.0(ws@8.18.0)
