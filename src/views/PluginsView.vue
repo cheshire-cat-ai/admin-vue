@@ -115,7 +115,7 @@ watchEffect(() => {
 			<!--<SelectBox v-model="selectedPageSize" :list="[10, 25, 50, 100].map(p => ({ label: p.toString(), value: p }))" />-->
 			<div class="flex flex-wrap items-end justify-between gap-2">
 				<a
-					href="https://cheshire-cat-ai.github.io/docs/plugins-registry/plugin-from-template/"
+					href="https://cheshire-cat-ai.github.io/docs/plugins/plugins-registry/plugin-from-template/"
 					target="_blank"
 					class="btn btn-outline btn-primary btn-sm rounded-md hover:shadow-lg">
 					<ph-lightbulb-filament-fill class="size-4" />
