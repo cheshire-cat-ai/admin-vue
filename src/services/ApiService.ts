@@ -23,7 +23,7 @@ export let apiClient: CatClient | undefined = undefined
  */
 export const instantiateApiClient = (credential: string | undefined) => {
 	apiClient = new CatClient({
-		baseUrl: window.location.hostname,
+		host: window.location.hostname,
 		port: getPort(),
 		secure: window.location.protocol === 'https:',
 		credential: credential,
