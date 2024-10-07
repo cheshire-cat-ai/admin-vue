@@ -21,6 +21,7 @@ const currentUser = ref<UserResponse & (UserCreate | UserUpdate)>()
 const panelTitles = {
 	embedder: 'Configure the Embedder',
 	llm: 'Configure the Language Model',
+	auth: 'Configure the Auth handler',
 } as const
 
 const sidePanel = ref<InstanceType<typeof SidePanel>>(),
@@ -58,9 +59,9 @@ const createOrUpdateUser = () => {
 </script>
 
 <template>
-	<div class="grid w-full auto-rows-min gap-8 self-center md:w-3/4 md:grid-cols-2">
+	<div class="flex flex-col md:grid w-full auto-rows-min gap-8 self-center md:w-3/4 md:grid-cols-4">
 		<div v-if="can('READ', 'STATUS')"
-			class="col-span-2 flex flex-col items-center justify-center gap-2 rounded-md p-4">
+			class="flex flex-col items-center justify-center gap-2 rounded-md p-4 md:col-span-4">
 			<p class="text-lg font-bold">
 				Cheshire Cat AI - Version
 				<span class="text-primary">
@@ -70,24 +71,33 @@ const createOrUpdateUser = () => {
 			<span v-if="cat">{{ cat.status }}</span>
 		</div>
 		<div
-			class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-1">
+			class="flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-2">
 			<p class="text-xl font-bold">Large Language Model</p>
-			<p class="text-center">Choose and configure your favourite LLM from a list of supported providers</p>
+			<p class="text-center">Set and configure your favourite LLM from a list of supported providers</p>
 			<RouterLink :to="{ name: 'providers' }" class="btn btn-primary btn-sm"
 				:class="{ 'btn-disabled': cannot('WRITE', 'LLM') }" @click="openSidePanel('llm')">
 				Configure
 			</RouterLink>
 		</div>
 		<div
-			class="col-span-2 flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-1">
+			class="flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-2">
 			<p class="text-xl font-bold">Embedder</p>
-			<p class="text-center">Choose a language embedder to help the Cat remember conversations and documents</p>
+			<p class="text-center">Set a language embedder to help the Cat remember conversations and documents</p>
 			<RouterLink :to="{ name: 'embedders' }" class="btn btn-primary btn-sm"
 				:class="{ 'btn-disabled': cannot('WRITE', 'EMBEDDER') }" @click="openSidePanel('embedder')">
 				Configure
 			</RouterLink>
 		</div>
-		<div v-if="can('LIST', 'USERS')" class="col-span-2 w-full overflow-x-auto rounded-md">
+		<div
+			class="flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-2 md:col-start-2">
+			<p class="text-xl font-bold">Auth Handler</p>
+			<p class="text-center">Set an auth handler to manage how your application authenticates with the Cat</p>
+			<RouterLink :to="{ name: 'auth' }" class="btn btn-primary btn-sm"
+				:class="{ 'btn-disabled': cannot('WRITE', 'AUTH_HANDLER') }" @click="openSidePanel('auth')">
+				Configure
+			</RouterLink>
+		</div>
+		<div v-if="can('LIST', 'USERS')" class="col-span-4 w-full overflow-x-auto rounded-md">
 			<div class="flex items-center justify-between gap-4">
 				<div class="w-36" />
 				<p class="text-center text-lg font-bold">Users Management</p>

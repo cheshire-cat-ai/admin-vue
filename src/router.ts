@@ -24,6 +24,11 @@ const router = createRouter({
 					name: 'embedders',
 					component: () => import('@views/EmbeddersView.vue'),
 				},
+				{
+					path: '',
+					name: 'auth',
+					component: () => import('@views/AuthView.vue'),
+				},
 			],
 		},
 		{
