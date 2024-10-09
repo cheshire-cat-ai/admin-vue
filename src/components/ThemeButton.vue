@@ -4,7 +4,6 @@ import githubLight from 'highlight.js/styles/github.css?raw'
 import githubDark from 'highlight.js/styles/github-dark.css?raw'
 
 const store = useMainStore()
-const { toggleDark } = store
 const { isDark } = storeToRefs(store)
 
 const { css } = useStyleTag(isDark.value ? githubDark : githubLight)
@@ -15,9 +14,9 @@ watchEffect(() => {
 </script>
 
 <template>
-	<button class="btn btn-circle btn-ghost swap" @click="toggleDark()">
+	<button class="swap opacity-50">
 		<input v-model="isDark" type="checkbox" class="modal-toggle" />
-		<heroicons-sun-solid class="swap-on size-6" />
-		<heroicons-moon-solid class="swap-off size-6" />
+		<heroicons-sun-solid class="swap-on size-5" />
+		<heroicons-moon-solid class="swap-off size-5" />
 	</button>
 </template>

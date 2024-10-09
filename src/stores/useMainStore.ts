@@ -83,12 +83,24 @@ export const useMainStore = defineStore('main', () => {
 		},
 	})
 
+	const logoutCurrentUser = () => {
+		const cookies = document.cookie.split(";");
+
+		cookies.forEach(cookie => {
+			const name = cookie.split("=")[0].trim();
+			document.cookie = `${name}=;path=/;domain=${window.location.hostname};`;
+		})
+		cookie.value = ''
+		window.location.href = window.location.origin + '/auth/login' // this is horrible coding, TODO also use parameter for /auth/login
+	}
+
 	return {
 		isDark,
 		pluginsFilters,
 		toggleDark,
 		cookie,
 		jwtPayload,
+		logoutCurrentUser,
 	}
 })
 
