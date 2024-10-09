@@ -5,6 +5,7 @@ import { apiClient, tryRequest } from '@services/ApiService'
 import ModalBox from '@components/ModalBox.vue'
 import SidePanel from '@components/SidePanel.vue'
 import type { Status, UserCreate, UserResponse, UserUpdate } from 'ccat-api'
+import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from '@headlessui/vue'
 
 const getStatus = async () => {
 	const result = await tryRequest(apiClient?.api?.status.home(), 'Getting Cheshire Cat status', 'Unable to fetch Cheshire Cat status')
@@ -13,7 +14,7 @@ const getStatus = async () => {
 
 const { state: cat } = useAsyncState(getStatus, {} as Status, { resetOnExecute: false })
 const userStore = useUsers()
-const { can, cannot } = usePerms()
+const { can, cannot } = usePerms(), updateList = ref(1)
 const { deleteUser, updateUser, createUser } = userStore
 const { currentState, availablePerms } = storeToRefs(userStore)
 const currentUser = ref<UserResponse & (UserCreate | UserUpdate)>()
@@ -56,6 +57,18 @@ const createOrUpdateUser = () => {
 	else createUser(userInfo as UserCreate)
 	editPanel.value?.togglePanel()
 }
+
+const userPermissions = computed({
+    get: () => currentUser.value?.permissions ?? {},
+    set: (value) => {
+        currentUser.value!.permissions = value
+    },
+});
+
+const fillAll = (resource: string) => {
+	userPermissions.value[resource] = availablePerms.value[resource] ?? [];
+	updateList.value += 1
+};
 </script>
 
 <template>
@@ -202,22 +215,32 @@ const createOrUpdateUser = () => {
 						<div class="label py-0">
 							<span class="label-text">{{ startCase(lowerCase(r)) }}</span>
 						</div>
-						<div class="flex items-center gap-2">
-							<div v-for="p in l" :key="p" class="form-control">
-								<label class="label cursor-pointer gap-2 py-1">
-									<input :checked="currentUser?.permissions?.[r]?.includes(p)" type="checkbox"
-										class="checkbox-primary checkbox checkbox-xs rounded" @click="() => {
-												if (currentUser?.permissions?.[r]?.includes(p)) {
-													currentUser.permissions[r] = currentUser.permissions[r].filter((perm: string) => perm !== p)
-												} else if (currentUser?.permissions?.[r]) {
-													currentUser!.permissions![r].push(p)
-												} else {
-													currentUser!.permissions![r] = [p]
-												}
-											}" />
-									<span class="label-text">{{ p }}</span>
-								</label>
-							</div>
+						<div class="label gap-2 py-0">
+							<Listbox :key="updateList" :defaultValue="userPermissions[r]" multiple @update:modelValue="l => userPermissions[r] = l">
+								<div class="relative rounded-lg grow">
+									<ListboxButton v-slot="{ value }" class="flex w-full bg-base-100 p-2 cursor-default items-center justify-between gap-1 rounded-md text-left text-sm">
+										<span class="block truncate font-semibold">{{ value.join(', ') }}</span>
+										<heroicons-chevron-up-down-20-solid class="size-6" />
+									</ListboxButton>
+									<Transition enterActiveClass="transition duration-200 ease-out"
+										enterFromClass="transform opacity-0" enterToClass="transform opacity-100"
+										leaveActiveClass="transition duration-200 ease-in"
+										leaveFromClass="transform opacity-100" leaveToClass="transform opacity-0">
+										<ListboxOptions class="join bg-base-100 join-vertical absolute z-10 mt-4 w-full min-w-fit overflow-auto rounded-md text-sm shadow-lg">
+											<ListboxOption v-for="perm in l" :key="perm" v-slot="{ active, selected }" as="template" :value="perm">
+												<li :class="[
+													active ? 'bg-primary !text-base-100' : '',
+													selected ? 'bg-primary font-semibold text-base-100' : 'text-neutral',
+													'join-item relative cursor-default select-none px-3 py-2',
+												]">
+													<span class="block truncate">{{ perm }}</span>
+												</li>
+											</ListboxOption>
+										</ListboxOptions>
+									</Transition>
+								</div>
+							</Listbox>
+							<button class="btn btn-outline btn-info btn-xs ml-1" @click="fillAll(r)">All</button>
 						</div>
 					</label>
 				</div>
