@@ -19,7 +19,7 @@ watchEffect(() => {
 
 <template>
     <div class="dropdown dropdown-bottom">
-    <button class="btn btn-circle btn-primary shadow-lg">
+    <button class="btn btn-circle btn-ghost">
       <heroicons-user-solid class="size-6" />
     </button>
       <ul tabindex="0" class="text-sm dropdown-content join join-vertical !right-0 z-10 mt-6 w-48 p-0">
