@@ -81,7 +81,7 @@ const showSettings = computed(
 			</ul>
 		</div>
 		<div class="navbar-end">
-			<ThemeButton />
+			<UserDropdown />
 		</div>
 	</div>
 </template>
