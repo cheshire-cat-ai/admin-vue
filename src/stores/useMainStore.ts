@@ -7,6 +7,7 @@ import { createMongoAbility } from '@casl/ability'
 
 import { instantiateApiClient } from '@services/ApiService'
 import LogService from '@services/LogService'
+import type { LocationQueryRaw } from 'vue-router'
 
 interface Filter {
 	[k: string]: {
@@ -84,14 +85,10 @@ export const useMainStore = defineStore('main', () => {
 	})
 
 	const logoutCurrentUser = () => {
-		const cookies = document.cookie.split(";");
-
-		cookies.forEach(cookie => {
-			const name = cookie.split("=")[0].trim();
-			document.cookie = `${name}=;path=/;domain=${window.location.hostname};`;
-		})
+		const cookies = useCookies().getAll()
+		Object.keys(cookies).forEach(key => delete cookies[key])
 		cookie.value = ''
-		window.location.href = window.location.origin + '/auth/login' // this is horrible coding, TODO also use parameter for /auth/login
+		//window.location.href = window.location.origin + '/auth/login'
 	}
 
 	return {
