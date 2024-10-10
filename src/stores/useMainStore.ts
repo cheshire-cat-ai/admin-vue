@@ -88,7 +88,8 @@ export const useMainStore = defineStore('main', () => {
 		const cookies = useCookies().getAll()
 		Object.keys(cookies).forEach(key => delete cookies[key])
 		cookie.value = ''
-		//window.location.href = window.location.origin + '/auth/login'
+		// find different solution for this redirect, maybe having a LoginView and moving login page to frontend is an idea
+		window.location.href = window.location.origin + '/auth/login'
 	}
 
 	return {
