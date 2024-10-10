@@ -40,7 +40,11 @@ watchEffect(() => {
             Change Theme
           </span>
           <span class="rounded-lg p-1">
-						<ThemeButton />
+            <button class="swap opacity-50">
+              <input v-model="isDark" type="checkbox" class="modal-toggle" />
+              <heroicons-sun-solid class="swap-on size-5" />
+              <heroicons-moon-solid class="swap-off size-5" />
+            </button>
 					</span>
           </button>
         </li>
@@ -52,7 +56,9 @@ watchEffect(() => {
             Logout
           </span>
           <span class="rounded-lg p-1">
-						<Logout />
+            <button class="opacity-50" @click="logoutCurrentUser()">
+              <heroicons-outline:logout class="size-5" />
+            </button>
 					</span>
           </button>
         </li>
