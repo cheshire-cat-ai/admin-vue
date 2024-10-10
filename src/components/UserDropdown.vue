@@ -26,9 +26,8 @@ watchEffect(() => {
         <li>
           <button
 					class="btn join-item w-full flex-nowrap px-2 text-left font-small opacity-100 pointer-events-none cursor-not-allowed">
-					<span class="grow text-left">Signed in as</span>
-          <span class="grow text-right text-primary">
-            {{ store.jwtPayload?.username }}
+          <span class="grow text-right">
+            Signed in as <span class="text-primary">{{ store.jwtPayload?.username }}</span>
           </span>
           </button>
         </li>
@@ -36,7 +35,7 @@ watchEffect(() => {
           <button
 					class="btn join-item w-full flex-nowrap px-2 text-left font-small"
           @click="toggleDark()">
-					<span class="grow text-left">
+					<span class="grow text-right">
             Change Theme
           </span>
           <span class="rounded-lg p-1">
@@ -50,9 +49,9 @@ watchEffect(() => {
         </li>
         <li>
           <button
-					class="btn join-item w-full flex-nowrap px-2 text-left font-small"
+					class="btn join-item w-full flex-nowrap px-2 text-right font-small"
           @click="logoutCurrentUser()">
-					<span class="grow text-left">
+					<span class="grow text-right">
             Logout
           </span>
           <span class="rounded-lg p-1">
