@@ -27,7 +27,7 @@ watchEffect(() => {
           <button
 					class="btn join-item w-full flex-nowrap px-2 text-left font-small opacity-100 pointer-events-none cursor-not-allowed">
           <span class="grow text-right">
-            Signed in as <span class="text-primary">{{ store.jwtPayload?.username }}</span>
+            <span class="opacity-60">Signed in as</span> {{ store.jwtPayload?.username }}
           </span>
           </button>
         </li>
