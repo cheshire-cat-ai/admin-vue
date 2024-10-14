@@ -20,8 +20,9 @@ watchEffect(() => {
 		</button>
 		<ul tabindex="0" class="dropdown-content join join-vertical !right-0 z-10 mt-6 w-40 p-0 text-sm">
 			<li>
-				<button class="font-small btn join-item pointer-events-none w-full cursor-not-allowed flex-nowrap px-2 text-left opacity-100">
-					<span class="grow text-right"> <span class="opacity-60">Signed in as</span> {{ jwtPayload?.username }} </span>
+				<button class="font-small btn join-item grow flex-col gap-1 items-end pointer-events-none w-full cursor-not-allowed px-2 opacity-100">
+					<span class="opacity-60">Signed in as</span> 
+					<span>{{ jwtPayload?.username }}</span>
 				</button>
 			</li>
 			<li>
@@ -38,7 +39,7 @@ watchEffect(() => {
 			</li>
 			<li>
 				<button class="font-small btn join-item w-full flex-nowrap px-2 text-right" @click="logoutCurrentUser()">
-					<span class="grow text-right">Logout</span>
+					<span class="grow text-right">Log out</span>
 					<span class="rounded-lg p-1">
 						<button class="opacity-50" @click="logoutCurrentUser()">
 							<heroicons-arrow-right-on-rectangle class="size-5" />
