@@ -7,7 +7,6 @@ import { createMongoAbility } from '@casl/ability'
 
 import { instantiateApiClient } from '@services/ApiService'
 import LogService from '@services/LogService'
-import type { LocationQueryRaw } from 'vue-router'
 
 interface Filter {
 	[k: string]: {
@@ -88,7 +87,7 @@ export const useMainStore = defineStore('main', () => {
 		const cookies = useCookies().getAll()
 		Object.keys(cookies).forEach(key => delete cookies[key])
 		cookie.value = ''
-		// find different solution for this redirect, maybe having a LoginView and moving login page to frontend is an idea
+		// TODO: find different solution for this redirect, maybe having a LoginView and moving login page to frontend is an idea
 		window.location.href = window.location.origin + '/auth/login'
 	}
 
