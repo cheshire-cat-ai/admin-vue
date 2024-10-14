@@ -26,7 +26,7 @@ watchEffect(() => {
 			</li>
 			<li>
 				<button class="font-small btn join-item w-full flex-nowrap px-2 text-left" @click="toggleDark()">
-					<span class="grow text-right"> Change Theme </span>
+					<span class="grow text-right">Change Theme</span>
 					<span class="rounded-lg p-1">
 						<button class="swap opacity-50">
 							<input v-model="isDark" type="checkbox" class="modal-toggle" />
@@ -38,7 +38,7 @@ watchEffect(() => {
 			</li>
 			<li>
 				<button class="font-small btn join-item w-full flex-nowrap px-2 text-right" @click="logoutCurrentUser()">
-					<span class="grow text-right"> Logout </span>
+					<span class="grow text-right">Logout</span>
 					<span class="rounded-lg p-1">
 						<button class="opacity-50" @click="logoutCurrentUser()">
 							<heroicons-arrow-right-on-rectangle class="size-5" />

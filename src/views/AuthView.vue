@@ -26,7 +26,7 @@ const updateProperties = (selected = currentSchema.value?.title) => {
 	currentSettings.value = getHandlerSettings(selected)
 }
 
-const saveEmbedder = async (payload: JSONSettings) => {
+const saveAuth = async (payload: JSONSettings) => {
 	if (!selectedHandler.value) return
 	const res = await setHandlerSettings(selectedHandler.value, payload)
 	if (res) emit('close')
@@ -43,16 +43,12 @@ watchDeep(
 
 <template>
 	<div class="flex grow flex-col gap-4">
-		<ErrorBox
-			v-if="authState.loading || authState.error"
-			:load="authState.loading"
-			:error="authState.error"
-			text="Saving settings..." />
+		<ErrorBox v-if="authState.loading || authState.error" :load="authState.loading" :error="authState.error" text="Saving settings..." />
 		<div v-else class="flex grow flex-col gap-4">
 			<SelectBox
 				v-model="selectedHandler"
 				:list="getAvailableHandlers.map(p => ({ label: p.humanReadableName ?? p.title, value: p.title }))"
-				:disabled="cannot('LIST', 'EMBEDDER')"
+				:disabled="cannot('LIST', 'AUTH_HANDLER')"
 				@update="(e: any) => updateProperties(e.value)" />
 			<div class="flex grow flex-col gap-4">
 				<div class="flex items-center gap-1 font-medium">
@@ -61,7 +57,7 @@ watchDeep(
 					</a>
 					<span>{{ currentSchema?.description }}</span>
 				</div>
-				<DynamicForm :values="currentSettings" :fields="currentFields" @submit="saveEmbedder" />
+				<DynamicForm :values="currentSettings" :fields="currentFields" @submit="saveAuth" />
 			</div>
 		</div>
 	</div>

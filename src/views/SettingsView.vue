@@ -14,7 +14,8 @@ const getStatus = async () => {
 
 const { state: cat } = useAsyncState(getStatus, {} as Status, { resetOnExecute: false })
 const userStore = useUsers()
-const { can, cannot } = usePerms(), updateList = ref(1)
+const { can, cannot } = usePerms(),
+	updateList = ref(1)
 const { deleteUser, updateUser, createUser } = userStore
 const { currentState, availablePerms } = storeToRefs(userStore)
 const currentUser = ref<UserResponse & (UserCreate | UserUpdate)>()
@@ -59,22 +60,21 @@ const createOrUpdateUser = () => {
 }
 
 const userPermissions = computed({
-    get: () => currentUser.value?.permissions ?? {},
-    set: (value) => {
-        currentUser.value!.permissions = value
-    },
-});
+	get: () => currentUser.value?.permissions ?? {},
+	set: value => {
+		currentUser.value!.permissions = value
+	},
+})
 
 const fillAll = (resource: string) => {
-	userPermissions.value[resource] = availablePerms.value[resource] ?? [];
+	userPermissions.value[resource] = availablePerms.value[resource] ?? []
 	updateList.value += 1
-};
+}
 </script>
 
 <template>
-	<div class="flex flex-col md:grid w-full auto-rows-min gap-8 self-center md:w-3/4 md:grid-cols-4">
-		<div v-if="can('READ', 'STATUS')"
-			class="flex flex-col items-center justify-center gap-2 rounded-md p-4 md:col-span-4">
+	<div class="flex w-full auto-rows-min flex-col gap-8 self-center md:grid md:w-3/4 md:grid-cols-4">
+		<div v-if="can('READ', 'STATUS')" class="flex flex-col items-center justify-center gap-2 rounded-md p-4 md:col-span-4">
 			<p class="text-lg font-bold">
 				Cheshire Cat AI - Version
 				<span class="text-primary">
@@ -83,30 +83,36 @@ const fillAll = (resource: string) => {
 			</p>
 			<span v-if="cat">{{ cat.status }}</span>
 		</div>
-		<div
-			class="flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-2">
+		<div class="flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-2">
 			<p class="text-xl font-bold">Large Language Model</p>
 			<p class="text-center">Set and configure your favourite LLM from a list of supported providers</p>
-			<RouterLink :to="{ name: 'providers' }" class="btn btn-primary btn-sm"
-				:class="{ 'btn-disabled': cannot('WRITE', 'LLM') }" @click="openSidePanel('llm')">
+			<RouterLink
+				:to="{ name: 'providers' }"
+				class="btn btn-primary btn-sm"
+				:class="{ 'btn-disabled': cannot('WRITE', 'LLM') }"
+				@click="openSidePanel('llm')">
 				Configure
 			</RouterLink>
 		</div>
-		<div
-			class="flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-2">
+		<div class="flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-2">
 			<p class="text-xl font-bold">Embedder</p>
 			<p class="text-center">Set a language embedder to help the Cat remember conversations and documents</p>
-			<RouterLink :to="{ name: 'embedders' }" class="btn btn-primary btn-sm"
-				:class="{ 'btn-disabled': cannot('WRITE', 'EMBEDDER') }" @click="openSidePanel('embedder')">
+			<RouterLink
+				:to="{ name: 'embedders' }"
+				class="btn btn-primary btn-sm"
+				:class="{ 'btn-disabled': cannot('WRITE', 'EMBEDDER') }"
+				@click="openSidePanel('embedder')">
 				Configure
 			</RouterLink>
 		</div>
-		<div
-			class="flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-2 md:col-start-2">
+		<div class="flex flex-col items-center justify-between gap-8 rounded-lg bg-base-100 p-4 shadow-md md:col-span-2 md:col-start-2">
 			<p class="text-xl font-bold">Auth Handler</p>
 			<p class="text-center">Set an auth handler to manage how your application authenticates with the Cat</p>
-			<RouterLink :to="{ name: 'auth' }" class="btn btn-primary btn-sm"
-				:class="{ 'btn-disabled': cannot('WRITE', 'AUTH_HANDLER') }" @click="openSidePanel('auth')">
+			<RouterLink
+				:to="{ name: 'auth' }"
+				class="btn btn-primary btn-sm"
+				:class="{ 'btn-disabled': cannot('WRITE', 'AUTH_HANDLER') }"
+				@click="openSidePanel('auth')">
 				Configure
 			</RouterLink>
 		</div>
@@ -114,15 +120,19 @@ const fillAll = (resource: string) => {
 			<div class="flex items-center justify-between gap-4">
 				<div class="w-36" />
 				<p class="text-center text-lg font-bold">Users Management</p>
-				<button class="btn btn-primary btn-sm rounded-md hover:shadow-lg" :disabled="cannot('WRITE', 'USERS')"
-					@click="() => {
-						currentUser = {
-							id: '',
-							username: '',
-							permissions: {},
+				<button
+					class="btn btn-primary btn-sm rounded-md hover:shadow-lg"
+					:disabled="cannot('WRITE', 'USERS')"
+					@click="
+						() => {
+							currentUser = {
+								id: '',
+								username: '',
+								permissions: {},
+							}
+							editPanel?.togglePanel()
 						}
-						editPanel?.togglePanel()
-					}">
+					">
 					<ph-plus class="size-4" />
 					Add new user
 				</button>
@@ -158,18 +168,28 @@ const fillAll = (resource: string) => {
 									</button>
 								</div>-->
 								<div class="tooltip tooltip-left" data-tip="Edit">
-									<button class="btn btn-square btn-info btn-xs" :disabled="cannot('EDIT', 'USERS')" @click="() => {
-										currentUser = cloneDeep(item)
-										editPanel?.togglePanel()
-									}">
+									<button
+										class="btn btn-square btn-info btn-xs"
+										:disabled="cannot('EDIT', 'USERS')"
+										@click="
+											() => {
+												currentUser = cloneDeep(item)
+												editPanel?.togglePanel()
+											}
+										">
 										<ph-pencil-fill class="size-4" />
 									</button>
 								</div>
 								<div class="tooltip tooltip-left" data-tip="Delete">
-									<button :disabled="cannot('DELETE', 'USERS')" class="btn btn-square btn-error btn-xs" @click="() => {
-										currentUser = cloneDeep(item)
-										deleteModal?.toggleModal()
-									}">
+									<button
+										:disabled="cannot('DELETE', 'USERS')"
+										class="btn btn-square btn-error btn-xs"
+										@click="
+											() => {
+												currentUser = cloneDeep(item)
+												deleteModal?.toggleModal()
+											}
+										">
 										<ph-trash-fill class="size-4" />
 									</button>
 								</div>
@@ -199,14 +219,20 @@ const fillAll = (resource: string) => {
 					<div class="label">
 						<span class="label-text">Username</span>
 					</div>
-					<input v-model="currentUser!.username" type="text" placeholder="Type a new username..."
+					<input
+						v-model="currentUser!.username"
+						type="text"
+						placeholder="Type a new username..."
 						class="input input-sm input-bordered w-full" />
 				</label>
 				<label class="form-control w-full">
 					<div class="label">
 						<span class="label-text">Password</span>
 					</div>
-					<input v-model="currentUser!.password" type="text" placeholder="Type a new password..."
+					<input
+						v-model="currentUser!.password"
+						type="text"
+						placeholder="Type a new password..."
 						class="input input-sm input-bordered w-full" />
 				</label>
 				<div class="flex flex-col gap-2">
@@ -216,23 +242,30 @@ const fillAll = (resource: string) => {
 							<span class="label-text">{{ startCase(lowerCase(r)) }}</span>
 						</div>
 						<div class="label gap-2 py-0">
-							<Listbox :key="updateList" :defaultValue="userPermissions[r]" multiple @update:modelValue="l => userPermissions[r] = l">
-								<div class="relative rounded-lg grow">
-									<ListboxButton v-slot="{ value }" class="flex w-full bg-base-100 p-2 cursor-default items-center justify-between gap-1 rounded-md text-left text-sm">
+							<Listbox :key="updateList" :defaultValue="userPermissions[r]" multiple @update:modelValue="l => (userPermissions[r] = l)">
+								<div class="relative grow rounded-lg">
+									<ListboxButton
+										v-slot="{ value }"
+										class="flex w-full cursor-default items-center justify-between gap-1 rounded-md bg-base-100 p-2 text-left text-sm">
 										<span class="block truncate font-semibold">{{ value.join(', ') }}</span>
 										<heroicons-chevron-up-down-20-solid class="size-6" />
 									</ListboxButton>
-									<Transition enterActiveClass="transition duration-200 ease-out"
-										enterFromClass="transform opacity-0" enterToClass="transform opacity-100"
+									<Transition
+										enterActiveClass="transition duration-200 ease-out"
+										enterFromClass="transform opacity-0"
+										enterToClass="transform opacity-100"
 										leaveActiveClass="transition duration-200 ease-in"
-										leaveFromClass="transform opacity-100" leaveToClass="transform opacity-0">
-										<ListboxOptions class="join bg-base-100 join-vertical absolute z-10 mt-4 w-full min-w-fit overflow-auto rounded-md text-sm shadow-lg">
+										leaveFromClass="transform opacity-100"
+										leaveToClass="transform opacity-0">
+										<ListboxOptions
+											class="join join-vertical absolute z-10 mt-4 w-full min-w-fit overflow-auto rounded-md bg-base-100 text-sm shadow-lg">
 											<ListboxOption v-for="perm in l" :key="perm" v-slot="{ active, selected }" as="template" :value="perm">
-												<li :class="[
-													active ? 'bg-primary !text-base-100' : '',
-													selected ? 'bg-primary font-semibold text-base-100' : 'text-neutral',
-													'join-item relative cursor-default select-none px-3 py-2',
-												]">
+												<li
+													:class="[
+														active ? 'bg-primary !text-base-100' : '',
+														selected ? 'bg-primary font-semibold text-base-100' : 'text-neutral',
+														'join-item relative cursor-default select-none px-3 py-2',
+													]">
 													<span class="block truncate">{{ perm }}</span>
 												</li>
 											</ListboxOption>
@@ -249,8 +282,7 @@ const fillAll = (resource: string) => {
 						<heroicons-x-mark-20-solid class="size-4" />
 						Cancel
 					</button>
-					<button type="submit" class="btn btn-primary btn-sm grow normal-case" :disabled="!canSave"
-						@click="createOrUpdateUser()">
+					<button type="submit" class="btn btn-primary btn-sm grow normal-case" :disabled="!canSave" @click="createOrUpdateUser()">
 						<ph-floppy-disk-bold class="size-4" />
 						{{ currentUser?.id ? 'Save' : 'Create' }}
 					</button>
