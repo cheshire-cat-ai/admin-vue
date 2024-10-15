@@ -28,8 +28,8 @@ const UserService = Object.freeze({
 	createUser: async (user: UserCreate) => {
 		return await tryRequest(
 			apiClient?.api?.users.createUser(user),
-			'All in-memory collections were wiped',
-			'Unable to wipe the in-memory collections',
+			`User ${user.username} was created successfully`,
+			`Unable to create user ${user.username}`,
 		)
 	},
 	updateUser: async (id: string, body: UserUpdate) => {
