@@ -228,6 +228,8 @@ watchEffect(() => {
 											item.active = res ? item.active : false
 										}
 									" />
+									<span v-if="item.active">On</span>
+									<span v-else>Off</span>
 							</div>
 						</div>
 					</div>
