@@ -4,6 +4,11 @@ defineProps<{
 }>()
 
 const selectedCollection = ref('episodic')
+let showMeta = ref(false)
+let selectedItem = ref('')
+const showMetadata = (id: string) => {
+	selectedItem.value = selectedItem.value === id ? '' : id;
+}
 </script>
 
 <template>
@@ -40,6 +45,23 @@ const selectedCollection = ref('episodic')
 				<div class="flex items-end justify-between gap-2 text-xs font-bold text-neutral/70">
 					<p class="truncate">{{ item.metadata.source }} {{ item.metadata.name ? `(${item.metadata.name})` : '' }}</p>
 					<p class="whitespace-nowrap">{{ new Date(item.metadata.when * 1000).toLocaleString() }}</p>
+				</div>
+				<div
+					class="indicator-item indicator-center tooltip before:rounded-lg pt-8 before:font-medium before:text-base-100"
+					>
+					<span class="badge badge-neutral cursor-pointer font-medium text-base-100" @click="showMetadata(item.id)">
+						{{ selectedItem === item.id ? 'Hide Metadata' : 'View Metadata' }}
+					</span>
+				</div>
+				<div v-if="selectedItem === item.id" class="font-medium text-base-100 shadow-lg">
+					<ul class="list-disc">
+						<li v-for="(el, value) in item.metadata" :key="value" class="flex justify-between items-center py-2">
+							<div class="flex flex-col text-left">
+									<div class="text-sm font-semibold text-neutral/90">{{ value }}</div>
+							</div>
+							<div class="text-sm text-right text-neutral/70">{{ el }}</div>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</template>
