@@ -5,9 +5,12 @@ import { apiClient, tryRequest } from '@services/ApiService'
  * Meaning this service sends files to the backend.
  */
 const RabbitHoleService = Object.freeze({
-	sendFile: async (file: File) => {
+	sendFile: async (file: File, metadata?: Record<string, any>) => {
 		return await tryRequest(
-			apiClient?.api?.rabbitHole.uploadFile({ file }),
+			apiClient?.api?.rabbitHole.uploadFile({
+				file,
+				metadata: JSON.stringify(metadata),
+			}),
 			`File ${file.name} successfully sent down the rabbit hole!`,
 			'Unable to send the file to the rabbit hole!',
 			'Sending a file to the rabbit hole',

@@ -4,6 +4,7 @@ import { useMessages } from '@stores/useMessages'
 import { useMemory } from '@stores/useMemory'
 import ModalBox from '@components/ModalBox.vue'
 import { capitalize } from 'lodash'
+import RabbitHoleService from '@services/RabbitHoleService'
 
 const route = useRoute()
 const messagesStore = useMessages()
@@ -14,6 +15,51 @@ const userMessage = ref(''),
 	insertedURL = ref(''),
 	isScrollable = ref(false),
 	isTwoLines = ref(false)
+
+/**
+ * File Upload w/ Metadata Management
+ * **/
+
+const uploadFileDialog = useFileDialog()
+
+//  User selects a file and then the Metadata Modal opens up
+const selectedFiles = ref<File[]>([])
+uploadFileDialog.onChange((files) => {
+	selectedFiles!.value = files
+	fileMetadata.value[0].value = selectedFiles.value[0].name
+	boxUploadFile.value?.toggleModal()
+})
+
+const fileMetadata = ref<{key: string, value: string}[]>([
+	{ key: 'source', value: 'filename.pdf'},
+])
+
+const addMetadata = () => {
+	fileMetadata.value.push(
+		{ key: '', value: '' }
+	)
+}
+const removeMetadata = (index: number) => {
+	fileMetadata.value.splice(index, 1)
+}
+
+const boxUploadFile = ref<InstanceType<typeof ModalBox>>()
+
+const dispatchFiles = async () => {
+	boxUploadFile.value?.toggleModal()
+	const json: Record<string, string> = {};
+	// turn metadata into Json
+	for (const md of fileMetadata.value)
+		json[md.key] = md.value
+	for (const file of selectedFiles.value)
+		await RabbitHoleService.sendFile(file, json)
+	uploadFileDialog.reset()
+}
+
+/**
+ * End Custom Metadata Management
+ * */
+
 const boxUploadURL = ref<InstanceType<typeof ModalBox>>()
 
 const { textarea: textArea } = useTextareaAutosize({
@@ -122,6 +168,7 @@ useEventListener(document, 'scroll', () => {
 	const doc = document.documentElement
 	isScrollable.value = doc.scrollHeight > doc.clientHeight + doc.scrollTop
 })
+
 
 /**
  * Dispatches the inserted url to the RabbitHole service and closes the modal.
@@ -281,7 +328,7 @@ const scrollToBottom = () => {
 							<button
 								:disabled="rabbitHoleState.loading"
 								class="btn join-item w-full flex-nowrap px-2 text-left font-medium"
-								@click="uploadFile('content')">
+								@click="uploadFileDialog.open">
 								<span class="rounded-lg p-1 text-warning">
 									<heroicons-document-text-solid class="size-5" />
 								</span>
@@ -332,6 +379,29 @@ const scrollToBottom = () => {
 				<heroicons-arrow-down-20-solid class="size-5" />
 			</button>
 		</div>
+		<Teleport to="#modal">
+			<ModalBox ref="boxUploadFile" class="text-center">
+				<div class="flex flex-col text-center justify-center gap-4 text-neutral">
+					<h3 class="text-lg font-bold">File Upload</h3>
+					<p>Selected file(s): <b>{{ `${selectedFiles.length} ${selectedFiles.length === 1 ? 'file' : 'files'}` }}</b></p>
+					<li v-for="file of selectedFiles" :key="file.name">
+						{{ file.name }}
+					</li>
+					<p>Add metadata to file:</p>
+					<div class="bg-amber-50" v-for="(md, index) in fileMetadata" :key="index">
+						<label>Label you will query for:</label>
+						<InputBox v-model="md.key" placeholder="Metadata Key ..." />
+						<label>Value of the metadata:</label>
+						<InputBox v-model="md.value" placeholder="Value ..." />
+						<button class="btn btn-sm btn-neutral" @click="removeMetadata(index)">-</button>
+					</div>
+					<button class="btn btn-active btn-sm btn-circle btn-primary p-3" @click="addMetadata">+</button>
+
+					<button class="btn btn-primary btn-sm" @click="dispatchFiles">Send</button>
+				</div>
+
+			</ModalBox>
+		</Teleport>
 		<Teleport to="#modal">
 			<ModalBox ref="boxUploadURL">
 				<div class="flex flex-col items-center justify-center gap-4 text-neutral">
