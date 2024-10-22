@@ -4,8 +4,8 @@ defineProps<{
 }>()
 
 const selectedCollection = ref('episodic')
-let showMeta = ref(false)
-let selectedItem = ref('')
+const showMeta = ref(false)
+const selectedItem = ref('')
 const showMetadata = (id: string) => {
 	selectedItem.value = selectedItem.value === id ? '' : id;
 }
