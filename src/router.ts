@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useMemory } from '@stores/useMemory'
 
 const router = createRouter({
 	linkActiveClass: 'active',
@@ -35,6 +36,9 @@ const router = createRouter({
 			path: '/memory',
 			name: 'memory',
 			component: () => import('@views/MemoryView.vue'),
+			beforeEnter: async () => {
+				await useMemory().fetchCollections()
+			},
 		},
 		{
 			path: '/plugins',
