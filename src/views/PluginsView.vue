@@ -71,6 +71,21 @@ const queryPlugins = async () => {
 	filteredList.value = [...new Set([...(list?.installed ?? []), ...(list?.registry ?? [])])]
 }
 
+const getCompatibleVersionText = (item: Plugin) => {
+	const minVersion = item.min_cat_version
+	const maxVersion = item.max_cat_version
+
+	if (minVersion && maxVersion) {
+		return `v${minVersion} ➡ v${maxVersion}`
+	} else if (minVersion) {
+		return `≥ v${minVersion}`
+	} else if (maxVersion) {
+		return `≤ v${maxVersion}`
+	} else {
+		return null
+	}
+}
+
 watchEffect(() => {
 	// TODO: Improve filtering rules and code logic
 	const filters = pluginsFilters.value
@@ -183,15 +198,22 @@ watchEffect(() => {
 								</button>
 							</div>
 						</div>
-						<div class="flex h-6 items-center gap-1 text-sm font-medium text-neutral">
-							<span>by</span>
-							<a
-								:href="item.author_url"
-								target="_blank"
-								class="link"
-								:class="{ 'pointer-events-none no-underline': item.author_url === '' }">
-								{{ item.author_name }}
-							</a>
+						<div class="flex items-center justify-between">
+							<div class="flex h-6 items-center gap-1 text-sm font-medium text-neutral">
+								<span>by</span>
+								<a
+									:href="item.author_url"
+									target="_blank"
+									class="link"
+									:class="{ 'pointer-events-none no-underline': item.author_url === '' }">
+									{{ item.author_name }}
+								</a>
+							</div>
+							<div v-if="getCompatibleVersionText(item)" class="flex gap-2">
+								<span class="text-xs opacity-75">
+									Tested with Cat {{ getCompatibleVersionText(item) }}
+								</span>
+							</div>
 						</div>
 						<p class="my-2 text-sm" v-html="md.render(item.description)" />
 						<div class="flex h-8 items-center justify-between gap-4">
