@@ -81,8 +81,6 @@ const getCompatibleVersionText = (item: Plugin) => {
 		return `≥ v${minVersion}`
 	} else if (maxVersion) {
 		return `≤ v${maxVersion}`
-	} else {
-		return null
 	}
 }
 
