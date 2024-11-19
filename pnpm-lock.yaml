@@ -48,8 +48,8 @@ importers:
         specifier: ^1.7.7
         version: 1.7.7
       ccat-api:
-        specifier: github:alfredotoselli/cheshire-cat-api-client-ts#plugin-comp-versions
-        version: https://codeload.github.com/alfredotoselli/cheshire-cat-api-client-ts/tar.gz/2618a09595e3970d27414015b2c65b47766634f0
+        specifier: github:cheshire-cat-ai/api-client-ts#develop
+        version: https://codeload.github.com/cheshire-cat-ai/api-client-ts/tar.gz/fabad6897f7940203c263110c152ffc0144df374
       daisyui:
         specifier: ^4.12.13
         version: 4.12.13(postcss@8.4.47)
@@ -993,8 +993,8 @@ packages:
   caniuse-lite@1.0.30001668:
     resolution: {integrity: sha512-nWLrdxqCdblixUO+27JtGJJE/txpJlyUy5YN1u53wLZkP0emYCo5zgS6QYft7VUYR42LGgi/S5hdLZTrnyIddw==}
 
-  ccat-api@https://codeload.github.com/alfredotoselli/cheshire-cat-api-client-ts/tar.gz/2618a09595e3970d27414015b2c65b47766634f0:
-    resolution: {tarball: https://codeload.github.com/alfredotoselli/cheshire-cat-api-client-ts/tar.gz/2618a09595e3970d27414015b2c65b47766634f0}
+  ccat-api@https://codeload.github.com/cheshire-cat-ai/api-client-ts/tar.gz/fabad6897f7940203c263110c152ffc0144df374:
+    resolution: {tarball: https://codeload.github.com/cheshire-cat-ai/api-client-ts/tar.gz/fabad6897f7940203c263110c152ffc0144df374}
     version: 0.11.2
 
   chai@5.1.1:
@@ -3486,7 +3486,7 @@ snapshots:
 
   caniuse-lite@1.0.30001668: {}
 
-  ccat-api@https://codeload.github.com/alfredotoselli/cheshire-cat-api-client-ts/tar.gz/2618a09595e3970d27414015b2c65b47766634f0:
+  ccat-api@https://codeload.github.com/cheshire-cat-ai/api-client-ts/tar.gz/fabad6897f7940203c263110c152ffc0144df374:
     dependencies:
       '@types/ws': 8.5.12
       axios: 1.7.7
