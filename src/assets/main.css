@@ -101,9 +101,6 @@
 	.chat-bubble table {
 		@apply !table !table-xs;
 	}
-	.chat-bubble table :where(thead, tfoot) {
-		@apply !text-base-100;
-	}
 	.chat-bubble pre {
 		@apply !my-4 !whitespace-pre-wrap;
 	}
