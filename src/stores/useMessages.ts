@@ -163,7 +163,7 @@ export const useMessages = defineStore('messages', () => {
 	 */
 	const dispatchMessage = (message: string | File, store = true) => {
 		if (typeof message === 'string') {
-			apiClient?.send(message)
+			apiClient?.send({ text: message })
 			if (store)
 				addMessage({
 					text: message.trim(),

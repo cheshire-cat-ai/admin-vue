@@ -76,7 +76,7 @@ const { isOverDropZone } = useDropZone(dropContentZone, {
  * Handles the copy-paste feature
  */
 useEventListener<ClipboardEvent>(dropContentZone, 'paste', evt => {
-	if ((evt.target as HTMLElement).isEqualNode(textArea.value)) return
+	if ((evt.target as HTMLElement).isEqualNode(textArea.value!)) return
 	const text = evt.clipboardData?.getData('text')
 	const files = evt.clipboardData?.getData('file') || Array.from(evt.clipboardData?.files ?? [])
 	contentHandler(text || files)
@@ -109,13 +109,13 @@ watchThrottled(
 	messagesState,
 	val => {
 		scrollToBottom()
-		if (!val.generating) textArea.value.focus()
+		if (!val.generating) textArea.value?.focus()
 	},
 	{ flush: 'post', throttle: 500, deep: true },
 )
 
 onActivated(() => {
-	textArea.value.focus()
+	textArea.value?.focus()
 })
 
 useEventListener(document, 'scroll', () => {
